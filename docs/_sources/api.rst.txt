@@ -1,5 +1,5 @@
-foxes.opt
-==========
+API
+===
 Wind farm optimization within `foxes` is run
 via the `foxes_opt` package. This internally
 makes use of the external `iwopy` package, whose
