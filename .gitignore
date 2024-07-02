@@ -162,7 +162,5 @@ cython_debug/
 #.idea/
 #
 
-!docs/build/
-docs/source/_*
-docs/source/_*/
-
+docs/
+makedocs/
