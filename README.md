@@ -9,6 +9,6 @@ Install from pip via
 pip install foxes-opt
 ```
 Install from conda-forge via
-```
+```console
 conda install foxes-opt -c conda-forge
 ```
