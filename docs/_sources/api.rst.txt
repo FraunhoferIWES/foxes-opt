@@ -18,26 +18,26 @@ documentation can be found
         :ref:`foxes_opt.constraints`             Constraints for wind farm optimization problems.
         =======================================  ============================================================
 
-foxes.opt.core
+foxes_opt.core
 --------------
 Contains core functionality and abstract base classes.
 
     .. python-apigen-group:: opt.core
 
-foxes.opt.problems
+foxes_opt.problems
 ------------------
 Wind farm optimization problems.
 
     .. toctree::
         api_opt_problems
 
-foxes.opt.objectives
+foxes_opt.objectives
 --------------------
 Objectives for wind farm optimization problems.
 
     .. python-apigen-group:: opt.objectives
 
-foxes.opt.constraints
+foxes_opt.constraints
 ---------------------
 Constraints for wind farm optimization problems.
 
