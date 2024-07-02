@@ -1,5 +1,7 @@
 # foxes-opt
 
+# _under construction, not yet ready to use. Please stay tuned..._
+
 _Optimization for the [foxes](https://github.com/FraunhoferIWES/foxes) package_
 
 ## Installation
