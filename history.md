@@ -23,3 +23,9 @@
 - Adding first test `00_layout_single_state`
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.1.5](https://github.com/FraunhoferIWES/foxes/commits/v0.1.5)
+
+## v0.1.6
+
+- Fixing bug in test
+
+**Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.1.6](https://github.com/FraunhoferIWES/foxes/commits/v0.1.6)
