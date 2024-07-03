@@ -1,7 +1,5 @@
 # foxes-opt
 
-## _under construction, not yet ready to use. Please stay tuned..._
-
 The package *foxes-opt* provides optimization functionality for the
 *Farm Optimization and eXtended yield Evaluation Software* [foxes](https://github.com/FraunhoferIWES/foxes)
 and is based on the optimization interface [iwopy](https://github.com/FraunhoferIWES/iwopy).
