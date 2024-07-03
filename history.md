@@ -17,3 +17,8 @@
 - Adding example notebook: `layout_optimization.ipynb`
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.1.4](https://github.com/FraunhoferIWES/foxes/commits/v0.1.4)
+
+## v0.1.5
+
+
+**Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.1.5](https://github.com/FraunhoferIWES/foxes/commits/v0.1.5)
