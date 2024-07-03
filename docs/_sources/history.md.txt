@@ -17,11 +17,15 @@
 - Adding example notebook: `layout_optimization.ipynb`
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.1.4](https://github.com/FraunhoferIWES/foxes/commits/v0.1.4)
-<<<<<<< HEAD:history.md
-=======
 
 ## v0.1.5
 
+- Adding first test `00_layout_single_state`
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.1.5](https://github.com/FraunhoferIWES/foxes/commits/v0.1.5)
->>>>>>> main:docs/source/history.md
+
+## v0.1.6
+
+- Fixing bug in test
+
+**Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.1.6](https://github.com/FraunhoferIWES/foxes/commits/v0.1.6)
