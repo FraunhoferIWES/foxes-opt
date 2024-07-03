@@ -13,7 +13,7 @@
     
     
       
-        <title>foxes-opt 0.1.3
+        <title>foxes-opt 0.1.4
  documentation</title>
       
     
@@ -77,8 +77,8 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="#" title="foxes-opt 0.1.3
- documentation" class="md-header__button md-logo" aria-label="foxes-opt 0.1.3
+    <a href="#" title="foxes-opt 0.1.4
+ documentation" class="md-header__button md-logo" aria-label="foxes-opt 0.1.4
  documentation" data-md-component="logo">
       
   
@@ -91,7 +91,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            foxes-opt 0.1.3
+            foxes-opt 0.1.4
  documentation
           </span>
         </div>
@@ -179,14 +179,14 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="#" title="foxes-opt 0.1.3
- documentation" class="md-nav__button md-logo" aria-label="foxes-opt 0.1.3
+    <a href="#" title="foxes-opt 0.1.4
+ documentation" class="md-nav__button md-logo" aria-label="foxes-opt 0.1.4
  documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
     </a>
-    foxes-opt 0.1.3
+    foxes-opt 0.1.4
  documentation
   </label>
   
@@ -245,8 +245,40 @@
   
   
     <li class="md-nav__item">
+      <a href="examples.html" class="md-nav__link">
+        <span title="/examples.rst (reference label)" class="md-ellipsis">Examples</span>
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="api.html" class="md-nav__link">
         <span title="/api.rst (reference label)" class="md-ellipsis">API</span>
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="testing.html" class="md-nav__link">
+        <span title="/testing.md (reference label)" class="md-ellipsis">Testing</span>
       </a>
     </li>
   
@@ -339,7 +371,11 @@
 <p>The package <em>foxes-opt</em> provides optimization functionality for the
 <em>Farm Optimization and eXtended yield Evaluation Software</em> <a class="reference external" href="https://github.com/FraunhoferIWES/foxes">foxes</a>
 and is based on the optimization interface <a class="reference external" href="https://github.com/FraunhoferIWES/iwopy">iwopy</a>.</p>
-<p>All three Python packages <em>foxes</em>, <em>foxes-opt</em> and <em>iwopy</em> are open-source and provided by Fraunhofer IWES.</p>
+<p>All three open-source Python packages <em>foxes</em>, <em>foxes-opt</em> and <em>iwopy</em> are provided and maintained by Fraunhofer IWES.</p>
+<p>The calculation is fully vectorized and its fast performance is owed to <a class="reference external" href="https://www.dask.org/">dask</a>.
+Also the parallelization on local or remote clusters is enabled via <cite>dask</cite>. The wind farm
+optimization capabilities invoke the <a class="reference external" href="https://github.com/FraunhoferIWES/iwopy">iwopy</a>
+package which as well supports vectorization.</p>
 <dl class="simple">
 <dt>Source code repository (and issue tracker):</dt><dd><p><a class="reference external" href="https://github.com/FraunhoferIWES/foxes-opt">https://github.com/FraunhoferIWES/foxes-opt</a></p>
 </dd>
@@ -353,18 +389,22 @@ and is based on the optimization interface <a class="reference external" href="h
 <blockquote>
 <div><div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="citation.html#journal-paper">Journal paper</a></li>
-<li class="toctree-l2"><a class="reference internal" href="citation.html#version-specific-doi">Version specific DOI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installation-as-standard-user">Installation as standard user</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installation-as-developer">Installation as developer</a></li>
 </ul>
 </li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#installation-via-pip">Installation via pip</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#installation-via-conda">Installation via conda</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/layout_opt.html">Layout optimization</a></li>
 </ul>
 </li>
 </ul>
@@ -372,6 +412,11 @@ and is based on the optimization interface <a class="reference external" href="h
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
@@ -469,6 +514,8 @@ project FLOW (Atmospheric Flow, Loads and pOwer for Wind energy - grant id 10108
       
         <script src="_static/sphinx_immaterial_theme.f9d9eeeb247ace16c.min.js?v=8ec58cb5"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script id="MathJax-script" src="_static/mathjax/tex-mml-chtml.js?v=cadf963e"></script>
     
   </body>
 </html>

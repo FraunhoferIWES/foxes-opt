@@ -5,7 +5,12 @@ The package *foxes-opt* provides optimization functionality for the
 *Farm Optimization and eXtended yield Evaluation Software* `foxes <https://github.com/FraunhoferIWES/foxes>`_
 and is based on the optimization interface `iwopy <https://github.com/FraunhoferIWES/iwopy>`_.
 
-All three Python packages *foxes*, *foxes-opt* and *iwopy* are open-source and provided by Fraunhofer IWES.
+All three open-source Python packages *foxes*, *foxes-opt* and *iwopy* are provided and maintained by Fraunhofer IWES.
+
+The calculation is fully vectorized and its fast performance is owed to `dask <https://www.dask.org/>`_.
+Also the parallelization on local or remote clusters is enabled via `dask`. The wind farm
+optimization capabilities invoke the `iwopy <https://github.com/FraunhoferIWES/iwopy>`_
+package which as well supports vectorization.
 
 Source code repository (and issue tracker):
     https://github.com/FraunhoferIWES/foxes-opt
@@ -31,9 +36,19 @@ Contents
         installation
 
     .. toctree::
+        :maxdepth: 2
+    
+        examples
+
+    .. toctree::
         :maxdepth: 1
 
         api
+
+    .. toctree::
+        :maxdepth: 1
+
+        testing
 
     .. toctree::
         :maxdepth: 1
