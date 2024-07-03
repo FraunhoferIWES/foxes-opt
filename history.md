@@ -38,5 +38,6 @@
 
 ## v0.1.8
 
+- Adding github workflow for automatic testing
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.1.8](https://github.com/FraunhoferIWES/foxes/commits/v0.1.8)
