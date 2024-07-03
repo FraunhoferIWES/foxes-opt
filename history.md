@@ -29,3 +29,9 @@
 - Fixing bug in test
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.1.6](https://github.com/FraunhoferIWES/foxes/commits/v0.1.6)
+
+## v0.1.7
+
+- Updated documention
+
+**Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.1.7](https://github.com/FraunhoferIWES/foxes/commits/v0.1.7)
