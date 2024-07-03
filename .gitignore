@@ -162,6 +162,8 @@ cython_debug/
 #.idea/
 #
 
+.vscode/
+
 makedocs/build/
 makedocs/source/_*
 makedocs/source/_*/
