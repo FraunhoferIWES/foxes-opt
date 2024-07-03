@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 from iwopy.interfaces.pymoo import Optimizer_pymoo
 
 import foxes
@@ -7,8 +6,8 @@ from foxes_opt.problems.layout import FarmLayoutOptProblem
 from foxes_opt.constraints import FarmBoundaryConstraint, MinDistConstraint
 from foxes_opt.objectives import MaxFarmPower
 
-if __name__ == "__main__":
-
+def test():
+    
     boundary = foxes.utils.geom2d.Circle([0.0, 0.0], 1000.0)
 
     farm = foxes.WindFarm(boundary=boundary)
@@ -104,3 +103,7 @@ if __name__ == "__main__":
         plt.show()
         plt.close(fig)
         """
+        
+if __name__ == "__main__":
+
+    test()
