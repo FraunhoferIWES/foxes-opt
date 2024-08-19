@@ -51,20 +51,17 @@ if __name__ == "__main__":
     parser.add_argument(
         "-nop", "--no_pop", help="Switch off vectorization", action="store_true"
     )
-    parser.add_argument("-sc", "--scheduler", help="The scheduler choice", default=None)
     parser.add_argument(
-        "-n",
-        "--n_workers",
-        help="The number of workers for distributed run",
-        type=int,
-        default=None,
+        "-e", "--engine", help="The engine", default="multiprocess"
     )
     parser.add_argument(
-        "-tw",
-        "--threads_per_worker",
-        help="The number of threads per worker for distributed run",
-        type=int,
-        default=None,
+        "-n", "--n_cpus", help="The number of cpus", default=None, type=int
+    )
+    parser.add_argument(
+        "-c", "--chunksize_states", help="The chunk size for states", default=None, type=int
+    )
+    parser.add_argument(
+        "-C", "--chunksize_points", help="The chunk size for points", default=None, type=int
     )
     args = parser.parse_args()
 
@@ -96,15 +93,15 @@ if __name__ == "__main__":
         mbook=mbook,
         verbosity=0,
     )
-
-    with foxes.utils.runners.DaskRunner(
-        scheduler=args.scheduler,
-        n_workers=args.n_workers,
-        threads_per_worker=args.threads_per_worker,
-        progress_bar=False,
-        verbosity=1,
-    ) as runner:
-        problem = FarmLayoutOptProblem("layout_opt", algo, runner=runner)
+    
+    with foxes.Engine.new(
+        engine_type=args.engine,
+        n_procs=args.n_cpus,
+        chunk_size_states=args.chunksize_states,
+        chunk_size_points=args.chunksize_points,
+        verbosity=0,
+    ):
+        problem = FarmLayoutOptProblem("layout_opt", algo)
         problem.add_objective(MaxFarmPower(problem))
         problem.add_constraint(FarmBoundaryConstraint(problem, disc_inside=True))
         if args.min_dist is not None:

@@ -14,8 +14,6 @@ class FarmOptProblem(Problem):
     ----------
     algo: foxes.core.Algorithm
         The algorithm
-    runner: foxes.core.Runner
-        The runner for running the algorithm
     calc_farm_args: dict
         Additional parameters for algo.calc_farm()
     points : numpy.ndarray
@@ -29,7 +27,6 @@ class FarmOptProblem(Problem):
         self,
         name,
         algo,
-        runner=None,
         sel_turbines=None,
         calc_farm_args={},
         points=None,
@@ -44,8 +41,6 @@ class FarmOptProblem(Problem):
             The problem's name
         algo: foxes.core.Algorithm
             The algorithm
-        runner: foxes.core.Runner, optional
-            The runner for running the algorithm
         sel_turbines: list of int, optional
             The turbines selected for optimization,
             or None for all
@@ -60,7 +55,6 @@ class FarmOptProblem(Problem):
         super().__init__(name, **kwargs)
 
         self.algo = algo
-        self.runner = runner
         self.calc_farm_args = calc_farm_args
         self.points = points
 
@@ -188,12 +182,6 @@ class FarmOptProblem(Problem):
             The verbosity level, 0 = silent
 
         """
-        if self.runner is None:
-            self.runner = DefaultRunner()
-            self.runner.initialize()
-        elif not self.runner.initialized:
-            raise ValueError(f"FarmOptProblem '{self.name}': Runner not initialized.")
-
         if not self.algo.initialized:
             self.algo.initialize()
         self._org_states_name = self.algo.states.name
@@ -279,14 +267,12 @@ class FarmOptProblem(Problem):
         """
         self._count += 1
         self.update_problem_individual(vars_int, vars_float)
-        farm_results = self.runner.run(self.algo.calc_farm, kwargs=self.calc_farm_args)
+        farm_results = self.algo.calc_farm(**self.calc_farm_args)
 
         if self.points is None:
             return farm_results
         else:
-            point_results = self.runner.run(
-                self.algo.calc_points, args=(farm_results, self.points)
-            )
+            point_results = self.algo.calc_points(farm_results, self.points)
             return farm_results, point_results
 
     def apply_population(self, vars_int, vars_float):
@@ -311,7 +297,7 @@ class FarmOptProblem(Problem):
         self._count += 1
 
         self.update_problem_population(vars_int, vars_float)
-        farm_results = self.runner.run(self.algo.calc_farm, kwargs=self.calc_farm_args)
+        farm_results = self.algo.calc_farm(**self.calc_farm_args)
         farm_results["n_pop"] = len(vars_float)
         farm_results["n_org_states"] = self._org_n_states
 
@@ -323,9 +309,7 @@ class FarmOptProblem(Problem):
             pop_points = np.zeros((n_pop, n_states, n_points, 3), dtype=FC.DTYPE)
             pop_points[:] = self.points[None, :, :, :]
             pop_points = pop_points.reshape(n_pop * n_states, n_points, 3)
-            point_results = self.runner.run(
-                self.algo.calc_points, args=(farm_results, pop_points)
-            )
+            point_results = self.algo.calc_points(farm_results, pop_points)
             return farm_results, point_results
 
     def add_to_layout_figure(self, ax, **kwargs):
