@@ -53,7 +53,7 @@ Contents
     .. toctree::
         :maxdepth: 1
 
-        history
+        CHANGELOG
 
 Contributing
 ------------
