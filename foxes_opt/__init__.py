@@ -8,11 +8,6 @@ from . import problems # noqa: F401
 from . import constraints # noqa: F401
 from . import objectives # noqa: F401
 
-try:
-    from importlib.resources import files
+from importlib.metadata import version
 
-    __version__ = files(__package__).joinpath("VERSION").read_text()
-except ImportError:
-    from importlib.resources import read_text
-
-    __version__ = read_text(__package__, "VERSION")
+__version__ = version(__package__ or __name__)
