@@ -53,17 +53,23 @@ if __name__ == "__main__":
         type=int,
         default=1,
     )
-    parser.add_argument(
-        "-e", "--engine", help="The engine", default="multiprocess"
-    )
+    parser.add_argument("-e", "--engine", help="The engine", default="multiprocess")
     parser.add_argument(
         "-n", "--n_cpus", help="The number of cpus", default=None, type=int
     )
     parser.add_argument(
-        "-c", "--chunksize_states", help="The chunk size for states", default=None, type=int
+        "-c",
+        "--chunksize_states",
+        help="The chunk size for states",
+        default=None,
+        type=int,
     )
     parser.add_argument(
-        "-C", "--chunksize_points", help="The chunk size for points", default=None, type=int
+        "-C",
+        "--chunksize_points",
+        help="The chunk size for points",
+        default=None,
+        type=int,
     )
     args = parser.parse_args()
 
@@ -108,7 +114,7 @@ if __name__ == "__main__":
         problem.initialize()
         gproblem = LocalFD(problem, deltas=0.1, fd_order=args.fd_order)
         gproblem.initialize()
-        
+
         solver = GG(
             gproblem,
             step_max=100.0,

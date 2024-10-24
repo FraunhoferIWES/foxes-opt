@@ -6,8 +6,9 @@ from foxes_opt.problems.layout import FarmLayoutOptProblem
 from foxes_opt.constraints import FarmBoundaryConstraint, MinDistConstraint
 from foxes_opt.objectives import MaxFarmPower
 
+
 def test():
-    
+
     boundary = foxes.utils.geom2d.Circle([0.0, 0.0], 1000.0)
 
     farm = foxes.WindFarm(boundary=boundary)
@@ -18,9 +19,7 @@ def test():
         n_turbines=8,
         turbine_models=["NREL5MW"],
     )
-    states = foxes.input.states.SingleStateStates(
-        ws=9, wd=270, ti=0.08, rho=1.225
-    )
+    states = foxes.input.states.SingleStateStates(ws=9, wd=270, ti=0.08, rho=1.225)
 
     algo = foxes.algorithms.Downwind(
         farm,
@@ -33,9 +32,7 @@ def test():
     problem = FarmLayoutOptProblem("layout_opt", algo)
     problem.add_objective(MaxFarmPower(problem))
     problem.add_constraint(FarmBoundaryConstraint(problem, disc_inside=True))
-    problem.add_constraint(
-        MinDistConstraint(problem, min_dist=3, min_dist_unit="D")
-    )
+    problem.add_constraint(MinDistConstraint(problem, min_dist=3, min_dist_unit="D"))
     problem.initialize()
 
     solver = Optimizer_pymoo(
@@ -70,10 +67,9 @@ def test():
 
     print()
     print(results)
-    
+
     assert np.abs(results.objs - 20148.46492534) < 1e-4
-    
-    
+
     """
     fig, axs = plt.subplots(1, 2, figsize=(12, 8))
     foxes.output.FarmLayoutOutput(farm).get_figure(fig=fig, ax=axs[0])
@@ -99,7 +95,8 @@ def test():
     plt.show()
     plt.close(fig)
     """
-        
+
+
 if __name__ == "__main__":
 
     test()

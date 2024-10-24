@@ -51,17 +51,23 @@ if __name__ == "__main__":
     parser.add_argument(
         "-nop", "--no_pop", help="Switch off vectorization", action="store_true"
     )
-    parser.add_argument(
-        "-e", "--engine", help="The engine", default="multiprocess"
-    )
+    parser.add_argument("-e", "--engine", help="The engine", default="multiprocess")
     parser.add_argument(
         "-n", "--n_cpus", help="The number of cpus", default=None, type=int
     )
     parser.add_argument(
-        "-c", "--chunksize_states", help="The chunk size for states", default=None, type=int
+        "-c",
+        "--chunksize_states",
+        help="The chunk size for states",
+        default=None,
+        type=int,
     )
     parser.add_argument(
-        "-C", "--chunksize_points", help="The chunk size for points", default=None, type=int
+        "-C",
+        "--chunksize_points",
+        help="The chunk size for points",
+        default=None,
+        type=int,
     )
     args = parser.parse_args()
 
@@ -93,7 +99,7 @@ if __name__ == "__main__":
         mbook=mbook,
         verbosity=0,
     )
-    
+
     with foxes.Engine.new(
         engine_type=args.engine,
         n_procs=args.n_cpus,
