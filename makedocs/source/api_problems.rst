@@ -16,4 +16,4 @@ Purely geometrical layout problems (wake effects are
 not evaluated).
 
     .. toctree::
-        api_opt_problems_geom
+        api_problems_geom
