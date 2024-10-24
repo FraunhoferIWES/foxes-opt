@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page::  foxes_opt.core.PopStates.from_data_or_store
+.. python-apigen-entity-page::  foxes_opt.core.PopStates.output_coords
 

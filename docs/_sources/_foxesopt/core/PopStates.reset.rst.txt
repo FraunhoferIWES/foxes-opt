@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page::  foxes_opt.core.PopStates.data_to_store
+.. python-apigen-entity-page::  foxes_opt.core.PopStates.reset
 
