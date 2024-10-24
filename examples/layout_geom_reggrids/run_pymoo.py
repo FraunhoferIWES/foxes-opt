@@ -33,6 +33,24 @@ if __name__ == "__main__":
     parser.add_argument(
         "-G", "--n_gen", help="The number of generations", type=int, default=150
     )
+    parser.add_argument("-e", "--engine", help="The engine", default="multiprocess")
+    parser.add_argument(
+        "-n", "--n_cpus", help="The number of cpus", default=None, type=int
+    )
+    parser.add_argument(
+        "-c",
+        "--chunksize_states",
+        help="The chunk size for states",
+        default=None,
+        type=int,
+    )
+    parser.add_argument(
+        "-C",
+        "--chunksize_points",
+        help="The chunk size for points",
+        default=None,
+        type=int,
+    )
     args = parser.parse_args()
 
     boundary = (
@@ -49,37 +67,44 @@ if __name__ == "__main__":
         )
     )
 
-    problem = grg.GeomRegGrids(boundary, args.min_dist, args.n_grids, args.n_maxr)
-    problem.add_objective(grg.OMaxN(problem))
-    problem.initialize()
+    with foxes.Engine.new(
+        engine_type=args.engine,
+        n_procs=args.n_cpus,
+        chunk_size_states=args.chunksize_states,
+        chunk_size_points=args.chunksize_points,
+        verbosity=0,
+    ):
+        problem = grg.GeomRegGrids(boundary, args.min_dist, args.n_grids, args.n_maxr)
+        problem.add_objective(grg.OMaxN(problem))
+        problem.initialize()
 
-    fig = problem.get_fig().get_figure()
-    plt.show()
-    plt.close(fig)
+        fig = problem.get_fig().get_figure()
+        plt.show()
+        plt.close(fig)
 
-    solver = Optimizer_pymoo(
-        problem,
-        problem_pars=dict(
-            vectorize=not args.no_pop,
-        ),
-        algo_pars=dict(
-            type=args.opt_algo,
-            pop_size=args.n_pop,
-            seed=None,
-        ),
-        setup_pars=dict(),
-        term_pars=("n_gen", args.n_gen),
-    )
-    solver.initialize()
-    solver.print_info()
+        solver = Optimizer_pymoo(
+            problem,
+            problem_pars=dict(
+                vectorize=not args.no_pop,
+            ),
+            algo_pars=dict(
+                type=args.opt_algo,
+                pop_size=args.n_pop,
+                seed=None,
+            ),
+            setup_pars=dict(),
+            term_pars=("n_gen", args.n_gen),
+        )
+        solver.initialize()
+        solver.print_info()
 
-    results = solver.solve()
-    solver.finalize(results)
+        results = solver.solve()
+        solver.finalize(results)
 
-    print()
-    print(results)
+        print()
+        print(results)
 
-    xy, valid = results.problem_results
-    fig = problem.get_fig(xy, valid).get_figure()
-    plt.show()
-    plt.close(fig)
+        xy, valid = results.problem_results
+        fig = problem.get_fig(xy, valid).get_figure()
+        plt.show()
+        plt.close(fig)

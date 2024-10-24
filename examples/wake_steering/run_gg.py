@@ -1,7 +1,8 @@
 import numpy as np
 import argparse
 import matplotlib.pyplot as plt
-from iwopy.interfaces.pymoo import Optimizer_pymoo
+from iwopy import LocalFD
+from iwopy.optimizers import GG
 
 import foxes
 from foxes_opt.problems import OptFarmVars
@@ -43,16 +44,14 @@ if __name__ == "__main__":
         default=None,
     )
     parser.add_argument(
-        "-A", "--opt_algo", help="The pymoo algorithm name", default="GA"
-    )
-    parser.add_argument(
-        "-P", "--n_pop", help="The population size", type=int, default=80
-    )
-    parser.add_argument(
-        "-G", "--n_gen", help="The nmber of generations", type=int, default=100
-    )
-    parser.add_argument(
         "-nop", "--no_pop", help="Switch off vectorization", action="store_true"
+    )
+    parser.add_argument(
+        "-O",
+        "--fd_order",
+        help="Finite difference derivative order",
+        type=int,
+        default=1,
     )
     parser.add_argument("-e", "--engine", help="The engine", default="multiprocess")
     parser.add_argument(
@@ -113,19 +112,15 @@ if __name__ == "__main__":
         problem.add_var(FV.YAWM, float, 0.0, -40.0, 40.0, level="turbine")
         problem.add_objective(MaxFarmPower(problem))
         problem.initialize()
+        gproblem = LocalFD(problem, deltas=0.1, fd_order=args.fd_order)
+        gproblem.initialize()
 
-        solver = Optimizer_pymoo(
-            problem,
-            problem_pars=dict(
-                vectorize=not args.no_pop,
-            ),
-            algo_pars=dict(
-                type=args.opt_algo,
-                pop_size=args.n_pop,
-                seed=None,
-            ),
-            setup_pars=dict(),
-            term_pars=("n_gen", args.n_gen),
+        solver = GG(
+            gproblem,
+            step_max=100.0,
+            step_min=0.1,
+            f_tol=1e-4,
+            vectorized=not args.no_pop,
         )
         solver.initialize()
         solver.print_info()
