@@ -235,7 +235,7 @@ class RegGridsLayoutOptProblem(FarmVarsProblem):
         """
         n0 = self.farm.n_turbines
         nxny = vars_int.reshape(self._geomp.n_grids, 2)
-        n = np.sum(np.product(nxny, axis=1))
+        n = np.sum(np.prod(nxny, axis=1))
         if n0 > n:
             self.farm.turbines = self.farm.turbines[:n]
         elif n0 < n:
@@ -267,7 +267,7 @@ class RegGridsLayoutOptProblem(FarmVarsProblem):
         n0 = self.farm.n_turbines
         n_pop = vars_int.shape[0]
         nxny = vars_int.reshape(n_pop, self._geomp.n_grids, 2)
-        n = np.max(np.sum(np.product(nxny, axis=2), axis=1))
+        n = np.max(np.sum(np.prod(nxny, axis=2), axis=1))
         if n0 > n:
             self.farm.turbines = self.farm.turbines[:n]
         elif n0 < n:
