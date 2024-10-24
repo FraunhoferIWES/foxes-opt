@@ -1,7 +1,6 @@
 import numpy as np
 from iwopy import Problem
 
-from foxes.utils.runners import DefaultRunner
 import foxes.constants as FC
 from .pop_states import PopStates
 
