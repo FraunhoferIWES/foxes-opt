@@ -33,7 +33,7 @@ classifiers = [
 ]
 requires-python = ">=3.8"
 dependencies = [
-    "foxes>=1.0",
+    "foxes>=1.1.1",
     "iwopy>=0.3",
     "pymoo>=0.6",
 ]
@@ -68,4 +68,4 @@ Repository = "https://github.com/FraunhoferIWES/foxes-opt.git"
 Changelog = "https://github.com/FraunhoferIWES/foxes-opt/blob/main/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
-exclude = ["notebooks", "conda", "examples", "tests", "docs"]
+exclude = ["notebooks", "examples", "tests", "docs", "makedocs"]
