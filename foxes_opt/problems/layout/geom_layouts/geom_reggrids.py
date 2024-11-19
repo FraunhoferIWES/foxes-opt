@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.spatial.distance import cdist
 from iwopy import Problem
 
-import foxes.constants as FC
+from foxes.config import config
 
 
 class GeomRegGrids(Problem):
@@ -150,7 +150,7 @@ class GeomRegGrids(Problem):
             Initial int values, shape: (n_vars_int,)
 
         """
-        return np.full(self.n_grids * 2, 2, dtype=FC.ITYPE)
+        return np.full(self.n_grids * 2, 2, dtype=config.dtype_int)
 
     def min_values_int(self):
         """
@@ -164,7 +164,7 @@ class GeomRegGrids(Problem):
             Minimal int values, shape: (n_vars_int,)
 
         """
-        return np.ones(self.n_grids * 2, dtype=FC.ITYPE)
+        return np.ones(self.n_grids * 2, dtype=config.dtype_int)
 
     def max_values_int(self):
         """
@@ -178,7 +178,7 @@ class GeomRegGrids(Problem):
             Maximal int values, shape: (n_vars_int,)
 
         """
-        return np.full(self.n_grids * 2, self._nrow, dtype=FC.ITYPE)
+        return np.full(self.n_grids * 2, self._nrow, dtype=config.dtype_int)
 
     def var_names_float(self):
         """
@@ -205,7 +205,7 @@ class GeomRegGrids(Problem):
 
         """
         n = 5
-        vals = np.zeros((self.n_grids, n), dtype=FC.DTYPE)
+        vals = np.zeros((self.n_grids, n), dtype=config.dtype_double)
         vals[:, :2] = self._pmin + self._diag + self.min_dist + self._span / 2
         vals[:, 2:4] = 2 * self.min_dist
         vals[:, 5:] = 0
@@ -224,7 +224,7 @@ class GeomRegGrids(Problem):
 
         """
         n = 5
-        vals = np.zeros((self.n_grids, n), dtype=FC.DTYPE)
+        vals = np.zeros((self.n_grids, n), dtype=config.dtype_double)
         vals[:, :2] = self._pmin
         vals[:, 2:4] = self.min_dist
         vals[:, 5:] = -self._diag / 3
@@ -243,7 +243,7 @@ class GeomRegGrids(Problem):
 
         """
         n = 5
-        vals = np.zeros((self.n_grids, n), dtype=FC.DTYPE)
+        vals = np.zeros((self.n_grids, n), dtype=config.dtype_double)
         vals[:, :2] = self._pmax
         vals[:, 2:4] = self.max_dist
         vals[:, 4] = 90.0
@@ -286,7 +286,7 @@ class GeomRegGrids(Problem):
         nay = np.cross(naz, nax)
 
         valid = np.zeros(n_points, dtype=bool)
-        pts = np.full((n_points, 2), np.nan, dtype=FC.DTYPE)
+        pts = np.full((n_points, 2), np.nan, dtype=config.dtype_double)
         n0 = 0
         for gi in range(self.n_grids):
             n = nx[gi] * ny[gi]
@@ -295,7 +295,7 @@ class GeomRegGrids(Problem):
             if n1 <= n_points:
                 qts = pts[n0:n1].reshape(nx[gi], ny[gi], 2)
             else:
-                qts = np.zeros((nx[gi], ny[gi], 2), dtype=FC.DTYPE)
+                qts = np.zeros((nx[gi], ny[gi], 2), dtype=config.dtype_double)
 
             qts[:, :, 0] = ox[gi]
             qts[:, :, 1] = oy[gi]
@@ -369,7 +369,7 @@ class GeomRegGrids(Problem):
         nay = np.cross(naz, nax)
 
         valid = np.zeros((n_pop, n_points), dtype=bool)
-        pts = np.full((n_pop, n_points, 2), np.nan, dtype=FC.DTYPE)
+        pts = np.full((n_pop, n_points, 2), np.nan, dtype=config.dtype_double)
         for pi in range(n_pop):
             n0 = 0
             for gi in range(self.n_grids):
@@ -379,7 +379,7 @@ class GeomRegGrids(Problem):
                 if n1 <= n_points:
                     qts = pts[pi, n0:n1].reshape(nx[pi, gi], ny[pi, gi], 2)
                 else:
-                    qts = np.zeros((nx[pi, gi], ny[pi, gi], 2), dtype=FC.DTYPE)
+                    qts = np.zeros((nx[pi, gi], ny[pi, gi], 2), dtype=config.dtype_double)
 
                 qts[:, :, 0] = ox[pi, gi]
                 qts[:, :, 1] = oy[pi, gi]

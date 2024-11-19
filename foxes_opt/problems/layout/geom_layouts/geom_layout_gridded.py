@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.spatial.distance import cdist
 from iwopy import Problem
 
-import foxes.constants as FC
+from foxes.config import config
 
 
 class GeomLayoutGridded(Problem):
@@ -133,7 +133,7 @@ class GeomLayoutGridded(Problem):
             Initial int values, shape: (n_vars_int,)
 
         """
-        return np.arange(self.n_turbines, dtype=FC.ITYPE)
+        return np.arange(self.n_turbines, dtype=config.dtype_int)
 
     def min_values_int(self):
         """
@@ -145,7 +145,7 @@ class GeomLayoutGridded(Problem):
             Minimal int values, shape: (n_vars_int,)
 
         """
-        return np.zeros(self.n_turbines, dtype=FC.ITYPE)
+        return np.zeros(self.n_turbines, dtype=config.dtype_int)
 
     def max_values_int(self):
         """
@@ -157,7 +157,7 @@ class GeomLayoutGridded(Problem):
             Maximal int values, shape: (n_vars_int,)
 
         """
-        return np.full(self.n_turbines, self._N - 1, dtype=FC.ITYPE)
+        return np.full(self.n_turbines, self._N - 1, dtype=config.dtype_int)
 
     def apply_individual(self, vars_int, vars_float):
         """
@@ -177,7 +177,7 @@ class GeomLayoutGridded(Problem):
             to the problem
 
         """
-        xy = self._pts[vars_int.astype(FC.ITYPE)]
+        xy = self._pts[vars_int.astype(config.dtype_int)]
         __, ui = np.unique(vars_int, return_index=True)
         valid = np.zeros(self.n_turbines, dtype=bool)
         valid[ui] = True
@@ -204,7 +204,7 @@ class GeomLayoutGridded(Problem):
         """
         n_pop = vars_int.shape[0]
 
-        vint = vars_int.reshape(n_pop * self.n_turbines).astype(FC.ITYPE)
+        vint = vars_int.reshape(n_pop * self.n_turbines).astype(config.dtype_int)
         xy = self._pts[vint, :].reshape(n_pop, self.n_turbines, 2)
 
         valid = np.zeros((n_pop, self.n_turbines), dtype=bool)

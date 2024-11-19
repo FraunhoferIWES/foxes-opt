@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.spatial.distance import cdist
 from iwopy import Problem
 
-import foxes.constants as FC
+from foxes.config import config
 
 
 class GeomLayout(Problem):
@@ -109,7 +109,7 @@ class GeomLayout(Problem):
         pc = 0.5 * (pmin + pmax)
         delta = 0.8 * (pmax - pmin)
 
-        vals = np.zeros((self.n_turbines, 2), dtype=FC.DTYPE)
+        vals = np.zeros((self.n_turbines, 2), dtype=config.dtype_double)
         vals[:] = pc[None, :] - 0.5 * delta[None, :]
         vals[:] += (
             np.arange(self.n_turbines)[:, None] * delta[None, :] / (self.n_turbines - 1)
@@ -129,7 +129,7 @@ class GeomLayout(Problem):
             Minimal float values, shape: (n_vars_float,)
 
         """
-        vals = np.zeros((self.n_turbines, 2), dtype=FC.DTYPE)
+        vals = np.zeros((self.n_turbines, 2), dtype=config.dtype_double)
         vals[:] = self.boundary.p_min()[None, :]
         return vals.reshape(self.n_turbines * 2)
 
@@ -145,7 +145,7 @@ class GeomLayout(Problem):
             Maximal float values, shape: (n_vars_float,)
 
         """
-        vals = np.zeros((self.n_turbines, 2), dtype=FC.DTYPE)
+        vals = np.zeros((self.n_turbines, 2), dtype=config.dtype_double)
         vals[:] = self.boundary.p_max()[None, :]
         return vals.reshape(self.n_turbines * 2)
 

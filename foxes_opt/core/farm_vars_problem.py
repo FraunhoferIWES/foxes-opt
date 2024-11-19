@@ -3,7 +3,7 @@ from abc import abstractmethod
 
 from .farm_opt_problem import FarmOptProblem
 from foxes.models.turbine_models import SetFarmVars
-import foxes.constants as FC
+from foxes.config import config
 
 
 class FarmVarsProblem(FarmOptProblem):
@@ -160,7 +160,7 @@ class FarmVarsProblem(FarmOptProblem):
                         model.add_var(v, vals)
                     else:
                         data = np.zeros(
-                            (n_states, self.algo.n_turbines), dtype=FC.DTYPE
+                            (n_states, self.algo.n_turbines), dtype=config.dtype_double
                         )
                         data[:, self.sel_turbines] = vals
                         model.add_var(v, data)
@@ -207,7 +207,7 @@ class FarmVarsProblem(FarmOptProblem):
                         model.add_var(v, vals.reshape(shp1))
                     else:
                         data = np.zeros(
-                            (n_pstates, self.algo.n_turbines), dtype=FC.DTYPE
+                            (n_pstates, self.algo.n_turbines), dtype=config.dtype_double
                         )
                         data[:, self.sel_turbines] = vals.reshape(shp1)
                         model.add_var(v, data)

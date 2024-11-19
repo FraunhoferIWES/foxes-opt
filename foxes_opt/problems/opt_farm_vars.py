@@ -3,7 +3,6 @@ import pandas as pd
 
 from foxes_opt.core import FarmVarsProblem
 from foxes.models.turbine_models import SetFarmVars
-import foxes.constants as FC
 from foxes.config import config
 
 
