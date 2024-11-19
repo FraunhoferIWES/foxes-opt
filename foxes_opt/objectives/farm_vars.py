@@ -53,7 +53,7 @@ class FarmVarObjective(FarmObjective):
         variable: str
             The foxes variable name
         contract_states: str
-            Contraction rule for states: min, max, sum, mean
+            Contraction rule for states: min, max, sum, mean, weights
         contract_turbines: str
             Contraction rule for turbines: min, max, sum, mean
         minimize: bool
@@ -148,10 +148,25 @@ class FarmVarObjective(FarmObjective):
                 data = data.sum(dim=dim)
             elif rule == "mean":
                 data = data.mean(dim=dim)
+            elif dim == FC.STATE and rule == "weights":
+                odims = data.dims
+                weights = self.problem._org_weights
+                if len(odims) > 1 and odims[:2] == (FC.STATE, FC.TURBINE):
+                    data = np.einsum('st...,st->t...', data, weights)
+                    data = xr.DataArray(data, dims=odims[1:])
+                elif len(odims) > 2 and odims[:3] == (FC.POP, FC.STATE, FC.TURBINE):
+                    data = np.einsum('pst...,st->pt...', data, weights)
+                    data = xr.DataArray(data, dims=(FC.POP,) + odims[2:])
+                else:
+                    raise NotImplementedError(f"Contraction error for '{rule}' for dim '{dim}': Incompatible data dims {odims}, shape {data.shape}, for weights of shape {weights.shape}")
+            elif dim == FC.STATE:
+                raise ValueError(
+                    f"Objective '{self.name}': Unknown contraction for dimension '{dim}': '{rule}'. Choose: min, max, sum, mean, weights"
+                )
             else:
                 raise ValueError(
                     f"Objective '{self.name}': Unknown contraction for dimension '{dim}': '{rule}'. Choose: min, max, sum, mean"
-                )
+                )  
         return data
 
     def calc_individual(self, vars_int, vars_float, problem_results, components=None):
@@ -284,7 +299,7 @@ class MaxFarmPower(FarmVarObjective):
             problem,
             name,
             variable=FV.P,
-            contract_states="mean",
+            contract_states="weights",
             contract_turbines="sum",
             minimize=False,
             scale=scale,

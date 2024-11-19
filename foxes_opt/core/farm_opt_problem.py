@@ -186,6 +186,7 @@ class FarmOptProblem(Problem):
             self.algo.initialize()
         self._org_states_name = self.algo.states.name
         self._org_n_states = self.algo.n_states
+        self._org_weights = self.algo.states.weights(self.algo)
 
         self.algo.finalize()
 

@@ -55,7 +55,7 @@ if __name__ == "__main__":
         type=int,
         default=1,
     )
-    parser.add_argument("-e", "--engine", help="The engine", default="multiprocess")
+    parser.add_argument("-e", "--engine", help="The engine", default="process")
     parser.add_argument(
         "-n", "--n_cpus", help="The number of cpus", default=None, type=int
     )

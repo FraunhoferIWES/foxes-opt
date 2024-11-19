@@ -33,7 +33,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-G", "--n_gen", help="The number of generations", type=int, default=150
     )
-    parser.add_argument("-e", "--engine", help="The engine", default="multiprocess")
+    parser.add_argument("-e", "--engine", help="The engine", default="process")
     parser.add_argument(
         "-n", "--n_cpus", help="The number of cpus", default=None, type=int
     )
