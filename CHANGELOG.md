@@ -40,5 +40,6 @@
 
 - Adding github workflow for automatic testing
 - Adding support for foxes engines
+- Bug fixed with `MaxFarmPower` objective, now using states weights in states contraction
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.2](https://github.com/FraunhoferIWES/foxes/commits/v0.2)
