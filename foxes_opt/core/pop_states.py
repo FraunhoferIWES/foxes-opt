@@ -3,6 +3,7 @@ import numpy as np
 from foxes.core import States, Data
 import foxes.constants as FC
 import foxes.variables as FV
+from foxes.config import config
 
 
 class PopStates(States):
@@ -136,7 +137,7 @@ class PopStates(States):
 
         """
         weights = np.zeros(
-            (self.n_pop, self.states.size(), algo.n_turbines), dtype=FC.DTYPE
+            (self.n_pop, self.states.size(), algo.n_turbines), dtype=config.dtype_double
         )
         weights[:] = self.states.weights(algo)[None, :, :] / self.n_pop
         return weights.reshape(self.size(), algo.n_turbines)

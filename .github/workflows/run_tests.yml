@@ -6,7 +6,6 @@ name: run-tests
 on:
   push:
     branches:    
-      - 'main'
       - 'dev'
 
   pull_request:
@@ -15,14 +14,14 @@ on:
       - 'dev'
 
 jobs:
-  tests-allpy:
+  tests:
     name: run-tests-allpy
 
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
 
     steps:
     - uses: actions/checkout@v4

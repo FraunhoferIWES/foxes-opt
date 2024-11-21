@@ -2,7 +2,7 @@ import numpy as np
 from scipy.spatial.distance import cdist
 from iwopy import Constraint
 
-import foxes.constants as FC
+from foxes.config import config
 
 
 class Valid(Constraint):
@@ -793,7 +793,7 @@ class CMinDensity(Constraint):
         """
         n_pop = vars_float.shape[0]
         xy, valid = problem_results
-        out = np.full(n_pop, 1e20, dtype=FC.DTYPE)
+        out = np.full(n_pop, 1e20, dtype=config.dtype_double)
         for pi in range(n_pop):
             if np.any(valid[pi]):
                 hxy = xy[pi][valid[pi]]

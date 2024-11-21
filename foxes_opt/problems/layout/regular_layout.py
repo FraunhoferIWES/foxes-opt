@@ -3,6 +3,7 @@ from copy import deepcopy
 
 from foxes_opt.core import FarmVarsProblem, FarmOptProblem
 from foxes.models.turbine_models import Calculator
+from foxes.config import config
 import foxes.variables as FV
 import foxes.constants as FC
 
@@ -217,11 +218,11 @@ class RegularLayoutOptProblem(FarmVarsProblem):
         ny = self._nrow
 
         a = np.deg2rad(a)
-        nax = np.array([np.cos(a), np.sin(a), 0.0], dtype=FC.DTYPE)
-        nay = np.cross(np.array([0.0, 0.0, 1.0], dtype=FC.DTYPE), nax)
-        x0 = self._xy0 + np.array([ox, oy], dtype=FC.DTYPE)
+        nax = np.array([np.cos(a), np.sin(a), 0.0], dtype=config.dtype_double)
+        nay = np.cross(np.array([0.0, 0.0, 1.0], dtype=config.dtype_double), nax)
+        x0 = self._xy0 + np.array([ox, oy], dtype=config.dtype_double)
 
-        pts = np.zeros((n_states, nx, ny, 2), dtype=FC.DTYPE)
+        pts = np.zeros((n_states, nx, ny, 2), dtype=config.dtype_double)
         pts[:] = (
             x0[None, None, None, :]
             + np.arange(nx)[None, :, None, None] * dx * nax[None, None, None, :2]
@@ -234,7 +235,7 @@ class RegularLayoutOptProblem(FarmVarsProblem):
         farm_vars = {
             FV.X: pts[:, :, 0],
             FV.Y: pts[:, :, 1],
-            FC.VALID: valid.reshape(n_states, nx * ny).astype(FC.DTYPE),
+            FC.VALID: valid.reshape(n_states, nx * ny).astype(config.dtype_double),
         }
 
         return farm_vars
@@ -279,7 +280,7 @@ class RegularLayoutOptProblem(FarmVarsProblem):
         naz[..., 2] = 1
         nay = np.cross(naz, nax)
 
-        pts = np.zeros((n_pop, n_states, nx, ny, 2), dtype=FC.DTYPE)
+        pts = np.zeros((n_pop, n_states, nx, ny, 2), dtype=config.dtype_double)
         pts[:] = self._xy0[None, None, None, None, :]
         pts[..., 0] += ox[:, None, None, None]
         pts[..., 1] += oy[:, None, None, None]
@@ -303,7 +304,9 @@ class RegularLayoutOptProblem(FarmVarsProblem):
         farm_vars = {
             FV.X: qts[:, :, :, 0],
             FV.Y: qts[:, :, :, 1],
-            FC.VALID: valid.reshape(n_pop, n_states, n_turbines).astype(FC.DTYPE),
+            FC.VALID: valid.reshape(n_pop, n_states, n_turbines).astype(
+                config.dtype_double
+            ),
         }
 
         return farm_vars
@@ -339,7 +342,7 @@ class RegularLayoutOptProblem(FarmVarsProblem):
 
         self.farm.turbines = [t for i, t in enumerate(self.farm.turbines) if i in sel]
         for i, t in enumerate(self.farm.turbines):
-            t.xy = np.array([x[i], y[i]], dtype=FC.DTYPE)
+            t.xy = np.array([x[i], y[i]], dtype=config.dtype_double)
             t.models = [m for m in t.models if m not in [self.name, self._mname]]
             t.index = i
             t.name = f"T{i}"

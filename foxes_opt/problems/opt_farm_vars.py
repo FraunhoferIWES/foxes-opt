@@ -3,7 +3,7 @@ import pandas as pd
 
 from foxes_opt.core import FarmVarsProblem
 from foxes.models.turbine_models import SetFarmVars
-import foxes.constants as FC
+from foxes.config import config
 
 
 class OptFarmVars(FarmVarsProblem):
@@ -117,9 +117,9 @@ class OptFarmVars(FarmVarsProblem):
             hdata.loc[i0, "state"] = -1
             hdata.loc[i0, "turbine"] = -1
             hdata.loc[i0, "sel_turbine"] = -1
-            hdata.loc[i0, "init"] = np.array([init], dtype=FC.DTYPE)
-            hdata.loc[i0, "min"] = np.array([min], dtype=FC.DTYPE)
-            hdata.loc[i0, "max"] = np.array([max], dtype=FC.DTYPE)
+            hdata.loc[i0, "init"] = np.array([init], dtype=config.dtype_double)
+            hdata.loc[i0, "min"] = np.array([min], dtype=config.dtype_double)
+            hdata.loc[i0, "max"] = np.array([max], dtype=config.dtype_double)
             hdata.loc[i0, "pre_rotor"] = pre_rotor
             hdata.loc[i0, "model_key"] = mname
 
@@ -144,7 +144,7 @@ class OptFarmVars(FarmVarsProblem):
             hdata.loc[inds, "sel_turbine"] = -1
 
             for c, d in [("init", init), ("min", min), ("max", max)]:
-                data = np.full(len(inds), np.nan, dtype=FC.DTYPE)
+                data = np.full(len(inds), np.nan, dtype=config.dtype_double)
                 data[:] = d
                 hdata.loc[inds, c] = data
 
@@ -172,7 +172,7 @@ class OptFarmVars(FarmVarsProblem):
             ]
 
             for c, d in [("init", init), ("min", min), ("max", max)]:
-                data = np.full(len(inds), np.nan, dtype=FC.DTYPE)
+                data = np.full(len(inds), np.nan, dtype=config.dtype_double)
                 data[:] = d
                 hdata.loc[inds, c] = data
 
@@ -211,7 +211,7 @@ class OptFarmVars(FarmVarsProblem):
             ]
 
             for c, d in [("init", init), ("min", min), ("max", max)]:
-                data = np.full(n_inds, np.nan, dtype=FC.DTYPE)
+                data = np.full(n_inds, np.nan, dtype=config.dtype_double)
                 if isinstance(d, np.ndarray) and len(d.shape) > 1:
                     data[:] = d[sel]
                 else:
@@ -233,7 +233,7 @@ class OptFarmVars(FarmVarsProblem):
 
         icols = ["index", "state", "turbine", "sel_turbine"]
         for c in icols:
-            self._vars[c] = self._vars[c].astype(FC.ITYPE)
+            self._vars[c] = self._vars[c].astype(config.dtype_int)
 
     def initialize(self, verbosity=1, **kwargs):
         """
@@ -318,7 +318,7 @@ class OptFarmVars(FarmVarsProblem):
         if "int" not in grps.groups.keys():
             return []
         else:
-            return grps.get_group("int")["init"].to_numpy(FC.ITYPE)
+            return grps.get_group("int")["init"].to_numpy(config.dtype_int)
 
     def min_values_int(self):
         """
@@ -341,7 +341,7 @@ class OptFarmVars(FarmVarsProblem):
         if "int" not in grps.groups.keys():
             return []
         else:
-            return grps.get_group("int")["min"].to_numpy(FC.ITYPE)
+            return grps.get_group("int")["min"].to_numpy(config.dtype_int)
 
     def max_values_int(self):
         """
@@ -364,7 +364,7 @@ class OptFarmVars(FarmVarsProblem):
         if "int" not in grps.groups.keys():
             return []
         else:
-            return grps.get_group("int")["max"].to_numpy(FC.ITYPE)
+            return grps.get_group("int")["max"].to_numpy(config.dtype_int)
 
     def var_names_float(self):
         """
@@ -406,7 +406,7 @@ class OptFarmVars(FarmVarsProblem):
         if "float" not in grps.groups.keys():
             return []
         else:
-            return grps.get_group("float")["init"].to_numpy(FC.DTYPE)
+            return grps.get_group("float")["init"].to_numpy(config.dtype_double)
 
     def min_values_float(self):
         """
@@ -429,7 +429,7 @@ class OptFarmVars(FarmVarsProblem):
         if "float" not in grps.groups.keys():
             return []
         else:
-            return grps.get_group("float")["min"].to_numpy(FC.DTYPE)
+            return grps.get_group("float")["min"].to_numpy(config.dtype_double)
 
     def max_values_float(self):
         """
@@ -452,7 +452,7 @@ class OptFarmVars(FarmVarsProblem):
         if "float" not in grps.groups.keys():
             return []
         else:
-            return grps.get_group("float")["max"].to_numpy(FC.DTYPE)
+            return grps.get_group("float")["max"].to_numpy(config.dtype_double)
 
     def opt2farm_vars_individual(self, vars_int, vars_float):
         """
@@ -487,24 +487,32 @@ class OptFarmVars(FarmVarsProblem):
             data = src[np.s_[i0 : i1 + 1]]
 
             if level == "uniform":
-                farm_vars[var] = np.full((n_states, n_sturb), data[0], dtype=FC.DTYPE)
+                farm_vars[var] = np.full(
+                    (n_states, n_sturb), data[0], dtype=config.dtype_double
+                )
 
             elif level == "state":
-                farm_vars[var] = np.full((n_states, n_sturb), np.nan, dtype=FC.DTYPE)
+                farm_vars[var] = np.full(
+                    (n_states, n_sturb), np.nan, dtype=config.dtype_double
+                )
                 if np.all(g["state"] == np.arange(n_states)):
                     farm_vars[var][:] = data[:, None]
                 else:
                     farm_vars[var][g["state"]] = data[:, None]
 
             elif level == "turbine":
-                farm_vars[var] = np.full((n_states, n_sturb), np.nan, dtype=FC.DTYPE)
+                farm_vars[var] = np.full(
+                    (n_states, n_sturb), np.nan, dtype=config.dtype_double
+                )
                 if np.all(g["sel_turbine"] == np.arange(n_sturb)):
                     farm_vars[var][:] = data[None, :]
                 else:
                     farm_vars[var][:, g["sel_turbine"]] = data[None, :]
 
             elif level == "state-turbine":
-                farm_vars[var] = np.full((n_states, n_sturb), np.nan, dtype=FC.DTYPE)
+                farm_vars[var] = np.full(
+                    (n_states, n_sturb), np.nan, dtype=config.dtype_double
+                )
                 farm_vars[var][g["state"], g["sel_turbine"]] = data
 
             else:
@@ -550,13 +558,13 @@ class OptFarmVars(FarmVarsProblem):
 
             if level == "uniform":
                 farm_vars[var] = np.full(
-                    (n_pop, n_states, n_sturb), np.nan, dtype=FC.DTYPE
+                    (n_pop, n_states, n_sturb), np.nan, dtype=config.dtype_double
                 )
                 farm_vars[var][:] = data[:, 0, None, None]
 
             elif level == "state":
                 farm_vars[var] = np.full(
-                    (n_pop, n_states, n_sturb), np.nan, dtype=FC.DTYPE
+                    (n_pop, n_states, n_sturb), np.nan, dtype=config.dtype_double
                 )
                 if np.all(g["state"] == np.arange(n_states)):
                     farm_vars[var][:] = data[:, :, None]
@@ -565,7 +573,7 @@ class OptFarmVars(FarmVarsProblem):
 
             elif level == "turbine":
                 farm_vars[var] = np.full(
-                    (n_pop, n_states, n_sturb), np.nan, dtype=FC.DTYPE
+                    (n_pop, n_states, n_sturb), np.nan, dtype=config.dtype_double
                 )
                 if np.all(g["sel_turbine"] == np.arange(n_sturb)):
                     farm_vars[var][:] = data[:, None, :]
@@ -574,7 +582,7 @@ class OptFarmVars(FarmVarsProblem):
 
             elif level == "state-turbine":
                 farm_vars[var] = np.full(
-                    (n_pop, n_states, n_sturb), np.nan, dtype=FC.DTYPE
+                    (n_pop, n_states, n_sturb), np.nan, dtype=config.dtype_double
                 )
                 farm_vars[var][:, g["state"], g["sel_turbine"]] = data
 

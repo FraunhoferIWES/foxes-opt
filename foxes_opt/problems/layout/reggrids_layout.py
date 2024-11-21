@@ -3,8 +3,10 @@ from copy import deepcopy
 
 from foxes_opt.core import FarmOptProblem, FarmVarsProblem
 from foxes.models.turbine_models import Calculator
+from foxes.config import config
 import foxes.variables as FV
 import foxes.constants as FC
+
 from .geom_layouts.geom_reggrids import GeomRegGrids
 
 
@@ -308,13 +310,13 @@ class RegGridsLayoutOptProblem(FarmVarsProblem):
         n_turbines = self.farm.n_turbines
 
         pmi = np.min(self._geomp._pmin)
-        points = np.full((n_states, n_turbines, 2), pmi, dtype=FC.DTYPE)
+        points = np.full((n_states, n_turbines, 2), pmi, dtype=config.dtype_double)
         if n_pts <= n_turbines:
             points[:, :n_pts] = pts[None, :, :]
         else:
             points[:] = pts[None, :n_turbines, :]
 
-        valid = np.zeros((n_states, n_turbines), dtype=FC.DTYPE)
+        valid = np.zeros((n_states, n_turbines), dtype=config.dtype_double)
         if n_pts <= n_turbines:
             valid[:, :n_pts] = vld[None, :]
         else:
@@ -354,13 +356,15 @@ class RegGridsLayoutOptProblem(FarmVarsProblem):
         n_turbines = self.farm.n_turbines
 
         pmi = np.min(self._geomp._pmin)
-        points = np.full((n_pop, n_states, n_turbines, 2), pmi, dtype=FC.DTYPE)
+        points = np.full(
+            (n_pop, n_states, n_turbines, 2), pmi, dtype=config.dtype_double
+        )
         if n_pts <= n_turbines:
             points[:, :, :n_pts] = pts[:, None, :, :]
         else:
             points[:] = pts[:, None, :n_turbines, :]
 
-        valid = np.zeros((n_pop, n_states, n_turbines), dtype=FC.DTYPE)
+        valid = np.zeros((n_pop, n_states, n_turbines), dtype=config.dtype_double)
         if n_pts <= n_turbines:
             valid[:, :, :n_pts] = vld[:, None, :]
         else:

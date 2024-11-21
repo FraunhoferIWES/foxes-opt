@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.spatial.distance import cdist
 from iwopy import Problem
 
-import foxes.constants as FC
+from foxes.config import config
 
 
 class GeomRegGrid(Problem):
@@ -124,7 +124,7 @@ class GeomRegGrid(Problem):
             Initial float values, shape: (n_vars_float,)
 
         """
-        vals = np.zeros(5, dtype=FC.DTYPE)
+        vals = np.zeros(5, dtype=config.dtype_double)
         vals[2:4] = self.min_dist
         return vals
 
@@ -140,7 +140,7 @@ class GeomRegGrid(Problem):
             Minimal float values, shape: (n_vars_float,)
 
         """
-        vals = np.zeros(5, dtype=FC.DTYPE)
+        vals = np.zeros(5, dtype=config.dtype_double)
         vals[:2] = -0.5
         vals[2:4] = self.min_dist
         return vals
@@ -157,7 +157,7 @@ class GeomRegGrid(Problem):
             Maximal float values, shape: (n_vars_float,)
 
         """
-        vals = np.zeros(5, dtype=FC.DTYPE)
+        vals = np.zeros(5, dtype=config.dtype_double)
         vals[:2] = 0.5
         vals[2:4] = self.max_dist
         vals[4] = 90.0
@@ -273,7 +273,7 @@ class GeomRegGrid(Problem):
         pts = pts.reshape(n_pop, self._nrow**2, 2)
 
         nvl = np.sum(valid, axis=1)
-        qts = np.zeros((n_pop, self.n_turbines, 2), dtype=FC.DTYPE)
+        qts = np.zeros((n_pop, self.n_turbines, 2), dtype=config.dtype_double)
         vld = np.zeros((n_pop, self.n_turbines), dtype=bool)
         for pi in range(n_pop):
             if nvl[pi] >= self.n_turbines:

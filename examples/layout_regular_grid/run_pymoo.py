@@ -47,7 +47,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-nop", "--no_pop", help="Switch off vectorization", action="store_true"
     )
-    parser.add_argument("-e", "--engine", help="The engine", default="multiprocess")
+    parser.add_argument("-e", "--engine", help="The engine", default="process")
     parser.add_argument(
         "-n", "--n_cpus", help="The number of cpus", default=None, type=int
     )

@@ -1,8 +1,8 @@
 import numpy as np
 
 from foxes_opt.core.farm_opt_problem import FarmOptProblem
+from foxes.config import config
 import foxes.variables as FV
-import foxes.constants as FC
 
 
 class FarmLayoutOptProblem(FarmOptProblem):
@@ -38,7 +38,7 @@ class FarmLayoutOptProblem(FarmOptProblem):
             Initial float values, shape: (n_vars_float,)
 
         """
-        out = np.zeros((self.n_sel_turbines, 2), dtype=FC.DTYPE)
+        out = np.zeros((self.n_sel_turbines, 2), dtype=config.dtype_double)
         for i, ti in enumerate(self.sel_turbines):
             out[i] = self.farm.turbines[ti].xy
         return out.reshape(self.n_sel_turbines * 2)
@@ -57,7 +57,7 @@ class FarmLayoutOptProblem(FarmOptProblem):
         """
         b = self.farm.boundary
         assert b is not None, f"Problem '{self.name}': Missing wind farm boundary."
-        out = np.zeros((self.n_sel_turbines, 2), dtype=FC.DTYPE)
+        out = np.zeros((self.n_sel_turbines, 2), dtype=config.dtype_double)
         out[:] = b.p_min()[None, :]
         return out.reshape(self.n_sel_turbines * 2)
 
@@ -75,7 +75,7 @@ class FarmLayoutOptProblem(FarmOptProblem):
         """
         b = self.farm.boundary
         assert b is not None, f"Problem '{self.name}': Missing wind farm boundary."
-        out = np.zeros((self.n_sel_turbines, 2), dtype=FC.DTYPE)
+        out = np.zeros((self.n_sel_turbines, 2), dtype=config.dtype_double)
         out[:] = b.p_max()[None, :]
         return out.reshape(self.n_sel_turbines * 2)
 

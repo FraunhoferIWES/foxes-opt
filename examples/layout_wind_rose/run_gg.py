@@ -55,7 +55,7 @@ if __name__ == "__main__":
         type=int,
         default=1,
     )
-    parser.add_argument("-e", "--engine", help="The engine", default="multiprocess")
+    parser.add_argument("-e", "--engine", help="The engine", default="process")
     parser.add_argument(
         "-n", "--n_cpus", help="The number of cpus", default=None, type=int
     )
@@ -146,6 +146,11 @@ if __name__ == "__main__":
         ax = foxes.output.FarmLayoutOutput(farm).get_figure()
         plt.show()
         plt.close(ax.get_figure())
+
+        o = foxes.output.StatesRosePlotOutput(states, point=[0.0, 0.0, 100.0])
+        fig = o.get_figure(16, FV.AMB_WS, [0, 3.5, 6, 10, 15, 20])
+        plt.show()
+        plt.close()
 
         results = solver.solve()
         solver.finalize(results)

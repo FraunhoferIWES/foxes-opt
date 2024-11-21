@@ -2,7 +2,7 @@ import numpy as np
 from iwopy import Objective
 from scipy.spatial.distance import cdist
 
-import foxes.constants as FC
+from foxes.config import config
 
 
 class OMaxN(Objective):
@@ -508,7 +508,7 @@ class MaxDensity(Objective):
         """
         n_pop = vars_float.shape[0]
         xy, valid = problem_results
-        out = np.full(n_pop, 1e20, dtype=FC.DTYPE)
+        out = np.full(n_pop, 1e20, dtype=config.dtype_double)
         for pi in range(n_pop):
             if np.any(valid[pi]):
                 hxy = xy[pi][valid[pi]]
@@ -646,7 +646,7 @@ class MeMiMaDist(Objective):
         xy, valid = problem_results
         n_pop, n_xy = xy.shape[:2]
 
-        out = np.zeros((n_pop, 1), dtype=FC.DTYPE)
+        out = np.zeros((n_pop, 1), dtype=config.dtype_double)
         for pi in range(n_pop):
             hxy = xy[pi]  # , valid[pi]]
 
