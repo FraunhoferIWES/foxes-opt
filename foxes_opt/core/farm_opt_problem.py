@@ -307,7 +307,9 @@ class FarmOptProblem(Problem):
         else:
             n_pop = farm_results["n_pop"].values
             n_states, n_points = self.points.shape[:2]
-            pop_points = np.zeros((n_pop, n_states, n_points, 3), dtype=config.dtype_double)
+            pop_points = np.zeros(
+                (n_pop, n_states, n_points, 3), dtype=config.dtype_double
+            )
             pop_points[:] = self.points[None, :, :, :]
             pop_points = pop_points.reshape(n_pop * n_states, n_points, 3)
             point_results = self.algo.calc_points(farm_results, pop_points)

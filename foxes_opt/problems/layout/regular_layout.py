@@ -304,7 +304,9 @@ class RegularLayoutOptProblem(FarmVarsProblem):
         farm_vars = {
             FV.X: qts[:, :, :, 0],
             FV.Y: qts[:, :, :, 1],
-            FC.VALID: valid.reshape(n_pop, n_states, n_turbines).astype(config.dtype_double),
+            FC.VALID: valid.reshape(n_pop, n_states, n_turbines).astype(
+                config.dtype_double
+            ),
         }
 
         return farm_vars

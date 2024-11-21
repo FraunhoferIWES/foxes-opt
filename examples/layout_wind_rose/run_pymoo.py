@@ -124,7 +124,7 @@ if __name__ == "__main__":
         chunk_size_points=args.chunksize_points,
         verbosity=0,
     ):
-        
+
         o = foxes.output.StatesRosePlotOutput(states, point=[0.0, 0.0, 100.0])
         fig = o.get_figure(16, FV.AMB_WS, [0, 3.5, 6, 10, 15, 20])
         plt.show()

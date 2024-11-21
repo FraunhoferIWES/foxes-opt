@@ -356,7 +356,9 @@ class RegGridsLayoutOptProblem(FarmVarsProblem):
         n_turbines = self.farm.n_turbines
 
         pmi = np.min(self._geomp._pmin)
-        points = np.full((n_pop, n_states, n_turbines, 2), pmi, dtype=config.dtype_double)
+        points = np.full(
+            (n_pop, n_states, n_turbines, 2), pmi, dtype=config.dtype_double
+        )
         if n_pts <= n_turbines:
             points[:, :, :n_pts] = pts[:, None, :, :]
         else:

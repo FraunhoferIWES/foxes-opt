@@ -379,7 +379,9 @@ class GeomRegGrids(Problem):
                 if n1 <= n_points:
                     qts = pts[pi, n0:n1].reshape(nx[pi, gi], ny[pi, gi], 2)
                 else:
-                    qts = np.zeros((nx[pi, gi], ny[pi, gi], 2), dtype=config.dtype_double)
+                    qts = np.zeros(
+                        (nx[pi, gi], ny[pi, gi], 2), dtype=config.dtype_double
+                    )
 
                 qts[:, :, 0] = ox[pi, gi]
                 qts[:, :, 1] = oy[pi, gi]

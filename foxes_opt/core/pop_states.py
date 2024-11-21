@@ -5,6 +5,7 @@ import foxes.constants as FC
 import foxes.variables as FV
 from foxes.config import config
 
+
 class PopStates(States):
     """
     Helper class for vectorized opt population

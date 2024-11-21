@@ -152,13 +152,15 @@ class FarmVarObjective(FarmObjective):
                 odims = data.dims
                 weights = self.problem._org_weights
                 if len(odims) > 1 and odims[:2] == (FC.STATE, FC.TURBINE):
-                    data = np.einsum('st...,st->t...', data, weights)
+                    data = np.einsum("st...,st->t...", data, weights)
                     data = xr.DataArray(data, dims=odims[1:])
                 elif len(odims) > 2 and odims[:3] == (FC.POP, FC.STATE, FC.TURBINE):
-                    data = np.einsum('pst...,st->pt...', data, weights)
+                    data = np.einsum("pst...,st->pt...", data, weights)
                     data = xr.DataArray(data, dims=(FC.POP,) + odims[2:])
                 else:
-                    raise NotImplementedError(f"Contraction error for '{rule}' for dim '{dim}': Incompatible data dims {odims}, shape {data.shape}, for weights of shape {weights.shape}")
+                    raise NotImplementedError(
+                        f"Contraction error for '{rule}' for dim '{dim}': Incompatible data dims {odims}, shape {data.shape}, for weights of shape {weights.shape}"
+                    )
             elif dim == FC.STATE:
                 raise ValueError(
                     f"Objective '{self.name}': Unknown contraction for dimension '{dim}': '{rule}'. Choose: min, max, sum, mean, weights"
@@ -166,7 +168,7 @@ class FarmVarObjective(FarmObjective):
             else:
                 raise ValueError(
                     f"Objective '{self.name}': Unknown contraction for dimension '{dim}': '{rule}'. Choose: min, max, sum, mean"
-                )  
+                )
         return data
 
     def calc_individual(self, vars_int, vars_float, problem_results, components=None):

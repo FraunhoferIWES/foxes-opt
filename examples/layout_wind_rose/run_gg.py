@@ -151,7 +151,7 @@ if __name__ == "__main__":
         fig = o.get_figure(16, FV.AMB_WS, [0, 3.5, 6, 10, 15, 20])
         plt.show()
         plt.close()
-        
+
         results = solver.solve()
         solver.finalize(results)
 

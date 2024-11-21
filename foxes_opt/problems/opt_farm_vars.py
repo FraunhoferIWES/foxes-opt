@@ -487,24 +487,32 @@ class OptFarmVars(FarmVarsProblem):
             data = src[np.s_[i0 : i1 + 1]]
 
             if level == "uniform":
-                farm_vars[var] = np.full((n_states, n_sturb), data[0], dtype=config.dtype_double)
+                farm_vars[var] = np.full(
+                    (n_states, n_sturb), data[0], dtype=config.dtype_double
+                )
 
             elif level == "state":
-                farm_vars[var] = np.full((n_states, n_sturb), np.nan, dtype=config.dtype_double)
+                farm_vars[var] = np.full(
+                    (n_states, n_sturb), np.nan, dtype=config.dtype_double
+                )
                 if np.all(g["state"] == np.arange(n_states)):
                     farm_vars[var][:] = data[:, None]
                 else:
                     farm_vars[var][g["state"]] = data[:, None]
 
             elif level == "turbine":
-                farm_vars[var] = np.full((n_states, n_sturb), np.nan, dtype=config.dtype_double)
+                farm_vars[var] = np.full(
+                    (n_states, n_sturb), np.nan, dtype=config.dtype_double
+                )
                 if np.all(g["sel_turbine"] == np.arange(n_sturb)):
                     farm_vars[var][:] = data[None, :]
                 else:
                     farm_vars[var][:, g["sel_turbine"]] = data[None, :]
 
             elif level == "state-turbine":
-                farm_vars[var] = np.full((n_states, n_sturb), np.nan, dtype=config.dtype_double)
+                farm_vars[var] = np.full(
+                    (n_states, n_sturb), np.nan, dtype=config.dtype_double
+                )
                 farm_vars[var][g["state"], g["sel_turbine"]] = data
 
             else:
