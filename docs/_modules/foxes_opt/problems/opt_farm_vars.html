@@ -13,7 +13,7 @@
     
     
       
-        <title>foxes_opt.problems.opt_farm_vars - foxes-opt 0.2 documentation</title>
+        <title>foxes_opt.problems.opt_farm_vars - foxes-opt 0.2.1 documentation</title>
       
     
     
@@ -71,7 +71,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../../index.html" title="foxes-opt 0.2 documentation" class="md-header__button md-logo" aria-label="foxes-opt 0.2 documentation" data-md-component="logo">
+    <a href="../../../index.html" title="foxes-opt 0.2.1 documentation" class="md-header__button md-logo" aria-label="foxes-opt 0.2.1 documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -83,7 +83,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            foxes-opt 0.2 documentation
+            foxes-opt 0.2.1 documentation
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -170,12 +170,12 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../../index.html" title="foxes-opt 0.2 documentation" class="md-nav__button md-logo" aria-label="foxes-opt 0.2 documentation" data-md-component="logo">
+    <a href="../../../index.html" title="foxes-opt 0.2.1 documentation" class="md-nav__button md-logo" aria-label="foxes-opt 0.2.1 documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
     </a>
-    foxes-opt 0.2 documentation
+    foxes-opt 0.2.1 documentation
   </label>
   
     <div class="md-nav__source">
@@ -323,7 +323,7 @@
 
 <span class="kn">from</span> <span class="nn">foxes_opt.core</span> <span class="kn">import</span> <span class="n">FarmVarsProblem</span>
 <span class="kn">from</span> <span class="nn">foxes.models.turbine_models</span> <span class="kn">import</span> <span class="n">SetFarmVars</span>
-<span class="kn">import</span> <span class="nn">foxes.constants</span> <span class="k">as</span> <span class="nn">FC</span>
+<span class="kn">from</span> <span class="nn">foxes.config</span> <span class="kn">import</span> <span class="n">config</span>
 
 
 <div class="viewcode-block" id="OptFarmVars">
@@ -444,9 +444,9 @@
             <span class="n">hdata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i0</span><span class="p">,</span> <span class="s2">&quot;state&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
             <span class="n">hdata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i0</span><span class="p">,</span> <span class="s2">&quot;turbine&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
             <span class="n">hdata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i0</span><span class="p">,</span> <span class="s2">&quot;sel_turbine&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-            <span class="n">hdata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i0</span><span class="p">,</span> <span class="s2">&quot;init&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">init</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FC</span><span class="o">.</span><span class="n">DTYPE</span><span class="p">)</span>
-            <span class="n">hdata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i0</span><span class="p">,</span> <span class="s2">&quot;min&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">min</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FC</span><span class="o">.</span><span class="n">DTYPE</span><span class="p">)</span>
-            <span class="n">hdata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i0</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">max</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FC</span><span class="o">.</span><span class="n">DTYPE</span><span class="p">)</span>
+            <span class="n">hdata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i0</span><span class="p">,</span> <span class="s2">&quot;init&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">init</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">dtype_double</span><span class="p">)</span>
+            <span class="n">hdata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i0</span><span class="p">,</span> <span class="s2">&quot;min&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">min</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">dtype_double</span><span class="p">)</span>
+            <span class="n">hdata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i0</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">max</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">dtype_double</span><span class="p">)</span>
             <span class="n">hdata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i0</span><span class="p">,</span> <span class="s2">&quot;pre_rotor&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pre_rotor</span>
             <span class="n">hdata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i0</span><span class="p">,</span> <span class="s2">&quot;model_key&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mname</span>
 
@@ -471,7 +471,7 @@
             <span class="n">hdata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">inds</span><span class="p">,</span> <span class="s2">&quot;sel_turbine&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 
             <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[(</span><span class="s2">&quot;init&quot;</span><span class="p">,</span> <span class="n">init</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="nb">min</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;max&quot;</span><span class="p">,</span> <span class="nb">max</span><span class="p">)]:</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">inds</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FC</span><span class="o">.</span><span class="n">DTYPE</span><span class="p">)</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">inds</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">dtype_double</span><span class="p">)</span>
                 <span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">d</span>
                 <span class="n">hdata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">inds</span><span class="p">,</span> <span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
 
@@ -499,7 +499,7 @@
             <span class="p">]</span>
 
             <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[(</span><span class="s2">&quot;init&quot;</span><span class="p">,</span> <span class="n">init</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="nb">min</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;max&quot;</span><span class="p">,</span> <span class="nb">max</span><span class="p">)]:</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">inds</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FC</span><span class="o">.</span><span class="n">DTYPE</span><span class="p">)</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">inds</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">dtype_double</span><span class="p">)</span>
                 <span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">d</span>
                 <span class="n">hdata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">inds</span><span class="p">,</span> <span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
 
@@ -538,7 +538,7 @@
             <span class="p">]</span>
 
             <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[(</span><span class="s2">&quot;init&quot;</span><span class="p">,</span> <span class="n">init</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="nb">min</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;max&quot;</span><span class="p">,</span> <span class="nb">max</span><span class="p">)]:</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">n_inds</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FC</span><span class="o">.</span><span class="n">DTYPE</span><span class="p">)</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">n_inds</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">dtype_double</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">sel</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -560,7 +560,7 @@
 
         <span class="n">icols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="s2">&quot;turbine&quot;</span><span class="p">,</span> <span class="s2">&quot;sel_turbine&quot;</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">icols</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_vars</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vars</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">FC</span><span class="o">.</span><span class="n">ITYPE</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vars</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vars</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">dtype_int</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="OptFarmVars.initialize">
@@ -654,7 +654,7 @@
         <span class="k">if</span> <span class="s2">&quot;int&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">grps</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">return</span> <span class="p">[]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">grps</span><span class="o">.</span><span class="n">get_group</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">)[</span><span class="s2">&quot;init&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">FC</span><span class="o">.</span><span class="n">ITYPE</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="n">grps</span><span class="o">.</span><span class="n">get_group</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">)[</span><span class="s2">&quot;init&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">dtype_int</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="OptFarmVars.min_values_int">
@@ -680,7 +680,7 @@
         <span class="k">if</span> <span class="s2">&quot;int&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">grps</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">return</span> <span class="p">[]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">grps</span><span class="o">.</span><span class="n">get_group</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">)[</span><span class="s2">&quot;min&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">FC</span><span class="o">.</span><span class="n">ITYPE</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="n">grps</span><span class="o">.</span><span class="n">get_group</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">)[</span><span class="s2">&quot;min&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">dtype_int</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="OptFarmVars.max_values_int">
@@ -706,7 +706,7 @@
         <span class="k">if</span> <span class="s2">&quot;int&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">grps</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">return</span> <span class="p">[]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">grps</span><span class="o">.</span><span class="n">get_group</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">)[</span><span class="s2">&quot;max&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">FC</span><span class="o">.</span><span class="n">ITYPE</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="n">grps</span><span class="o">.</span><span class="n">get_group</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">)[</span><span class="s2">&quot;max&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">dtype_int</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="OptFarmVars.var_names_float">
@@ -754,7 +754,7 @@
         <span class="k">if</span> <span class="s2">&quot;float&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">grps</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">return</span> <span class="p">[]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">grps</span><span class="o">.</span><span class="n">get_group</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)[</span><span class="s2">&quot;init&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">FC</span><span class="o">.</span><span class="n">DTYPE</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="n">grps</span><span class="o">.</span><span class="n">get_group</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)[</span><span class="s2">&quot;init&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">dtype_double</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="OptFarmVars.min_values_float">
@@ -780,7 +780,7 @@
         <span class="k">if</span> <span class="s2">&quot;float&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">grps</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">return</span> <span class="p">[]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">grps</span><span class="o">.</span><span class="n">get_group</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)[</span><span class="s2">&quot;min&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">FC</span><span class="o">.</span><span class="n">DTYPE</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="n">grps</span><span class="o">.</span><span class="n">get_group</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)[</span><span class="s2">&quot;min&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">dtype_double</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="OptFarmVars.max_values_float">
@@ -806,7 +806,7 @@
         <span class="k">if</span> <span class="s2">&quot;float&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">grps</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">return</span> <span class="p">[]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">grps</span><span class="o">.</span><span class="n">get_group</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)[</span><span class="s2">&quot;max&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">FC</span><span class="o">.</span><span class="n">DTYPE</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="n">grps</span><span class="o">.</span><span class="n">get_group</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)[</span><span class="s2">&quot;max&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">dtype_double</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="OptFarmVars.opt2farm_vars_individual">
@@ -844,24 +844,32 @@
             <span class="n">data</span> <span class="o">=</span> <span class="n">src</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[</span><span class="n">i0</span> <span class="p">:</span> <span class="n">i1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span>
 
             <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;uniform&quot;</span><span class="p">:</span>
-                <span class="n">farm_vars</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">n_states</span><span class="p">,</span> <span class="n">n_sturb</span><span class="p">),</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FC</span><span class="o">.</span><span class="n">DTYPE</span><span class="p">)</span>
+                <span class="n">farm_vars</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">n_states</span><span class="p">,</span> <span class="n">n_sturb</span><span class="p">),</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">dtype_double</span>
+                <span class="p">)</span>
 
             <span class="k">elif</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;state&quot;</span><span class="p">:</span>
-                <span class="n">farm_vars</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">n_states</span><span class="p">,</span> <span class="n">n_sturb</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FC</span><span class="o">.</span><span class="n">DTYPE</span><span class="p">)</span>
+                <span class="n">farm_vars</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">n_states</span><span class="p">,</span> <span class="n">n_sturb</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">dtype_double</span>
+                <span class="p">)</span>
                 <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_states</span><span class="p">)):</span>
                     <span class="n">farm_vars</span><span class="p">[</span><span class="n">var</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">farm_vars</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="n">g</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span>
 
             <span class="k">elif</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;turbine&quot;</span><span class="p">:</span>
-                <span class="n">farm_vars</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">n_states</span><span class="p">,</span> <span class="n">n_sturb</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FC</span><span class="o">.</span><span class="n">DTYPE</span><span class="p">)</span>
+                <span class="n">farm_vars</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">n_states</span><span class="p">,</span> <span class="n">n_sturb</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">dtype_double</span>
+                <span class="p">)</span>
                 <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="s2">&quot;sel_turbine&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_sturb</span><span class="p">)):</span>
                     <span class="n">farm_vars</span><span class="p">[</span><span class="n">var</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">farm_vars</span><span class="p">[</span><span class="n">var</span><span class="p">][:,</span> <span class="n">g</span><span class="p">[</span><span class="s2">&quot;sel_turbine&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
 
             <span class="k">elif</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;state-turbine&quot;</span><span class="p">:</span>
-                <span class="n">farm_vars</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">n_states</span><span class="p">,</span> <span class="n">n_sturb</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FC</span><span class="o">.</span><span class="n">DTYPE</span><span class="p">)</span>
+                <span class="n">farm_vars</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">n_states</span><span class="p">,</span> <span class="n">n_sturb</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">dtype_double</span>
+                <span class="p">)</span>
                 <span class="n">farm_vars</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="n">g</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">],</span> <span class="n">g</span><span class="p">[</span><span class="s2">&quot;sel_turbine&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">data</span>
 
             <span class="k">else</span><span class="p">:</span>
@@ -910,13 +918,13 @@
 
             <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;uniform&quot;</span><span class="p">:</span>
                 <span class="n">farm_vars</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span>
-                    <span class="p">(</span><span class="n">n_pop</span><span class="p">,</span> <span class="n">n_states</span><span class="p">,</span> <span class="n">n_sturb</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FC</span><span class="o">.</span><span class="n">DTYPE</span>
+                    <span class="p">(</span><span class="n">n_pop</span><span class="p">,</span> <span class="n">n_states</span><span class="p">,</span> <span class="n">n_sturb</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">dtype_double</span>
                 <span class="p">)</span>
                 <span class="n">farm_vars</span><span class="p">[</span><span class="n">var</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
 
             <span class="k">elif</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;state&quot;</span><span class="p">:</span>
                 <span class="n">farm_vars</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span>
-                    <span class="p">(</span><span class="n">n_pop</span><span class="p">,</span> <span class="n">n_states</span><span class="p">,</span> <span class="n">n_sturb</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FC</span><span class="o">.</span><span class="n">DTYPE</span>
+                    <span class="p">(</span><span class="n">n_pop</span><span class="p">,</span> <span class="n">n_states</span><span class="p">,</span> <span class="n">n_sturb</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">dtype_double</span>
                 <span class="p">)</span>
                 <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_states</span><span class="p">)):</span>
                     <span class="n">farm_vars</span><span class="p">[</span><span class="n">var</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="p">:,</span> <span class="kc">None</span><span class="p">]</span>
@@ -925,7 +933,7 @@
 
             <span class="k">elif</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;turbine&quot;</span><span class="p">:</span>
                 <span class="n">farm_vars</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span>
-                    <span class="p">(</span><span class="n">n_pop</span><span class="p">,</span> <span class="n">n_states</span><span class="p">,</span> <span class="n">n_sturb</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FC</span><span class="o">.</span><span class="n">DTYPE</span>
+                    <span class="p">(</span><span class="n">n_pop</span><span class="p">,</span> <span class="n">n_states</span><span class="p">,</span> <span class="n">n_sturb</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">dtype_double</span>
                 <span class="p">)</span>
                 <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="s2">&quot;sel_turbine&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_sturb</span><span class="p">)):</span>
                     <span class="n">farm_vars</span><span class="p">[</span><span class="n">var</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
@@ -934,7 +942,7 @@
 
             <span class="k">elif</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;state-turbine&quot;</span><span class="p">:</span>
                 <span class="n">farm_vars</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span>
-                    <span class="p">(</span><span class="n">n_pop</span><span class="p">,</span> <span class="n">n_states</span><span class="p">,</span> <span class="n">n_sturb</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FC</span><span class="o">.</span><span class="n">DTYPE</span>
+                    <span class="p">(</span><span class="n">n_pop</span><span class="p">,</span> <span class="n">n_states</span><span class="p">,</span> <span class="n">n_sturb</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">dtype_double</span>
                 <span class="p">)</span>
                 <span class="n">farm_vars</span><span class="p">[</span><span class="n">var</span><span class="p">][:,</span> <span class="n">g</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">],</span> <span class="n">g</span><span class="p">[</span><span class="s2">&quot;sel_turbine&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">data</span>
 

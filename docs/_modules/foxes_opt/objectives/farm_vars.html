@@ -13,7 +13,7 @@
     
     
       
-        <title>foxes_opt.objectives.farm_vars - foxes-opt 0.2 documentation</title>
+        <title>foxes_opt.objectives.farm_vars - foxes-opt 0.2.1 documentation</title>
       
     
     
@@ -71,7 +71,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../../index.html" title="foxes-opt 0.2 documentation" class="md-header__button md-logo" aria-label="foxes-opt 0.2 documentation" data-md-component="logo">
+    <a href="../../../index.html" title="foxes-opt 0.2.1 documentation" class="md-header__button md-logo" aria-label="foxes-opt 0.2.1 documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -83,7 +83,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            foxes-opt 0.2 documentation
+            foxes-opt 0.2.1 documentation
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -170,12 +170,12 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../../index.html" title="foxes-opt 0.2 documentation" class="md-nav__button md-logo" aria-label="foxes-opt 0.2 documentation" data-md-component="logo">
+    <a href="../../../index.html" title="foxes-opt 0.2.1 documentation" class="md-nav__button md-logo" aria-label="foxes-opt 0.2.1 documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
     </a>
-    foxes-opt 0.2 documentation
+    foxes-opt 0.2.1 documentation
   </label>
   
     <div class="md-nav__source">
@@ -377,7 +377,7 @@
 <span class="sd">        variable: str</span>
 <span class="sd">            The foxes variable name</span>
 <span class="sd">        contract_states: str</span>
-<span class="sd">            Contraction rule for states: min, max, sum, mean</span>
+<span class="sd">            Contraction rule for states: min, max, sum, mean, weights</span>
 <span class="sd">        contract_turbines: str</span>
 <span class="sd">            Contraction rule for turbines: min, max, sum, mean</span>
 <span class="sd">        minimize: bool</span>
@@ -485,6 +485,23 @@
                 <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">rule</span> <span class="o">==</span> <span class="s2">&quot;mean&quot;</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">dim</span> <span class="o">==</span> <span class="n">FC</span><span class="o">.</span><span class="n">STATE</span> <span class="ow">and</span> <span class="n">rule</span> <span class="o">==</span> <span class="s2">&quot;weights&quot;</span><span class="p">:</span>
+                <span class="n">odims</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dims</span>
+                <span class="n">weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">_org_weights</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">odims</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">odims</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="p">(</span><span class="n">FC</span><span class="o">.</span><span class="n">STATE</span><span class="p">,</span> <span class="n">FC</span><span class="o">.</span><span class="n">TURBINE</span><span class="p">):</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;st...,st-&gt;t...&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="n">odims</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+                <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">odims</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">odims</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="p">(</span><span class="n">FC</span><span class="o">.</span><span class="n">POP</span><span class="p">,</span> <span class="n">FC</span><span class="o">.</span><span class="n">STATE</span><span class="p">,</span> <span class="n">FC</span><span class="o">.</span><span class="n">TURBINE</span><span class="p">):</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;pst...,st-&gt;pt...&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="n">FC</span><span class="o">.</span><span class="n">POP</span><span class="p">,)</span> <span class="o">+</span> <span class="n">odims</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Contraction error for &#39;</span><span class="si">{</span><span class="n">rule</span><span class="si">}</span><span class="s2">&#39; for dim &#39;</span><span class="si">{</span><span class="n">dim</span><span class="si">}</span><span class="s2">&#39;: Incompatible data dims </span><span class="si">{</span><span class="n">odims</span><span class="si">}</span><span class="s2">, shape </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, for weights of shape </span><span class="si">{</span><span class="n">weights</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">dim</span> <span class="o">==</span> <span class="n">FC</span><span class="o">.</span><span class="n">STATE</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Objective &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;: Unknown contraction for dimension &#39;</span><span class="si">{</span><span class="n">dim</span><span class="si">}</span><span class="s2">&#39;: &#39;</span><span class="si">{</span><span class="n">rule</span><span class="si">}</span><span class="s2">&#39;. Choose: min, max, sum, mean, weights&quot;</span>
+                <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Objective &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;: Unknown contraction for dimension &#39;</span><span class="si">{</span><span class="n">dim</span><span class="si">}</span><span class="s2">&#39;: &#39;</span><span class="si">{</span><span class="n">rule</span><span class="si">}</span><span class="s2">&#39;. Choose: min, max, sum, mean&quot;</span>
@@ -635,7 +652,7 @@
             <span class="n">problem</span><span class="p">,</span>
             <span class="n">name</span><span class="p">,</span>
             <span class="n">variable</span><span class="o">=</span><span class="n">FV</span><span class="o">.</span><span class="n">P</span><span class="p">,</span>
-            <span class="n">contract_states</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+            <span class="n">contract_states</span><span class="o">=</span><span class="s2">&quot;weights&quot;</span><span class="p">,</span>
             <span class="n">contract_turbines</span><span class="o">=</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span>
             <span class="n">minimize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span>
