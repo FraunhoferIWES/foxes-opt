@@ -14,7 +14,7 @@ on:
       - 'dev'
 
 jobs:
-  tests-allpy:
+  tests:
     name: run-tests-allpy
 
     runs-on: ubuntu-latest
