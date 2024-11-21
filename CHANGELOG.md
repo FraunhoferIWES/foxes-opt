@@ -48,3 +48,8 @@
 - Bug fixed with `MaxFarmPower` objective, now using states weights in states contraction
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.2.1](https://github.com/FraunhoferIWES/foxes/commits/v0.2.1)
+
+## v0.2.2
+
+
+**Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.2.2](https://github.com/FraunhoferIWES/foxes/commits/v0.2.2)
