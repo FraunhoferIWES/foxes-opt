@@ -1,0 +1,1000 @@
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="">
+    
+    
+      
+        <title>Wake steering - foxes-opt 0.2.2 documentation</title>
+      
+    
+    
+      
+        
+        
+          
+          
+          <meta name="theme-color" content="#009485">
+        
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.3625f807144f53acf.min.css?v=fbfc4466" />
+        <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="teal" data-md-color-accent="">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../index.html" title="foxes-opt 0.2.2 documentation" class="md-header__button md-logo" aria-label="foxes-opt 0.2.2 documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            foxes-opt 0.2.2 documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Wake steering
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/FraunhoferIWES/foxes-opt" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    foxes-op
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="foxes-opt 0.2.2 documentation" class="md-nav__button md-logo" aria-label="foxes-opt 0.2.2 documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+    </a>
+    foxes-opt 0.2.2 documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/FraunhoferIWES/foxes-opt" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    foxes-op
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../citation.html" class="md-nav__link">
+        <span title="/citation.md (reference label)" class="md-ellipsis">Citation</span>
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation.html" class="md-nav__link">
+        <span title="/installation.md (reference label)" class="md-ellipsis">Installation</span>
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../examples.html"><span title="/examples.rst (reference label)" class="md-ellipsis">Examples</span></a>
+          
+            <label for="__nav_3">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Examples" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="/examples.rst (reference label)" class="md-ellipsis">Examples</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="layout_opt.html" class="md-nav__link">
+        <span title="/notebooks/layout_opt.ipynb (reference label)" class="md-ellipsis">Layout optimization</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      <a href="#" class="md-nav__link md-nav__link--active">
+        <span title="/notebooks/wake_steering.ipynb (reference label)" class="md-ellipsis">Wake steering</span>
+      </a>
+      
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api.html" class="md-nav__link">
+        <span title="/api.rst (reference label)" class="md-ellipsis">API</span>
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing.html" class="md-nav__link">
+        <span title="/testing.md (reference label)" class="md-ellipsis">Testing</span>
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CHANGELOG.html" class="md-nav__link">
+        <span title="/changelog.md (reference label)" class="md-ellipsis">History</span>
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset" role="main">
+                  
+
+
+<script src='http://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js'></script>
+<script>require=requirejs;</script><h1 id="Wake-steering">Wake steering<a class="headerlink" href="#Wake-steering" title="Link to this heading">¶</a></h1>
+<p>This example demonstrates how to optimize the yaw angles of wind turbine rotors, such that the wakes are steered away from downwind turbines.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [1]:
+</code></pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">foxes</span>
+<span class="kn">import</span> <span class="nn">foxes.variables</span> <span class="k">as</span> <span class="nn">FV</span>
+<span class="kn">from</span> <span class="nn">iwopy.interfaces.pymoo</span> <span class="kn">import</span> <span class="n">Optimizer_pymoo</span>
+<span class="kn">from</span> <span class="nn">foxes_opt.problems</span> <span class="kn">import</span> <span class="n">OptFarmVars</span>
+<span class="kn">from</span> <span class="nn">foxes_opt.objectives</span> <span class="kn">import</span> <span class="n">MaxFarmPower</span>
+</code><br/></pre></div>
+</div>
+</div>
+<p>Let’s initialize the <em>foxes</em> engine, which will be used for all calculations:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [2]:
+</code></pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">engine</span> <span class="o">=</span> <span class="n">foxes</span><span class="o">.</span><span class="n">Engine</span><span class="o">.</span><span class="n">new</span><span class="p">(</span>
+    <span class="s2">&quot;process&quot;</span><span class="p">,</span>
+    <span class="n">chunk_size_states</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+    <span class="n">chunk_size_points</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span>
+    <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">engine</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<p>In this example we are looking at a small 3 x 3 regualar wind farm with <code class="docutils literal notranslate"><span class="pre">NREL5MW</span></code> turbines:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [3]:
+</code></pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">farm</span> <span class="o">=</span> <span class="n">foxes</span><span class="o">.</span><span class="n">WindFarm</span><span class="p">()</span>
+<span class="n">foxes</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">farm_layout</span><span class="o">.</span><span class="n">add_grid</span><span class="p">(</span>
+    <span class="n">farm</span><span class="p">,</span>
+    <span class="n">xy_base</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">500.0</span><span class="p">,</span> <span class="mf">500.0</span><span class="p">]),</span>
+    <span class="n">step_vectors</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1300.0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mf">600.0</span><span class="p">]]),</span>
+    <span class="n">steps</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="n">turbine_models</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;opt_yawm&quot;</span><span class="p">,</span> <span class="s2">&quot;yawm2yaw&quot;</span><span class="p">,</span> <span class="s2">&quot;NREL5MW&quot;</span><span class="p">],</span>
+    <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">foxes</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">FarmLayoutOutput</span><span class="p">(</span><span class="n">farm</span><span class="p">)</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_figure</span><span class="p">())</span>
+</code></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_wake_steering_5_0.png" src="../_images/notebooks_wake_steering_5_0.png" />
+</div>
+</div>
+<p>Notice how the name of the optimization model <code class="docutils literal notranslate"><span class="pre">opt_yawm</span></code>, which will be defined shortly, appears in the list of turbine models. The idea is as follows:</p>
+<ul class="simple">
+<li><p>First, the optimizer sets the <code class="docutils literal notranslate"><span class="pre">FV.YAWM</span></code> variable, representing <em>yaw misalignment</em> in degrees, i.e., a delta yaw value from greedy conditions</p></li>
+<li><p>Then, the model <code class="docutils literal notranslate"><span class="pre">yawm2yaw</span></code> translates this into the absolute yaw value, i.e., the absolute turbine axis orientation, expressed in degrees</p></li>
+<li><p>This setting is then used for thrust and power calculations, by the turbine type model <code class="docutils literal notranslate"><span class="pre">NREL5MW</span></code>.</p></li>
+</ul>
+<p>We are considering sinlge-state uniform inflow conditions:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [4]:
+</code></pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">states</span> <span class="o">=</span> <span class="n">foxes</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">SingleStateStates</span><span class="p">(</span>
+    <span class="n">ws</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">wd</span><span class="o">=</span><span class="mi">270</span><span class="p">,</span> <span class="n">ti</span><span class="o">=</span><span class="mf">0.06</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="mf">1.225</span>
+<span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<p>The algorithm is defined next, including a TI wake model and the <code class="docutils literal notranslate"><span class="pre">Bastankhah2016</span></code> wake model. Also notice the wake frame choice <code class="docutils literal notranslate"><span class="pre">yawed</span></code>, which realizes the wake bending for yawed conditions:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [5]:
+</code></pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">algo</span> <span class="o">=</span> <span class="n">foxes</span><span class="o">.</span><span class="n">algorithms</span><span class="o">.</span><span class="n">Downwind</span><span class="p">(</span>
+    <span class="n">farm</span><span class="p">,</span>
+    <span class="n">states</span><span class="p">,</span>
+    <span class="n">rotor_model</span><span class="o">=</span><span class="s2">&quot;grid25&quot;</span><span class="p">,</span>
+    <span class="n">wake_models</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;IECTI2019k_quadratic_ambka02&quot;</span><span class="p">,</span> <span class="s2">&quot;Bastankhah2016_linear_ambka02&quot;</span><span class="p">],</span>
+    <span class="n">wake_frame</span><span class="o">=</span><span class="s2">&quot;yawed&quot;</span><span class="p">,</span>
+    <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<p>The optimization problem is power maximization by finding the optimal value of the variable <code class="docutils literal notranslate"><span class="pre">FV.YAWM</span></code> for each turbine:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [6]:
+</code></pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">problem</span> <span class="o">=</span> <span class="n">OptFarmVars</span><span class="p">(</span><span class="s2">&quot;opt_yawm&quot;</span><span class="p">,</span> <span class="n">algo</span><span class="p">)</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">add_var</span><span class="p">(</span><span class="n">FV</span><span class="o">.</span><span class="n">YAWM</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">40.0</span><span class="p">,</span> <span class="mf">40.0</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;turbine&quot;</span><span class="p">)</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">add_objective</span><span class="p">(</span><span class="n">MaxFarmPower</span><span class="p">(</span><span class="n">problem</span><span class="p">))</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Problem &#39;opt_yawm&#39;: Optimization variable list
+
+        name   var   type  index    level  state  turbine  sel_turbine  init  \
+0  YAWM_0000  YAWM  float      0  turbine     -1        0            0   0.0
+1  YAWM_0001  YAWM  float      1  turbine     -1        1            1   0.0
+2  YAWM_0002  YAWM  float      2  turbine     -1        2            2   0.0
+3  YAWM_0003  YAWM  float      3  turbine     -1        3            3   0.0
+4  YAWM_0004  YAWM  float      4  turbine     -1        4            4   0.0
+5  YAWM_0005  YAWM  float      5  turbine     -1        5            5   0.0
+6  YAWM_0006  YAWM  float      6  turbine     -1        6            6   0.0
+7  YAWM_0007  YAWM  float      7  turbine     -1        7            7   0.0
+8  YAWM_0008  YAWM  float      8  turbine     -1        8            8   0.0
+
+    min   max pre_rotor model_key
+0 -40.0  40.0     False  opt_yawm
+1 -40.0  40.0     False  opt_yawm
+2 -40.0  40.0     False  opt_yawm
+3 -40.0  40.0     False  opt_yawm
+4 -40.0  40.0     False  opt_yawm
+5 -40.0  40.0     False  opt_yawm
+6 -40.0  40.0     False  opt_yawm
+7 -40.0  40.0     False  opt_yawm
+8 -40.0  40.0     False  opt_yawm
+
+Problem &#39;opt_yawm&#39; (OptFarmVars): Initializing
+----------------------------------------------
+  n_vars_int  : 0
+  n_vars_float: 9
+----------------------------------------------
+  n_objectives: 1
+  n_obj_cmptns: 1
+----------------------------------------------
+  n_constraints: 0
+  n_con_cmptns: 0
+----------------------------------------------
+</pre></div></div>
+</div>
+<p>Next, we setup the solver:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [7]:
+</code></pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">solver</span> <span class="o">=</span> <span class="n">Optimizer_pymoo</span><span class="p">(</span>
+    <span class="n">problem</span><span class="p">,</span>
+    <span class="n">problem_pars</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">vectorize</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">algo_pars</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;GA&quot;</span><span class="p">,</span> <span class="n">pop_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">),</span>
+    <span class="n">setup_pars</span><span class="o">=</span><span class="nb">dict</span><span class="p">(),</span>
+    <span class="n">term_pars</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;n_gen&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">print_info</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Loading pymoo
+pymoo successfully loaded
+Initializing Optimizer_pymoo
+Selecting sampling: float_random (FloatRandomSampling)
+Selecting algorithm: GA (GA)
+
+Problem:
+--------
+  vectorize: True
+
+Algorithm:
+----------
+  type: GA
+  pop_size: 100
+  seed: 42
+
+Termination:
+------------
+  n_gen: 100
+
+</pre></div></div>
+</div>
+<p>Now everything is setup, and we can solve the problem:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [8]:
+</code></pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">results</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">finalize</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+=================================================
+n_gen  |  n_eval  |     f_avg     |     f_min
+=================================================
+     1 |      100 | -2.716086E-01 | -3.062184E-01
+     2 |      200 | -2.900518E-01 | -3.075843E-01
+     3 |      300 | -2.998327E-01 | -3.176548E-01
+     4 |      400 | -3.066163E-01 | -3.176548E-01
+     5 |      500 | -3.116990E-01 | -3.181045E-01
+     6 |      600 | -3.153652E-01 | -3.210101E-01
+     7 |      700 | -3.178322E-01 | -3.241374E-01
+     8 |      800 | -3.202072E-01 | -3.241374E-01
+     9 |      900 | -3.221594E-01 | -3.252988E-01
+    10 |     1000 | -3.233195E-01 | -3.255576E-01
+    11 |     1100 | -3.240882E-01 | -3.261391E-01
+    12 |     1200 | -3.246163E-01 | -3.261391E-01
+    13 |     1300 | -3.252244E-01 | -3.268285E-01
+    14 |     1400 | -3.256995E-01 | -3.271945E-01
+    15 |     1500 | -3.261343E-01 | -3.271945E-01
+    16 |     1600 | -3.264993E-01 | -3.271945E-01
+    17 |     1700 | -3.267905E-01 | -3.272931E-01
+    18 |     1800 | -3.269569E-01 | -3.273335E-01
+    19 |     1900 | -3.270618E-01 | -3.274558E-01
+    20 |     2000 | -3.271565E-01 | -3.274558E-01
+    21 |     2100 | -3.272321E-01 | -3.274674E-01
+    22 |     2200 | -3.272973E-01 | -3.275297E-01
+    23 |     2300 | -3.273522E-01 | -3.275642E-01
+    24 |     2400 | -3.274000E-01 | -3.275892E-01
+    25 |     2500 | -3.274407E-01 | -3.276063E-01
+    26 |     2600 | -3.274856E-01 | -3.276894E-01
+    27 |     2700 | -3.275084E-01 | -3.276894E-01
+    28 |     2800 | -3.275378E-01 | -3.276894E-01
+    29 |     2900 | -3.275671E-01 | -3.276894E-01
+    30 |     3000 | -3.275862E-01 | -3.276894E-01
+    31 |     3100 | -3.276094E-01 | -3.277010E-01
+    32 |     3200 | -3.276308E-01 | -3.277010E-01
+    33 |     3300 | -3.276463E-01 | -3.277112E-01
+    34 |     3400 | -3.276695E-01 | -3.277478E-01
+    35 |     3500 | -3.276892E-01 | -3.277723E-01
+    36 |     3600 | -3.277063E-01 | -3.277793E-01
+    37 |     3700 | -3.277210E-01 | -3.277793E-01
+    38 |     3800 | -3.277354E-01 | -3.277924E-01
+    39 |     3900 | -3.277519E-01 | -3.278052E-01
+    40 |     4000 | -3.277655E-01 | -3.278052E-01
+    41 |     4100 | -3.277770E-01 | -3.278052E-01
+    42 |     4200 | -3.277852E-01 | -3.278054E-01
+    43 |     4300 | -3.277915E-01 | -3.278054E-01
+    44 |     4400 | -3.277968E-01 | -3.278081E-01
+    45 |     4500 | -3.278009E-01 | -3.278086E-01
+    46 |     4600 | -3.278038E-01 | -3.278117E-01
+    47 |     4700 | -3.278054E-01 | -3.278122E-01
+    48 |     4800 | -3.278072E-01 | -3.278145E-01
+    49 |     4900 | -3.278085E-01 | -3.278154E-01
+    50 |     5000 | -3.278099E-01 | -3.278155E-01
+    51 |     5100 | -3.278108E-01 | -3.278172E-01
+    52 |     5200 | -3.278124E-01 | -3.278172E-01
+    53 |     5300 | -3.278136E-01 | -3.278172E-01
+    54 |     5400 | -3.278146E-01 | -3.278188E-01
+    55 |     5500 | -3.278157E-01 | -3.278193E-01
+    56 |     5600 | -3.278166E-01 | -3.278194E-01
+    57 |     5700 | -3.278173E-01 | -3.278197E-01
+    58 |     5800 | -3.278179E-01 | -3.278209E-01
+    59 |     5900 | -3.278183E-01 | -3.278210E-01
+    60 |     6000 | -3.278189E-01 | -3.278210E-01
+    61 |     6100 | -3.278195E-01 | -3.278213E-01
+    62 |     6200 | -3.278200E-01 | -3.278213E-01
+    63 |     6300 | -3.278205E-01 | -3.278213E-01
+    64 |     6400 | -3.278210E-01 | -3.278214E-01
+    65 |     6500 | -3.278211E-01 | -3.278214E-01
+    66 |     6600 | -3.278212E-01 | -3.278214E-01
+    67 |     6700 | -3.278212E-01 | -3.278214E-01
+    68 |     6800 | -3.278213E-01 | -3.278214E-01
+    69 |     6900 | -3.278213E-01 | -3.278215E-01
+    70 |     7000 | -3.278213E-01 | -3.278215E-01
+    71 |     7100 | -3.278214E-01 | -3.278216E-01
+    72 |     7200 | -3.278214E-01 | -3.278217E-01
+    73 |     7300 | -3.278214E-01 | -3.278217E-01
+    74 |     7400 | -3.278215E-01 | -3.278217E-01
+    75 |     7500 | -3.278215E-01 | -3.278217E-01
+    76 |     7600 | -3.278216E-01 | -3.278218E-01
+    77 |     7700 | -3.278217E-01 | -3.278218E-01
+    78 |     7800 | -3.278217E-01 | -3.278218E-01
+    79 |     7900 | -3.278217E-01 | -3.278218E-01
+    80 |     8000 | -3.278218E-01 | -3.278218E-01
+    81 |     8100 | -3.278218E-01 | -3.278218E-01
+    82 |     8200 | -3.278218E-01 | -3.278218E-01
+    83 |     8300 | -3.278218E-01 | -3.278218E-01
+    84 |     8400 | -3.278218E-01 | -3.278218E-01
+    85 |     8500 | -3.278218E-01 | -3.278218E-01
+    86 |     8600 | -3.278218E-01 | -3.278218E-01
+    87 |     8700 | -3.278218E-01 | -3.278218E-01
+    88 |     8800 | -3.278218E-01 | -3.278218E-01
+    89 |     8900 | -3.278218E-01 | -3.278218E-01
+    90 |     9000 | -3.278218E-01 | -3.278219E-01
+    91 |     9100 | -3.278218E-01 | -3.278219E-01
+    92 |     9200 | -3.278218E-01 | -3.278219E-01
+    93 |     9300 | -3.278218E-01 | -3.278219E-01
+    94 |     9400 | -3.278218E-01 | -3.278219E-01
+    95 |     9500 | -3.278219E-01 | -3.278219E-01
+    96 |     9600 | -3.278219E-01 | -3.278219E-01
+    97 |     9700 | -3.278219E-01 | -3.278219E-01
+    98 |     9800 | -3.278219E-01 | -3.278219E-01
+    99 |     9900 | -3.278219E-01 | -3.278219E-01
+   100 |    10000 | -3.278219E-01 | -3.278219E-01
+
+
+Optimizer_pymoo: Optimization run finished
+  Success: True
+  Best maximize_power = 14751.984832734459
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [9]:
+</code></pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+<span class="n">fr</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">problem_results</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span>
+<span class="n">fr</span><span class="p">[[</span><span class="n">FV</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">FV</span><span class="o">.</span><span class="n">Y</span><span class="p">,</span> <span class="n">FV</span><span class="o">.</span><span class="n">AMB_WD</span><span class="p">,</span> <span class="n">FV</span><span class="o">.</span><span class="n">YAWM</span><span class="p">,</span> <span class="n">FV</span><span class="o">.</span><span class="n">TI</span><span class="p">,</span> <span class="n">FV</span><span class="o">.</span><span class="n">REWS</span><span class="p">,</span> <span class="n">FV</span><span class="o">.</span><span class="n">P</span><span class="p">]]</span>
+</code></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+Results problem &#39;opt_yawm&#39;:
+----------------------------
+  Float variables:
+    0: YAWM_0000 = -3.024916e+01
+    1: YAWM_0001 = -2.555786e+01
+    2: YAWM_0002 = -2.555471e+01
+    3: YAWM_0003 = -2.458684e+01
+    4: YAWM_0004 = 2.456818e+01
+    5: YAWM_0005 = 2.458887e+01
+    6: YAWM_0006 = 2.077965e-02
+    7: YAWM_0007 = 1.625032e-02
+    8: YAWM_0008 = 1.515184e-02
+----------------------------
+  Objectives:
+    0: maximize_power = 1.475198e+04
+----------------------------
+  Success: True
+----------------------------
+
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>Out[9]:
+</code></pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>X</th>
+      <th>Y</th>
+      <th>AMB_WD</th>
+      <th>YAWM</th>
+      <th>TI</th>
+      <th>REWS</th>
+      <th>P</th>
+    </tr>
+    <tr>
+      <th>state</th>
+      <th>turbine</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="9" valign="top">0</th>
+      <th>0</th>
+      <td>500.0</td>
+      <td>500.0</td>
+      <td>270.0</td>
+      <td>-30.249163</td>
+      <td>0.060000</td>
+      <td>9.000000</td>
+      <td>1928.995420</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>700.0</td>
+      <td>1100.0</td>
+      <td>270.0</td>
+      <td>-25.557857</td>
+      <td>0.060000</td>
+      <td>8.119351</td>
+      <td>1544.518581</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>900.0</td>
+      <td>1700.0</td>
+      <td>270.0</td>
+      <td>-25.554709</td>
+      <td>0.060000</td>
+      <td>8.119564</td>
+      <td>1544.708539</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1800.0</td>
+      <td>500.0</td>
+      <td>270.0</td>
+      <td>-24.586841</td>
+      <td>0.065713</td>
+      <td>7.857941</td>
+      <td>1422.846941</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2000.0</td>
+      <td>1100.0</td>
+      <td>270.0</td>
+      <td>24.568175</td>
+      <td>0.070112</td>
+      <td>7.665933</td>
+      <td>1317.609645</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>2200.0</td>
+      <td>1700.0</td>
+      <td>270.0</td>
+      <td>24.588871</td>
+      <td>0.070116</td>
+      <td>7.664458</td>
+      <td>1316.361700</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>3100.0</td>
+      <td>500.0</td>
+      <td>270.0</td>
+      <td>0.020780</td>
+      <td>0.072090</td>
+      <td>8.227575</td>
+      <td>1941.211689</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>3300.0</td>
+      <td>1100.0</td>
+      <td>270.0</td>
+      <td>0.016250</td>
+      <td>0.073104</td>
+      <td>8.128745</td>
+      <td>1867.337034</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>3500.0</td>
+      <td>1700.0</td>
+      <td>270.0</td>
+      <td>0.015152</td>
+      <td>0.073078</td>
+      <td>8.130161</td>
+      <td>1868.395284</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Finally, we can visualize the result by looking at the flow field:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [10]:
+</code></pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">o</span> <span class="o">=</span> <span class="n">foxes</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">FlowPlots2D</span><span class="p">(</span><span class="n">algo</span><span class="p">,</span> <span class="n">results</span><span class="o">.</span><span class="n">problem_results</span><span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">get_mean_fig_xy</span><span class="p">(</span><span class="s2">&quot;WS&quot;</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mi">5000</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_wake_steering_18_0.png" src="../_images/notebooks_wake_steering_18_0.png" />
+</div>
+</div>
+<p>Clearly the turbines are trying to avoid hitting downwind turbines with their wakes.</p>
+<p>Finally, let’s shutdown the <em>foxes</em> engine:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [11]:
+</code></pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">engine</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
+      
+        
+        <a href="layout_opt.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Layout optimization" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Layout optimization
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../api.html" class="md-footer__link md-footer__link--next" aria-label="Next: API" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              API
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  
+  
+  <div class="md-footer-meta md-typeset">
+    
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-footer-copyright__highlight">
+        &#169; Copyright 2024, Fraunhofer IWES.
+        
+    </div>
+  
+    Created using
+    <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
+    8.1.3.
+     and
+    <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
+  
+</div>
+      
+    </div>
+    
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+      
+        <script src="../_static/sphinx_immaterial_theme.f9d9eeeb247ace16c.min.js?v=8ec58cb5"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script id="MathJax-script" src="../_static/mathjax/tex-mml-chtml.js?v=cadf963e"></script>
+    
+  </body>
+</html>

@@ -7,3 +7,4 @@ folder of the `foxes <https://github.com/FraunhoferIWES/foxes-opt>`_ github repo
 
     .. toctree::
         notebooks/layout_opt
+        notebooks/wake_steering

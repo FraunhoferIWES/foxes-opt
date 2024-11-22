@@ -13,7 +13,7 @@
     
     
       
-        <title>Layout optimization - foxes-opt 0.2.1 documentation</title>
+        <title>Layout optimization - foxes-opt 0.2.2 documentation</title>
       
     
     
@@ -72,7 +72,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../index.html" title="foxes-opt 0.2.1 documentation" class="md-header__button md-logo" aria-label="foxes-opt 0.2.1 documentation" data-md-component="logo">
+    <a href="../index.html" title="foxes-opt 0.2.2 documentation" class="md-header__button md-logo" aria-label="foxes-opt 0.2.2 documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -84,7 +84,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            foxes-opt 0.2.1 documentation
+            foxes-opt 0.2.2 documentation
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -171,12 +171,12 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../index.html" title="foxes-opt 0.2.1 documentation" class="md-nav__button md-logo" aria-label="foxes-opt 0.2.1 documentation" data-md-component="logo">
+    <a href="../index.html" title="foxes-opt 0.2.2 documentation" class="md-nav__button md-logo" aria-label="foxes-opt 0.2.2 documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
     </a>
-    foxes-opt 0.2.1 documentation
+    foxes-opt 0.2.2 documentation
   </label>
   
     <div class="md-nav__source">
@@ -277,6 +277,21 @@
         <span title="/notebooks/layout_opt.ipynb (reference label)" class="md-ellipsis">Layout optimization</span>
       </a>
       
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="wake_steering.html" class="md-nav__link">
+        <span title="/notebooks/wake_steering.ipynb (reference label)" class="md-ellipsis">Wake steering</span>
+      </a>
     </li>
   
 
@@ -389,16 +404,30 @@
 </code></pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="o">%</span><span class="k">matplotlib</span> inline
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">iwopy.interfaces.pymoo</span> <span class="kn">import</span> <span class="n">Optimizer_pymoo</span>
-
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">foxes</span>
-<span class="kn">import</span> <span class="nn">foxes.variables</span> <span class="k">as</span> <span class="nn">FV</span>
 <span class="kn">import</span> <span class="nn">foxes.utils.geom2d</span> <span class="k">as</span> <span class="nn">gm</span>
+<span class="kn">import</span> <span class="nn">foxes.variables</span> <span class="k">as</span> <span class="nn">FV</span>
+<span class="kn">from</span> <span class="nn">iwopy.interfaces.pymoo</span> <span class="kn">import</span> <span class="n">Optimizer_pymoo</span>
 <span class="kn">from</span> <span class="nn">foxes_opt.problems.layout</span> <span class="kn">import</span> <span class="n">FarmLayoutOptProblem</span>
-<span class="kn">from</span> <span class="nn">foxes_opt.constraints</span> <span class="kn">import</span> <span class="n">FarmBoundaryConstraint</span><span class="p">,</span> <span class="n">MinDistConstraint</span>
 <span class="kn">from</span> <span class="nn">foxes_opt.objectives</span> <span class="kn">import</span> <span class="n">MaxFarmPower</span>
+<span class="kn">from</span> <span class="nn">foxes_opt.constraints</span> <span class="kn">import</span> <span class="n">FarmBoundaryConstraint</span><span class="p">,</span> <span class="n">MinDistConstraint</span>
+</code></pre></div>
+</div>
+</div>
+<p>Let’s initialize the <em>foxes</em> engine, which will be used for all calculations:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [2]:
+</code></pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">engine</span> <span class="o">=</span> <span class="n">foxes</span><span class="o">.</span><span class="n">Engine</span><span class="o">.</span><span class="n">new</span><span class="p">(</span>
+    <span class="s2">&quot;process&quot;</span><span class="p">,</span>
+    <span class="n">chunk_size_states</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+    <span class="n">chunk_size_points</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span>
+    <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">engine</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
@@ -414,7 +443,7 @@
 </div>
 <p>First, let’s create the states object and have a look at the wind rose:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [3]:
 </code></pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">states</span> <span class="o">=</span> <span class="n">foxes</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">StatesTable</span><span class="p">(</span>
@@ -430,27 +459,16 @@
 </code></pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Selecting &#39;DefaultEngine(n_procs=16, chunk_size_states=None, chunk_size_points=None)&#39;
-DefaultEngine: Selecting engine &#39;single&#39;
-SingleChunkEngine: Calculating 216 states for 1 turbines
-SingleChunkEngine: Running single chunk calculation for 216 states
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_layout_opt_4_1.png" src="../_images/notebooks_layout_opt_4_1.png" />
+<img alt="../_images/notebooks_layout_opt_6_0.png" src="../_images/notebooks_layout_opt_6_0.png" />
 </div>
 </div>
 <p>Next, we need to specify the area within which the turbines are allowed to move during optimization. We use the <code class="docutils literal notranslate"><span class="pre">foxes.utils.geom2d</span></code> sub-package for that purpose (imported as <code class="docutils literal notranslate"><span class="pre">gm</span></code>, see above) which allows us to add and subtract polygons, circles, etc.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [4]:
 </code></pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">boundary</span> <span class="o">=</span> \
@@ -470,12 +488,12 @@ SingleChunkEngine: Running single chunk calculation for 216 states
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_layout_opt_6_0.png" src="../_images/notebooks_layout_opt_6_0.png" />
+<img alt="../_images/notebooks_layout_opt_8_0.png" src="../_images/notebooks_layout_opt_8_0.png" />
 </div>
 </div>
 <p>Later on we wish to apply boundary constraints that make sure all turbines are placed within this area geometry. These conditions make use of the minimal distance calculation from each point in question to the boundary. We can check the results by plotting again, now using the <code class="docutils literal notranslate"><span class="pre">fill_mode</span></code> option:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [5]:
 </code></pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
@@ -489,12 +507,12 @@ SingleChunkEngine: Running single chunk calculation for 216 states
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_layout_opt_8_0.png" src="../_images/notebooks_layout_opt_8_0.png" />
+<img alt="../_images/notebooks_layout_opt_10_0.png" src="../_images/notebooks_layout_opt_10_0.png" />
 </div>
 </div>
 <p>We now setup the model book and a wind farm with 10 turbines in some initial layout, including the boundary:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [6]:
 </code></pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">farm</span> <span class="o">=</span> <span class="n">foxes</span><span class="o">.</span><span class="n">WindFarm</span><span class="p">(</span><span class="n">boundary</span><span class="o">=</span><span class="n">boundary</span><span class="p">)</span>
@@ -532,13 +550,13 @@ Turbine 9, T9: xy=(950.00, 950.00), NREL5MW
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_layout_opt_10_1.png" src="../_images/notebooks_layout_opt_10_1.png" />
+<img alt="../_images/notebooks_layout_opt_12_1.png" src="../_images/notebooks_layout_opt_12_1.png" />
 </div>
 </div>
 <p>Notice the appearing turbine model <code class="docutils literal notranslate"><span class="pre">layout_opt</span></code>. This is not part of the model book but will be defined shortly by the optimization problem. In the context of the turbine models it defines where in the model order the optimization variables application should be applied. In our case we are optimizing the (X, Y)-coordinates of the turbines, and they should be updated at the very beginning.</p>
 <p>Let’s new define the algorithm and the layout optimization problem. The latter should include boundary constraints and a minimal distance of 2 rotor diameters between turbines. Our objective is the maximization of the total wind farm power:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [7]:
 </code></pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">algo</span> <span class="o">=</span> <span class="n">foxes</span><span class="o">.</span><span class="n">algorithms</span><span class="o">.</span><span class="n">Downwind</span><span class="p">(</span>
@@ -581,7 +599,7 @@ Problem &#39;layout_opt&#39; (FarmLayoutOptProblem): Initializing
 <p>Notice that the two added constraint models imply a total of 55 individual constraint component functions. The wake model choice <code class="docutils literal notranslate"><span class="pre">Bastankhah025</span></code> corresponds to the <code class="docutils literal notranslate"><span class="pre">Bastankhah2014</span></code> deficit model with parameter <code class="docutils literal notranslate"><span class="pre">sbeta_factor=0.25</span></code>. This choice switches off the near wake modelling, rendering the model a bit smoother. This is for demonstrational purposes only and not required for running this example.</p>
 <p>Next, we setup the optimizer. In our case we use the genetic algorithm <a class="reference external" href="https://pymoo.org/algorithms/soo/ga.html">GA from pymoo</a> via the <a class="reference external" href="https://github.com/FraunhoferIWES/iwopy">iwopy</a> interface, here in vectorized form (flag <code class="docutils literal notranslate"><span class="pre">vectorize=True</span></code>), with 100 generations (<code class="docutils literal notranslate"><span class="pre">n_max_gen=100</span></code>) with population size 50 (<code class="docutils literal notranslate"><span class="pre">pop_size=50</span></code>):</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [8]:
 </code></pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">solver</span> <span class="o">=</span> <span class="n">Optimizer_pymoo</span><span class="p">(</span>
@@ -637,7 +655,7 @@ Termination:
 </div>
 <p>After all the setup we can now solve the problem:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [9]:
 </code></pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">results</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
@@ -649,25 +667,7 @@ Termination:
 </code></pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 64.50it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
+<div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
@@ -676,2838 +676,105 @@ ProcessEngine: Computing 16 chunks using 16 processes
 n_gen  |  n_eval  |     cv_min    |     cv_avg    |     f_avg     |     f_min
 =================================================================================
      1 |       50 |  4.257950E+02 |  1.094916E+03 |             - |             -
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 76.69it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
      2 |      100 |  2.589298E+02 |  7.141458E+02 |             - |             -
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 90.44it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
      3 |      150 |  2.108843E+02 |  5.097684E+02 |             - |             -
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 99.81it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
      4 |      200 |  2.011586E+02 |  3.869307E+02 |             - |             -
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 83.95it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
      5 |      250 |  1.250281E+02 |  3.238949E+02 |             - |             -
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 64.00it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
      6 |      300 |  1.250281E+02 |  2.668302E+02 |             - |             -
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 71.35it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
      7 |      350 |  1.250281E+02 |  2.500554E+02 |             - |             -
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 66.03it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
      8 |      400 |  1.011095E+02 |  2.198486E+02 |             - |             -
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 65.43it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
      9 |      450 |  8.571793E+01 |  1.998508E+02 |             - |             -
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 64.37it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     10 |      500 |  8.571793E+01 |  1.775495E+02 |             - |             -
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 65.48it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     11 |      550 |  2.695093E+01 |  1.482376E+02 |             - |             -
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 66.35it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     12 |      600 |  2.695093E+01 |  1.369663E+02 |             - |             -
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 63.67it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     13 |      650 |  2.695093E+01 |  1.255097E+02 |             - |             -
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 60.04it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     14 |      700 |  2.461710E+01 |  1.135664E+02 |             - |             -
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 70.05it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     15 |      750 |  2.461710E+01 |  1.098324E+02 |             - |             -
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 72.81it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     16 |      800 |  2.461710E+01 |  9.266611E+01 |             - |             -
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 63.03it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     17 |      850 |  2.446678E+01 |  8.484456E+01 |             - |             -
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 66.58it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     18 |      900 |  2.440080E+01 |  7.151751E+01 |             - |             -
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 64.59it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     19 |      950 |  2.440080E+01 |  5.917821E+01 |             - |             -
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 70.87it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     20 |     1000 |  1.998273E+01 |  4.871628E+01 |             - |             -
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 63.36it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     21 |     1050 |  1.019366E+01 |  4.071983E+01 |             - |             -
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 72.24it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     22 |     1100 |  6.4405916400 |  3.193676E+01 |             - |             -
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 64.07it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     23 |     1150 |  4.9794099827 |  2.349004E+01 |             - |             -
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 66.31it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     24 |     1200 |  0.000000E+00 |  1.738912E+01 | -5.005446E-01 | -5.005446E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 65.90it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     25 |     1250 |  0.000000E+00 |  1.137290E+01 | -5.003716E-01 | -5.005446E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 69.84it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     26 |     1300 |  0.000000E+00 |  6.4573986190 | -5.001255E-01 | -5.007026E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 56.76it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     27 |     1350 |  0.000000E+00 |  2.2839046772 | -5.002029E-01 | -5.043050E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 62.99it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     28 |     1400 |  0.000000E+00 |  0.0401518036 | -5.002328E-01 | -5.046954E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 64.00it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     29 |     1450 |  0.000000E+00 |  0.000000E+00 | -5.010270E-01 | -5.047884E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 61.90it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     30 |     1500 |  0.000000E+00 |  0.000000E+00 | -5.018469E-01 | -5.047952E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 67.71it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     31 |     1550 |  0.000000E+00 |  0.000000E+00 | -5.033843E-01 | -5.048056E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 63.48it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     32 |     1600 |  0.000000E+00 |  0.000000E+00 | -5.045212E-01 | -5.052518E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 71.37it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     33 |     1650 |  0.000000E+00 |  0.000000E+00 | -5.047445E-01 | -5.054240E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 58.63it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     34 |     1700 |  0.000000E+00 |  0.000000E+00 | -5.049293E-01 | -5.054240E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 65.00it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     35 |     1750 |  0.000000E+00 |  0.000000E+00 | -5.051205E-01 | -5.058090E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 58.28it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     36 |     1800 |  0.000000E+00 |  0.000000E+00 | -5.053169E-01 | -5.059597E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 59.00it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     37 |     1850 |  0.000000E+00 |  0.000000E+00 | -5.055598E-01 | -5.067092E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 54.37it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     38 |     1900 |  0.000000E+00 |  0.000000E+00 | -5.058344E-01 | -5.067092E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 58.62it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     39 |     1950 |  0.000000E+00 |  0.000000E+00 | -5.061865E-01 | -5.072494E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 43.87it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     40 |     2000 |  0.000000E+00 |  0.000000E+00 | -5.064220E-01 | -5.073431E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 57.44it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     41 |     2050 |  0.000000E+00 |  0.000000E+00 | -5.068005E-01 | -5.081851E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 54.56it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     42 |     2100 |  0.000000E+00 |  0.000000E+00 | -5.070952E-01 | -5.085442E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 50.06it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     43 |     2150 |  0.000000E+00 |  0.000000E+00 | -5.074588E-01 | -5.085442E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 48.53it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     44 |     2200 |  0.000000E+00 |  0.000000E+00 | -5.078524E-01 | -5.093114E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 57.60it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     45 |     2250 |  0.000000E+00 |  0.000000E+00 | -5.082867E-01 | -5.098399E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 50.25it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     46 |     2300 |  0.000000E+00 |  0.000000E+00 | -5.087176E-01 | -5.098399E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 47.04it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     47 |     2350 |  0.000000E+00 |  0.000000E+00 | -5.091165E-01 | -5.099068E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 56.69it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     48 |     2400 |  0.000000E+00 |  0.000000E+00 | -5.095298E-01 | -5.102335E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 41.30it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     49 |     2450 |  0.000000E+00 |  0.000000E+00 | -5.098345E-01 | -5.105389E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 45.30it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     50 |     2500 |  0.000000E+00 |  0.000000E+00 | -5.101265E-01 | -5.108688E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 53.85it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     51 |     2550 |  0.000000E+00 |  0.000000E+00 | -5.104231E-01 | -5.112445E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 47.48it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     52 |     2600 |  0.000000E+00 |  0.000000E+00 | -5.107525E-01 | -5.114826E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 50.29it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     53 |     2650 |  0.000000E+00 |  0.000000E+00 | -5.110290E-01 | -5.118996E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 42.89it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     54 |     2700 |  0.000000E+00 |  0.000000E+00 | -5.112750E-01 | -5.124239E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 48.33it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     55 |     2750 |  0.000000E+00 |  0.000000E+00 | -5.115946E-01 | -5.124642E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 61.35it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     56 |     2800 |  0.000000E+00 |  0.000000E+00 | -5.118256E-01 | -5.126645E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 65.61it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     57 |     2850 |  0.000000E+00 |  0.000000E+00 | -5.121022E-01 | -5.126645E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 58.82it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     58 |     2900 |  0.000000E+00 |  0.000000E+00 | -5.123371E-01 | -5.128177E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 66.17it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     59 |     2950 |  0.000000E+00 |  0.000000E+00 | -5.125054E-01 | -5.128177E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 47.02it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     60 |     3000 |  0.000000E+00 |  0.000000E+00 | -5.126078E-01 | -5.129150E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 67.68it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     61 |     3050 |  0.000000E+00 |  0.000000E+00 | -5.127029E-01 | -5.129655E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 59.55it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     62 |     3100 |  0.000000E+00 |  0.000000E+00 | -5.127876E-01 | -5.129655E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 52.52it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     63 |     3150 |  0.000000E+00 |  0.000000E+00 | -5.128550E-01 | -5.131367E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 62.93it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     64 |     3200 |  0.000000E+00 |  0.000000E+00 | -5.129328E-01 | -5.132712E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 65.38it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     65 |     3250 |  0.000000E+00 |  0.000000E+00 | -5.130119E-01 | -5.132849E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 59.36it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     66 |     3300 |  0.000000E+00 |  0.000000E+00 | -5.130944E-01 | -5.133150E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 67.70it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     67 |     3350 |  0.000000E+00 |  0.000000E+00 | -5.131745E-01 | -5.133480E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 53.81it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     68 |     3400 |  0.000000E+00 |  0.000000E+00 | -5.132618E-01 | -5.134317E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 64.94it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     69 |     3450 |  0.000000E+00 |  0.000000E+00 | -5.133163E-01 | -5.134561E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 60.12it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     70 |     3500 |  0.000000E+00 |  0.000000E+00 | -5.133671E-01 | -5.134833E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 57.98it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     71 |     3550 |  0.000000E+00 |  0.000000E+00 | -5.134048E-01 | -5.134834E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 55.82it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     72 |     3600 |  0.000000E+00 |  0.000000E+00 | -5.134433E-01 | -5.136118E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 59.52it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     73 |     3650 |  0.000000E+00 |  0.000000E+00 | -5.134627E-01 | -5.136118E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 58.00it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     74 |     3700 |  0.000000E+00 |  0.000000E+00 | -5.134814E-01 | -5.136118E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 62.19it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     75 |     3750 |  0.000000E+00 |  0.000000E+00 | -5.135100E-01 | -5.136132E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 60.75it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     76 |     3800 |  0.000000E+00 |  0.000000E+00 | -5.135378E-01 | -5.136557E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 65.75it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     77 |     3850 |  0.000000E+00 |  0.000000E+00 | -5.135664E-01 | -5.136557E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 57.48it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     78 |     3900 |  0.000000E+00 |  0.000000E+00 | -5.135939E-01 | -5.136844E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 54.67it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     79 |     3950 |  0.000000E+00 |  0.000000E+00 | -5.136235E-01 | -5.137929E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 59.58it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     80 |     4000 |  0.000000E+00 |  0.000000E+00 | -5.136583E-01 | -5.137983E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 60.85it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     81 |     4050 |  0.000000E+00 |  0.000000E+00 | -5.136864E-01 | -5.138033E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 58.25it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     82 |     4100 |  0.000000E+00 |  0.000000E+00 | -5.137170E-01 | -5.138508E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 61.66it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     83 |     4150 |  0.000000E+00 |  0.000000E+00 | -5.137579E-01 | -5.138666E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 56.44it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     84 |     4200 |  0.000000E+00 |  0.000000E+00 | -5.137994E-01 | -5.139128E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 55.36it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     85 |     4250 |  0.000000E+00 |  0.000000E+00 | -5.138396E-01 | -5.140404E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 51.62it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     86 |     4300 |  0.000000E+00 |  0.000000E+00 | -5.138854E-01 | -5.140498E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 53.62it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     87 |     4350 |  0.000000E+00 |  0.000000E+00 | -5.139133E-01 | -5.141967E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 51.22it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     88 |     4400 |  0.000000E+00 |  0.000000E+00 | -5.139546E-01 | -5.141967E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 58.36it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     89 |     4450 |  0.000000E+00 |  0.000000E+00 | -5.140218E-01 | -5.147526E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 57.09it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     90 |     4500 |  0.000000E+00 |  0.000000E+00 | -5.141040E-01 | -5.156605E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 60.90it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     91 |     4550 |  0.000000E+00 |  0.000000E+00 | -5.142399E-01 | -5.156605E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 53.40it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     92 |     4600 |  0.000000E+00 |  0.000000E+00 | -5.144019E-01 | -5.157213E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 55.64it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     93 |     4650 |  0.000000E+00 |  0.000000E+00 | -5.147286E-01 | -5.157683E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 60.33it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     94 |     4700 |  0.000000E+00 |  0.000000E+00 | -5.154050E-01 | -5.165078E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 61.73it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     95 |     4750 |  0.000000E+00 |  0.000000E+00 | -5.157949E-01 | -5.165540E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 58.18it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     96 |     4800 |  0.000000E+00 |  0.000000E+00 | -5.160264E-01 | -5.166291E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 60.71it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     97 |     4850 |  0.000000E+00 |  0.000000E+00 | -5.163338E-01 | -5.166643E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 59.42it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     98 |     4900 |  0.000000E+00 |  0.000000E+00 | -5.165219E-01 | -5.166849E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 65.49it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
     99 |     4950 |  0.000000E+00 |  0.000000E+00 | -5.165851E-01 | -5.167818E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 59.96it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
    100 |     5000 |  0.000000E+00 |  0.000000E+00 | -5.166481E-01 | -5.169221E-01
-DefaultEngine: Selecting engine &#39;process&#39;
-ProcessEngine: Calculating 10800 states for 10 turbines
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-ProcessEngine: Computing 16 chunks using 16 processes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|███████████████████████████████████████████████████████████████████████████████████| 16/16 [00:00&lt;00:00, 63.06it/s]
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-DefaultEngine: Selecting engine &#39;single&#39;
-SingleChunkEngine: Calculating 216 states for 10 turbines
-SingleChunkEngine: Running single chunk calculation for 216 states
 
 
 Optimizer_pymoo: Optimization run finished
@@ -3624,7 +891,7 @@ Data variables: (12/27)
 </div>
 <p>This visualizes the results, once the layout and once the mean wind speed over all wind rose states:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [10]:
 </code></pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
@@ -3651,29 +918,24 @@ Data variables: (12/27)
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 States &#39;StatesTable&#39;: Reading file /home/jonas/venv/foxes-opt/lib/python3.11/site-packages/foxes/data/states/wind_rose_bremen.csv
-DefaultEngine: Selecting engine &#39;single&#39;
-SingleChunkEngine: Calculating data at 6039 points for 216 states
-SingleChunkEngine: Running single chunk calculation for 216 states
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_layout_opt_18_1.png" src="../_images/notebooks_layout_opt_18_1.png" />
+<img alt="../_images/notebooks_layout_opt_20_1.png" src="../_images/notebooks_layout_opt_20_1.png" />
 </div>
 </div>
-<p>Note that the optimization can also be run using a <em>foxes</em> <code class="docutils literal notranslate"><span class="pre">Engine</span></code>, i.e., with specific parallelization settings. For that invoke a<code class="docutils literal notranslate"><span class="pre">with</span></code> block and solve the problem as before, here with 4 parallel processes:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">foxes</span><span class="o">.</span><span class="n">Engine</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;process&quot;</span><span class="p">,</span> <span class="n">n_procs</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
-
-    <span class="n">problem</span> <span class="o">=</span> <span class="n">FarmLayoutOptProblem</span><span class="p">(</span><span class="s2">&quot;layout_opt&quot;</span><span class="p">,</span> <span class="n">algo</span><span class="p">)</span>
-    <span class="o">...</span>
-    <span class="n">solver</span> <span class="o">=</span> <span class="o">...</span>
-    <span class="o">...</span>
-    <span class="n">results</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+<p>Finally, now that all calculations are done, we close the engine:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [11]:
 </code></pre></div>
 </div>
-<p>Anything within the <code class="docutils literal notranslate"><span class="pre">with</span></code> block will then be calculated using the <code class="docutils literal notranslate"><span class="pre">Engine</span></code> object. This includes the output figures, if they appear there as well.</p>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">engine</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
 
 
 
@@ -3711,13 +973,13 @@ SingleChunkEngine: Running single chunk calculation for 216 states
       
       
         
-        <a href="../api.html" class="md-footer__link md-footer__link--next" aria-label="Next: API" rel="next">
+        <a href="wake_steering.html" class="md-footer__link md-footer__link--next" aria-label="Next: Wake steering" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              API
+              Wake steering
             </div>
           </div>
           <div class="md-footer__button md-icon">
