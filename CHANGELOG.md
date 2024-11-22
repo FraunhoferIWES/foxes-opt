@@ -51,5 +51,6 @@
 
 ## v0.2.2
 
+- New notebook: `wake_steering.ipynb`, demonstrating how to optimize yaw angles
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.2.2](https://github.com/FraunhoferIWES/foxes/commits/v0.2.2)
