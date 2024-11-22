@@ -48,3 +48,9 @@
 - Bug fixed with `MaxFarmPower` objective, now using states weights in states contraction
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.2.1](https://github.com/FraunhoferIWES/foxes/commits/v0.2.1)
+
+## v0.2.2
+
+- New notebook: `wake_steering.ipynb`, demonstrating how to optimize yaw angles
+
+**Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.2.2](https://github.com/FraunhoferIWES/foxes/commits/v0.2.2)
