@@ -57,6 +57,6 @@
 
 ## v0.2.3
 
-
+- Changes in `FarmVarsObjective`: Renaming contraction rule `mean` into `mean_no_weights`.
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.2.3](https://github.com/FraunhoferIWES/foxes/commits/v0.2.3)

@@ -21,7 +21,7 @@ class FarmVarObjective(FarmObjective):
         or None for all
     rules: dict
         Contraction rules. Key: coordinate name str, value
-        is str: min, max, sum, mean
+        is str: weights, mean_no_weights, sum, min, max
     scale: float
         The scaling factor
 
@@ -146,7 +146,7 @@ class FarmVarObjective(FarmObjective):
                 data = data.max(dim=dim)
             elif rule == "sum":
                 data = data.sum(dim=dim)
-            elif rule == "mean":
+            elif rule == "mean_no_weights":
                 data = data.mean(dim=dim)
             elif dim == FC.STATE and rule == "weights":
                 odims = data.dims
@@ -163,11 +163,11 @@ class FarmVarObjective(FarmObjective):
                     )
             elif dim == FC.STATE:
                 raise ValueError(
-                    f"Objective '{self.name}': Unknown contraction for dimension '{dim}': '{rule}'. Choose: min, max, sum, mean, weights"
+                    f"Objective '{self.name}': Unknown contraction for dimension '{dim}': '{rule}'. Choose: weights, mean_no_weights, sum, min, max"
                 )
             else:
                 raise ValueError(
-                    f"Objective '{self.name}': Unknown contraction for dimension '{dim}': '{rule}'. Choose: min, max, sum, mean"
+                    f"Objective '{self.name}': Unknown contraction for dimension '{dim}': '{rule}'. Choose: min, max, sum, mean_no_weights"
                 )
         return data
 
