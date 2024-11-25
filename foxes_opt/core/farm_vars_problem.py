@@ -1,9 +1,11 @@
 import numpy as np
 from abc import abstractmethod
 
-from .farm_opt_problem import FarmOptProblem
 from foxes.models.turbine_models import SetFarmVars
 from foxes.config import config
+from foxes.utils import new_instance
+
+from .farm_opt_problem import FarmOptProblem
 
 
 class FarmVarsProblem(FarmOptProblem):
@@ -217,3 +219,21 @@ class FarmVarsProblem(FarmOptProblem):
             raise KeyError(
                 f"Problem '{self.name}': Too many farm vars from opt2farm_vars_population: {list(fvars.keys())}"
             )
+
+    @classmethod
+    def new(cls, problem_type, *args, **kwargs):
+        """
+        Run-time farm vars opt problem factory.
+
+        Parameters
+        ----------
+        problem_type: string
+            The selected derived class name
+        args: tuple, optional
+            Additional parameters for the constructor
+        kwargs: dict, optional
+            Additional parameters for the constructor
+
+        """
+        return new_instance(cls, problem_type, *args, **kwargs)
+    

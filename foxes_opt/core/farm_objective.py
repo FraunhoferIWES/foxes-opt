@@ -1,7 +1,6 @@
-from abc import abstractmethod
 from iwopy import Objective
 
-from foxes.utils import all_subclasses
+from foxes.utils import new_instance, all_subclasses
 
 
 class FarmObjective(Objective):
@@ -95,3 +94,21 @@ class FarmObjective(Objective):
         names = sorted([scls.__name__ for scls in all_subclasses(cls)])
         for n in names:
             print(n)
+
+    @classmethod
+    def new(cls, objective_type, *args, **kwargs):
+        """
+        Run-time farm objective factory.
+
+        Parameters
+        ----------
+        objective_type: string
+            The selected derived class name
+        args: tuple, optional
+            Additional parameters for the constructor
+        kwargs: dict, optional
+            Additional parameters for the constructor
+
+        """
+        return new_instance(cls, objective_type, *args, **kwargs)
+        

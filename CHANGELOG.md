@@ -57,6 +57,8 @@
 
 ## v0.2.3
 
+- Introducing command line application `foxes_opt_yaml`: Runs optimization from `yaml` parameter input file, no Python script needed.
 - Changes in `FarmVarsObjective`: Renaming contraction rule `mean` into `mean_no_weights`.
+- Adding run-time factories to problems, objectives, and constraints.
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.2.3](https://github.com/FraunhoferIWES/foxes/commits/v0.2.3)

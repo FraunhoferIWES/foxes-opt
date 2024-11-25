@@ -2,6 +2,7 @@ import numpy as np
 from iwopy import Problem
 
 from foxes.config import config
+from foxes.utils import new_instance
 
 from .pop_states import PopStates
 
@@ -46,7 +47,7 @@ class FarmOptProblem(Problem):
             or None for all
         calc_farm_args: dict
             Additional parameters for algo.calc_farm()
-        points : numpy.ndarray, optional
+        points: numpy.ndarray, optional
             The probe points, shape: (n_states, n_points, 3)
         kwargs: dict, optional
             Additional parameters for `iwopy.Problem`
@@ -331,3 +332,21 @@ class FarmOptProblem(Problem):
             ax = f.add_to_layout_figure(ax, **kwargs)
 
         return ax
+
+    @classmethod
+    def new(cls, problem_type, *args, **kwargs):
+        """
+        Run-time farm opt problem factory.
+
+        Parameters
+        ----------
+        problem_type: string
+            The selected derived class name
+        args: tuple, optional
+            Additional parameters for the constructor
+        kwargs: dict, optional
+            Additional parameters for the constructor
+
+        """
+        return new_instance(cls, problem_type, *args, **kwargs)
+        

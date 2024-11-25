@@ -1,0 +1,48 @@
+states:
+  states_type: StatesTable
+  data_source: wind_rose_bremen.csv
+  output_vars: [WS, WD, TI, RHO]
+  var2col:
+    WS: ws
+    WD: wd 
+    weight: weight
+  fixed_vars:
+    RHO: 1.225
+    TI: 0.05
+  
+wind_farm:
+  layouts:
+    - function: add_grid
+      steps: [4, 4]
+      xy_base: [500.0, 500.0]
+      step_vectors: [[1300.0, 0], [0, 600.0]]
+      turbine_models: [opt_yawm, yawm2yaw, NREL5MW, kTI_amb_04]
+
+algorithm:
+  algo_type: Downwind
+  wake_models: ["IECTIk_quadratic", "Bastankhah2016_linear"]
+
+optimization:
+  problem:
+    name: opt_yawm
+    problem_type: OptFarmVars
+    functions:
+      - name: add_var
+        variable: YAWM
+        typ: float
+        init: 0.0
+        min: -30.0
+        max: 30.0
+        level: turbine
+    objectives:
+      - objective_type: MaxFarmPower
+
+  optimizer:
+    optimizer_type: Optimizer_pymoo
+    problem_pars:
+      vectorize: True
+    algo_pars:
+      type: GA
+      pop_size: 50
+      seed: 42
+    term_pars: [n_gen, 100]

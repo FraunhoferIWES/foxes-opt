@@ -4,6 +4,7 @@ Wind farm optimization.
 
 from .core import FarmOptProblem, FarmObjective, FarmConstraint  # noqa: F401
 
+from . import input  # noqa: F401
 from . import problems  # noqa: F401
 from . import constraints  # noqa: F401
 from . import objectives  # noqa: F401
