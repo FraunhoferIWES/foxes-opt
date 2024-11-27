@@ -270,6 +270,7 @@ class FarmOptProblem(Problem):
         self._count += 1
         self.update_problem_individual(vars_int, vars_float)
         farm_results = self.algo.calc_farm(**self.calc_farm_args)
+        self.algo.verbosity = 0
 
         if self.points is None:
             return farm_results
@@ -302,6 +303,7 @@ class FarmOptProblem(Problem):
         farm_results = self.algo.calc_farm(**self.calc_farm_args)
         farm_results["n_pop"] = len(vars_float)
         farm_results["n_org_states"] = self._org_n_states
+        self.algo.verbosity = 0
 
         if self.points is None:
             return farm_results

@@ -1,6 +1,7 @@
 from iwopy import LocalFD
 from iwopy.core import Optimizer
 from foxes.input.yaml import read_dict as foxes_read_dict
+from foxes.input.yaml import run_outputs as foxes_run_output
 from foxes.utils import Dict
 
 from foxes_opt.core import FarmOptProblem, FarmObjective, FarmConstraint
@@ -46,8 +47,8 @@ def read_dict(idict, *args, verbosity=None, **kwargs):
 
     # read base components:
     algo, engine = foxes_read_dict(idict, *args, verbosity=verbosity, **kwargs)
-    algo.verbosity = 0
-    engine.verbosity = 0
+    if engine is not None:
+        engine.verbosity = 0
 
     # create problem:
     _print("Creating problem")
@@ -66,8 +67,6 @@ def read_dict(idict, *args, verbosity=None, **kwargs):
         Dict(f, name=f"{pdict.name}.function{i}")
         for i, f in enumerate(pdict.pop("functions", []))
     ]
-    if verbosity is not None:
-        pdict["verbosity"] = verbosity - 1
     problem = FarmOptProblem.new(algo=algo, **pdict)
     for fdict in flist:
         fname = fdict.pop_item("name")
@@ -91,12 +90,50 @@ def read_dict(idict, *args, verbosity=None, **kwargs):
     # create solver:
     _print("Creating optimizer")
     sdict = jdict.get_item("optimizer")
-    if verbosity is not None:
-        sdict["verbosity"] = verbosity - 1
     optimizer = Optimizer.new(problem=problem, **sdict)
     optimizer.initialize()
 
     return algo, engine, problem, optimizer
+
+def run_outputs(idict, algo=None, farm_results=None, verbosity=None):
+    """
+    Run outputs from dict.
+
+    Parameters
+    ----------
+    idict: foxes.utils.Dict
+        The input parameter dictionary
+    algo: foxes.core.Algorithm, optional
+        The algorithm
+    farm_results: xarray.Dataset, optional
+        The farm results
+    verbosity: int, optional
+        Force a verbosity level, 0 = silent, overrules
+        settings from idict
+    
+    Returns
+    -------
+    outputs: list of tuple
+        For each output enty, a tuple (dict, results),
+        where results is a tuple that represents one
+        entry per function call
+
+    :group: input.yaml
+
+    """
+    def _print(*args, level=1, **kwargs):
+        if verbosity is None or verbosity >= level:
+            print(*args, **kwargs)
+    
+    out = foxes_run_output(
+        idict, 
+        algo, 
+        farm_results=farm_results, 
+        point_results=None, 
+        verbosity=verbosity,
+    )
+
+    return out
 
 def run_dict(idict, *args, verbosity=None, **kwargs):
     """
@@ -114,16 +151,21 @@ def run_dict(idict, *args, verbosity=None, **kwargs):
     kwargs: dict, optional
         Additional parameters for foxes.input.run_dict
 
+    Returns
+    -------
+    results:
+    outputs: list of tuple, optional
+        For each output enty, a tuple (dict, results),
+        where results is a tuple that represents one
+        entry per function call
+
     """
 
     def _print(*args, level=1, **kwargs):
         if verbosity is None or verbosity >= level:
             print(*args, **kwargs)
 
-    # extract outputs:
-    odict = idict.pop("outputs", Dict(name=idict.name+".outputs"))
-
-    # read foxes components:
+    # read components:
     algo, engine, problem, optimizer = read_dict(
         idict, *args, verbosity=verbosity, **kwargs)
 
@@ -135,11 +177,25 @@ def run_dict(idict, *args, verbosity=None, **kwargs):
     if rdict.pop_item("run", True):
         _print("Running optimizer")
         results = optimizer.solve(**rdict)
+        optimizer.finalize(results)
+        farm_results = results.problem_results
     else:
         results = None
+        farm_results = None
     out = (results,)
+
+    print()
+    print(results)
+    print()
+    
+    # run outputs:
+    out += (run_outputs(idict, algo, farm_results, verbosity), )
 
     # shutdown engine, if created above:
     if engine is not None:
         _print(f"Finalizing engine: {engine}")
         engine.finalize()
+    
+    print(out)
+
+    return out
