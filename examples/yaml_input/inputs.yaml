@@ -1,5 +1,7 @@
 engine:
   engine_type: process
+  n_procs: 2
+  chunk_size_states: 400
 
 states:
   states_type: ScanStates
