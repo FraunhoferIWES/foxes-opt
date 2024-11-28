@@ -1,12 +1,11 @@
 engine:
   engine_type: process
-  n_procs: 2
   chunk_size_states: 400
 
 states:
   states_type: ScanStates
   scans:
-    WS: [9]
+    WS: [4, 6, 8, 10]
     WD: [0, 45, 90, 135, 180, 225, 270, 315]
     TI: [0.05]
     RHO: [1.225]
@@ -46,14 +45,14 @@ optimization:
     algo_pars:
       type: GA
       pop_size: 100
-      #seed: 1234
+      seed: 42
     term_pars: [n_gen, 100]
 
 outputs:
   - output_type: plt
     functions:
       - function: figure
-        figsize: [8, 8]
+        figsize: [9, 8]
         result_labels: $fig
   - object: $fig
     functions:
@@ -82,7 +81,7 @@ outputs:
       - function: get_figure
         turbine: 4
         ws_var: AMB_REWS
-        ws_bins: [0, 30]
+        ws_bins: [0, 3, 5, 7, 9, 11]
         wd_sectors: 8
         title: Wind rose
         fig: $fig
@@ -93,7 +92,7 @@ outputs:
         turbine: 0
         title: Turbine 0
         variable: YAWM
-        ws_bins: [0, 30]
+        ws_bins: [0, 3, 5, 7, 9, 11]
         wd_sectors: 8
         contraction: mean_no_weights
         cmap: PuOr
@@ -105,7 +104,7 @@ outputs:
         turbine: 8
         title: Turbine 8
         variable: YAWM
-        ws_bins: [0, 30]
+        ws_bins: [0, 3, 5, 7, 9, 11]
         wd_sectors: 8
         contraction: mean_no_weights
         cmap: PuOr
