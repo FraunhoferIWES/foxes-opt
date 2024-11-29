@@ -63,4 +63,4 @@
 - Introducing `output` sub package, and first outputs `SingleOptResultsWriter` and `MultiOptResultsWriter`
 - New example `yaml_input`, demonstrating how to run *foxes_out through a yaml parameter file
 
-**Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.2.3](https://github.com/FraunhoferIWES/foxes/commits/v0.2.3)
+**Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.3](https://github.com/FraunhoferIWES/foxes/commits/v0.3)
