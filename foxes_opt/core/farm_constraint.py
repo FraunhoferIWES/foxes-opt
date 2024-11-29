@@ -111,4 +111,3 @@ class FarmConstraint(Constraint):
 
         """
         return new_instance(cls, constraint_type, *args, **kwargs)
-        

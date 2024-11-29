@@ -111,4 +111,3 @@ class FarmObjective(Objective):
 
         """
         return new_instance(cls, objective_type, *args, **kwargs)
-        

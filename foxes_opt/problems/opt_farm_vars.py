@@ -138,7 +138,9 @@ class OptFarmVars(FarmVarsProblem):
             tinds = inds - i0 + i0i if typ is int else inds - i0 + i0f
 
             hdata = pd.DataFrame(index=inds)
-            hdata.loc[inds, "name"] = [f"{variable}_{i:05d}" for i in range(len(states))]
+            hdata.loc[inds, "name"] = [
+                f"{variable}_{i:05d}" for i in range(len(states))
+            ]
             hdata.loc[inds, "var"] = variable
             hdata.loc[inds, "type"] = "int" if typ is int else "float"
             hdata.loc[inds, "index"] = tinds
@@ -164,7 +166,9 @@ class OptFarmVars(FarmVarsProblem):
             tinds = inds - i0 + i0i if typ is int else inds - i0 + i0f
 
             hdata = pd.DataFrame(index=inds)
-            hdata.loc[inds, "name"] = [f"{variable}_{i:04d}" for i in range(len(turbines))]
+            hdata.loc[inds, "name"] = [
+                f"{variable}_{i:04d}" for i in range(len(turbines))
+            ]
             hdata.loc[inds, "var"] = variable
             hdata.loc[inds, "type"] = "int" if typ is int else "float"
             hdata.loc[inds, "index"] = tinds

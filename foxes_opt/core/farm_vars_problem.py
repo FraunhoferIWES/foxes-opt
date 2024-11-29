@@ -236,4 +236,3 @@ class FarmVarsProblem(FarmOptProblem):
 
         """
         return new_instance(cls, problem_type, *args, **kwargs)
-    
