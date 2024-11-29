@@ -1,3 +1,7 @@
+# -----------
+# foxes setup
+# -----------
+
 engine:
   engine_type: process
   chunk_size_states: 400
@@ -16,27 +20,32 @@ wind_farm:
       steps: [3, 3]
       xy_base: [0.0, 0.0]
       step_vectors: [[1300.0, 0], [0, 1300.0]]
-      turbine_models: [opt_yawm, yawm2yaw, NREL5MW]
+      turbine_models: [opt_yawm, yawm2yaw, NREL5MW]   # Notice the opt_yawm model
 
 algorithm:
   algo_type: Downwind
   wake_models: ["Bastankhah2016_linear_ka02", "CrespoHernandez_quadratic_ka04"]
   wake_frame: yawed
 
+# ------------------
+# optimization setup
+# ------------------
+
 optimization:
   problem:
-    name: opt_yawm
-    problem_type: OptFarmVars
-    functions:
-      - name: add_var
+    name: opt_yawm                    # Name of the turbine model, wind_farm section
+    problem_type: OptFarmVars         # Name of the optimization problem class
+    functions:                        # The following functions are called before init
+      - name: add_var                 # For this problem we need to add an opt variable
         variable: YAWM
         typ: float
         init: 0.0
         min: -30.0
         max: 30.0
-        level: state-turbine
-    objectives:
-      - objective_type: MaxFarmPower
+        level: state-turbine          # one variable per state and turbine
+    objectives:                       # add all objectives here to the list
+      - objective_type: MaxFarmPower  
+    # constraints can be added here similarly
 
   optimizer:
     optimizer_type: Optimizer_pymoo
@@ -48,15 +57,23 @@ optimization:
       seed: 42
     term_pars: [n_gen, 100]
 
+# -------
+# outputs
+# -------
+
 outputs:
+
+  # write results to netCDF file:
   - output_type: SingleObjResultsWriter
     functions:
       - function: write_nc
         fname: results.nc
-  - output_type: plt
+  
+  # Create a rather complex plot and save it:
+  - output_type: plt          
     functions:
       - function: figure
-        figsize: [9, 8]
+        figsize: [9, 9]
         result_labels: $fig
   - object: $fig
     functions:
@@ -118,4 +135,7 @@ outputs:
         ax: $ax4
   - output_type: plt
     functions:
+      - function: savefig
+        fname: result.png
       - function: show
+      
