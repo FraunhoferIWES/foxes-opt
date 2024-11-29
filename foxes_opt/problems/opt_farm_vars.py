@@ -31,7 +31,7 @@ class OptFarmVars(FarmVarsProblem):
 
     def add_var(
         self,
-        name,
+        variable,
         typ,
         init,
         min,
@@ -46,7 +46,7 @@ class OptFarmVars(FarmVarsProblem):
 
         Parameters
         ----------
-        name: str
+        variable: str
             The foxes farm variable name
         typ: type
             The variable type, either float or int
@@ -69,7 +69,11 @@ class OptFarmVars(FarmVarsProblem):
             same turbine model
 
         """
-        if typ is not float and typ is not int:
+        if typ == "float":
+            typ = float
+        elif float == "int":
+            typ = int
+        elif typ is not float and typ is not int:
             raise TypeError(
                 f"Problem '{self.name}': Expecting float or int, got type '{type(typ).__name__}'"
             )
@@ -93,9 +97,9 @@ class OptFarmVars(FarmVarsProblem):
             i0i = 0
             i0f = 0
         else:
-            if name in self._vars["var"].tolist():
+            if variable in self._vars["var"].tolist():
                 raise ValueError(
-                    f"Problem '{self.name}': Attempt to add variable '{name}' twice"
+                    f"Problem '{self.name}': Attempt to add variable '{variable}' twice"
                 )
             i0 = len(self._vars.index)
             grps = self._vars.groupby("type")
@@ -109,8 +113,8 @@ class OptFarmVars(FarmVarsProblem):
 
         if level == "uniform":
             hdata = pd.DataFrame(index=[i0])
-            hdata.loc[i0, "name"] = name
-            hdata.loc[i0, "var"] = name
+            hdata.loc[i0, "name"] = variable
+            hdata.loc[i0, "var"] = variable
             hdata.loc[i0, "type"] = "int" if typ is int else "float"
             hdata.loc[i0, "index"] = i0i if typ is int else i0f
             hdata.loc[i0, "level"] = level
@@ -134,8 +138,10 @@ class OptFarmVars(FarmVarsProblem):
             tinds = inds - i0 + i0i if typ is int else inds - i0 + i0f
 
             hdata = pd.DataFrame(index=inds)
-            hdata.loc[inds, "name"] = [f"{name}_{i:05d}" for i in range(len(states))]
-            hdata.loc[inds, "var"] = name
+            hdata.loc[inds, "name"] = [
+                f"{variable}_{i:05d}" for i in range(len(states))
+            ]
+            hdata.loc[inds, "var"] = variable
             hdata.loc[inds, "type"] = "int" if typ is int else "float"
             hdata.loc[inds, "index"] = tinds
             hdata.loc[inds, "level"] = level
@@ -160,8 +166,10 @@ class OptFarmVars(FarmVarsProblem):
             tinds = inds - i0 + i0i if typ is int else inds - i0 + i0f
 
             hdata = pd.DataFrame(index=inds)
-            hdata.loc[inds, "name"] = [f"{name}_{i:04d}" for i in range(len(turbines))]
-            hdata.loc[inds, "var"] = name
+            hdata.loc[inds, "name"] = [
+                f"{variable}_{i:04d}" for i in range(len(turbines))
+            ]
+            hdata.loc[inds, "var"] = variable
             hdata.loc[inds, "type"] = "int" if typ is int else "float"
             hdata.loc[inds, "index"] = tinds
             hdata.loc[inds, "level"] = level
@@ -198,9 +206,9 @@ class OptFarmVars(FarmVarsProblem):
 
             hdata = pd.DataFrame(index=inds)
             hdata.loc[inds, "name"] = [
-                f"{name}_{whr[0][i]:05d}_{whr[1][i]:04d}" for i in range(len(st))
+                f"{variable}_{whr[0][i]:05d}_{whr[1][i]:04d}" for i in range(len(st))
             ]
-            hdata.loc[inds, "var"] = name
+            hdata.loc[inds, "var"] = variable
             hdata.loc[inds, "type"] = "int" if typ is int else "float"
             hdata.loc[inds, "index"] = tinds
             hdata.loc[inds, "level"] = level

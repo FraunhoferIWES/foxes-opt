@@ -167,3 +167,8 @@ cython_debug/
 makedocs/build/
 makedocs/source/_*
 makedocs/source/_*/
+
+result*.*
+results/
+
+!results_writer.py

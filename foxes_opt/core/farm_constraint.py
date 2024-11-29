@@ -1,6 +1,6 @@
 from iwopy import Constraint
 
-from foxes.utils import all_subclasses
+from foxes.utils import all_subclasses, new_instance
 
 
 class FarmConstraint(Constraint):
@@ -94,3 +94,20 @@ class FarmConstraint(Constraint):
         names = sorted([scls.__name__ for scls in all_subclasses(cls)])
         for n in names:
             print(n)
+
+    @classmethod
+    def new(cls, constraint_type, *args, **kwargs):
+        """
+        Run-time farm constraint factory.
+
+        Parameters
+        ----------
+        constraint_type: string
+            The selected derived class name
+        args: tuple, optional
+            Additional parameters for the constructor
+        kwargs: dict, optional
+            Additional parameters for the constructor
+
+        """
+        return new_instance(cls, constraint_type, *args, **kwargs)
