@@ -13,7 +13,7 @@
     
     
       
-        <title>foxes_opt.core.farm_opt_problem - foxes-opt 0.2.2 documentation</title>
+        <title>foxes_opt.core.farm_opt_problem - foxes-opt 0.3 documentation</title>
       
     
     
@@ -71,7 +71,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../../index.html" title="foxes-opt 0.2.2 documentation" class="md-header__button md-logo" aria-label="foxes-opt 0.2.2 documentation" data-md-component="logo">
+    <a href="../../../index.html" title="foxes-opt 0.3 documentation" class="md-header__button md-logo" aria-label="foxes-opt 0.3 documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -83,7 +83,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            foxes-opt 0.2.2 documentation
+            foxes-opt 0.3 documentation
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -170,12 +170,12 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../../index.html" title="foxes-opt 0.2.2 documentation" class="md-nav__button md-logo" aria-label="foxes-opt 0.2.2 documentation" data-md-component="logo">
+    <a href="../../../index.html" title="foxes-opt 0.3 documentation" class="md-nav__button md-logo" aria-label="foxes-opt 0.3 documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
     </a>
-    foxes-opt 0.2.2 documentation
+    foxes-opt 0.3 documentation
   </label>
   
     <div class="md-nav__source">
@@ -219,6 +219,22 @@
     <li class="md-nav__item">
       <a href="../../../installation.html" class="md-nav__link">
         <span title="/installation.md (reference label)" class="md-ellipsis">Installation</span>
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../parameter_files.html" class="md-nav__link">
+        <span title="/parameter_files.md (reference label)" class="md-ellipsis">Input parameter files</span>
       </a>
     </li>
   
@@ -282,7 +298,7 @@
   
     <li class="md-nav__item">
       <a href="../../../CHANGELOG.html" class="md-nav__link">
-        <span title="/changelog.md (reference label)" class="md-ellipsis">History</span>
+        <span title="/changelog.md (reference label)" class="md-ellipsis">Changelog</span>
       </a>
     </li>
   
@@ -322,6 +338,7 @@
 <span class="kn">from</span> <span class="nn">iwopy</span> <span class="kn">import</span> <span class="n">Problem</span>
 
 <span class="kn">from</span> <span class="nn">foxes.config</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">foxes.utils</span> <span class="kn">import</span> <span class="n">new_instance</span>
 
 <span class="kn">from</span> <span class="nn">.pop_states</span> <span class="kn">import</span> <span class="n">PopStates</span>
 
@@ -370,7 +387,7 @@
 <span class="sd">            or None for all</span>
 <span class="sd">        calc_farm_args: dict</span>
 <span class="sd">            Additional parameters for algo.calc_farm()</span>
-<span class="sd">        points : numpy.ndarray, optional</span>
+<span class="sd">        points: numpy.ndarray, optional</span>
 <span class="sd">            The probe points, shape: (n_states, n_points, 3)</span>
 <span class="sd">        kwargs: dict, optional</span>
 <span class="sd">            Additional parameters for `iwopy.Problem`</span>
@@ -611,6 +628,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_problem_individual</span><span class="p">(</span><span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">)</span>
         <span class="n">farm_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">algo</span><span class="o">.</span><span class="n">calc_farm</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_farm_args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">algo</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">farm_results</span>
@@ -646,6 +664,7 @@
         <span class="n">farm_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">algo</span><span class="o">.</span><span class="n">calc_farm</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_farm_args</span><span class="p">)</span>
         <span class="n">farm_results</span><span class="p">[</span><span class="s2">&quot;n_pop&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vars_float</span><span class="p">)</span>
         <span class="n">farm_results</span><span class="p">[</span><span class="s2">&quot;n_org_states&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_org_n_states</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">algo</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">farm_results</span>
@@ -679,6 +698,26 @@
             <span class="n">ax</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">add_to_layout_figure</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">ax</span></div>
+
+
+<div class="viewcode-block" id="FarmOptProblem.new">
+<a class="viewcode-back" href="../../../_foxesopt/problems/layoutFarmLayoutOptProblem.html#foxes_opt.core.FarmOptProblem.new">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">problem_type</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run-time farm opt problem factory.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        problem_type: string</span>
+<span class="sd">            The selected derived class name</span>
+<span class="sd">        args: tuple, optional</span>
+<span class="sd">            Additional parameters for the constructor</span>
+<span class="sd">        kwargs: dict, optional</span>
+<span class="sd">            Additional parameters for the constructor</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">new_instance</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">problem_type</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 </div>
 
 </code></pre></div>

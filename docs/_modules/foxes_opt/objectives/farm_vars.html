@@ -13,7 +13,7 @@
     
     
       
-        <title>foxes_opt.objectives.farm_vars - foxes-opt 0.2.2 documentation</title>
+        <title>foxes_opt.objectives.farm_vars - foxes-opt 0.3 documentation</title>
       
     
     
@@ -71,7 +71,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../../index.html" title="foxes-opt 0.2.2 documentation" class="md-header__button md-logo" aria-label="foxes-opt 0.2.2 documentation" data-md-component="logo">
+    <a href="../../../index.html" title="foxes-opt 0.3 documentation" class="md-header__button md-logo" aria-label="foxes-opt 0.3 documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -83,7 +83,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            foxes-opt 0.2.2 documentation
+            foxes-opt 0.3 documentation
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -170,12 +170,12 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../../index.html" title="foxes-opt 0.2.2 documentation" class="md-nav__button md-logo" aria-label="foxes-opt 0.2.2 documentation" data-md-component="logo">
+    <a href="../../../index.html" title="foxes-opt 0.3 documentation" class="md-nav__button md-logo" aria-label="foxes-opt 0.3 documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
     </a>
-    foxes-opt 0.2.2 documentation
+    foxes-opt 0.3 documentation
   </label>
   
     <div class="md-nav__source">
@@ -219,6 +219,22 @@
     <li class="md-nav__item">
       <a href="../../../installation.html" class="md-nav__link">
         <span title="/installation.md (reference label)" class="md-ellipsis">Installation</span>
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../parameter_files.html" class="md-nav__link">
+        <span title="/parameter_files.md (reference label)" class="md-ellipsis">Input parameter files</span>
       </a>
     </li>
   
@@ -282,7 +298,7 @@
   
     <li class="md-nav__item">
       <a href="../../../CHANGELOG.html" class="md-nav__link">
-        <span title="/changelog.md (reference label)" class="md-ellipsis">History</span>
+        <span title="/changelog.md (reference label)" class="md-ellipsis">Changelog</span>
       </a>
     </li>
   
@@ -343,7 +359,7 @@
 <span class="sd">        or None for all</span>
 <span class="sd">    rules: dict</span>
 <span class="sd">        Contraction rules. Key: coordinate name str, value</span>
-<span class="sd">        is str: min, max, sum, mean</span>
+<span class="sd">        is str: weights, mean_no_weights, sum, min, max</span>
 <span class="sd">    scale: float</span>
 <span class="sd">        The scaling factor</span>
 
@@ -483,7 +499,7 @@
                 <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">rule</span> <span class="o">==</span> <span class="s2">&quot;sum&quot;</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">rule</span> <span class="o">==</span> <span class="s2">&quot;mean&quot;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">rule</span> <span class="o">==</span> <span class="s2">&quot;mean_no_weights&quot;</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">dim</span> <span class="o">==</span> <span class="n">FC</span><span class="o">.</span><span class="n">STATE</span> <span class="ow">and</span> <span class="n">rule</span> <span class="o">==</span> <span class="s2">&quot;weights&quot;</span><span class="p">:</span>
                 <span class="n">odims</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dims</span>
@@ -500,11 +516,11 @@
                     <span class="p">)</span>
             <span class="k">elif</span> <span class="n">dim</span> <span class="o">==</span> <span class="n">FC</span><span class="o">.</span><span class="n">STATE</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Objective &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;: Unknown contraction for dimension &#39;</span><span class="si">{</span><span class="n">dim</span><span class="si">}</span><span class="s2">&#39;: &#39;</span><span class="si">{</span><span class="n">rule</span><span class="si">}</span><span class="s2">&#39;. Choose: min, max, sum, mean, weights&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Objective &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;: Unknown contraction for dimension &#39;</span><span class="si">{</span><span class="n">dim</span><span class="si">}</span><span class="s2">&#39;: &#39;</span><span class="si">{</span><span class="n">rule</span><span class="si">}</span><span class="s2">&#39;. Choose: weights, mean_no_weights, sum, min, max&quot;</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Objective &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;: Unknown contraction for dimension &#39;</span><span class="si">{</span><span class="n">dim</span><span class="si">}</span><span class="s2">&#39;: &#39;</span><span class="si">{</span><span class="n">rule</span><span class="si">}</span><span class="s2">&#39;. Choose: min, max, sum, mean&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Objective &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;: Unknown contraction for dimension &#39;</span><span class="si">{</span><span class="n">dim</span><span class="si">}</span><span class="s2">&#39;: &#39;</span><span class="si">{</span><span class="n">rule</span><span class="si">}</span><span class="s2">&#39;. Choose: min, max, sum, mean_no_weights&quot;</span>
                 <span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span>
 

@@ -1,4 +1,4 @@
-# History
+# Changelog
 
 ## v0.1
 
@@ -54,3 +54,13 @@
 - New notebook: `wake_steering.ipynb`, demonstrating how to optimize yaw angles
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.2.2](https://github.com/FraunhoferIWES/foxes/commits/v0.2.2)
+
+## v0.3
+
+- Introducing command line application `foxes_opt_yaml`: Runs optimization from `yaml` parameter input file, no Python script needed.
+- Changes in `FarmVarsObjective`: Renaming contraction rule `mean` into `mean_no_weights`.
+- Adding run-time factories to problems, objectives, and constraints.
+- Introducing `output` sub package, and first outputs `SingleOptResultsWriter` and `MultiOptResultsWriter`
+- New example `yaml_input`, demonstrating how to run *foxes_out through a yaml parameter file
+
+**Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.2.3](https://github.com/FraunhoferIWES/foxes/commits/v0.2.3)
