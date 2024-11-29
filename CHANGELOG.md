@@ -1,4 +1,4 @@
-# History
+# Changelog
 
 ## v0.1
 
