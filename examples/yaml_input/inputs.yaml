@@ -49,6 +49,10 @@ optimization:
     term_pars: [n_gen, 100]
 
 outputs:
+  - output_type: SingleObjResultsWriter
+    functions:
+      - function: write_nc
+        fname: results.nc
   - output_type: plt
     functions:
       - function: figure

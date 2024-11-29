@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "foxes-opt"
-version = "0.2.3"
+version = "0.3"
 authors = [
   {name = "Jonas Schulte"},
 ]
@@ -36,6 +36,8 @@ dependencies = [
     "foxes>=1.2.1",
     "iwopy>=0.3.1",
     "pymoo>=0.6",
+    "xarray",
+    "netcdf4",
 ]
 
 [project.optional-dependencies]

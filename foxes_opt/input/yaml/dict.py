@@ -2,9 +2,11 @@ from iwopy import LocalFD
 from iwopy.core import Optimizer
 from foxes.input.yaml import read_dict as foxes_read_dict
 from foxes.input.yaml import run_outputs as foxes_run_output
-from foxes.utils import Dict
+from foxes.input.yaml import get_output_obj, run_obj_function
+from foxes.utils import Dict, all_subclasses
 
 from foxes_opt.core import FarmOptProblem, FarmObjective, FarmConstraint
+from foxes_opt.output.opt_output import OptOutput
 
 
 def read_dict(idict, *args, verbosity=None, **kwargs):
@@ -29,8 +31,6 @@ def read_dict(idict, *args, verbosity=None, **kwargs):
         The algorithm
     engine: foxes.core.Engine
         The engine, or None if not set
-    problem: foxes_opt.core.FarmOptProblem
-        The farm optimization problem
     optimizer: iwopy.core.Optimizer
         The optimization problem solver
     
@@ -93,9 +93,16 @@ def read_dict(idict, *args, verbosity=None, **kwargs):
     optimizer = Optimizer.new(problem=problem, **sdict)
     optimizer.initialize()
 
-    return algo, engine, problem, optimizer
+    return algo, engine, optimizer
 
-def run_outputs(idict, algo=None, farm_results=None, verbosity=None):
+def run_outputs(
+    idict,
+    algo=None,
+    farm_results=None,
+    opt_results=None,
+    extra_sig={},
+    **kwargs,
+):
     """
     Run outputs from dict.
 
@@ -107,9 +114,13 @@ def run_outputs(idict, algo=None, farm_results=None, verbosity=None):
         The algorithm
     farm_results: xarray.Dataset, optional
         The farm results
-    verbosity: int, optional
-        Force a verbosity level, 0 = silent, overrules
-        settings from idict
+    opt_results: iwopy.core.SingleObjOptResults or iwopy.core.MultiObjOptResults, optional
+        The optimization results
+    extra_sig: dict
+        Extra function signature check, sets
+        arguments (key) with data (value)
+    kwargs: dict, optional
+        Additional parameters for foxes_run_output
     
     Returns
     -------
@@ -121,21 +132,20 @@ def run_outputs(idict, algo=None, farm_results=None, verbosity=None):
     :group: input.yaml
 
     """
-    def _print(*args, level=1, **kwargs):
-        if verbosity is None or verbosity >= level:
-            print(*args, **kwargs)
+    extra_sig.update({"opt_results": opt_results})
     
     out = foxes_run_output(
         idict, 
         algo, 
         farm_results=farm_results, 
         point_results=None, 
-        verbosity=verbosity,
+        extra_sig=extra_sig,
+        **kwargs,
     )
 
     return out
 
-def run_dict(idict, *args, verbosity=None, **kwargs):
+def run_dict(idict, *args, extra_sig={}, verbosity=None, **kwargs):
     """
     Run from a dictionary type parameter file.
 
@@ -145,6 +155,9 @@ def run_dict(idict, *args, verbosity=None, **kwargs):
         The input parameter dictionary
     args: tuple, optional
         Additional parameters for foxes.input.run_dict
+    extra_sig: dict
+        Extra function signature check, sets
+        arguments (key) with data (value)
     verbosity: int, optional
         Force a verbosity level, 0 = silent, overrules
         settings from idict
@@ -153,8 +166,9 @@ def run_dict(idict, *args, verbosity=None, **kwargs):
 
     Returns
     -------
-    results:
-    outputs: list of tuple, optional
+    opt_results: iwopy.core.SingleObjOptResults or iwopy.core.MultiObjOptResults
+        The optimization results
+    outputs: list of tuple
         For each output enty, a tuple (dict, results),
         where results is a tuple that represents one
         entry per function call
@@ -166,7 +180,7 @@ def run_dict(idict, *args, verbosity=None, **kwargs):
             print(*args, **kwargs)
 
     # read components:
-    algo, engine, problem, optimizer = read_dict(
+    algo, engine, optimizer = read_dict(
         idict, *args, verbosity=verbosity, **kwargs)
 
     if verbosity is None or verbosity >= 0:
@@ -176,26 +190,24 @@ def run_dict(idict, *args, verbosity=None, **kwargs):
     rdict = idict.get_item("solve", Dict(name=idict.name+".solve"))
     if rdict.pop_item("run", True):
         _print("Running optimizer")
-        results = optimizer.solve(**rdict)
-        optimizer.finalize(results)
-        farm_results = results.problem_results
+        opt_results = optimizer.solve(**rdict)
+        optimizer.finalize(opt_results)
+        farm_results = opt_results.problem_results
     else:
-        results = None
+        opt_results = None
         farm_results = None
-    out = (results,)
 
     print()
-    print(results)
+    print(opt_results)
     print()
     
     # run outputs:
-    out += (run_outputs(idict, algo, farm_results, verbosity), )
+    out = run_outputs(
+        idict, algo, farm_results, opt_results, extra_sig=extra_sig, verbosity=verbosity)
 
     # shutdown engine, if created above:
     if engine is not None:
         _print(f"Finalizing engine: {engine}")
         engine.finalize()
-    
-    print(out)
 
-    return out
+    return opt_results, out

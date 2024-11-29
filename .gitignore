@@ -166,3 +166,7 @@ cython_debug/
 
 docs/
 makedocs/
+result*.*
+results/
+
+!results_writer.py
