@@ -67,6 +67,6 @@
 
 ## v0.3.1
 
-
+- Support for *foxes* v1.2.3
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.3.1](https://github.com/FraunhoferIWES/foxes/commits/v0.3.1)
