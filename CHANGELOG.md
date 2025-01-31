@@ -65,8 +65,8 @@
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.3](https://github.com/FraunhoferIWES/foxes/commits/v0.3)
 
-## v0.3.1
+## v0.4
 
-- Support for *foxes* v1.2.3
+- Support for *foxes* v1.3
 
-**Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.3.1](https://github.com/FraunhoferIWES/foxes/commits/v0.3.1)
+**Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.4](https://github.com/FraunhoferIWES/foxes/commits/v0.4)

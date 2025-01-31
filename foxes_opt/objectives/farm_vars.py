@@ -135,7 +135,7 @@ class FarmVarObjective(FarmObjective):
 
         return out
 
-    def _contract(self, data):
+    def _contract(self, data, weights):
         """
         Helper function for data contraction
         """
@@ -150,12 +150,22 @@ class FarmVarObjective(FarmObjective):
                 data = data.mean(dim=dim)
             elif dim == FC.STATE and rule == "weights":
                 odims = data.dims
-                weights = self.problem._org_weights
+                wdims = weights.dims
+                if wdims == (FC.STATE,):
+                    wx = "s"
+                elif wdims == (FC.POP, FC.STATE):
+                    wx = "ps"
+                elif wdims == (FC.STATE, FC.TURBINE):
+                    wx = "st"
+                elif wdims == (FC.POP, FC.STATE, FC.TURBINE):
+                    wx = "pst"
+                else:
+                    raise ValueError(f"Objective '{self.name}': Expecting weight dimensions {(FC.STATE,)}, {(FC.POP, FC.STATE)}, {(FC.STATE, FC.TURBINE)} or {(FC.POP, FC.STATE, FC.TURBINE)}, got {wdims}")
                 if len(odims) > 1 and odims[:2] == (FC.STATE, FC.TURBINE):
-                    data = np.einsum("st...,st->t...", data, weights)
+                    data = np.einsum(f"st...,{wx}->t...", data, weights)
                     data = xr.DataArray(data, dims=odims[1:])
                 elif len(odims) > 2 and odims[:3] == (FC.POP, FC.STATE, FC.TURBINE):
-                    data = np.einsum("pst...,st->pt...", data, weights)
+                    data = np.einsum(f"pst...,{wx}->pt...", data, weights)
                     data = xr.DataArray(data, dims=(FC.POP,) + odims[2:])
                 else:
                     raise NotImplementedError(
@@ -195,9 +205,10 @@ class FarmVarObjective(FarmObjective):
 
         """
         data = problem_results[self.variable]
+        weights = problem_results[FV.WEIGHT]
         if self.n_sel_turbines < self.farm.n_turbines:
             data = data[:, self.sel_turbines]
-        data = self._contract(data) / self.scale
+        data = self._contract(data, weights) / self.scale
 
         return np.array([data], dtype=np.float64)
 
@@ -226,6 +237,7 @@ class FarmVarObjective(FarmObjective):
         n_pop = problem_results["n_pop"].values
         n_states = problem_results["n_org_states"].values
         n_turbines = problem_results.sizes[FC.TURBINE]
+
         data = (
             problem_results[self.variable]
             .to_numpy()
@@ -233,10 +245,27 @@ class FarmVarObjective(FarmObjective):
         )
         data = xr.DataArray(data, dims=(FC.POP, FC.STATE, FC.TURBINE))
 
+        weights = problem_results[FV.WEIGHT]
+        if weights.dims == (FC.STATE,):
+            weights = (
+                problem_results[FV.WEIGHT]
+                .to_numpy()
+                .reshape(n_pop, n_states)
+            )
+            wdims = (FC.POP, FC.STATE)
+        elif weights.dims == (FC.STATE, FC.TURBINE):
+            weights = (
+                problem_results[FV.WEIGHT]
+                .to_numpy()
+                .reshape(n_pop, n_states, n_turbines)
+            )
+            wdims = (FC.POP, FC.STATE, FC.TURBINE)
+        weights = xr.DataArray(weights, dims=wdims)
+
         if self.n_sel_turbines < self.farm.n_turbines:
             data = data[:, self.sel_turbines]
 
-        return self._contract(data / self.scale).to_numpy()[:, None]
+        return self._contract(data / self.scale, weights).to_numpy()[:, None]
 
     def finalize_individual(self, vars_int, vars_float, problem_results, verbosity=1):
         """
