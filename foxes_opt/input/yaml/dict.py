@@ -2,11 +2,9 @@ from iwopy import LocalFD
 from iwopy.core import Optimizer
 from foxes.input.yaml import read_dict as foxes_read_dict
 from foxes.input.yaml import run_outputs as foxes_run_output
-from foxes.input.yaml import get_output_obj, run_obj_function
-from foxes.utils import Dict, all_subclasses
+from foxes.utils import Dict
 
 from foxes_opt.core import FarmOptProblem, FarmObjective, FarmConstraint
-from foxes_opt.output.opt_output import OptOutput
 
 
 def read_dict(idict, *args, verbosity=None, **kwargs):

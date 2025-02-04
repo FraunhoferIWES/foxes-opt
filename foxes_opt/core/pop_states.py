@@ -3,7 +3,6 @@ import numpy as np
 from foxes.core import States, Data
 import foxes.constants as FC
 import foxes.variables as FV
-from foxes.config import config
 
 
 class PopStates(States):
@@ -74,9 +73,10 @@ class PopStates(States):
                 idata["coords"][self.STATE0] = coord
 
         for dname, (dims0, data0) in idata0["data_vars"].items():
-            if dname != FV.WEIGHT:
-                hdims = tuple([d if d != FC.STATE else self.STATE0 for d in dims0])
-                idata["data_vars"][dname] = (hdims, data0)
+            #if dname != FV.WEIGHT:
+            hdims = tuple([d if d != FC.STATE else self.STATE0 
+                            for d in np.atleast_1d(dims0)])
+            idata["data_vars"][dname] = (hdims, data0)
 
         smap = np.zeros((self.n_pop, self.states.size()), dtype=np.int32)
         smap[:] = np.arange(self.states.size())[None, :]
@@ -90,7 +90,7 @@ class PopStates(States):
                 break
         if not found:
             del idata["coords"][self.STATE0]
-
+        
         return idata
 
     def initialize(self, algo, verbosity=0):
@@ -120,27 +120,6 @@ class PopStates(States):
 
         """
         return self.states.size() * self.n_pop
-
-    def weights(self, algo):
-        """
-        The statistical weights of all states.
-
-        Parameters
-        ----------
-        algo: foxes.core.Algorithm
-            The calculation algorithm
-
-        Returns
-        -------
-        weights: numpy.ndarray
-            The weights, shape: (n_states, n_turbines)
-
-        """
-        weights = np.zeros(
-            (self.n_pop, self.states.size(), algo.n_turbines), dtype=config.dtype_double
-        )
-        weights[:] = self.states.weights(algo)[None, :, :] / self.n_pop
-        return weights.reshape(self.size(), algo.n_turbines)
 
     def output_point_vars(self, algo):
         """
@@ -204,4 +183,8 @@ class PopStates(States):
                 hdims[dname] = dms
         hmdata = Data(hdata, hdims, mdata.loop_dims)
 
-        return self.states.calculate(algo, hmdata, fdata, pdata)
+        out = self.states.calculate(algo, hmdata, fdata, pdata)
+        assert FV.WEIGHT in pdata, f"Missing '{FV.WEIGHT}' in pdata results from states '{self.states.name}'"
+        out[FV.WEIGHT] = pdata[FV.WEIGHT] 
+
+        return out
