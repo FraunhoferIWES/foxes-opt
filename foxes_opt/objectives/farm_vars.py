@@ -160,7 +160,9 @@ class FarmVarObjective(FarmObjective):
                 elif wdims == (FC.POP, FC.STATE, FC.TURBINE):
                     wx = "pst"
                 else:
-                    raise ValueError(f"Objective '{self.name}': Expecting weight dimensions {(FC.STATE,)}, {(FC.POP, FC.STATE)}, {(FC.STATE, FC.TURBINE)} or {(FC.POP, FC.STATE, FC.TURBINE)}, got {wdims}")
+                    raise ValueError(
+                        f"Objective '{self.name}': Expecting weight dimensions {(FC.STATE,)}, {(FC.POP, FC.STATE)}, {(FC.STATE, FC.TURBINE)} or {(FC.POP, FC.STATE, FC.TURBINE)}, got {wdims}"
+                    )
                 if len(odims) > 1 and odims[:2] == (FC.STATE, FC.TURBINE):
                     data = np.einsum(f"st...,{wx}->t...", data, weights)
                     data = xr.DataArray(data, dims=odims[1:])
@@ -247,11 +249,7 @@ class FarmVarObjective(FarmObjective):
 
         weights = problem_results[FV.WEIGHT]
         if weights.dims == (FC.STATE,):
-            weights = (
-                problem_results[FV.WEIGHT]
-                .to_numpy()
-                .reshape(n_pop, n_states)
-            )
+            weights = problem_results[FV.WEIGHT].to_numpy().reshape(n_pop, n_states)
             wdims = (FC.POP, FC.STATE)
         elif weights.dims == (FC.STATE, FC.TURBINE):
             weights = (
