@@ -13,7 +13,7 @@
     
     
       
-        <title>foxes_opt.core.pop_states - foxes-opt 0.3 documentation</title>
+        <title>foxes_opt.core.pop_states - foxes-opt 0.4 documentation</title>
       
     
     
@@ -36,7 +36,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_immaterial_theme.3625f807144f53acf.min.css?v=fbfc4466" />
+        <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_immaterial_theme.d69cbd15d52a24b41.min.css?v=a37d4f05" />
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -71,7 +71,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../../index.html" title="foxes-opt 0.3 documentation" class="md-header__button md-logo" aria-label="foxes-opt 0.3 documentation" data-md-component="logo">
+    <a href="../../../index.html" title="foxes-opt 0.4 documentation" class="md-header__button md-logo" aria-label="foxes-opt 0.4 documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -83,7 +83,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            foxes-opt 0.3 documentation
+            foxes-opt 0.4 documentation
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -170,12 +170,12 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../../index.html" title="foxes-opt 0.3 documentation" class="md-nav__button md-logo" aria-label="foxes-opt 0.3 documentation" data-md-component="logo">
+    <a href="../../../index.html" title="foxes-opt 0.4 documentation" class="md-nav__button md-logo" aria-label="foxes-opt 0.4 documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
     </a>
-    foxes-opt 0.3 documentation
+    foxes-opt 0.4 documentation
   </label>
   
     <div class="md-nav__source">
@@ -334,17 +334,16 @@
 
 
 <h1>Source code for foxes_opt.core.pop_states</h1><div class="highlight"><pre>
-<span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">foxes.core</span> <span class="kn">import</span> <span class="n">States</span><span class="p">,</span> <span class="n">Data</span>
-<span class="kn">import</span> <span class="nn">foxes.constants</span> <span class="k">as</span> <span class="nn">FC</span>
-<span class="kn">import</span> <span class="nn">foxes.variables</span> <span class="k">as</span> <span class="nn">FV</span>
-<span class="kn">from</span> <span class="nn">foxes.config</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">foxes.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">States</span><span class="p">,</span> <span class="n">Data</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">foxes.constants</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">FC</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">foxes.variables</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">FV</span>
 
 
 <div class="viewcode-block" id="PopStates">
 <a class="viewcode-back" href="../../../api.html#foxes_opt.core.PopStates">[docs]</a>
-<span class="k">class</span> <span class="nc">PopStates</span><span class="p">(</span><span class="n">States</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PopStates</span><span class="p">(</span><span class="n">States</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Helper class for vectorized opt population</span>
 <span class="sd">    calculation, via artificial states of length</span>
@@ -363,7 +362,7 @@
 
 <div class="viewcode-block" id="PopStates.__init__">
 <a class="viewcode-back" href="../../../_foxesopt/core/PopStates.__init__.html#foxes_opt.core.PopStates.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="n">n_pop</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="n">n_pop</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor.</span>
 
@@ -382,7 +381,7 @@
 
 <div class="viewcode-block" id="PopStates.load_data">
 <a class="viewcode-back" href="../../../_foxesopt/core/PopStates.load_data.html#foxes_opt.core.PopStates.load_data">[docs]</a>
-    <span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">algo</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">algo</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load and/or create all model data that is subject to chunking.</span>
 
@@ -417,9 +416,11 @@
                 <span class="n">idata</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">STATE0</span><span class="p">]</span> <span class="o">=</span> <span class="n">coord</span>
 
         <span class="k">for</span> <span class="n">dname</span><span class="p">,</span> <span class="p">(</span><span class="n">dims0</span><span class="p">,</span> <span class="n">data0</span><span class="p">)</span> <span class="ow">in</span> <span class="n">idata0</span><span class="p">[</span><span class="s2">&quot;data_vars&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">dname</span> <span class="o">!=</span> <span class="n">FV</span><span class="o">.</span><span class="n">WEIGHT</span><span class="p">:</span>
-                <span class="n">hdims</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">d</span> <span class="k">if</span> <span class="n">d</span> <span class="o">!=</span> <span class="n">FC</span><span class="o">.</span><span class="n">STATE</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATE0</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dims0</span><span class="p">])</span>
-                <span class="n">idata</span><span class="p">[</span><span class="s2">&quot;data_vars&quot;</span><span class="p">][</span><span class="n">dname</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">hdims</span><span class="p">,</span> <span class="n">data0</span><span class="p">)</span>
+            <span class="c1"># if dname != FV.WEIGHT:</span>
+            <span class="n">hdims</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">d</span> <span class="k">if</span> <span class="n">d</span> <span class="o">!=</span> <span class="n">FC</span><span class="o">.</span><span class="n">STATE</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATE0</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">dims0</span><span class="p">)]</span>
+            <span class="p">)</span>
+            <span class="n">idata</span><span class="p">[</span><span class="s2">&quot;data_vars&quot;</span><span class="p">][</span><span class="n">dname</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">hdims</span><span class="p">,</span> <span class="n">data0</span><span class="p">)</span>
 
         <span class="n">smap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_pop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">size</span><span class="p">()),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
         <span class="n">smap</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">size</span><span class="p">())[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
@@ -439,7 +440,7 @@
 
 <div class="viewcode-block" id="PopStates.initialize">
 <a class="viewcode-back" href="../../../_foxesopt/core/PopStates.initialize.html#foxes_opt.core.PopStates.initialize">[docs]</a>
-    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">algo</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">algo</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initializes the model.</span>
 
@@ -458,7 +459,7 @@
 
 <div class="viewcode-block" id="PopStates.size">
 <a class="viewcode-back" href="../../../_foxesopt/core/PopStates.size.html#foxes_opt.core.PopStates.size">[docs]</a>
-    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The total number of states.</span>
 
@@ -471,33 +472,9 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_pop</span></div>
 
 
-<div class="viewcode-block" id="PopStates.weights">
-<a class="viewcode-back" href="../../../_foxesopt/core/PopStates.weights.html#foxes_opt.core.PopStates.weights">[docs]</a>
-    <span class="k">def</span> <span class="nf">weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">algo</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        The statistical weights of all states.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        algo: foxes.core.Algorithm</span>
-<span class="sd">            The calculation algorithm</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        weights: numpy.ndarray</span>
-<span class="sd">            The weights, shape: (n_states, n_turbines)</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_pop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">algo</span><span class="o">.</span><span class="n">n_turbines</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">dtype_double</span>
-        <span class="p">)</span>
-        <span class="n">weights</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">weights</span><span class="p">(</span><span class="n">algo</span><span class="p">)[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_pop</span>
-        <span class="k">return</span> <span class="n">weights</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">algo</span><span class="o">.</span><span class="n">n_turbines</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="PopStates.output_point_vars">
 <a class="viewcode-back" href="../../../_foxesopt/core/PopStates.output_point_vars.html#foxes_opt.core.PopStates.output_point_vars">[docs]</a>
-    <span class="k">def</span> <span class="nf">output_point_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">algo</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">output_point_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">algo</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The variables which are being modified by the model.</span>
 
@@ -517,7 +494,7 @@
 
 <div class="viewcode-block" id="PopStates.calculate">
 <a class="viewcode-back" href="../../../_foxesopt/core/PopStates.calculate.html#foxes_opt.core.PopStates.calculate">[docs]</a>
-    <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">algo</span><span class="p">,</span> <span class="n">mdata</span><span class="p">,</span> <span class="n">fdata</span><span class="p">,</span> <span class="n">pdata</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">algo</span><span class="p">,</span> <span class="n">mdata</span><span class="p">,</span> <span class="n">fdata</span><span class="p">,</span> <span class="n">pdata</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;</span>
 <span class="sd">        The main model calculation.</span>
 
@@ -562,7 +539,13 @@
                 <span class="n">hdims</span><span class="p">[</span><span class="n">dname</span><span class="p">]</span> <span class="o">=</span> <span class="n">dms</span>
         <span class="n">hmdata</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">hdata</span><span class="p">,</span> <span class="n">hdims</span><span class="p">,</span> <span class="n">mdata</span><span class="o">.</span><span class="n">loop_dims</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="n">algo</span><span class="p">,</span> <span class="n">hmdata</span><span class="p">,</span> <span class="n">fdata</span><span class="p">,</span> <span class="n">pdata</span><span class="p">)</span></div>
+        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="n">algo</span><span class="p">,</span> <span class="n">hmdata</span><span class="p">,</span> <span class="n">fdata</span><span class="p">,</span> <span class="n">pdata</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="p">(</span>
+            <span class="n">FV</span><span class="o">.</span><span class="n">WEIGHT</span> <span class="ow">in</span> <span class="n">pdata</span>
+        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Missing &#39;</span><span class="si">{</span><span class="n">FV</span><span class="o">.</span><span class="n">WEIGHT</span><span class="si">}</span><span class="s2">&#39; in pdata results from states &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+        <span class="n">out</span><span class="p">[</span><span class="n">FV</span><span class="o">.</span><span class="n">WEIGHT</span><span class="p">]</span> <span class="o">=</span> <span class="n">pdata</span><span class="p">[</span><span class="n">FV</span><span class="o">.</span><span class="n">WEIGHT</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">out</span></div>
 </div>
 
 </code></pre></div>

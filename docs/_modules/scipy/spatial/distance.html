@@ -13,7 +13,7 @@
     
     
       
-        <title>scipy.spatial.distance - foxes-opt 0.3 documentation</title>
+        <title>scipy.spatial.distance - foxes-opt 0.4 documentation</title>
       
     
     
@@ -36,7 +36,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_immaterial_theme.3625f807144f53acf.min.css?v=fbfc4466" />
+        <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_immaterial_theme.d69cbd15d52a24b41.min.css?v=a37d4f05" />
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -71,7 +71,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../../index.html" title="foxes-opt 0.3 documentation" class="md-header__button md-logo" aria-label="foxes-opt 0.3 documentation" data-md-component="logo">
+    <a href="../../../index.html" title="foxes-opt 0.4 documentation" class="md-header__button md-logo" aria-label="foxes-opt 0.4 documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -83,7 +83,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            foxes-opt 0.3 documentation
+            foxes-opt 0.4 documentation
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -170,12 +170,12 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../../index.html" title="foxes-opt 0.3 documentation" class="md-nav__button md-logo" aria-label="foxes-opt 0.3 documentation" data-md-component="logo">
+    <a href="../../../index.html" title="foxes-opt 0.4 documentation" class="md-nav__button md-logo" aria-label="foxes-opt 0.4 documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
     </a>
-    foxes-opt 0.3 documentation
+    foxes-opt 0.4 documentation
   </label>
   
     <div class="md-nav__source">
@@ -441,47 +441,47 @@
 <span class="p">]</span>
 
 
-<span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">dataclasses</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">dataclasses</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy._lib._util</span><span class="w"> </span><span class="kn">import</span> <span class="n">_asarray_validated</span><span class="p">,</span> <span class="n">_transition_to_rng</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy._lib.deprecation</span><span class="w"> </span><span class="kn">import</span> <span class="n">_deprecated</span>
 
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
-<span class="kn">from</span> <span class="nn">scipy._lib._util</span> <span class="kn">import</span> <span class="n">_asarray_validated</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">_distance_wrap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">_hausdorff</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..special</span><span class="w"> </span><span class="kn">import</span> <span class="n">rel_entr</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_distance_wrap</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_hausdorff</span>
-<span class="kn">from</span> <span class="nn">..linalg</span> <span class="kn">import</span> <span class="n">norm</span>
-<span class="kn">from</span> <span class="nn">..special</span> <span class="kn">import</span> <span class="n">rel_entr</span>
-
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_distance_pybind</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">_distance_pybind</span>
 
 
-<span class="k">def</span> <span class="nf">_copy_array_if_base_present</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_copy_array_if_base_present</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Copy the array if its base points to a parent array.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">base</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">a</span>
 
 
-<span class="k">def</span> <span class="nf">_correlation_cdist_wrap</span><span class="p">(</span><span class="n">XA</span><span class="p">,</span> <span class="n">XB</span><span class="p">,</span> <span class="n">dm</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_correlation_cdist_wrap</span><span class="p">(</span><span class="n">XA</span><span class="p">,</span> <span class="n">XB</span><span class="p">,</span> <span class="n">dm</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">XA</span> <span class="o">=</span> <span class="n">XA</span> <span class="o">-</span> <span class="n">XA</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">XB</span> <span class="o">=</span> <span class="n">XB</span> <span class="o">-</span> <span class="n">XB</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">_distance_wrap</span><span class="o">.</span><span class="n">cdist_cosine_double_wrap</span><span class="p">(</span><span class="n">XA</span><span class="p">,</span> <span class="n">XB</span><span class="p">,</span> <span class="n">dm</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_correlation_pdist_wrap</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">dm</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_correlation_pdist_wrap</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">dm</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">X2</span> <span class="o">=</span> <span class="n">X</span> <span class="o">-</span> <span class="n">X</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">_distance_wrap</span><span class="o">.</span><span class="n">pdist_cosine_double_wrap</span><span class="p">(</span><span class="n">X2</span><span class="p">,</span> <span class="n">dm</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_convert_to_type</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">out_type</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_convert_to_type</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">out_type</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">out_type</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_nbool_correspond_all</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_nbool_correspond_all</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">v</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="nb">bool</span> <span class="ow">and</span> <span class="n">w</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">not_u</span> <span class="o">=</span> <span class="o">~</span><span class="n">u</span>
         <span class="n">not_v</span> <span class="o">=</span> <span class="o">~</span><span class="n">v</span>
@@ -505,7 +505,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">nff</span><span class="p">,</span> <span class="n">nft</span><span class="p">,</span> <span class="n">ntf</span><span class="p">,</span> <span class="n">ntt</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_nbool_correspond_ft_tf</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_nbool_correspond_ft_tf</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">v</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="nb">bool</span> <span class="ow">and</span> <span class="n">w</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">not_u</span> <span class="o">=</span> <span class="o">~</span><span class="n">u</span>
         <span class="n">not_v</span> <span class="o">=</span> <span class="o">~</span><span class="n">v</span>
@@ -525,7 +525,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">nft</span><span class="p">,</span> <span class="n">ntf</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_validate_cdist_input</span><span class="p">(</span><span class="n">XA</span><span class="p">,</span> <span class="n">XB</span><span class="p">,</span> <span class="n">mA</span><span class="p">,</span> <span class="n">mB</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">metric_info</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_cdist_input</span><span class="p">(</span><span class="n">XA</span><span class="p">,</span> <span class="n">XB</span><span class="p">,</span> <span class="n">mA</span><span class="p">,</span> <span class="n">mB</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">metric_info</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="c1"># get supported types</span>
     <span class="n">types</span> <span class="o">=</span> <span class="n">metric_info</span><span class="o">.</span><span class="n">types</span>
     <span class="c1"># choose best type</span>
@@ -541,7 +541,7 @@
     <span class="k">return</span> <span class="n">XA</span><span class="p">,</span> <span class="n">XB</span><span class="p">,</span> <span class="n">typ</span><span class="p">,</span> <span class="n">kwargs</span>
 
 
-<span class="k">def</span> <span class="nf">_validate_weight_with_size</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_weight_with_size</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">w</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">w</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">kwargs</span>
@@ -554,7 +554,7 @@
     <span class="k">return</span> <span class="n">kwargs</span>
 
 
-<span class="k">def</span> <span class="nf">_validate_hamming_kwargs</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_hamming_kwargs</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">w</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;double&#39;</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">n</span><span class="p">:</span>
@@ -566,7 +566,7 @@
     <span class="k">return</span> <span class="n">kwargs</span>
 
 
-<span class="k">def</span> <span class="nf">_validate_mahalanobis_kwargs</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_mahalanobis_kwargs</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">VI</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;VI&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">VI</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">m</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">:</span>
@@ -585,7 +585,7 @@
     <span class="k">return</span> <span class="n">kwargs</span>
 
 
-<span class="k">def</span> <span class="nf">_validate_minkowski_kwargs</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_minkowski_kwargs</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">kwargs</span> <span class="o">=</span> <span class="n">_validate_weight_with_size</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">if</span> <span class="s1">&#39;p&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.</span>
@@ -596,7 +596,7 @@
     <span class="k">return</span> <span class="n">kwargs</span>
 
 
-<span class="k">def</span> <span class="nf">_validate_pdist_input</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">metric_info</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_pdist_input</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">metric_info</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="c1"># get supported types</span>
     <span class="n">types</span> <span class="o">=</span> <span class="n">metric_info</span><span class="o">.</span><span class="n">types</span>
     <span class="c1"># choose best type</span>
@@ -611,7 +611,7 @@
     <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">typ</span><span class="p">,</span> <span class="n">kwargs</span>
 
 
-<span class="k">def</span> <span class="nf">_validate_seuclidean_kwargs</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_seuclidean_kwargs</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">V</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">V</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
@@ -630,7 +630,7 @@
     <span class="k">return</span> <span class="n">kwargs</span>
 
 
-<span class="k">def</span> <span class="nf">_validate_vector</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_vector</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="c1"># XXX Is order=&#39;c&#39; really necessary?</span>
     <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;c&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -638,14 +638,15 @@
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Input vector should be 1-D.&quot;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_validate_weights</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_weights</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
     <span class="n">w</span> <span class="o">=</span> <span class="n">_validate_vector</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">w</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Input weights should be all non-negative&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">w</span>
 
 
-<span class="k">def</span> <span class="nf">directed_hausdorff</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="nd">@_transition_to_rng</span><span class="p">(</span><span class="s1">&#39;seed&#39;</span><span class="p">,</span> <span class="n">position_num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">replace_doc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">directed_hausdorff</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the directed Hausdorff distance between two 2-D arrays.</span>
 
@@ -657,9 +658,35 @@
 <span class="sd">        Input array with M points in N dimensions.</span>
 <span class="sd">    v : (O,N) array_like</span>
 <span class="sd">        Input array with O points in N dimensions.</span>
-<span class="sd">    seed : int or None, optional</span>
-<span class="sd">        Local `numpy.random.RandomState` seed. Default is 0, a random</span>
-<span class="sd">        shuffling of u and v that guarantees reproducibility.</span>
+<span class="sd">    rng : int or `numpy.random.Generator` or None, optional</span>
+<span class="sd">        Pseudorandom number generator state. Default is 0 so the</span>
+<span class="sd">        shuffling of `u` and `v` is reproducible.</span>
+
+<span class="sd">        If `rng` is passed by keyword, types other than `numpy.random.Generator` are</span>
+<span class="sd">        passed to `numpy.random.default_rng` to instantiate a ``Generator``.</span>
+<span class="sd">        If `rng` is already a ``Generator`` instance, then the provided instance is</span>
+<span class="sd">        used.</span>
+
+<span class="sd">        If this argument is passed by position or `seed` is passed by keyword,</span>
+<span class="sd">        legacy behavior for the argument `seed` applies:</span>
+
+<span class="sd">        - If `seed` is None, a new ``RandomState`` instance is used. The state is</span>
+<span class="sd">          initialized using data from ``/dev/urandom`` (or the Windows analogue)</span>
+<span class="sd">          if available or from the system clock otherwise.</span>
+<span class="sd">        - If `seed` is an int, a new ``RandomState`` instance is used,</span>
+<span class="sd">          seeded with `seed`.</span>
+<span class="sd">        - If `seed` is already a ``Generator`` or ``RandomState`` instance, then</span>
+<span class="sd">          that instance is used.</span>
+
+<span class="sd">        .. versionchanged:: 1.15.0</span>
+<span class="sd">            As part of the `SPEC-007 &lt;https://scientific-python.org/specs/spec-0007/&gt;`_</span>
+<span class="sd">            transition from use of `numpy.random.RandomState` to</span>
+<span class="sd">            `numpy.random.Generator`, this keyword was changed from `seed` to `rng`.</span>
+<span class="sd">            For an interim period, both keywords will continue to work, although only</span>
+<span class="sd">            one may be specified at a time. After the interim period, function calls</span>
+<span class="sd">            using the `seed` keyword will emit warnings. The behavior of both `seed`</span>
+<span class="sd">            and `rng` are outlined above, but only the `rng` keyword should be used in</span>
+<span class="sd">            new code.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -742,11 +769,11 @@
     <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;u and v need to have the same &#39;</span>
                          <span class="s1">&#39;number of columns&#39;</span><span class="p">)</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">_hausdorff</span><span class="o">.</span><span class="n">directed_hausdorff</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">_hausdorff</span><span class="o">.</span><span class="n">directed_hausdorff</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">rng</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span>
 
 
-<span class="k">def</span> <span class="nf">minkowski</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">minkowski</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the Minkowski distance between two 1-D arrays.</span>
 
@@ -817,7 +844,7 @@
     <span class="k">return</span> <span class="n">dist</span>
 
 
-<span class="k">def</span> <span class="nf">euclidean</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">euclidean</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the Euclidean distance between two 1-D arrays.</span>
 
@@ -856,7 +883,7 @@
     <span class="k">return</span> <span class="n">minkowski</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">sqeuclidean</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sqeuclidean</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the squared Euclidean distance between two 1-D arrays.</span>
 
@@ -908,7 +935,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">u_v</span><span class="p">,</span> <span class="n">u_v_w</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">correlation</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">centered</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">correlation</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">centered</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the correlation distance between two 1-D arrays.</span>
 
@@ -925,11 +952,17 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    u : (N,) array_like</span>
+<span class="sd">    u : (N,) array_like of floats</span>
 <span class="sd">        Input array.</span>
-<span class="sd">    v : (N,) array_like</span>
+
+<span class="sd">        .. deprecated:: 1.15.0</span>
+<span class="sd">           Complex `u` is deprecated and will raise an error in SciPy 1.17.0</span>
+<span class="sd">    v : (N,) array_like of floats</span>
 <span class="sd">        Input array.</span>
-<span class="sd">    w : (N,) array_like, optional</span>
+
+<span class="sd">        .. deprecated:: 1.15.0</span>
+<span class="sd">           Complex `v` is deprecated and will raise an error in SciPy 1.17.0</span>
+<span class="sd">    w : (N,) array_like of floats, optional</span>
 <span class="sd">        The weights for each value in `u` and `v`. Default is None,</span>
 <span class="sd">        which gives each value a weight of 1.0</span>
 <span class="sd">    centered : bool, optional</span>
@@ -960,6 +993,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">u</span> <span class="o">=</span> <span class="n">_validate_vector</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">_validate_vector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;Complex `u` and `v` are deprecated and will raise an error in &quot;</span>
+            <span class="s2">&quot;SciPy 1.17.0.&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">w</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">w</span> <span class="o">=</span> <span class="n">_validate_weights</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
         <span class="n">w</span> <span class="o">=</span> <span class="n">w</span> <span class="o">/</span> <span class="n">w</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
@@ -985,7 +1023,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">cosine</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cosine</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the Cosine distance between 1-D arrays.</span>
 
@@ -1001,11 +1039,17 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    u : (N,) array_like</span>
+<span class="sd">    u : (N,) array_like of floats</span>
 <span class="sd">        Input array.</span>
-<span class="sd">    v : (N,) array_like</span>
+
+<span class="sd">        .. deprecated:: 1.15.0</span>
+<span class="sd">           Complex `u` is deprecated and will raise an error in SciPy 1.17.0</span>
+<span class="sd">    v : (N,) array_like of floats</span>
 <span class="sd">        Input array.</span>
-<span class="sd">    w : (N,) array_like, optional</span>
+
+<span class="sd">        .. deprecated:: 1.15.0</span>
+<span class="sd">           Complex `v` is deprecated and will raise an error in SciPy 1.17.0</span>
+<span class="sd">    w : (N,) array_like of floats, optional</span>
 <span class="sd">        The weights for each value in `u` and `v`. Default is None,</span>
 <span class="sd">        which gives each value a weight of 1.0</span>
 
@@ -1030,7 +1074,7 @@
     <span class="k">return</span> <span class="n">correlation</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">centered</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">hamming</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hamming</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the Hamming distance between two 1-D arrays.</span>
 
@@ -1088,83 +1132,143 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">u_ne_v</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">jaccard</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Compute the Jaccard-Needham dissimilarity between two boolean 1-D arrays.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">jaccard</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the Jaccard dissimilarity between two boolean vectors.</span>
 
-<span class="sd">    The Jaccard-Needham dissimilarity between 1-D boolean arrays `u` and `v`,</span>
-<span class="sd">    is defined as</span>
+<span class="sd">    Given boolean vectors :math:`u \equiv (u_1, \cdots, u_n)`</span>
+<span class="sd">    and :math:`v \equiv (v_1, \cdots, v_n)` that are not both zero,</span>
+<span class="sd">    their *Jaccard dissimilarity* is defined as ([1]_, p. 26)</span>
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       \\frac{c_{TF} + c_{FT}}</span>
-<span class="sd">            {c_{TT} + c_{FT} + c_{TF}}</span>
+<span class="sd">       d_\textrm{jaccard}(u, v) := \frac{c_{10} + c_{01}}</span>
+<span class="sd">                                        {c_{11} + c_{10} + c_{01}}</span>
 
-<span class="sd">    where :math:`c_{ij}` is the number of occurrences of</span>
-<span class="sd">    :math:`\\mathtt{u[k]} = i` and :math:`\\mathtt{v[k]} = j` for</span>
-<span class="sd">    :math:`k &lt; n`.</span>
+<span class="sd">    where</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       c_{ij} := \sum_{1 \le k \le n, u_k=i, v_k=j} 1</span>
+
+<span class="sd">    for :math:`i, j \in \{ 0, 1\}`.  If :math:`u` and :math:`v` are both zero,</span>
+<span class="sd">    their Jaccard dissimilarity is defined to be zero. [2]_</span>
+
+<span class="sd">    If a (non-negative) weight vector :math:`w \equiv (w_1, \cdots, w_n)`</span>
+<span class="sd">    is supplied, the *weighted Jaccard dissimilarity* is defined similarly</span>
+<span class="sd">    but with :math:`c_{ij}` replaced by</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \tilde{c}_{ij} := \sum_{1 \le k \le n, u_k=i, v_k=j} w_k</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    u : (N,) array_like, bool</span>
-<span class="sd">        Input array.</span>
-<span class="sd">    v : (N,) array_like, bool</span>
-<span class="sd">        Input array.</span>
-<span class="sd">    w : (N,) array_like, optional</span>
-<span class="sd">        The weights for each value in `u` and `v`. Default is None,</span>
-<span class="sd">        which gives each value a weight of 1.0</span>
+<span class="sd">    u : (N,) array_like of bools</span>
+<span class="sd">        Input vector.</span>
+<span class="sd">    v : (N,) array_like of bools</span>
+<span class="sd">        Input vector.</span>
+<span class="sd">    w : (N,) array_like of floats, optional</span>
+<span class="sd">        Weights for each pair of :math:`(u_k, v_k)`.  Default is ``None``,</span>
+<span class="sd">        which gives each pair a weight of ``1.0``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    jaccard : double</span>
-<span class="sd">        The Jaccard distance between vectors `u` and `v`.</span>
+<span class="sd">    jaccard : float</span>
+<span class="sd">        The Jaccard dissimilarity between vectors `u` and `v`, optionally</span>
+<span class="sd">        weighted by `w` if supplied.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    When both `u` and `v` lead to a `0/0` division i.e. there is no overlap</span>
-<span class="sd">    between the items in the vectors the returned distance is 0. See the</span>
-<span class="sd">    Wikipedia page on the Jaccard index [1]_, and this paper [2]_.</span>
+<span class="sd">    The Jaccard dissimilarity satisfies the triangle inequality and is</span>
+<span class="sd">    qualified as a metric. [2]_</span>
+
+<span class="sd">    The *Jaccard index*, or *Jaccard similarity coefficient*, is equal to</span>
+<span class="sd">    one minus the Jaccard dissimilarity. [3]_</span>
+
+<span class="sd">    The dissimilarity between general (finite) sets may be computed by</span>
+<span class="sd">    encoding them as boolean vectors and computing the dissimilarity</span>
+<span class="sd">    between the encoded vectors.</span>
+<span class="sd">    For example, subsets :math:`A,B` of :math:`\{ 1, 2, ..., n \}` may be</span>
+<span class="sd">    encoded into boolean vectors :math:`u, v` by setting</span>
+<span class="sd">    :math:`u_k := 1_{k \in A}`, :math:`v_k := 1_{k \in B}`</span>
+<span class="sd">    for :math:`k = 1,2,\cdots,n`.</span>
 
 <span class="sd">    .. versionchanged:: 1.2.0</span>
-<span class="sd">        Previously, when `u` and `v` lead to a `0/0` division, the function</span>
-<span class="sd">        would return NaN. This was changed to return 0 instead.</span>
+<span class="sd">       Previously, if all (positively weighted) elements in `u` and `v` are</span>
+<span class="sd">       zero, the function would return ``nan``.  This was changed to return</span>
+<span class="sd">       ``0`` instead.</span>
+
+<span class="sd">    .. versionchanged:: 1.15.0</span>
+<span class="sd">       Non-0/1 numeric input used to produce an ad hoc result.  Since 1.15.0,</span>
+<span class="sd">       numeric input is converted to Boolean before computation.</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
-<span class="sd">    .. [1] https://en.wikipedia.org/wiki/Jaccard_index</span>
-<span class="sd">    .. [2] S. Kosub, &quot;A note on the triangle inequality for the Jaccard</span>
-<span class="sd">       distance&quot;, 2016, :arxiv:`1612.02696`</span>
+<span class="sd">    .. [1] Kaufman, L. and Rousseeuw, P. J.  (1990).  &quot;Finding Groups in Data:</span>
+<span class="sd">           An Introduction to Cluster Analysis.&quot;  John Wiley &amp; Sons, Inc.</span>
+<span class="sd">    .. [2] Kosub, S.  (2019).  &quot;A note on the triangle inequality for the</span>
+<span class="sd">           Jaccard distance.&quot;  *Pattern Recognition Letters*, 120:36-38.</span>
+<span class="sd">    .. [3] https://en.wikipedia.org/wiki/Jaccard_index</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; from scipy.spatial import distance</span>
+
+<span class="sd">    Non-zero vectors with no matching 1s have dissimilarity of 1.0:</span>
+
 <span class="sd">    &gt;&gt;&gt; distance.jaccard([1, 0, 0], [0, 1, 0])</span>
 <span class="sd">    1.0</span>
-<span class="sd">    &gt;&gt;&gt; distance.jaccard([1, 0, 0], [1, 1, 0])</span>
-<span class="sd">    0.5</span>
-<span class="sd">    &gt;&gt;&gt; distance.jaccard([1, 0, 0], [1, 2, 0])</span>
-<span class="sd">    0.5</span>
-<span class="sd">    &gt;&gt;&gt; distance.jaccard([1, 0, 0], [1, 1, 1])</span>
-<span class="sd">    0.66666666666666663</span>
+
+<span class="sd">    Vectors with some matching 1s have dissimilarity less than 1.0:</span>
+
+<span class="sd">    &gt;&gt;&gt; distance.jaccard([1, 0, 0, 0], [1, 1, 1, 0])</span>
+<span class="sd">    0.6666666666666666</span>
+
+<span class="sd">    Identical vectors, including zero vectors, have dissimilarity of 0.0:</span>
+
+<span class="sd">    &gt;&gt;&gt; distance.jaccard([1, 0, 0], [1, 0, 0])</span>
+<span class="sd">    0.0</span>
+<span class="sd">    &gt;&gt;&gt; distance.jaccard([0, 0, 0], [0, 0, 0])</span>
+<span class="sd">    0.0</span>
+
+<span class="sd">    The following example computes the dissimilarity from a confusion matrix</span>
+<span class="sd">    directly by setting the weight vector to the frequency of True Positive,</span>
+<span class="sd">    False Negative, False Positive, and True Negative:</span>
+
+<span class="sd">    &gt;&gt;&gt; distance.jaccard([1, 1, 0, 0], [1, 0, 1, 0], [31, 41, 59, 26])</span>
+<span class="sd">    0.7633587786259542  # (41+59)/(31+41+59)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">u</span> <span class="o">=</span> <span class="n">_validate_vector</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">_validate_vector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 
+    <span class="n">unequal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bitwise_xor</span><span class="p">(</span><span class="n">u</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">v</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
     <span class="n">nonzero</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bitwise_or</span><span class="p">(</span><span class="n">u</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">v</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">unequal_nonzero</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">((</span><span class="n">u</span> <span class="o">!=</span> <span class="n">v</span><span class="p">),</span> <span class="n">nonzero</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">w</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">w</span> <span class="o">=</span> <span class="n">_validate_weights</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="n">unequal</span> <span class="o">=</span> <span class="n">w</span> <span class="o">*</span> <span class="n">unequal</span>
         <span class="n">nonzero</span> <span class="o">=</span> <span class="n">w</span> <span class="o">*</span> <span class="n">nonzero</span>
-        <span class="n">unequal_nonzero</span> <span class="o">=</span> <span class="n">w</span> <span class="o">*</span> <span class="n">unequal_nonzero</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">unequal_nonzero</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">unequal</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
     <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">nonzero</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">a</span> <span class="o">/</span> <span class="n">b</span><span class="p">)</span> <span class="k">if</span> <span class="n">b</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">a</span> <span class="o">/</span> <span class="n">b</span><span class="p">)</span> <span class="k">if</span> <span class="n">b</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">kulczynski1</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="n">_deprecated_kulczynski1</span> <span class="o">=</span> <span class="n">_deprecated</span><span class="p">(</span>
+    <span class="s2">&quot;The kulczynski1 metric is deprecated since SciPy 1.15.0 and will be &quot;</span>
+    <span class="s2">&quot;removed in SciPy 1.17.0.  Replace usage of &#39;kulczynski1(u, v)&#39; with &quot;</span>
+    <span class="s2">&quot;&#39;1/jaccard(u, v) - 1&#39;.&quot;</span>
+<span class="p">)</span>
+
+
+<span class="nd">@_deprecated_kulczynski1</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">kulczynski1</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the Kulczynski 1 dissimilarity between two boolean 1-D arrays.</span>
+
+<span class="sd">    .. deprecated:: 1.15.0</span>
+<span class="sd">       This function is deprecated and will be removed in SciPy 1.17.0.</span>
+<span class="sd">       Replace usage of ``kulczynski1(u, v)`` with ``1/jaccard(u, v) - 1``.</span>
 
 <span class="sd">    The Kulczynski 1 dissimilarity between two boolean 1-D arrays `u` and `v`</span>
 <span class="sd">    of length ``n``, is defined as</span>
@@ -1230,7 +1334,7 @@
     <span class="k">return</span> <span class="n">ntt</span> <span class="o">/</span> <span class="p">(</span><span class="n">ntf</span> <span class="o">+</span> <span class="n">nft</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">seuclidean</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">V</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">seuclidean</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">V</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the standardized Euclidean distance between two 1-D arrays.</span>
 
@@ -1251,7 +1355,7 @@
 <span class="sd">        Input array.</span>
 <span class="sd">    V : (N,) array_like</span>
 <span class="sd">        `V` is an 1-D array of component variances. It is usually computed</span>
-<span class="sd">        among a larger collection vectors.</span>
+<span class="sd">        among a larger collection of vectors.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1278,7 +1382,7 @@
     <span class="k">return</span> <span class="n">euclidean</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="n">V</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">cityblock</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cityblock</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the City Block (Manhattan) distance.</span>
 
@@ -1324,7 +1428,7 @@
     <span class="k">return</span> <span class="n">l1_diff</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
 
-<span class="k">def</span> <span class="nf">mahalanobis</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">VI</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">mahalanobis</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">VI</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the Mahalanobis distance between two 1-D arrays.</span>
 
@@ -1371,30 +1475,49 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">chebyshev</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">chebyshev</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the Chebyshev distance.</span>
 
-<span class="sd">    Computes the Chebyshev distance between two 1-D arrays `u` and `v`,</span>
-<span class="sd">    which is defined as</span>
+<span class="sd">    The *Chebyshev distance* between real vectors</span>
+<span class="sd">    :math:`u \equiv (u_1, \cdots, u_n)` and</span>
+<span class="sd">    :math:`v \equiv (v_1, \cdots, v_n)` is defined as [1]_</span>
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       \\max_i {|u_i-v_i|}.</span>
+<span class="sd">       d_\textrm{chebyshev}(u,v) := \max_{1 \le i \le n} |u_i-v_i|</span>
+
+<span class="sd">    If a (non-negative) weight vector :math:`w \equiv (w_1, \cdots, w_n)`</span>
+<span class="sd">    is supplied, the *weighted Chebyshev distance* is defined to be the</span>
+<span class="sd">    weighted Minkowski distance of infinite order; that is,</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \begin{align}</span>
+<span class="sd">       d_\textrm{chebyshev}(u,v;w) &amp;:= \lim_{p\rightarrow \infty}</span>
+<span class="sd">          \left( \sum_{i=1}^n w_i | u_i-v_i |^p \right)^\frac{1}{p} \\</span>
+<span class="sd">        &amp;= \max_{1 \le i \le n} 1_{w_i &gt; 0} | u_i - v_i |</span>
+<span class="sd">       \end{align}</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    u : (N,) array_like</span>
+<span class="sd">    u : (N,) array_like of floats</span>
 <span class="sd">        Input vector.</span>
-<span class="sd">    v : (N,) array_like</span>
+<span class="sd">    v : (N,) array_like of floats</span>
 <span class="sd">        Input vector.</span>
-<span class="sd">    w : (N,) array_like, optional</span>
-<span class="sd">        Unused, as &#39;max&#39; is a weightless operation. Here for API consistency.</span>
+<span class="sd">    w : (N,) array_like of floats, optional</span>
+<span class="sd">        Weight vector.  Default is ``None``, which gives all pairs</span>
+<span class="sd">        :math:`(u_i, v_i)` the same weight ``1.0``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    chebyshev : double</span>
-<span class="sd">        The Chebyshev distance between vectors `u` and `v`.</span>
+<span class="sd">    chebyshev : float</span>
+<span class="sd">        The Chebyshev distance between vectors `u` and `v`, optionally weighted</span>
+<span class="sd">        by `w`.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] https://en.wikipedia.org/wiki/Chebyshev_distance</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1409,14 +1532,11 @@
     <span class="n">v</span> <span class="o">=</span> <span class="n">_validate_vector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">w</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">w</span> <span class="o">=</span> <span class="n">_validate_weights</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
-        <span class="n">has_weight</span> <span class="o">=</span> <span class="n">w</span> <span class="o">&gt;</span> <span class="mi">0</span>
-        <span class="k">if</span> <span class="n">has_weight</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">w</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
-            <span class="n">u</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="n">has_weight</span><span class="p">]</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="n">has_weight</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">((</span><span class="n">w</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">u</span> <span class="o">-</span> <span class="n">v</span><span class="p">))</span>
     <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">u</span> <span class="o">-</span> <span class="n">v</span><span class="p">))</span>
 
 
-<span class="k">def</span> <span class="nf">braycurtis</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">braycurtis</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the Bray-Curtis distance between two 1-D arrays.</span>
 
@@ -1464,7 +1584,7 @@
     <span class="k">return</span> <span class="n">l1_diff</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">l1_sum</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
 
-<span class="k">def</span> <span class="nf">canberra</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">canberra</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the Canberra distance between two 1-D arrays.</span>
 
@@ -1492,7 +1612,7 @@
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    When `u[i]` and `v[i]` are 0 for given i, then the fraction 0/0 = 0 is</span>
+<span class="sd">    When ``u[i]`` and ``v[i]`` are 0 for given i, then the fraction 0/0 = 0 is</span>
 <span class="sd">    used in the calculation.</span>
 
 <span class="sd">    Examples</span>
@@ -1519,7 +1639,7 @@
     <span class="k">return</span> <span class="n">d</span>
 
 
-<span class="k">def</span> <span class="nf">jensenshannon</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">jensenshannon</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the Jensen-Shannon distance (metric) between</span>
 <span class="sd">    two probability arrays. This is the square root</span>
@@ -1607,7 +1727,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">js</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">yule</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">yule</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the Yule dissimilarity between two boolean 1-D arrays.</span>
 
@@ -1657,7 +1777,7 @@
         <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">half_R</span> <span class="o">/</span> <span class="p">(</span><span class="n">ntt</span> <span class="o">*</span> <span class="n">nff</span> <span class="o">+</span> <span class="n">half_R</span><span class="p">))</span>
 
 
-<span class="k">def</span> <span class="nf">dice</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dice</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the Dice dissimilarity between two boolean 1-D arrays.</span>
 
@@ -1722,7 +1842,7 @@
     <span class="k">return</span> <span class="nb">float</span><span class="p">((</span><span class="n">ntf</span> <span class="o">+</span> <span class="n">nft</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">ntt</span> <span class="o">+</span> <span class="n">ntf</span> <span class="o">+</span> <span class="n">nft</span><span class="p">))</span>
 
 
-<span class="k">def</span> <span class="nf">rogerstanimoto</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">rogerstanimoto</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the Rogers-Tanimoto dissimilarity between two boolean 1-D arrays.</span>
 
@@ -1772,7 +1892,7 @@
     <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">ntf</span> <span class="o">+</span> <span class="n">nft</span><span class="p">))</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">ntt</span> <span class="o">+</span> <span class="n">nff</span> <span class="o">+</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">ntf</span> <span class="o">+</span> <span class="n">nft</span><span class="p">)))</span>
 
 
-<span class="k">def</span> <span class="nf">russellrao</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">russellrao</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the Russell-Rao dissimilarity between two boolean 1-D arrays.</span>
 
@@ -1829,9 +1949,21 @@
     <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">ntt</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span>
 
 
-<span class="k">def</span> <span class="nf">sokalmichener</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="n">_deprecated_sokalmichener</span> <span class="o">=</span> <span class="n">_deprecated</span><span class="p">(</span>
+    <span class="s2">&quot;The sokalmichener metric is deprecated since SciPy 1.15.0 and will be &quot;</span>
+    <span class="s2">&quot;removed in SciPy 1.17.0.  Replace usage of &#39;sokalmichener(u, v)&#39; with &quot;</span>
+    <span class="s2">&quot;&#39;rogerstanimoto(u, v)&#39;.&quot;</span>
+<span class="p">)</span>
+
+
+<span class="nd">@_deprecated_sokalmichener</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sokalmichener</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the Sokal-Michener dissimilarity between two boolean 1-D arrays.</span>
+
+<span class="sd">    .. deprecated:: 1.15.0</span>
+<span class="sd">       This function is deprecated and will be removed in SciPy 1.17.0.</span>
+<span class="sd">       Replace usage of ``sokalmichener(u, v)`` with ``rogerstanimoto(u, v)``.</span>
 
 <span class="sd">    The Sokal-Michener dissimilarity between boolean 1-D arrays `u` and `v`,</span>
 <span class="sd">    is defined as</span>
@@ -1880,7 +2012,7 @@
     <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">ntf</span> <span class="o">+</span> <span class="n">nft</span><span class="p">))</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">ntt</span> <span class="o">+</span> <span class="n">nff</span> <span class="o">+</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">ntf</span> <span class="o">+</span> <span class="n">nft</span><span class="p">))</span>
 
 
-<span class="k">def</span> <span class="nf">sokalsneath</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sokalsneath</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the Sokal-Sneath dissimilarity between two boolean 1-D arrays.</span>
 
@@ -1949,10 +2081,10 @@
 
 
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">CDistMetricWrapper</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CDistMetricWrapper</span><span class="p">:</span>
     <span class="n">metric_name</span><span class="p">:</span> <span class="nb">str</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">XA</span><span class="p">,</span> <span class="n">XB</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">XA</span><span class="p">,</span> <span class="n">XB</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">XA</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">XA</span><span class="p">)</span>
         <span class="n">XB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">XB</span><span class="p">)</span>
         <span class="n">mA</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">XA</span><span class="o">.</span><span class="n">shape</span>
@@ -1976,10 +2108,10 @@
 
 
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">PDistMetricWrapper</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PDistMetricWrapper</span><span class="p">:</span>
     <span class="n">metric_name</span><span class="p">:</span> <span class="nb">str</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
         <span class="n">metric_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span>
@@ -2001,7 +2133,7 @@
 
 
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">MetricInfo</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MetricInfo</span><span class="p">:</span>
     <span class="c1"># Name of python distance function</span>
     <span class="n">canonical_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="c1"># All aliases, including canonical_name</span>
@@ -2014,7 +2146,7 @@
     <span class="n">pdist_func</span><span class="p">:</span> <span class="n">Callable</span>
     <span class="c1"># function that checks kwargs and computes default values:</span>
     <span class="c1"># f(X, m, n, **kwargs)</span>
-    <span class="n">validator</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">validator</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="c1"># list of supported types:</span>
     <span class="c1"># X (pdist) and XA (cdist) are used to choose the type. if there is no</span>
     <span class="c1"># match the first type is used. Default double</span>
@@ -2111,8 +2243,8 @@
         <span class="n">aka</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;kulczynski1&#39;</span><span class="p">},</span>
         <span class="n">types</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;bool&#39;</span><span class="p">],</span>
         <span class="n">dist_func</span><span class="o">=</span><span class="n">kulczynski1</span><span class="p">,</span>
-        <span class="n">cdist_func</span><span class="o">=</span><span class="n">_distance_pybind</span><span class="o">.</span><span class="n">cdist_kulczynski1</span><span class="p">,</span>
-        <span class="n">pdist_func</span><span class="o">=</span><span class="n">_distance_pybind</span><span class="o">.</span><span class="n">pdist_kulczynski1</span><span class="p">,</span>
+        <span class="n">cdist_func</span><span class="o">=</span><span class="n">_deprecated_kulczynski1</span><span class="p">(</span><span class="n">_distance_pybind</span><span class="o">.</span><span class="n">cdist_kulczynski1</span><span class="p">),</span>
+        <span class="n">pdist_func</span><span class="o">=</span><span class="n">_deprecated_kulczynski1</span><span class="p">(</span><span class="n">_distance_pybind</span><span class="o">.</span><span class="n">pdist_kulczynski1</span><span class="p">),</span>
     <span class="p">),</span>
     <span class="n">MetricInfo</span><span class="p">(</span>
         <span class="n">canonical_name</span><span class="o">=</span><span class="s1">&#39;mahalanobis&#39;</span><span class="p">,</span>
@@ -2159,8 +2291,8 @@
         <span class="n">aka</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;sokalmichener&#39;</span><span class="p">},</span>
         <span class="n">types</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;bool&#39;</span><span class="p">],</span>
         <span class="n">dist_func</span><span class="o">=</span><span class="n">sokalmichener</span><span class="p">,</span>
-        <span class="n">cdist_func</span><span class="o">=</span><span class="n">_distance_pybind</span><span class="o">.</span><span class="n">cdist_sokalmichener</span><span class="p">,</span>
-        <span class="n">pdist_func</span><span class="o">=</span><span class="n">_distance_pybind</span><span class="o">.</span><span class="n">pdist_sokalmichener</span><span class="p">,</span>
+        <span class="n">cdist_func</span><span class="o">=</span><span class="n">_deprecated_sokalmichener</span><span class="p">(</span><span class="n">_distance_pybind</span><span class="o">.</span><span class="n">cdist_sokalmichener</span><span class="p">),</span>
+        <span class="n">pdist_func</span><span class="o">=</span><span class="n">_deprecated_sokalmichener</span><span class="p">(</span><span class="n">_distance_pybind</span><span class="o">.</span><span class="n">pdist_sokalmichener</span><span class="p">),</span>
     <span class="p">),</span>
     <span class="n">MetricInfo</span><span class="p">(</span>
         <span class="n">canonical_name</span><span class="o">=</span><span class="s1">&#39;sokalsneath&#39;</span><span class="p">,</span>
@@ -2197,7 +2329,7 @@
 <span class="n">_TEST_METRICS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;test_&#39;</span> <span class="o">+</span> <span class="n">info</span><span class="o">.</span><span class="n">canonical_name</span><span class="p">:</span> <span class="n">info</span> <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">_METRIC_INFOS</span><span class="p">}</span>
 
 
-<span class="k">def</span> <span class="nf">pdist</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">pdist</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pairwise distances between observations in n-dimensional space.</span>
 
@@ -2408,6 +2540,11 @@
 <span class="sd">        Computes the kulczynski1 distance between each pair of</span>
 <span class="sd">        boolean vectors. (see kulczynski1 function documentation)</span>
 
+<span class="sd">        .. deprecated:: 1.15.0</span>
+<span class="sd">           This metric is deprecated and will be removed in SciPy 1.17.0.</span>
+<span class="sd">           Replace usage of ``pdist(X, &#39;kulczynski1&#39;)`` with</span>
+<span class="sd">           ``1 / pdist(X, &#39;jaccard&#39;) - 1``.</span>
+
 <span class="sd">    19. ``Y = pdist(X, &#39;rogerstanimoto&#39;)``</span>
 
 <span class="sd">        Computes the Rogers-Tanimoto distance between each pair of</span>
@@ -2422,6 +2559,11 @@
 
 <span class="sd">        Computes the Sokal-Michener distance between each pair of</span>
 <span class="sd">        boolean vectors. (see sokalmichener function documentation)</span>
+
+<span class="sd">        .. deprecated:: 1.15.0</span>
+<span class="sd">           This metric is deprecated and will be removed in SciPy 1.17.0.</span>
+<span class="sd">           Replace usage of ``pdist(X, &#39;sokalmichener&#39;)`` with</span>
+<span class="sd">           ``pdist(X, &#39;rogerstanimoto&#39;)``.</span>
 
 <span class="sd">    22. ``Y = pdist(X, &#39;sokalsneath&#39;)``</span>
 
@@ -2523,13 +2665,13 @@
             <span class="k">return</span> <span class="n">_pdist_callable</span><span class="p">(</span>
                 <span class="n">X</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">metric_info</span><span class="o">.</span><span class="n">dist_func</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unknown Distance Metric: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">mstr</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown Distance Metric: </span><span class="si">{</span><span class="n">mstr</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;2nd argument metric must be a string identifier &#39;</span>
                         <span class="s1">&#39;or a function.&#39;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">squareform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="s2">&quot;no&quot;</span><span class="p">,</span> <span class="n">checks</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">squareform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="s2">&quot;no&quot;</span><span class="p">,</span> <span class="n">checks</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert a vector-form distance vector to a square-form distance</span>
 <span class="sd">    matrix, and vice-versa.</span>
@@ -2678,12 +2820,11 @@
         <span class="n">_distance_wrap</span><span class="o">.</span><span class="n">to_vector_from_squareform_wrap</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">v</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s1">&#39;The first argument must be one or two dimensional &#39;</span>
-                          <span class="s1">&#39;array. A </span><span class="si">%d</span><span class="s1">-dimensional array is not &#39;</span>
-                          <span class="s1">&#39;permitted&#39;</span><span class="p">)</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The first argument must be one or two dimensional &quot;</span>
+                         <span class="sa">f</span><span class="s2">&quot;array. A </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="si">}</span><span class="s2">-dimensional array is not permitted&quot;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">is_valid_dm</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">throw</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="n">warning</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_valid_dm</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">throw</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="n">warning</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return True if input array is a valid distance matrix.</span>
 
@@ -2757,22 +2898,20 @@
         <span class="n">s</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">shape</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s1">&#39;Distance matrix </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> must have shape=2 &#39;</span>
-                                  <span class="s1">&#39;(i.e. be two-dimensional).&#39;</span><span class="p">)</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Distance matrix &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; must have shape=2 &quot;</span>
+                                 <span class="s2">&quot;(i.e. be two-dimensional).&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Distance matrix must have shape=2 (i.e. &#39;</span>
                                  <span class="s1">&#39;be two-dimensional).&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">tol</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">D</span> <span class="o">==</span> <span class="n">D</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s1">&#39;Distance matrix </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> must be &#39;</span>
-                                     <span class="s1">&#39;symmetric.&#39;</span><span class="p">)</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Distance matrix &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; must be symmetric.&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Distance matrix must be symmetric.&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s1">&#39;Distance matrix </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> diagonal must &#39;</span>
-                                      <span class="s1">&#39;be zero.&#39;</span><span class="p">)</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Distance matrix &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; diagonal must be zero.&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Distance matrix diagonal must be zero.&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -2782,7 +2921,7 @@
                                      <span class="sa">f</span><span class="s1">&#39;symmetric within tolerance </span><span class="si">{</span><span class="n">tol</span><span class="si">:</span><span class="s1">5.5f</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Distance matrix must be symmetric within &#39;</span>
-                                     <span class="s1">&#39;tolerance </span><span class="si">%5.5f</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">tol</span><span class="p">)</span>
+                                     <span class="sa">f</span><span class="s1">&#39;tolerance </span><span class="si">{</span><span class="n">tol</span><span class="si">:</span><span class="s1">5.5f</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">&lt;=</span> <span class="n">tol</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Distance matrix </span><span class="se">\&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="se">\&#39;</span><span class="s1"> diagonal must be &#39;</span>
@@ -2799,7 +2938,7 @@
     <span class="k">return</span> <span class="n">valid</span>
 
 
-<span class="k">def</span> <span class="nf">is_valid_y</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">warning</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">throw</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_valid_y</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">warning</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">throw</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return True if the input array is a valid condensed distance matrix.</span>
 
@@ -2852,9 +2991,8 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s1">&#39;Condensed distance matrix </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> must &#39;</span>
-                                  <span class="s1">&#39;have shape=1 (i.e. be one-dimensional).&#39;</span><span class="p">)</span>
-                                 <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Condensed distance matrix &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; must &quot;</span>
+                                 <span class="s2">&quot;have shape=1 (i.e. be one-dimensional).&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Condensed distance matrix must have shape=1 &#39;</span>
                                  <span class="s1">&#39;(i.e. be one-dimensional).&#39;</span><span class="p">)</span>
@@ -2862,10 +3000,9 @@
         <span class="n">d</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)))</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">d</span> <span class="o">*</span> <span class="p">(</span><span class="n">d</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">!=</span> <span class="n">n</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s1">&#39;Length n of condensed distance matrix &#39;</span>
-                                  <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> must be a binomial coefficient, i.e.&#39;</span>
-                                  <span class="s1">&#39;there must be a k such that &#39;</span>
-                                  <span class="s1">&#39;(k </span><span class="se">\\</span><span class="s1">choose 2)=n)!&#39;</span><span class="p">)</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Length n of condensed distance matrix &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                                 <span class="s2">&quot;must be a binomial coefficient, i.e.&quot;</span>
+                                 <span class="s2">&quot;there must be a k such that (k </span><span class="se">\\</span><span class="s2">choose 2)=n)!&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Length n of condensed distance matrix must &#39;</span>
                                  <span class="s1">&#39;be a binomial coefficient, i.e. there must &#39;</span>
@@ -2879,7 +3016,7 @@
     <span class="k">return</span> <span class="n">valid</span>
 
 
-<span class="k">def</span> <span class="nf">num_obs_dm</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">num_obs_dm</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the number of original observations that correspond to a</span>
 <span class="sd">    square, redundant distance matrix.</span>
@@ -2909,7 +3046,7 @@
     <span class="k">return</span> <span class="n">d</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">num_obs_y</span><span class="p">(</span><span class="n">Y</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">num_obs_y</span><span class="p">(</span><span class="n">Y</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the number of original observations that correspond to a</span>
 <span class="sd">    condensed distance matrix.</span>
@@ -2947,7 +3084,7 @@
     <span class="k">return</span> <span class="n">d</span>
 
 
-<span class="k">def</span> <span class="nf">_prepare_out_argument</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">expected_shape</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_prepare_out_argument</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">expected_shape</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">expected_shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
@@ -2960,7 +3097,7 @@
     <span class="k">return</span> <span class="n">out</span>
 
 
-<span class="k">def</span> <span class="nf">_pdist_callable</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">metric</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_pdist_callable</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">metric</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">n</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">out_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">//</span> <span class="mi">2</span>
     <span class="n">dm</span> <span class="o">=</span> <span class="n">_prepare_out_argument</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="p">(</span><span class="n">out_size</span><span class="p">,))</span>
@@ -2972,7 +3109,7 @@
     <span class="k">return</span> <span class="n">dm</span>
 
 
-<span class="k">def</span> <span class="nf">_cdist_callable</span><span class="p">(</span><span class="n">XA</span><span class="p">,</span> <span class="n">XB</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">metric</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_cdist_callable</span><span class="p">(</span><span class="n">XA</span><span class="p">,</span> <span class="n">XB</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">metric</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">mA</span> <span class="o">=</span> <span class="n">XA</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">mB</span> <span class="o">=</span> <span class="n">XB</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">dm</span> <span class="o">=</span> <span class="n">_prepare_out_argument</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="p">(</span><span class="n">mA</span><span class="p">,</span> <span class="n">mB</span><span class="p">))</span>
@@ -2984,7 +3121,7 @@
 
 <div class="viewcode-block" id="cdist">
 <a class="viewcode-back" href="../../../_foxesopt/problems/layout/geom_layouts/constraintscdist.html#foxes_opt.problems.layout.geom_layouts.constraints.cdist">[docs]</a>
-<span class="k">def</span> <span class="nf">cdist</span><span class="p">(</span><span class="n">XA</span><span class="p">,</span> <span class="n">XB</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cdist</span><span class="p">(</span><span class="n">XA</span><span class="p">,</span> <span class="n">XB</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute distance between each pair of the two collections of inputs.</span>
 
@@ -3197,6 +3334,11 @@
 <span class="sd">        Computes the kulczynski distance between the boolean</span>
 <span class="sd">        vectors. (see `kulczynski1` function documentation)</span>
 
+<span class="sd">        .. deprecated:: 1.15.0</span>
+<span class="sd">           This metric is deprecated and will be removed in SciPy 1.17.0.</span>
+<span class="sd">           Replace usage of ``cdist(XA, XB, &#39;kulczynski1&#39;)`` with</span>
+<span class="sd">           ``1 / cdist(XA, XB, &#39;jaccard&#39;) - 1``.</span>
+
 <span class="sd">    19. ``Y = cdist(XA, XB, &#39;rogerstanimoto&#39;)``</span>
 
 <span class="sd">        Computes the Rogers-Tanimoto distance between the boolean</span>
@@ -3211,6 +3353,11 @@
 
 <span class="sd">        Computes the Sokal-Michener distance between the boolean</span>
 <span class="sd">        vectors. (see `sokalmichener` function documentation)</span>
+
+<span class="sd">        .. deprecated:: 1.15.0</span>
+<span class="sd">           This metric is deprecated and will be removed in SciPy 1.17.0.</span>
+<span class="sd">           Replace usage of ``cdist(XA, XB, &#39;sokalmichener&#39;)`` with</span>
+<span class="sd">           ``cdist(XA, XB, &#39;rogerstanimoto&#39;)``.</span>
 
 <span class="sd">    22. ``Y = cdist(XA, XB, &#39;sokalsneath&#39;)``</span>
 
@@ -3325,7 +3472,7 @@
             <span class="k">return</span> <span class="n">_cdist_callable</span><span class="p">(</span>
                 <span class="n">XA</span><span class="p">,</span> <span class="n">XB</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">metric_info</span><span class="o">.</span><span class="n">dist_func</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unknown Distance Metric: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">mstr</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown Distance Metric: </span><span class="si">{</span><span class="n">mstr</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;2nd argument metric must be a string identifier &#39;</span>
                         <span class="s1">&#39;or a function.&#39;</span><span class="p">)</span></div>

@@ -64,3 +64,9 @@
 - New example `yaml_input`, demonstrating how to run *foxes_out through a yaml parameter file
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.3](https://github.com/FraunhoferIWES/foxes/commits/v0.3)
+
+## v0.4
+
+- Support for *foxes* v1.3
+
+**Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.4](https://github.com/FraunhoferIWES/foxes/commits/v0.4)

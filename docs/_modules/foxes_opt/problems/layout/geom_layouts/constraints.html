@@ -13,7 +13,7 @@
     
     
       
-        <title>foxes_opt.problems.layout.geom_layouts.constraints - foxes-opt 0.3 documentation</title>
+        <title>foxes_opt.problems.layout.geom_layouts.constraints - foxes-opt 0.4 documentation</title>
       
     
     
@@ -36,7 +36,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_immaterial_theme.3625f807144f53acf.min.css?v=fbfc4466" />
+        <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_immaterial_theme.d69cbd15d52a24b41.min.css?v=a37d4f05" />
     <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -71,7 +71,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../../../../index.html" title="foxes-opt 0.3 documentation" class="md-header__button md-logo" aria-label="foxes-opt 0.3 documentation" data-md-component="logo">
+    <a href="../../../../../index.html" title="foxes-opt 0.4 documentation" class="md-header__button md-logo" aria-label="foxes-opt 0.4 documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -83,7 +83,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            foxes-opt 0.3 documentation
+            foxes-opt 0.4 documentation
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -170,12 +170,12 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../../../../index.html" title="foxes-opt 0.3 documentation" class="md-nav__button md-logo" aria-label="foxes-opt 0.3 documentation" data-md-component="logo">
+    <a href="../../../../../index.html" title="foxes-opt 0.4 documentation" class="md-nav__button md-logo" aria-label="foxes-opt 0.4 documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
     </a>
-    foxes-opt 0.3 documentation
+    foxes-opt 0.4 documentation
   </label>
   
     <div class="md-nav__source">
@@ -334,16 +334,16 @@
 
 
 <h1>Source code for foxes_opt.problems.layout.geom_layouts.constraints</h1><div class="highlight"><pre>
-<span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">import</span> <span class="n">cdist</span>
-<span class="kn">from</span> <span class="nn">iwopy</span> <span class="kn">import</span> <span class="n">Constraint</span>
+<span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial.distance</span><span class="w"> </span><span class="kn">import</span> <span class="n">cdist</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iwopy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Constraint</span>
 
-<span class="kn">from</span> <span class="nn">foxes.config</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">foxes.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
 
 
 <div class="viewcode-block" id="Valid">
 <a class="viewcode-back" href="../../../../../api_problems_geom.html#foxes_opt.problems.layout.geom_layouts.constraints.Valid">[docs]</a>
-<span class="k">class</span> <span class="nc">Valid</span><span class="p">(</span><span class="n">Constraint</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Valid</span><span class="p">(</span><span class="n">Constraint</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Validity constraint for purely geometrical layouts problems.</span>
 
@@ -353,7 +353,7 @@
 
 <div class="viewcode-block" id="Valid.__init__">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsValid.__init__.html#foxes_opt.problems.layout.geom_layouts.constraints.Valid.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;valid&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;valid&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor.</span>
 
@@ -379,7 +379,7 @@
 
 <div class="viewcode-block" id="Valid.n_components">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsValid.n_components.html#foxes_opt.problems.layout.geom_layouts.constraints.Valid.n_components">[docs]</a>
-    <span class="k">def</span> <span class="nf">n_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">n_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the number of components of the</span>
 <span class="sd">        function.</span>
@@ -395,7 +395,7 @@
 
 <div class="viewcode-block" id="Valid.calc_individual">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsValid.calc_individual.html#foxes_opt.problems.layout.geom_layouts.constraints.Valid.calc_individual">[docs]</a>
-    <span class="k">def</span> <span class="nf">calc_individual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_individual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate values for a single individual of the</span>
 <span class="sd">        underlying problem.</span>
@@ -424,7 +424,7 @@
 
 <div class="viewcode-block" id="Valid.calc_population">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsValid.calc_population.html#foxes_opt.problems.layout.geom_layouts.constraints.Valid.calc_population">[docs]</a>
-    <span class="k">def</span> <span class="nf">calc_population</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_population</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate values for all individuals of a population.</span>
 
@@ -454,7 +454,7 @@
 
 <div class="viewcode-block" id="Boundary">
 <a class="viewcode-back" href="../../../../../api_problems_geom.html#foxes_opt.problems.layout.geom_layouts.constraints.Boundary">[docs]</a>
-<span class="k">class</span> <span class="nc">Boundary</span><span class="p">(</span><span class="n">Constraint</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Boundary</span><span class="p">(</span><span class="n">Constraint</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Boundary constraint for purely geometrical layouts problems.</span>
 
@@ -464,7 +464,7 @@
 
 <div class="viewcode-block" id="Boundary.__init__">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsBoundary.__init__.html#foxes_opt.problems.layout.geom_layouts.constraints.Boundary.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">n_turbines</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">D</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;boundary&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">n_turbines</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">D</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;boundary&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor.</span>
 
@@ -496,7 +496,7 @@
 
 <div class="viewcode-block" id="Boundary.n_components">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsBoundary.n_components.html#foxes_opt.problems.layout.geom_layouts.constraints.Boundary.n_components">[docs]</a>
-    <span class="k">def</span> <span class="nf">n_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">n_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the number of components of the</span>
 <span class="sd">        function.</span>
@@ -512,7 +512,7 @@
 
 <div class="viewcode-block" id="Boundary.calc_individual">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsBoundary.calc_individual.html#foxes_opt.problems.layout.geom_layouts.constraints.Boundary.calc_individual">[docs]</a>
-    <span class="k">def</span> <span class="nf">calc_individual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_individual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate values for a single individual of the</span>
 <span class="sd">        underlying problem.</span>
@@ -548,7 +548,7 @@
 
 <div class="viewcode-block" id="Boundary.calc_population">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsBoundary.calc_population.html#foxes_opt.problems.layout.geom_layouts.constraints.Boundary.calc_population">[docs]</a>
-    <span class="k">def</span> <span class="nf">calc_population</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_population</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate values for all individuals of a population.</span>
 
@@ -588,7 +588,7 @@
 
 <div class="viewcode-block" id="MinDist">
 <a class="viewcode-back" href="../../../../../api_problems_geom.html#foxes_opt.problems.layout.geom_layouts.constraints.MinDist">[docs]</a>
-<span class="k">class</span> <span class="nc">MinDist</span><span class="p">(</span><span class="n">Constraint</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MinDist</span><span class="p">(</span><span class="n">Constraint</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Minimal distance constraint for purely geometrical layouts problems.</span>
 
@@ -598,7 +598,7 @@
 
 <div class="viewcode-block" id="MinDist.__init__">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsMinDist.__init__.html#foxes_opt.problems.layout.geom_layouts.constraints.MinDist.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">min_dist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_turbines</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;min_dist&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -632,7 +632,7 @@
 
 <div class="viewcode-block" id="MinDist.initialize">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsMinDist.initialize.html#foxes_opt.problems.layout.geom_layouts.constraints.MinDist.initialize">[docs]</a>
-    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize the constaint.</span>
 
@@ -660,7 +660,7 @@
 
 <div class="viewcode-block" id="MinDist.n_components">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsMinDist.n_components.html#foxes_opt.problems.layout.geom_layouts.constraints.MinDist.n_components">[docs]</a>
-    <span class="k">def</span> <span class="nf">n_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">n_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the number of components of the</span>
 <span class="sd">        function.</span>
@@ -676,7 +676,7 @@
 
 <div class="viewcode-block" id="MinDist.calc_individual">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsMinDist.calc_individual.html#foxes_opt.problems.layout.geom_layouts.constraints.MinDist.calc_individual">[docs]</a>
-    <span class="k">def</span> <span class="nf">calc_individual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_individual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate values for a single individual of the</span>
 <span class="sd">        underlying problem.</span>
@@ -710,7 +710,7 @@
 
 <div class="viewcode-block" id="MinDist.calc_population">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsMinDist.calc_population.html#foxes_opt.problems.layout.geom_layouts.constraints.MinDist.calc_population">[docs]</a>
-    <span class="k">def</span> <span class="nf">calc_population</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_population</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate values for all individuals of a population.</span>
 
@@ -745,7 +745,7 @@
 
 <div class="viewcode-block" id="CMinN">
 <a class="viewcode-back" href="../../../../../api_problems_geom.html#foxes_opt.problems.layout.geom_layouts.constraints.CMinN">[docs]</a>
-<span class="k">class</span> <span class="nc">CMinN</span><span class="p">(</span><span class="n">Constraint</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CMinN</span><span class="p">(</span><span class="n">Constraint</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Minimal number of turbines constraint for purely geometrical layouts problems.</span>
 
@@ -755,7 +755,7 @@
 
 <div class="viewcode-block" id="CMinN.__init__">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsCMinN.__init__.html#foxes_opt.problems.layout.geom_layouts.constraints.CMinN.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cminN&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cminN&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">problem</span><span class="p">,</span>
             <span class="n">name</span><span class="p">,</span>
@@ -784,7 +784,7 @@
 
 <div class="viewcode-block" id="CMinN.n_components">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsCMinN.n_components.html#foxes_opt.problems.layout.geom_layouts.constraints.CMinN.n_components">[docs]</a>
-    <span class="k">def</span> <span class="nf">n_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">n_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the number of components of the</span>
 <span class="sd">        function.</span>
@@ -800,7 +800,7 @@
 
 <div class="viewcode-block" id="CMinN.calc_individual">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsCMinN.calc_individual.html#foxes_opt.problems.layout.geom_layouts.constraints.CMinN.calc_individual">[docs]</a>
-    <span class="k">def</span> <span class="nf">calc_individual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_individual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate values for a single individual of the</span>
 <span class="sd">        underlying problem.</span>
@@ -829,7 +829,7 @@
 
 <div class="viewcode-block" id="CMinN.calc_population">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsCMinN.calc_population.html#foxes_opt.problems.layout.geom_layouts.constraints.CMinN.calc_population">[docs]</a>
-    <span class="k">def</span> <span class="nf">calc_population</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_population</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate values for all individuals of a population.</span>
 
@@ -859,7 +859,7 @@
 
 <div class="viewcode-block" id="CMaxN">
 <a class="viewcode-back" href="../../../../../api_problems_geom.html#foxes_opt.problems.layout.geom_layouts.constraints.CMaxN">[docs]</a>
-<span class="k">class</span> <span class="nc">CMaxN</span><span class="p">(</span><span class="n">Constraint</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CMaxN</span><span class="p">(</span><span class="n">Constraint</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Maximal number of turbines constraint for purely geometrical layouts problems.</span>
 
@@ -869,7 +869,7 @@
 
 <div class="viewcode-block" id="CMaxN.__init__">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsCMaxN.__init__.html#foxes_opt.problems.layout.geom_layouts.constraints.CMaxN.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cmaxN&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cmaxN&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor.</span>
 
@@ -898,7 +898,7 @@
 
 <div class="viewcode-block" id="CMaxN.n_components">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsCMaxN.n_components.html#foxes_opt.problems.layout.geom_layouts.constraints.CMaxN.n_components">[docs]</a>
-    <span class="k">def</span> <span class="nf">n_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">n_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the number of components of the</span>
 <span class="sd">        function.</span>
@@ -914,7 +914,7 @@
 
 <div class="viewcode-block" id="CMaxN.calc_individual">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsCMaxN.calc_individual.html#foxes_opt.problems.layout.geom_layouts.constraints.CMaxN.calc_individual">[docs]</a>
-    <span class="k">def</span> <span class="nf">calc_individual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_individual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate values for a single individual of the</span>
 <span class="sd">        underlying problem.</span>
@@ -943,7 +943,7 @@
 
 <div class="viewcode-block" id="CMaxN.calc_population">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsCMaxN.calc_population.html#foxes_opt.problems.layout.geom_layouts.constraints.CMaxN.calc_population">[docs]</a>
-    <span class="k">def</span> <span class="nf">calc_population</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_population</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate values for all individuals of a population.</span>
 
@@ -973,7 +973,7 @@
 
 <div class="viewcode-block" id="CFixN">
 <a class="viewcode-back" href="../../../../../api_problems_geom.html#foxes_opt.problems.layout.geom_layouts.constraints.CFixN">[docs]</a>
-<span class="k">class</span> <span class="nc">CFixN</span><span class="p">(</span><span class="n">Constraint</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CFixN</span><span class="p">(</span><span class="n">Constraint</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Fixed number of turbines constraint for purely geometrical layouts problems.</span>
 
@@ -983,7 +983,7 @@
 
 <div class="viewcode-block" id="CFixN.__init__">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsCFixN.__init__.html#foxes_opt.problems.layout.geom_layouts.constraints.CFixN.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cfixN&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cfixN&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor.</span>
 
@@ -1013,7 +1013,7 @@
 
 <div class="viewcode-block" id="CFixN.n_components">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsCFixN.n_components.html#foxes_opt.problems.layout.geom_layouts.constraints.CFixN.n_components">[docs]</a>
-    <span class="k">def</span> <span class="nf">n_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">n_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the number of components of the</span>
 <span class="sd">        function.</span>
@@ -1029,7 +1029,7 @@
 
 <div class="viewcode-block" id="CFixN.calc_individual">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsCFixN.calc_individual.html#foxes_opt.problems.layout.geom_layouts.constraints.CFixN.calc_individual">[docs]</a>
-    <span class="k">def</span> <span class="nf">calc_individual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_individual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate values for a single individual of the</span>
 <span class="sd">        underlying problem.</span>
@@ -1059,7 +1059,7 @@
 
 <div class="viewcode-block" id="CFixN.calc_population">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsCFixN.calc_population.html#foxes_opt.problems.layout.geom_layouts.constraints.CFixN.calc_population">[docs]</a>
-    <span class="k">def</span> <span class="nf">calc_population</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_population</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate values for all individuals of a population.</span>
 
@@ -1090,7 +1090,7 @@
 
 <div class="viewcode-block" id="CMinDensity">
 <a class="viewcode-back" href="../../../../../api_problems_geom.html#foxes_opt.problems.layout.geom_layouts.constraints.CMinDensity">[docs]</a>
-<span class="k">class</span> <span class="nc">CMinDensity</span><span class="p">(</span><span class="n">Constraint</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CMinDensity</span><span class="p">(</span><span class="n">Constraint</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Minimal turbine density constraint for purely geometrical layouts problems.</span>
 
@@ -1100,7 +1100,7 @@
 
 <div class="viewcode-block" id="CMinDensity.__init__">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsCMinDensity.__init__.html#foxes_opt.problems.layout.geom_layouts.constraints.CMinDensity.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">min_value</span><span class="p">,</span> <span class="n">dfactor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;min_density&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">min_value</span><span class="p">,</span> <span class="n">dfactor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;min_density&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor.</span>
 
@@ -1131,7 +1131,7 @@
 
 <div class="viewcode-block" id="CMinDensity.n_components">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsCMinDensity.n_components.html#foxes_opt.problems.layout.geom_layouts.constraints.CMinDensity.n_components">[docs]</a>
-    <span class="k">def</span> <span class="nf">n_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">n_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the number of components of the</span>
 <span class="sd">        function.</span>
@@ -1147,7 +1147,7 @@
 
 <div class="viewcode-block" id="CMinDensity.initialize">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsCMinDensity.initialize.html#foxes_opt.problems.layout.geom_layouts.constraints.CMinDensity.initialize">[docs]</a>
-    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbosity</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbosity</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize the object.</span>
 
@@ -1183,7 +1183,7 @@
 
 <div class="viewcode-block" id="CMinDensity.calc_individual">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsCMinDensity.calc_individual.html#foxes_opt.problems.layout.geom_layouts.constraints.CMinDensity.calc_individual">[docs]</a>
-    <span class="k">def</span> <span class="nf">calc_individual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_individual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate values for a single individual of the</span>
 <span class="sd">        underlying problem.</span>
@@ -1214,7 +1214,7 @@
 
 <div class="viewcode-block" id="CMinDensity.calc_population">
 <a class="viewcode-back" href="../../../../../_foxesopt/problems/layout/geom_layouts/constraintsCMinDensity.calc_population.html#foxes_opt.problems.layout.geom_layouts.constraints.CMinDensity.calc_population">[docs]</a>
-    <span class="k">def</span> <span class="nf">calc_population</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_population</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vars_int</span><span class="p">,</span> <span class="n">vars_float</span><span class="p">,</span> <span class="n">problem_results</span><span class="p">,</span> <span class="n">cmpnts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate values for all individuals of a population.</span>
 

@@ -13,7 +13,7 @@
     
     
       
-        <title>Layout optimization - foxes-opt 0.3 documentation</title>
+        <title>Layout optimization - foxes-opt 0.4 documentation</title>
       
     
     
@@ -36,7 +36,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.3625f807144f53acf.min.css?v=fbfc4466" />
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.d69cbd15d52a24b41.min.css?v=a37d4f05" />
         <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -72,7 +72,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../index.html" title="foxes-opt 0.3 documentation" class="md-header__button md-logo" aria-label="foxes-opt 0.3 documentation" data-md-component="logo">
+    <a href="../index.html" title="foxes-opt 0.4 documentation" class="md-header__button md-logo" aria-label="foxes-opt 0.4 documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -84,7 +84,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            foxes-opt 0.3 documentation
+            foxes-opt 0.4 documentation
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -171,12 +171,12 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../index.html" title="foxes-opt 0.3 documentation" class="md-nav__button md-logo" aria-label="foxes-opt 0.3 documentation" data-md-component="logo">
+    <a href="../index.html" title="foxes-opt 0.4 documentation" class="md-nav__button md-logo" aria-label="foxes-opt 0.4 documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
     </a>
-    foxes-opt 0.3 documentation
+    foxes-opt 0.4 documentation
   </label>
   
     <div class="md-nav__source">
@@ -420,15 +420,15 @@
 </code></pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="o">%</span><span class="k">matplotlib</span> inline
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">foxes</span>
-<span class="kn">import</span> <span class="nn">foxes.utils.geom2d</span> <span class="k">as</span> <span class="nn">gm</span>
-<span class="kn">import</span> <span class="nn">foxes.variables</span> <span class="k">as</span> <span class="nn">FV</span>
-<span class="kn">from</span> <span class="nn">iwopy.interfaces.pymoo</span> <span class="kn">import</span> <span class="n">Optimizer_pymoo</span>
-<span class="kn">from</span> <span class="nn">foxes_opt.problems.layout</span> <span class="kn">import</span> <span class="n">FarmLayoutOptProblem</span>
-<span class="kn">from</span> <span class="nn">foxes_opt.objectives</span> <span class="kn">import</span> <span class="n">MaxFarmPower</span>
-<span class="kn">from</span> <span class="nn">foxes_opt.constraints</span> <span class="kn">import</span> <span class="n">FarmBoundaryConstraint</span><span class="p">,</span> <span class="n">MinDistConstraint</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">foxes</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">foxes.utils.geom2d</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">foxes.variables</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">FV</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iwopy.interfaces.pymoo</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optimizer_pymoo</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">foxes_opt.problems.layout</span><span class="w"> </span><span class="kn">import</span> <span class="n">FarmLayoutOptProblem</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">foxes_opt.objectives</span><span class="w"> </span><span class="kn">import</span> <span class="n">MaxFarmPower</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">foxes_opt.constraints</span><span class="w"> </span><span class="kn">import</span> <span class="n">FarmBoundaryConstraint</span><span class="p">,</span> <span class="n">MinDistConstraint</span>
 </code></pre></div>
 </div>
 </div>
@@ -885,7 +885,7 @@ Results problem &#39;layout_opt&#39;:
   Success: True
 ------------------------------
 
-&lt;xarray.Dataset&gt; Size: 451kB
+&lt;xarray.Dataset&gt; Size: 436kB
 Dimensions:     (state: 216, turbine: 10)
 Coordinates:
   * state       (state) int64 2kB 0 1 2 3 4 5 6 ... 209 210 211 212 213 214 215
@@ -902,7 +902,7 @@ Data variables: (12/27)
     order       (state, turbine) int64 17kB 3 7 9 5 2 1 4 6 ... 5 9 1 2 6 4 8 0
     order_inv   (state, turbine) int64 17kB 2 3 6 9 7 0 1 5 ... 2 4 0 5 6 9 8 1
     order_ssel  (state, turbine) int64 17kB 0 0 0 0 0 0 ... 215 215 215 215 215
-    weight      (state, turbine) float64 17kB 0.00158 0.00158 ... 0.00013
+    weight      (state) float64 2kB 0.00158 0.00244 0.00319 ... 0.00061 0.00013
     tname       (turbine) &lt;U2 80B &#39;T0&#39; &#39;T1&#39; &#39;T2&#39; &#39;T3&#39; ... &#39;T6&#39; &#39;T7&#39; &#39;T8&#39; &#39;T9&#39;
 </pre></div></div>
 </div>
@@ -940,7 +940,7 @@ Data variables: (12/27)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-States &#39;StatesTable&#39;: Reading file /home/jonas/venv/foxes-opt/lib/python3.11/site-packages/foxes/data/states/wind_rose_bremen.csv
+States &#39;StatesTable&#39;: Reading file /home/jonas/venv/foxes-opt311/lib/python3.11/site-packages/foxes/data/states/wind_rose_bremen.csv
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
