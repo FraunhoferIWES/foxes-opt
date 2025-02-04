@@ -73,9 +73,10 @@ class PopStates(States):
                 idata["coords"][self.STATE0] = coord
 
         for dname, (dims0, data0) in idata0["data_vars"].items():
-            #if dname != FV.WEIGHT:
-            hdims = tuple([d if d != FC.STATE else self.STATE0 
-                            for d in np.atleast_1d(dims0)])
+            # if dname != FV.WEIGHT:
+            hdims = tuple(
+                [d if d != FC.STATE else self.STATE0 for d in np.atleast_1d(dims0)]
+            )
             idata["data_vars"][dname] = (hdims, data0)
 
         smap = np.zeros((self.n_pop, self.states.size()), dtype=np.int32)
@@ -90,7 +91,7 @@ class PopStates(States):
                 break
         if not found:
             del idata["coords"][self.STATE0]
-        
+
         return idata
 
     def initialize(self, algo, verbosity=0):
@@ -184,7 +185,9 @@ class PopStates(States):
         hmdata = Data(hdata, hdims, mdata.loop_dims)
 
         out = self.states.calculate(algo, hmdata, fdata, pdata)
-        assert FV.WEIGHT in pdata, f"Missing '{FV.WEIGHT}' in pdata results from states '{self.states.name}'"
-        out[FV.WEIGHT] = pdata[FV.WEIGHT] 
+        assert (
+            FV.WEIGHT in pdata
+        ), f"Missing '{FV.WEIGHT}' in pdata results from states '{self.states.name}'"
+        out[FV.WEIGHT] = pdata[FV.WEIGHT]
 
         return out
