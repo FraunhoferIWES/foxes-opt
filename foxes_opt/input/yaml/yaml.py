@@ -23,7 +23,7 @@ def foxes_opt_yaml():
         "yml_file",
         help="The input yaml file",
     )
-    parser.add_argument("-o", "--out_dir", help="The output directory", default=".")
+    parser.add_argument("-o", "--output_dir", help="The output directory", default=".")
     parser.add_argument("-r", "--rotor", help="The rotor model", default=None)
     parser.add_argument(
         "-p", "--pwakes", help="The partial wakes models", default=None, nargs="+"
@@ -98,6 +98,6 @@ def foxes_opt_yaml():
         engine_pars=epars,
         iterative=args.iterative,
         work_dir=fpath.parent,
-        out_dir=args.out_dir,
+        output_dir=args.output_dir,
         verbosity=args.verbosity,
     )
