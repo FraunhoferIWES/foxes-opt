@@ -8,7 +8,6 @@ from foxes_opt.objectives import MaxFarmPower
 
 
 def test():
-
     boundary = foxes.utils.geom2d.Circle([0.0, 0.0], 1000.0)
 
     farm = foxes.WindFarm(boundary=boundary)
@@ -98,5 +97,4 @@ def test():
 
 
 if __name__ == "__main__":
-
     test()

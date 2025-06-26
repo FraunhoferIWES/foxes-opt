@@ -2,8 +2,8 @@
 Abstract classes and core functionality for wind farm optimization.
 """
 
-from .farm_opt_problem import FarmOptProblem
-from .farm_vars_problem import FarmVarsProblem
-from .farm_objective import FarmObjective
-from .farm_constraint import FarmConstraint
-from .pop_states import PopStates
+from .farm_opt_problem import FarmOptProblem as FarmOptProblem
+from .farm_vars_problem import FarmVarsProblem as FarmVarsProblem
+from .farm_objective import FarmObjective as FarmObjective
+from .farm_constraint import FarmConstraint as FarmConstraint
+from .pop_states import PopStates as PopStates

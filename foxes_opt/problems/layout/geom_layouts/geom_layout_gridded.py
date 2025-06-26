@@ -265,12 +265,12 @@ class GeomLayoutGridded(Problem):
 
         if title is None:
             if xy is None:
-                title = f"Optimization area"
+                title = "Optimization area"
             else:
-                l = len(xy) if xy is not None else 0
+                lxy = len(xy) if xy is not None else 0
                 dists = cdist(xy, xy)
                 np.fill_diagonal(dists, 1e20)
-                title = f"N = {l}, min_dist = {np.min(dists):.1f} m"
+                title = f"N = {lxy}, min_dist = {np.min(dists):.1f} m"
         ax.set_title(title)
 
         return ax

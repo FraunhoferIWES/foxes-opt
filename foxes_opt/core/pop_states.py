@@ -1,5 +1,6 @@
 import numpy as np
 
+from foxes.config import config
 from foxes.core import States, Data
 import foxes.constants as FC
 import foxes.variables as FV
@@ -185,9 +186,14 @@ class PopStates(States):
         hmdata = Data(hdata, hdims, mdata.loop_dims)
 
         out = self.states.calculate(algo, hmdata, fdata, pdata)
-        assert (
-            FV.WEIGHT in pdata
-        ), f"Missing '{FV.WEIGHT}' in pdata results from states '{self.states.name}'"
-        out[FV.WEIGHT] = pdata[FV.WEIGHT]
+        assert FV.WEIGHT in pdata, (
+            f"Missing '{FV.WEIGHT}' in pdata results from states '{self.states.name}'"
+        )
+
+        out[FV.WEIGHT] = np.zeros(
+            (pdata.n_states, pdata.n_targets, pdata.n_tpoints),
+            dtype=config.dtype_double,
+        )
+        out[FV.WEIGHT][:] = pdata[FV.WEIGHT]
 
         return out

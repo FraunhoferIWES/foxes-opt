@@ -10,6 +10,11 @@ import foxes.constants as FC
 from .geom_layouts.geom_reggrids import GeomRegGrids
 
 
+def _calc_func(valid, P, ct, st_sel):
+    """helper function for Calculator turbine model"""
+    return (valid, P * valid, ct * valid)
+
+
 class RegGridsLayoutOptProblem(FarmVarsProblem):
     """
     Places turbines on several regular grids and optimizes
@@ -98,13 +103,13 @@ class RegGridsLayoutOptProblem(FarmVarsProblem):
         self._mname = self.name + "_calc"
         for t in self.algo.farm.turbines:
             if self._mname not in t.models:
-                t.models.append(self._mname)
+                t.add_model(self._mname)
         self._turbine = deepcopy(self.farm.turbines[-1])
 
         self.algo.mbook.turbine_models[self._mname] = Calculator(
             in_vars=[FC.VALID, FV.P, FV.CT],
             out_vars=[FC.VALID, FV.P, FV.CT],
-            func=lambda valid, P, ct, st_sel: (valid, P * valid, ct * valid),
+            func=_calc_func,
             pre_rotor=False,
         )
 
