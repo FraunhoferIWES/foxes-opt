@@ -25,11 +25,15 @@ if __name__ == "__main__":
         "-w",
         "--wakes",
         help="The wake models",
-        default=["CrespoHernandez_quadratic", "Bastankhah2016_linear"],
+        default=["CrespoHernandez_quadratic_ambka04", "Bastankhah2014_vector_ambka04"],
         nargs="+",
     )
+    parser.add_argument("-f", "--frame", help="The wake frame", default="rotor_wd")
     parser.add_argument(
-        "-m", "--tmodels", help="The turbine models", default=["kTI_02"], nargs="+"
+        "-d", "--deflection", help="The wake deflection", default="Jimenez"
+    )
+    parser.add_argument(
+        "-m", "--tmodels", help="The turbine models", default=[], nargs="+"
     )
     parser.add_argument("-p", "--pwakes", help="The partial wakes model", default=None)
     parser.add_argument("--ws", help="The wind speed", type=float, default=9.0)
@@ -37,7 +41,7 @@ if __name__ == "__main__":
     parser.add_argument("--ti", help="The TI value", type=float, default=0.03)
     parser.add_argument("--rho", help="The air density", type=float, default=1.225)
     parser.add_argument(
-        "-d",
+        "-md",
         "--min_dist",
         help="Minimal turbine distance in unit D",
         type=float,
@@ -95,7 +99,8 @@ if __name__ == "__main__":
         states,
         rotor_model=args.rotor,
         wake_models=args.wakes,
-        wake_frame="yawed",
+        wake_frame=args.frame,
+        wake_deflection=args.deflection,
         partial_wakes=args.pwakes,
         mbook=mbook,
         verbosity=0,

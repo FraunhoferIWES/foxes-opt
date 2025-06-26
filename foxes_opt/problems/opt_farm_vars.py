@@ -71,7 +71,7 @@ class OptFarmVars(FarmVarsProblem):
         """
         if typ == "float":
             typ = float
-        elif float == "int":
+        elif typ == "int":
             typ = int
         elif typ is not float and typ is not int:
             raise TypeError(
