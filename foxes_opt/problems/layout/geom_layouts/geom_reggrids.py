@@ -277,7 +277,7 @@ class GeomRegGrids(Problem):
         dx = vflt[:, 2]
         dy = vflt[:, 3]
         a = np.deg2rad(vflt[:, 4])
-        #s = vflt[:, 5:]
+        # s = vflt[:, 5:]
         n_points = self.n_max
 
         nax = np.stack([np.cos(a), np.sin(a), np.zeros_like(a)], axis=-1)
@@ -360,7 +360,7 @@ class GeomRegGrids(Problem):
         dx = vflt[:, :, 2]
         dy = vflt[:, :, 3]
         a = np.deg2rad(vflt[:, :, 4])
-        #s = vflt[:, :, 5:]
+        # s = vflt[:, :, 5:]
         n_points = self.n_max
 
         nax = np.stack([np.cos(a), np.sin(a), np.zeros_like(a)], axis=-1)

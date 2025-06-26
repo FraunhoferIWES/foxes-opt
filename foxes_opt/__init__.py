@@ -6,11 +6,11 @@ from .core import FarmOptProblem as FarmOptProblem
 from .core import FarmObjective as FarmObjective
 from .core import FarmConstraint as FarmConstraint
 
-from . import input as input 
+from . import input as input
 from . import problems as problems
 from . import constraints as constraints
-from . import objectives as objectives 
-from . import output as output 
+from . import objectives as objectives
+from . import output as output
 
 import importlib
 from pathlib import Path

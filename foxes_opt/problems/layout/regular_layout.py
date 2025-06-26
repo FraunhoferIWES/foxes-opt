@@ -96,7 +96,7 @@ class RegularLayoutOptProblem(FarmVarsProblem):
         if verbosity > 0:
             print(f"Problem '{self.name}':")
             print(f"  xy0          = {self._xy0}")
-            print(f"  span         = {np.linalg.norm(self._halfspan*2):.2f}")
+            print(f"  span         = {np.linalg.norm(self._halfspan * 2):.2f}")
             print(f"  min spacing  = {self.min_spacing:.2f}")
             print(f"  max spacing  = {self.max_spacing:.2f}")
             print(f"  n row turbns = {self._nrow}")
