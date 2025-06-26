@@ -101,7 +101,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "The algorithm is defined next, including a TI wake model and the `Bastankhah2016` wake model. Also notice the wake frame choice `yawed`, which realizes the wake bending for yawed conditions:"
+    "The algorithm is defined next, including a TI wake model and the `TurbOPark` wake model with `vector` wind superposition. Also notice the wake deflection choice `Jimenez`, which realizes the wake bending for yawed conditions:"
    ]
   },
   {
@@ -114,8 +114,9 @@
     "    farm,\n",
     "    states,\n",
     "    rotor_model=\"grid25\",\n",
-    "    wake_models=[\"IECTI2019k_quadratic_ambka02\", \"Bastankhah2016_linear_ambka02\"],\n",
-    "    wake_frame=\"yawed\",\n",
+    "    wake_models=[\"IECTI2019k_quadratic_ambka04\", \"TurbOPark_vector_ambka004\"],\n",
+    "    wake_frame=\"rotor_wd\",\n",
+    "    wake_deflection=\"Jimenez\",\n",
     "    verbosity=0,\n",
     ")"
    ]
@@ -134,7 +135,7 @@
    "outputs": [],
    "source": [
     "problem = OptFarmVars(\"opt_yawm\", algo)\n",
-    "problem.add_var(FV.YAWM, float, 0.0, -40.0, 40.0, level=\"turbine\")\n",
+    "problem.add_var(FV.YAWM, float, 0.0, -30.0, 30.0, level=\"turbine\")\n",
     "problem.add_objective(MaxFarmPower(problem))\n",
     "problem.initialize()"
    ]

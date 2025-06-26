@@ -1,5 +1,6 @@
 
 
+
 <!doctype html>
 <html lang="en" class="no-js">
   <head>
@@ -9,25 +10,30 @@
       
       
       
+      
+        <link rel="prev" href="layout_opt.html">
+      
+      
+        <link rel="next" href="../api.html">
+      
+      
       <link rel="icon" href="">
     
     
       
-        <title>Wake steering - foxes-opt 0.4 documentation</title>
+        <title>Wake steering - foxes-opt 0.5 documentation</title>
       
     
     
       
-        
-        
-          
-          
-          <meta name="theme-color" content="#009485">
         
       
       
 
+
     
+    
+      
     
     
       
@@ -36,9 +42,9 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.d69cbd15d52a24b41.min.css?v=a37d4f05" />
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.03757d82676c6523d.min.css?v=d977aabd" />
         <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -53,9 +59,8 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="teal" data-md-color-accent="">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="indigo">
   
-    
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
@@ -70,21 +75,24 @@
     
       
 
-<header class="md-header" data-md-component="header">
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../index.html" title="foxes-opt 0.4 documentation" class="md-header__button md-logo" aria-label="foxes-opt 0.4 documentation" data-md-component="logo">
+    <a href="../index.html" title="foxes-opt 0.5 documentation" class="md-header__button md-logo" aria-label="foxes-opt 0.5 documentation" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
     </a>
     <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            foxes-opt 0.4 documentation
+            foxes-opt 0.5 documentation
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -97,10 +105,14 @@
       </div>
     </div>
     
+      
+    
+    
     
     
       <label class="md-header__button md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
       </label>
       <div class="md-search" data-md-component="search" role="dialog">
   <label class="md-search__overlay" for="__search"></label>
@@ -108,24 +120,27 @@
     <form class="md-search__form" name="search">
       <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
       <label class="md-search__icon md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
       </label>
       <nav class="md-search__options" aria-label="Search">
         
         <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </nav>
       
     </form>
     <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
         <div class="md-search-result" data-md-component="search-result">
           <div class="md-search-result__meta">
             Initializing search
           </div>
-          <ol class="md-search-result__list"></ol>
+          <ol class="md-search-result__list" role="presentation"></ol>
         </div>
       </div>
     </div>
@@ -137,7 +152,7 @@
         <a href="https://github.com/FraunhoferIWES/foxes-opt" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
   </div>
   <div class="md-source__repository">
     foxes-op
@@ -169,21 +184,22 @@
                     
 
 
+
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../index.html" title="foxes-opt 0.4 documentation" class="md-nav__button md-logo" aria-label="foxes-opt 0.4 documentation" data-md-component="logo">
+    <a href="../index.html" title="foxes-opt 0.5 documentation" class="md-nav__button md-logo" aria-label="foxes-opt 0.5 documentation" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
     </a>
-    foxes-opt 0.4 documentation
+    foxes-opt 0.5 documentation
   </label>
   
     <div class="md-nav__source">
       <a href="https://github.com/FraunhoferIWES/foxes-opt" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
   </div>
   <div class="md-source__repository">
     foxes-op
@@ -195,15 +211,22 @@
     
       
       
-      
-
+  
   
   
   
   
     <li class="md-nav__item">
       <a href="../citation.html" class="md-nav__link">
-        <span title="/citation.md (reference label)" class="md-ellipsis">Citation</span>
+        
+  
+  
+  <span class="md-ellipsis">
+    <span title="/citation.md (reference label)">Citation</span>
+    
+  </span>
+  
+
       </a>
     </li>
   
@@ -211,15 +234,22 @@
     
       
       
-      
-
+  
   
   
   
   
     <li class="md-nav__item">
       <a href="../installation.html" class="md-nav__link">
-        <span title="/installation.md (reference label)" class="md-ellipsis">Installation</span>
+        
+  
+  
+  <span class="md-ellipsis">
+    <span title="/installation.md (reference label)">Installation</span>
+    
+  </span>
+  
+
       </a>
     </li>
   
@@ -227,15 +257,22 @@
     
       
       
-      
-
+  
   
   
   
   
     <li class="md-nav__item">
       <a href="../parameter_files.html" class="md-nav__link">
-        <span title="/parameter_files.md (reference label)" class="md-ellipsis">Input parameter files</span>
+        
+  
+  
+  <span class="md-ellipsis">
+    <span title="/parameter_files.md (reference label)">Input parameter files</span>
+    
+  </span>
+  
+
       </a>
     </li>
   
@@ -243,78 +280,108 @@
     
       
       
-      
-
   
   
     
   
   
+  
+    
+    
     
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
-      
-      
-      
         
-        <div class="md-nav__link md-nav__link--index ">
-          <a href="../examples.html"><span title="/examples.rst (reference label)" class="md-ellipsis">Examples</span></a>
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
           
-            <label for="__nav_4">
-              <span class="md-nav__icon md-icon"></span>
-            </label>
-          
-        </div>
-      
-      <nav class="md-nav" aria-label="Examples" data-md-level="1">
-        <label class="md-nav__title" for="__nav_4">
-          <span class="md-nav__icon md-icon"></span>
-          <span title="/examples.rst (reference label)" class="md-ellipsis">Examples</span>
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
+          <div class="md-nav__link md-nav__container">
+            <a href="../examples.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span title="/examples.rst (reference label)">Examples</span>
+    
+  </span>
+  
+
+            </a>
             
               
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            <span title="/examples.rst (reference label)">Examples</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
   
   
   
   
     <li class="md-nav__item">
       <a href="layout_opt.html" class="md-nav__link">
-        <span title="/notebooks/layout_opt.ipynb (reference label)" class="md-ellipsis">Layout optimization</span>
+        
+  
+  
+  <span class="md-ellipsis">
+    <span title="/notebooks/layout_opt.ipynb (reference label)">Layout optimization</span>
+    
+  </span>
+  
+
       </a>
     </li>
   
 
-            
-          
+              
             
               
+                
   
   
     
   
     
+  
   
   
     <li class="md-nav__item md-nav__item--active">
       
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       <a href="#" class="md-nav__link md-nav__link--active">
-        <span title="/notebooks/wake_steering.ipynb (reference label)" class="md-ellipsis">Wake steering</span>
+        
+  
+  
+  <span class="md-ellipsis">
+    <span title="/notebooks/wake_steering.ipynb (reference label)">Wake steering</span>
+    
+  </span>
+  
+
       </a>
       
     </li>
   
 
+              
             
-          
-        </ul>
-      </nav>
+          </ul>
+        </nav>
+      
     </li>
   
   
@@ -322,15 +389,22 @@
     
       
       
-      
-
+  
   
   
   
   
     <li class="md-nav__item">
       <a href="../api.html" class="md-nav__link">
-        <span title="/api.rst (reference label)" class="md-ellipsis">API</span>
+        
+  
+  
+  <span class="md-ellipsis">
+    <span title="/api.rst (reference label)">API</span>
+    
+  </span>
+  
+
       </a>
     </li>
   
@@ -338,15 +412,22 @@
     
       
       
-      
-
+  
   
   
   
   
     <li class="md-nav__item">
       <a href="../testing.html" class="md-nav__link">
-        <span title="/testing.md (reference label)" class="md-ellipsis">Testing</span>
+        
+  
+  
+  <span class="md-ellipsis">
+    <span title="/testing.md (reference label)">Testing</span>
+    
+  </span>
+  
+
       </a>
     </li>
   
@@ -354,15 +435,22 @@
     
       
       
-      
-
+  
   
   
   
   
     <li class="md-nav__item">
       <a href="../CHANGELOG.html" class="md-nav__link">
-        <span title="/changelog.md (reference label)" class="md-ellipsis">Changelog</span>
+        
+  
+  
+  <span class="md-ellipsis">
+    <span title="/changelog.md (reference label)">Changelog</span>
+    
+  </span>
+  
+
       </a>
     </li>
   
@@ -394,6 +482,8 @@
           
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset" role="main">
+                
+                
                   
 
 
@@ -473,7 +563,7 @@
 </code></pre></div>
 </div>
 </div>
-<p>The algorithm is defined next, including a TI wake model and the <code class="docutils literal notranslate"><span class="pre">Bastankhah2016</span></code> wake model. Also notice the wake frame choice <code class="docutils literal notranslate"><span class="pre">yawed</span></code>, which realizes the wake bending for yawed conditions:</p>
+<p>The algorithm is defined next, including a TI wake model and the <code class="docutils literal notranslate"><span class="pre">TurbOPark</span></code> wake model with <code class="docutils literal notranslate"><span class="pre">vector</span></code> wind superposition. Also notice the wake deflection choice <code class="docutils literal notranslate"><span class="pre">Jimenez</span></code>, which realizes the wake bending for yawed conditions:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [5]:
 </code></pre></div>
@@ -482,8 +572,9 @@
     <span class="n">farm</span><span class="p">,</span>
     <span class="n">states</span><span class="p">,</span>
     <span class="n">rotor_model</span><span class="o">=</span><span class="s2">&quot;grid25&quot;</span><span class="p">,</span>
-    <span class="n">wake_models</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;IECTI2019k_quadratic_ambka02&quot;</span><span class="p">,</span> <span class="s2">&quot;Bastankhah2016_linear_ambka02&quot;</span><span class="p">],</span>
-    <span class="n">wake_frame</span><span class="o">=</span><span class="s2">&quot;yawed&quot;</span><span class="p">,</span>
+    <span class="n">wake_models</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;IECTI2019k_quadratic_ambka04&quot;</span><span class="p">,</span> <span class="s2">&quot;TurbOPark_vector_ambka004&quot;</span><span class="p">],</span>
+    <span class="n">wake_frame</span><span class="o">=</span><span class="s2">&quot;rotor_wd&quot;</span><span class="p">,</span>
+    <span class="n">wake_deflection</span><span class="o">=</span><span class="s2">&quot;Jimenez&quot;</span><span class="p">,</span>
     <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
 <span class="p">)</span>
 </code></pre></div>
@@ -495,7 +586,7 @@
 </code></pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">problem</span> <span class="o">=</span> <span class="n">OptFarmVars</span><span class="p">(</span><span class="s2">&quot;opt_yawm&quot;</span><span class="p">,</span> <span class="n">algo</span><span class="p">)</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">add_var</span><span class="p">(</span><span class="n">FV</span><span class="o">.</span><span class="n">YAWM</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">40.0</span><span class="p">,</span> <span class="mf">40.0</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;turbine&quot;</span><span class="p">)</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">add_var</span><span class="p">(</span><span class="n">FV</span><span class="o">.</span><span class="n">YAWM</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">30.0</span><span class="p">,</span> <span class="mf">30.0</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;turbine&quot;</span><span class="p">)</span>
 <span class="n">problem</span><span class="o">.</span><span class="n">add_objective</span><span class="p">(</span><span class="n">MaxFarmPower</span><span class="p">(</span><span class="n">problem</span><span class="p">))</span>
 <span class="n">problem</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
 </code></pre></div>
@@ -520,15 +611,15 @@ Problem &#39;opt_yawm&#39;: Optimization variable list
 8  YAWM_0008  YAWM  float      8  turbine     -1        8            8   0.0
 
     min   max pre_rotor model_key
-0 -40.0  40.0     False  opt_yawm
-1 -40.0  40.0     False  opt_yawm
-2 -40.0  40.0     False  opt_yawm
-3 -40.0  40.0     False  opt_yawm
-4 -40.0  40.0     False  opt_yawm
-5 -40.0  40.0     False  opt_yawm
-6 -40.0  40.0     False  opt_yawm
-7 -40.0  40.0     False  opt_yawm
-8 -40.0  40.0     False  opt_yawm
+0 -30.0  30.0     False  opt_yawm
+1 -30.0  30.0     False  opt_yawm
+2 -30.0  30.0     False  opt_yawm
+3 -30.0  30.0     False  opt_yawm
+4 -30.0  30.0     False  opt_yawm
+5 -30.0  30.0     False  opt_yawm
+6 -30.0  30.0     False  opt_yawm
+7 -30.0  30.0     False  opt_yawm
+8 -30.0  30.0     False  opt_yawm
 
 Problem &#39;opt_yawm&#39; (OptFarmVars): Initializing
 ----------------------------------------------
@@ -569,6 +660,14 @@ Loading pymoo
 pymoo successfully loaded
 Initializing Optimizer_pymoo
 Selecting sampling: float_random (FloatRandomSampling)
+
+Compiled modules for significant speedup can not be used!
+https://pymoo.org/installation.html#installation
+
+To disable this warning:
+from pymoo.config import Config
+Config.warnings[&#39;not_compiled&#39;] = False
+
 Selecting algorithm: GA (GA)
 
 Problem:
@@ -605,111 +704,111 @@ Termination:
 =================================================
 n_gen  |  n_eval  |     f_avg     |     f_min
 =================================================
-     1 |      100 | -2.716086E-01 | -3.062184E-01
-     2 |      200 | -2.900518E-01 | -3.075843E-01
-     3 |      300 | -2.998327E-01 | -3.176548E-01
-     4 |      400 | -3.066163E-01 | -3.176548E-01
-     5 |      500 | -3.116990E-01 | -3.181045E-01
-     6 |      600 | -3.153652E-01 | -3.210101E-01
-     7 |      700 | -3.178322E-01 | -3.241374E-01
-     8 |      800 | -3.202072E-01 | -3.241374E-01
-     9 |      900 | -3.221594E-01 | -3.252988E-01
-    10 |     1000 | -3.233195E-01 | -3.255576E-01
-    11 |     1100 | -3.240882E-01 | -3.261391E-01
-    12 |     1200 | -3.246163E-01 | -3.261391E-01
-    13 |     1300 | -3.252244E-01 | -3.268285E-01
-    14 |     1400 | -3.256995E-01 | -3.271945E-01
-    15 |     1500 | -3.261343E-01 | -3.271945E-01
-    16 |     1600 | -3.264993E-01 | -3.271945E-01
-    17 |     1700 | -3.267905E-01 | -3.272931E-01
-    18 |     1800 | -3.269569E-01 | -3.273335E-01
-    19 |     1900 | -3.270618E-01 | -3.274558E-01
-    20 |     2000 | -3.271565E-01 | -3.274558E-01
-    21 |     2100 | -3.272321E-01 | -3.274674E-01
-    22 |     2200 | -3.272973E-01 | -3.275297E-01
-    23 |     2300 | -3.273522E-01 | -3.275642E-01
-    24 |     2400 | -3.274000E-01 | -3.275892E-01
-    25 |     2500 | -3.274407E-01 | -3.276063E-01
-    26 |     2600 | -3.274856E-01 | -3.276894E-01
-    27 |     2700 | -3.275084E-01 | -3.276894E-01
-    28 |     2800 | -3.275378E-01 | -3.276894E-01
-    29 |     2900 | -3.275671E-01 | -3.276894E-01
-    30 |     3000 | -3.275862E-01 | -3.276894E-01
-    31 |     3100 | -3.276094E-01 | -3.277010E-01
-    32 |     3200 | -3.276308E-01 | -3.277010E-01
-    33 |     3300 | -3.276463E-01 | -3.277112E-01
-    34 |     3400 | -3.276695E-01 | -3.277478E-01
-    35 |     3500 | -3.276892E-01 | -3.277723E-01
-    36 |     3600 | -3.277063E-01 | -3.277793E-01
-    37 |     3700 | -3.277210E-01 | -3.277793E-01
-    38 |     3800 | -3.277354E-01 | -3.277924E-01
-    39 |     3900 | -3.277519E-01 | -3.278052E-01
-    40 |     4000 | -3.277655E-01 | -3.278052E-01
-    41 |     4100 | -3.277770E-01 | -3.278052E-01
-    42 |     4200 | -3.277852E-01 | -3.278054E-01
-    43 |     4300 | -3.277915E-01 | -3.278054E-01
-    44 |     4400 | -3.277968E-01 | -3.278081E-01
-    45 |     4500 | -3.278009E-01 | -3.278086E-01
-    46 |     4600 | -3.278038E-01 | -3.278117E-01
-    47 |     4700 | -3.278054E-01 | -3.278122E-01
-    48 |     4800 | -3.278072E-01 | -3.278145E-01
-    49 |     4900 | -3.278085E-01 | -3.278154E-01
-    50 |     5000 | -3.278099E-01 | -3.278155E-01
-    51 |     5100 | -3.278108E-01 | -3.278172E-01
-    52 |     5200 | -3.278124E-01 | -3.278172E-01
-    53 |     5300 | -3.278136E-01 | -3.278172E-01
-    54 |     5400 | -3.278146E-01 | -3.278188E-01
-    55 |     5500 | -3.278157E-01 | -3.278193E-01
-    56 |     5600 | -3.278166E-01 | -3.278194E-01
-    57 |     5700 | -3.278173E-01 | -3.278197E-01
-    58 |     5800 | -3.278179E-01 | -3.278209E-01
-    59 |     5900 | -3.278183E-01 | -3.278210E-01
-    60 |     6000 | -3.278189E-01 | -3.278210E-01
-    61 |     6100 | -3.278195E-01 | -3.278213E-01
-    62 |     6200 | -3.278200E-01 | -3.278213E-01
-    63 |     6300 | -3.278205E-01 | -3.278213E-01
-    64 |     6400 | -3.278210E-01 | -3.278214E-01
-    65 |     6500 | -3.278211E-01 | -3.278214E-01
-    66 |     6600 | -3.278212E-01 | -3.278214E-01
-    67 |     6700 | -3.278212E-01 | -3.278214E-01
-    68 |     6800 | -3.278213E-01 | -3.278214E-01
-    69 |     6900 | -3.278213E-01 | -3.278215E-01
-    70 |     7000 | -3.278213E-01 | -3.278215E-01
-    71 |     7100 | -3.278214E-01 | -3.278216E-01
-    72 |     7200 | -3.278214E-01 | -3.278217E-01
-    73 |     7300 | -3.278214E-01 | -3.278217E-01
-    74 |     7400 | -3.278215E-01 | -3.278217E-01
-    75 |     7500 | -3.278215E-01 | -3.278217E-01
-    76 |     7600 | -3.278216E-01 | -3.278218E-01
-    77 |     7700 | -3.278217E-01 | -3.278218E-01
-    78 |     7800 | -3.278217E-01 | -3.278218E-01
-    79 |     7900 | -3.278217E-01 | -3.278218E-01
-    80 |     8000 | -3.278218E-01 | -3.278218E-01
-    81 |     8100 | -3.278218E-01 | -3.278218E-01
-    82 |     8200 | -3.278218E-01 | -3.278218E-01
-    83 |     8300 | -3.278218E-01 | -3.278218E-01
-    84 |     8400 | -3.278218E-01 | -3.278218E-01
-    85 |     8500 | -3.278218E-01 | -3.278218E-01
-    86 |     8600 | -3.278218E-01 | -3.278218E-01
-    87 |     8700 | -3.278218E-01 | -3.278218E-01
-    88 |     8800 | -3.278218E-01 | -3.278218E-01
-    89 |     8900 | -3.278218E-01 | -3.278218E-01
-    90 |     9000 | -3.278218E-01 | -3.278219E-01
-    91 |     9100 | -3.278218E-01 | -3.278219E-01
-    92 |     9200 | -3.278218E-01 | -3.278219E-01
-    93 |     9300 | -3.278218E-01 | -3.278219E-01
-    94 |     9400 | -3.278218E-01 | -3.278219E-01
-    95 |     9500 | -3.278219E-01 | -3.278219E-01
-    96 |     9600 | -3.278219E-01 | -3.278219E-01
-    97 |     9700 | -3.278219E-01 | -3.278219E-01
-    98 |     9800 | -3.278219E-01 | -3.278219E-01
-    99 |     9900 | -3.278219E-01 | -3.278219E-01
-   100 |    10000 | -3.278219E-01 | -3.278219E-01
+     1 |      100 | -2.878740E-01 | -3.186811E-01
+     2 |      200 | -3.026773E-01 | -3.295366E-01
+     3 |      300 | -3.120158E-01 | -3.318803E-01
+     4 |      400 | -3.186522E-01 | -3.377062E-01
+     5 |      500 | -3.241173E-01 | -3.378528E-01
+     6 |      600 | -3.285777E-01 | -3.405224E-01
+     7 |      700 | -3.333014E-01 | -3.436903E-01
+     8 |      800 | -3.365679E-01 | -3.465198E-01
+     9 |      900 | -3.385969E-01 | -3.474547E-01
+    10 |     1000 | -3.406454E-01 | -3.474547E-01
+    11 |     1100 | -3.424235E-01 | -3.484300E-01
+    12 |     1200 | -3.441875E-01 | -3.484300E-01
+    13 |     1300 | -3.457689E-01 | -3.484300E-01
+    14 |     1400 | -3.469715E-01 | -3.490283E-01
+    15 |     1500 | -3.476289E-01 | -3.493630E-01
+    16 |     1600 | -3.479459E-01 | -3.495039E-01
+    17 |     1700 | -3.482261E-01 | -3.495039E-01
+    18 |     1800 | -3.484397E-01 | -3.495061E-01
+    19 |     1900 | -3.486801E-01 | -3.495582E-01
+    20 |     2000 | -3.489580E-01 | -3.495645E-01
+    21 |     2100 | -3.492103E-01 | -3.496101E-01
+    22 |     2200 | -3.494371E-01 | -3.497790E-01
+    23 |     2300 | -3.495382E-01 | -3.497790E-01
+    24 |     2400 | -3.495988E-01 | -3.498233E-01
+    25 |     2500 | -3.496523E-01 | -3.498402E-01
+    26 |     2600 | -3.497119E-01 | -3.499171E-01
+    27 |     2700 | -3.497590E-01 | -3.499418E-01
+    28 |     2800 | -3.497939E-01 | -3.499418E-01
+    29 |     2900 | -3.498210E-01 | -3.499418E-01
+    30 |     3000 | -3.498482E-01 | -3.499418E-01
+    31 |     3100 | -3.498770E-01 | -3.499530E-01
+    32 |     3200 | -3.499022E-01 | -3.499591E-01
+    33 |     3300 | -3.499241E-01 | -3.499591E-01
+    34 |     3400 | -3.499374E-01 | -3.499708E-01
+    35 |     3500 | -3.499449E-01 | -3.499722E-01
+    36 |     3600 | -3.499503E-01 | -3.499722E-01
+    37 |     3700 | -3.499547E-01 | -3.499722E-01
+    38 |     3800 | -3.499593E-01 | -3.499766E-01
+    39 |     3900 | -3.499632E-01 | -3.499810E-01
+    40 |     4000 | -3.499675E-01 | -3.499870E-01
+    41 |     4100 | -3.499719E-01 | -3.499980E-01
+    42 |     4200 | -3.499768E-01 | -3.500047E-01
+    43 |     4300 | -3.499801E-01 | -3.500047E-01
+    44 |     4400 | -3.499854E-01 | -3.500088E-01
+    45 |     4500 | -3.499905E-01 | -3.500092E-01
+    46 |     4600 | -3.499945E-01 | -3.500135E-01
+    47 |     4700 | -3.499981E-01 | -3.500136E-01
+    48 |     4800 | -3.500023E-01 | -3.500136E-01
+    49 |     4900 | -3.500052E-01 | -3.500136E-01
+    50 |     5000 | -3.500077E-01 | -3.500156E-01
+    51 |     5100 | -3.500093E-01 | -3.500156E-01
+    52 |     5200 | -3.500104E-01 | -3.500156E-01
+    53 |     5300 | -3.500116E-01 | -3.500175E-01
+    54 |     5400 | -3.500132E-01 | -3.500177E-01
+    55 |     5500 | -3.500142E-01 | -3.500177E-01
+    56 |     5600 | -3.500149E-01 | -3.500177E-01
+    57 |     5700 | -3.500157E-01 | -3.500178E-01
+    58 |     5800 | -3.500163E-01 | -3.500179E-01
+    59 |     5900 | -3.500170E-01 | -3.500182E-01
+    60 |     6000 | -3.500175E-01 | -3.500182E-01
+    61 |     6100 | -3.500177E-01 | -3.500182E-01
+    62 |     6200 | -3.500178E-01 | -3.500188E-01
+    63 |     6300 | -3.500179E-01 | -3.500188E-01
+    64 |     6400 | -3.500180E-01 | -3.500188E-01
+    65 |     6500 | -3.500182E-01 | -3.500188E-01
+    66 |     6600 | -3.500183E-01 | -3.500188E-01
+    67 |     6700 | -3.500184E-01 | -3.500190E-01
+    68 |     6800 | -3.500185E-01 | -3.500191E-01
+    69 |     6900 | -3.500186E-01 | -3.500191E-01
+    70 |     7000 | -3.500187E-01 | -3.500192E-01
+    71 |     7100 | -3.500188E-01 | -3.500193E-01
+    72 |     7200 | -3.500189E-01 | -3.500193E-01
+    73 |     7300 | -3.500190E-01 | -3.500193E-01
+    74 |     7400 | -3.500191E-01 | -3.500194E-01
+    75 |     7500 | -3.500192E-01 | -3.500194E-01
+    76 |     7600 | -3.500193E-01 | -3.500194E-01
+    77 |     7700 | -3.500193E-01 | -3.500194E-01
+    78 |     7800 | -3.500193E-01 | -3.500194E-01
+    79 |     7900 | -3.500193E-01 | -3.500194E-01
+    80 |     8000 | -3.500193E-01 | -3.500195E-01
+    81 |     8100 | -3.500194E-01 | -3.500195E-01
+    82 |     8200 | -3.500194E-01 | -3.500196E-01
+    83 |     8300 | -3.500194E-01 | -3.500198E-01
+    84 |     8400 | -3.500194E-01 | -3.500198E-01
+    85 |     8500 | -3.500194E-01 | -3.500198E-01
+    86 |     8600 | -3.500195E-01 | -3.500198E-01
+    87 |     8700 | -3.500195E-01 | -3.500198E-01
+    88 |     8800 | -3.500196E-01 | -3.500198E-01
+    89 |     8900 | -3.500196E-01 | -3.500198E-01
+    90 |     9000 | -3.500196E-01 | -3.500198E-01
+    91 |     9100 | -3.500196E-01 | -3.500198E-01
+    92 |     9200 | -3.500197E-01 | -3.500198E-01
+    93 |     9300 | -3.500197E-01 | -3.500198E-01
+    94 |     9400 | -3.500198E-01 | -3.500198E-01
+    95 |     9500 | -3.500198E-01 | -3.500198E-01
+    96 |     9600 | -3.500198E-01 | -3.500198E-01
+    97 |     9700 | -3.500198E-01 | -3.500198E-01
+    98 |     9800 | -3.500198E-01 | -3.500198E-01
+    99 |     9900 | -3.500198E-01 | -3.500199E-01
+   100 |    10000 | -3.500198E-01 | -3.500199E-01
 
 
 Optimizer_pymoo: Optimization run finished
   Success: True
-  Best maximize_power = 14751.984832734459
+  Best maximize_power = 15750.89386869412
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -733,18 +832,18 @@ Optimizer_pymoo: Optimization run finished
 Results problem &#39;opt_yawm&#39;:
 ----------------------------
   Float variables:
-    0: YAWM_0000 = -3.024916e+01
-    1: YAWM_0001 = -2.555786e+01
-    2: YAWM_0002 = -2.555471e+01
-    3: YAWM_0003 = -2.458684e+01
-    4: YAWM_0004 = 2.456818e+01
-    5: YAWM_0005 = 2.458887e+01
-    6: YAWM_0006 = 2.077965e-02
-    7: YAWM_0007 = 1.625032e-02
-    8: YAWM_0008 = 1.515184e-02
+    0: YAWM_0000 = 2.740050e+01
+    1: YAWM_0001 = -2.394155e+01
+    2: YAWM_0002 = -2.392788e+01
+    3: YAWM_0003 = 1.480058e+01
+    4: YAWM_0004 = -1.516539e+01
+    5: YAWM_0005 = -1.516312e+01
+    6: YAWM_0006 = -1.422687e+00
+    7: YAWM_0007 = 1.428005e+00
+    8: YAWM_0008 = 1.415896e+00
 ----------------------------
   Objectives:
-    0: maximize_power = 1.475198e+04
+    0: maximize_power = 1.575089e+04
 ----------------------------
   Success: True
 ----------------------------
@@ -802,90 +901,90 @@ Results problem &#39;opt_yawm&#39;:
       <td>500.0</td>
       <td>500.0</td>
       <td>270.0</td>
-      <td>-30.249163</td>
+      <td>27.400495</td>
       <td>0.060000</td>
       <td>9.000000</td>
-      <td>1928.995420</td>
+      <td>2035.173756</td>
     </tr>
     <tr>
       <th>1</th>
       <td>700.0</td>
       <td>1100.0</td>
       <td>270.0</td>
-      <td>-25.557857</td>
+      <td>-23.941554</td>
       <td>0.060000</td>
-      <td>8.119351</td>
-      <td>1544.518581</td>
+      <td>8.225639</td>
+      <td>1639.550917</td>
     </tr>
     <tr>
       <th>2</th>
       <td>900.0</td>
       <td>1700.0</td>
       <td>270.0</td>
-      <td>-25.554709</td>
+      <td>-23.927882</td>
       <td>0.060000</td>
-      <td>8.119564</td>
-      <td>1544.708539</td>
+      <td>8.226510</td>
+      <td>1640.333081</td>
     </tr>
     <tr>
       <th>3</th>
       <td>1800.0</td>
       <td>500.0</td>
       <td>270.0</td>
-      <td>-24.586841</td>
-      <td>0.065713</td>
-      <td>7.857941</td>
-      <td>1422.846941</td>
+      <td>14.800577</td>
+      <td>0.072561</td>
+      <td>7.887085</td>
+      <td>1608.812882</td>
     </tr>
     <tr>
       <th>4</th>
       <td>2000.0</td>
       <td>1100.0</td>
       <td>270.0</td>
-      <td>24.568175</td>
-      <td>0.070112</td>
-      <td>7.665933</td>
-      <td>1317.609645</td>
+      <td>-15.165388</td>
+      <td>0.075521</td>
+      <td>7.841165</td>
+      <td>1577.776360</td>
     </tr>
     <tr>
       <th>5</th>
       <td>2200.0</td>
       <td>1700.0</td>
       <td>270.0</td>
-      <td>24.588871</td>
-      <td>0.070116</td>
-      <td>7.664458</td>
-      <td>1316.361700</td>
+      <td>-15.163123</td>
+      <td>0.075537</td>
+      <td>7.840689</td>
+      <td>1577.534974</td>
     </tr>
     <tr>
       <th>6</th>
       <td>3100.0</td>
       <td>500.0</td>
       <td>270.0</td>
-      <td>0.020780</td>
-      <td>0.072090</td>
-      <td>8.227575</td>
-      <td>1941.211689</td>
+      <td>-1.422687</td>
+      <td>0.095375</td>
+      <td>8.202245</td>
+      <td>1921.093780</td>
     </tr>
     <tr>
       <th>7</th>
       <td>3300.0</td>
       <td>1100.0</td>
       <td>270.0</td>
-      <td>0.016250</td>
-      <td>0.073104</td>
-      <td>8.128745</td>
-      <td>1867.337034</td>
+      <td>1.428005</td>
+      <td>0.095483</td>
+      <td>8.141355</td>
+      <td>1875.578697</td>
     </tr>
     <tr>
       <th>8</th>
       <td>3500.0</td>
       <td>1700.0</td>
       <td>270.0</td>
-      <td>0.015152</td>
-      <td>0.073078</td>
-      <td>8.130161</td>
-      <td>1868.395284</td>
+      <td>1.415896</td>
+      <td>0.095494</td>
+      <td>8.140607</td>
+      <td>1875.039421</td>
     </tr>
   </tbody>
 </table>
@@ -925,6 +1024,15 @@ Results problem &#39;opt_yawm&#39;:
 
 
 
+
+  
+  
+
+
+
+
+
+
                 
               </article>
             </div>
@@ -935,42 +1043,6 @@ Results problem &#39;opt_yawm&#39;:
       </main>
       
         <footer class="md-footer">
-  
-    
-    <nav class="md-footer__inner md-grid" aria-label="Footer" >
-      
-        
-        <a href="layout_opt.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Layout optimization" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Layout optimization
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../api.html" class="md-footer__link md-footer__link--next" aria-label="Next: API" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              API
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   
   
@@ -1002,10 +1074,11 @@ Results problem &#39;opt_yawm&#39;:
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
       
-        <script src="../_static/sphinx_immaterial_theme.f9d9eeeb247ace16c.min.js?v=8ec58cb5"></script>
+        <script src="../_static/sphinx_immaterial_theme.32136f45f91ae6956.min.js?v=a7a9472a"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script id="MathJax-script" src="../_static/mathjax/tex-mml-chtml.js?v=cadf963e"></script>

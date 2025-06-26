@@ -1,6 +1,9 @@
 Welcome to *foxes-opt*
 ======================
 
+.. versionadded:: 0.5
+    Compatibility with *foxes* version 1.4
+
 .. versionadded:: 0.3
     Running wind farm optimizations through :ref:`Input parameter files <Input parameter files>` in *yaml* format,
     simply by `foxes_opt_yaml imputs.yaml` - no Python script needed.
