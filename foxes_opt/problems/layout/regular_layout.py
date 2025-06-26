@@ -8,6 +8,11 @@ import foxes.variables as FV
 import foxes.constants as FC
 
 
+def _calc_func(valid, P, ct, st_sel):
+    """helper function for Calculator turbine model"""
+    return (valid, P * valid, ct * valid)
+
+
 class RegularLayoutOptProblem(FarmVarsProblem):
     """
     Places turbines on a regular grid and optimizes
@@ -74,7 +79,7 @@ class RegularLayoutOptProblem(FarmVarsProblem):
         self.algo.mbook.turbine_models[self._mname] = Calculator(
             in_vars=[FC.VALID, FV.P, FV.CT],
             out_vars=[FC.VALID, FV.P, FV.CT],
-            func=lambda valid, P, ct, st_sel: (valid, P * valid, ct * valid),
+            func=_calc_func,
             pre_rotor=False,
         )
 
@@ -112,6 +117,7 @@ class RegularLayoutOptProblem(FarmVarsProblem):
         elif self.farm.n_turbines > self._nturb:
             self.farm.turbines = self.farm.turbines[: self._nturb]
         self.algo.n_turbines = self._nturb
+        self.algo.update_n_turbines()
 
         super().initialize(
             pre_rotor_vars=[FV.X, FV.Y, FC.VALID],
