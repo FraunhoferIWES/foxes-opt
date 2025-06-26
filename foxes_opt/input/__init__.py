@@ -1,1 +1,1 @@
-from . import yaml
+from . import yaml as yaml

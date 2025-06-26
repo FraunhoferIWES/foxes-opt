@@ -117,7 +117,7 @@ class GeomRegGrids(Problem):
         self._pmax = pmax + self.min_dist
 
         if verbosity > 0:
-            print(f"Grid data:")
+            print("Grid data:")
             print(f"  pmin        = {self._pmin}")
             print(f"  pmax        = {self._pmax}")
             print(f"  min dist    = {self.min_dist}")
@@ -277,7 +277,7 @@ class GeomRegGrids(Problem):
         dx = vflt[:, 2]
         dy = vflt[:, 3]
         a = np.deg2rad(vflt[:, 4])
-        s = vflt[:, 5:]
+        #s = vflt[:, 5:]
         n_points = self.n_max
 
         nax = np.stack([np.cos(a), np.sin(a), np.zeros_like(a)], axis=-1)
@@ -360,7 +360,7 @@ class GeomRegGrids(Problem):
         dx = vflt[:, :, 2]
         dy = vflt[:, :, 3]
         a = np.deg2rad(vflt[:, :, 4])
-        s = vflt[:, :, 5:]
+        #s = vflt[:, :, 5:]
         n_points = self.n_max
 
         nax = np.stack([np.cos(a), np.sin(a), np.zeros_like(a)], axis=-1)
@@ -473,12 +473,12 @@ class GeomRegGrids(Problem):
 
         if title is None:
             if xy is None:
-                title = f"Optimization area"
+                title = "Optimization area"
             else:
-                l = len(xy) if xy is not None else 0
+                lxy = len(xy) if xy is not None else 0
                 dists = cdist(xy, xy)
                 np.fill_diagonal(dists, 1e20)
-                title = f"N = {l}, min_dist = {np.min(dists):.1f} m"
+                title = f"N = {lxy}, min_dist = {np.min(dists):.1f} m"
         ax.set_title(title)
 
         return ax
