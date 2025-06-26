@@ -34,7 +34,7 @@ classifiers = [
 ]
 requires-python = ">=3.8"
 dependencies = [
-    "foxes>=1.3",
+    "foxes>=1.4",
     "iwopy>=0.3.1",
     "pymoo>=0.6",
     "xarray",
