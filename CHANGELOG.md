@@ -70,3 +70,9 @@
 - Support for *foxes* v1.3
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.4](https://github.com/FraunhoferIWES/foxes/commits/v0.4)
+
+## v0.5
+
+- Support for *foxes* v1.4
+
+**Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.5](https://github.com/FraunhoferIWES/foxes/commits/v0.5)

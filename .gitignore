@@ -163,6 +163,9 @@ cython_debug/
 #
 
 .vscode/
+.venv/
+uv.lock
+.ruff*
 
 docs/
 makedocs/
