@@ -22,7 +22,7 @@ from foxes_opt import __version__
 # -- Project information -----------------------------------------------------
 
 project = "foxes-opt"
-copyright = "2024, Fraunhofer IWES"
+copyright = "2025, Fraunhofer IWES"
 author = "Fraunhofer IWES"
 
 # The short X.Y version
