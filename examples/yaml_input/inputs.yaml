@@ -137,4 +137,5 @@ outputs:
     functions:
       - function: savefig
         fname: result.png
+      - function: show
       - function: close

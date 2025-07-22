@@ -81,5 +81,6 @@
 
 - Compatibility with *foxes* v1.5
 - Dropping support for Python 3.8
+- Introducing minimal package versions of dependencies
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.6](https://github.com/FraunhoferIWES/foxes/commits/v0.6)

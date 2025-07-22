@@ -57,7 +57,9 @@ def read_dict(idict, *args, verbosity=None, **kwargs):
         for i, o in enumerate(pdict.pop_item("objectives"))
     ]
     cdicts = pdict.pop("constraints", [])
-    cdicts = [Dict(c, _name=f"{pdict.name}.constraint{i}") for i, c in enumerate(cdicts)]
+    cdicts = [
+        Dict(c, _name=f"{pdict.name}.constraint{i}") for i, c in enumerate(cdicts)
+    ]
     flist = [
         Dict(f, _name=f"{pdict.name}.function{i}")
         for i, f in enumerate(pdict.pop("functions", []))
