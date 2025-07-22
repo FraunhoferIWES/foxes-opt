@@ -1,6 +1,9 @@
 Welcome to *foxes-opt*
 ======================
 
+.. versionadded:: 0.6
+    Compatibility with *foxes* version 1.5
+
 .. versionadded:: 0.5
     Compatibility with *foxes* version 1.4
 
