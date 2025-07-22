@@ -1,0 +1,1118 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../examples.html">
+      
+      
+        <link rel="next" href="wake_steering.html">
+      
+      
+      <link rel="icon" href="">
+    
+    
+      
+        <title>Layout optimization - foxes-opt 0.6 documentation</title>
+      
+    
+    
+      
+        
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.03757d82676c6523d.min.css?v=d977aabd" />
+        <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../index.html" title="foxes-opt 0.6 documentation" class="md-header__button md-logo" aria-label="foxes-opt 0.6 documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            foxes-opt 0.6 documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Layout optimization
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/FraunhoferIWES/foxes-opt" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    foxes-op
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="foxes-opt 0.6 documentation" class="md-nav__button md-logo" aria-label="foxes-opt 0.6 documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+    </a>
+    foxes-opt 0.6 documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/FraunhoferIWES/foxes-opt" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    foxes-op
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../citation.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span title="/citation.md (reference label)">Citation</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span title="/installation.md (reference label)">Installation</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../parameter_files.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span title="/parameter_files.md (reference label)">Input parameter files</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../examples.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span title="/examples.rst (reference label)">Examples</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            <span title="/examples.rst (reference label)">Examples</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      <a href="#" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span title="/notebooks/layout_opt.ipynb (reference label)">Layout optimization</span>
+    
+  </span>
+  
+
+      </a>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="wake_steering.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span title="/notebooks/wake_steering.ipynb (reference label)">Wake steering</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span title="/api.rst (reference label)">API</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span title="/testing.md (reference label)">Testing</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CHANGELOG.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span title="/changelog.md (reference label)">Changelog</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset" role="main">
+                
+                
+                  
+
+
+<script src='http://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js'></script>
+<script>require=requirejs;</script><h1 id="Layout-optimization">Layout optimization<a class="headerlink" href="#Layout-optimization" title="Link to this heading">¶</a></h1>
+<p>This example demonstrates some basics about running wind farm optimization tasks with <code class="docutils literal notranslate"><span class="pre">foxes</span></code>.</p>
+<p>It requires the installation of two additional python packages:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/FraunhoferIWES/foxes-opt">foxes-opt</a>: Adds optimization functionalities to <code class="docutils literal notranslate"><span class="pre">foxes</span></code>, based on the <a class="reference external" href="https://github.com/FraunhoferIWES/iwopy">iwopy</a> interface (both also by Fraunhofer IWES, see links for details),</p></li>
+<li><p><a class="reference external" href="https://pymoo.org/">pymoo</a>: Contains a number of very nice genetic algorithm implementations. Within <code class="docutils literal notranslate"><span class="pre">foxes</span></code> we do that implicitely via the <code class="docutils literal notranslate"><span class="pre">iwopy</span></code> interface.</p></li>
+</ul>
+<p>These dependencies can conveniently be installed by</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><code><span class="go">pip install foxes[opt]</span>
+</code></pre></div>
+</div>
+<p>for standard users, or</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><code><span class="go">pip install -e .[opt]</span>
+</code></pre></div>
+</div>
+<p>from the <code class="docutils literal notranslate"><span class="pre">foxes</span></code> root folder for developers.</p>
+<p>Here are the required imports for this example:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [1]:
+</code></pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">foxes</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">foxes.utils.geom2d</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">foxes.variables</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">FV</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iwopy.interfaces.pymoo</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optimizer_pymoo</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">foxes_opt.problems.layout</span><span class="w"> </span><span class="kn">import</span> <span class="n">FarmLayoutOptProblem</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">foxes_opt.objectives</span><span class="w"> </span><span class="kn">import</span> <span class="n">MaxFarmPower</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">foxes_opt.constraints</span><span class="w"> </span><span class="kn">import</span> <span class="n">FarmBoundaryConstraint</span><span class="p">,</span> <span class="n">MinDistConstraint</span>
+</code></pre></div>
+</div>
+</div>
+<p>Let’s initialize the <em>foxes</em> engine, which will be used for all calculations:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [2]:
+</code></pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">engine</span> <span class="o">=</span> <span class="n">foxes</span><span class="o">.</span><span class="n">Engine</span><span class="o">.</span><span class="n">new</span><span class="p">(</span>
+    <span class="s2">&quot;process&quot;</span><span class="p">,</span>
+    <span class="n">chunk_size_states</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+    <span class="n">chunk_size_points</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span>
+    <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">engine</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<p>In the following we are tackling the problem of optimizing a wind farm layout for a site near Bremen, Germany. The data of a (coarse) wind rose with 216 states is provided as static data file with name <code class="docutils literal notranslate"><span class="pre">&quot;wind_rose_bremen.csv&quot;</span></code>:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span><code>state,wd,ws,weight
+0,0.0,3.5,0.00158
+1,0.0,6.0,0.00244
+2,0.0,8.5,0.00319
+3,0.0,12.5,0.0036700002
+4,0.0,17.5,0.00042
+...
+</code></pre></div>
+</div>
+<p>First, let’s create the states object and have a look at the wind rose:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [3]:
+</code></pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">states</span> <span class="o">=</span> <span class="n">foxes</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">StatesTable</span><span class="p">(</span>
+    <span class="n">data_source</span><span class="o">=</span><span class="s2">&quot;wind_rose_bremen.csv&quot;</span><span class="p">,</span>
+    <span class="n">output_vars</span><span class="o">=</span><span class="p">[</span><span class="n">FV</span><span class="o">.</span><span class="n">WS</span><span class="p">,</span> <span class="n">FV</span><span class="o">.</span><span class="n">WD</span><span class="p">,</span> <span class="n">FV</span><span class="o">.</span><span class="n">TI</span><span class="p">,</span> <span class="n">FV</span><span class="o">.</span><span class="n">RHO</span><span class="p">],</span>
+    <span class="n">var2col</span><span class="o">=</span><span class="p">{</span><span class="n">FV</span><span class="o">.</span><span class="n">WS</span><span class="p">:</span> <span class="s2">&quot;ws&quot;</span><span class="p">,</span> <span class="n">FV</span><span class="o">.</span><span class="n">WD</span><span class="p">:</span> <span class="s2">&quot;wd&quot;</span><span class="p">,</span> <span class="n">FV</span><span class="o">.</span><span class="n">WEIGHT</span><span class="p">:</span> <span class="s2">&quot;weight&quot;</span><span class="p">},</span>
+    <span class="n">fixed_vars</span><span class="o">=</span><span class="p">{</span><span class="n">FV</span><span class="o">.</span><span class="n">RHO</span><span class="p">:</span> <span class="mf">1.225</span><span class="p">,</span> <span class="n">FV</span><span class="o">.</span><span class="n">TI</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">},</span>
+<span class="p">)</span>
+
+<span class="n">o</span> <span class="o">=</span> <span class="n">foxes</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">StatesRosePlotOutput</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">100.0</span><span class="p">])</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">get_figure</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="n">FV</span><span class="o">.</span><span class="n">AMB_WS</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_layout_opt_6_0.png" src="../_images/notebooks_layout_opt_6_0.png" />
+</div>
+</div>
+<p>Next, we need to specify the area within which the turbines are allowed to move during optimization. We use the <code class="docutils literal notranslate"><span class="pre">foxes.utils.geom2d</span></code> sub-package for that purpose (imported as <code class="docutils literal notranslate"><span class="pre">gm</span></code>, see above) which allows us to add and subtract polygons, circles, etc.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [4]:
+</code></pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">boundary</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">gm</span><span class="o">.</span><span class="n">ClosedPolygon</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1200</span><span class="p">],</span> <span class="p">[</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">800</span><span class="p">],</span> <span class="p">[</span><span class="mi">900</span><span class="p">,</span> <span class="o">-</span><span class="mi">200</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="o">+</span> <span class="n">gm</span><span class="o">.</span><span class="n">ClosedPolygon</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">1500</span><span class="p">],</span> <span class="p">[</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1500</span><span class="p">],</span> <span class="p">[</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="o">-</span> <span class="n">gm</span><span class="o">.</span><span class="n">Circle</span><span class="p">([</span><span class="o">-</span><span class="mf">100.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">100.0</span><span class="p">],</span> <span class="mi">700</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">boundary</span><span class="o">.</span><span class="n">add_to_figure</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_layout_opt_8_0.png" src="../_images/notebooks_layout_opt_8_0.png" />
+</div>
+</div>
+<p>Later on we wish to apply boundary constraints that make sure all turbines are placed within this area geometry. These conditions make use of the minimal distance calculation from each point in question to the boundary. We can check the results by plotting again, now using the <code class="docutils literal notranslate"><span class="pre">fill_mode</span></code> option:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [5]:
+</code></pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">boundary</span><span class="o">.</span><span class="n">add_to_figure</span><span class="p">(</span><span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">fill_mode</span><span class="o">=</span><span class="s2">&quot;dist_inside&quot;</span><span class="p">)</span>
+<span class="n">boundary</span><span class="o">.</span><span class="n">add_to_figure</span><span class="p">(</span><span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">fill_mode</span><span class="o">=</span><span class="s2">&quot;dist_outside&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_layout_opt_10_0.png" src="../_images/notebooks_layout_opt_10_0.png" />
+</div>
+</div>
+<p>We now setup the model book and a wind farm with 10 turbines in some initial layout, including the boundary:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [6]:
+</code></pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">farm</span> <span class="o">=</span> <span class="n">foxes</span><span class="o">.</span><span class="n">WindFarm</span><span class="p">(</span><span class="n">boundary</span><span class="o">=</span><span class="n">boundary</span><span class="p">)</span>
+<span class="n">foxes</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">farm_layout</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span>
+    <span class="n">farm</span><span class="o">=</span><span class="n">farm</span><span class="p">,</span>
+    <span class="n">xy_base</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">500.0</span><span class="p">,</span> <span class="mf">500.0</span><span class="p">]),</span>
+    <span class="n">xy_step</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">50.0</span><span class="p">,</span> <span class="mf">50.0</span><span class="p">]),</span>
+    <span class="n">n_turbines</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">turbine_models</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;NREL5MW&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">foxes</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">FarmLayoutOutput</span><span class="p">(</span><span class="n">farm</span><span class="p">)</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Turbine 0, T0: xy=(500.00, 500.00), NREL5MW
+Turbine 1, T1: xy=(550.00, 550.00), NREL5MW
+Turbine 2, T2: xy=(600.00, 600.00), NREL5MW
+Turbine 3, T3: xy=(650.00, 650.00), NREL5MW
+Turbine 4, T4: xy=(700.00, 700.00), NREL5MW
+Turbine 5, T5: xy=(750.00, 750.00), NREL5MW
+Turbine 6, T6: xy=(800.00, 800.00), NREL5MW
+Turbine 7, T7: xy=(850.00, 850.00), NREL5MW
+Turbine 8, T8: xy=(900.00, 900.00), NREL5MW
+Turbine 9, T9: xy=(950.00, 950.00), NREL5MW
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_layout_opt_12_1.png" src="../_images/notebooks_layout_opt_12_1.png" />
+</div>
+</div>
+<p>Notice the appearing turbine model <code class="docutils literal notranslate"><span class="pre">layout_opt</span></code>. This is not part of the model book but will be defined shortly by the optimization problem. In the context of the turbine models it defines where in the model order the optimization variables application should be applied. In our case we are optimizing the (X, Y)-coordinates of the turbines, and they should be updated at the very beginning.</p>
+<p>Let’s new define the algorithm and the layout optimization problem. The latter should include boundary constraints and a minimal distance of 2 rotor diameters between turbines. Our objective is the maximization of the total wind farm power:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [7]:
+</code></pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">algo</span> <span class="o">=</span> <span class="n">foxes</span><span class="o">.</span><span class="n">algorithms</span><span class="o">.</span><span class="n">Downwind</span><span class="p">(</span>
+    <span class="n">farm</span><span class="p">,</span>
+    <span class="n">states</span><span class="p">,</span>
+    <span class="n">rotor_model</span><span class="o">=</span><span class="s2">&quot;centre&quot;</span><span class="p">,</span>
+    <span class="n">wake_models</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Bastankhah025_linear_k002&quot;</span><span class="p">],</span>
+    <span class="n">partial_wakes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">problem</span> <span class="o">=</span> <span class="n">FarmLayoutOptProblem</span><span class="p">(</span><span class="s2">&quot;layout_opt&quot;</span><span class="p">,</span> <span class="n">algo</span><span class="p">)</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">add_objective</span><span class="p">(</span><span class="n">MaxFarmPower</span><span class="p">(</span><span class="n">problem</span><span class="p">))</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="n">FarmBoundaryConstraint</span><span class="p">(</span><span class="n">problem</span><span class="p">))</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="n">MinDistConstraint</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">min_dist</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">min_dist_unit</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">))</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Problem &#39;layout_opt&#39; (FarmLayoutOptProblem): Initializing
+---------------------------------------------------------
+  n_vars_int  : 0
+  n_vars_float: 20
+---------------------------------------------------------
+  n_objectives: 1
+  n_obj_cmptns: 1
+---------------------------------------------------------
+  n_constraints: 2
+  n_con_cmptns: 55
+---------------------------------------------------------
+</pre></div></div>
+</div>
+<p>Notice that the two added constraint models imply a total of 55 individual constraint component functions. The wake model choice <code class="docutils literal notranslate"><span class="pre">Bastankhah025</span></code> corresponds to the <code class="docutils literal notranslate"><span class="pre">Bastankhah2014</span></code> deficit model with parameter <code class="docutils literal notranslate"><span class="pre">sbeta_factor=0.25</span></code>. This choice switches off the near wake modelling, rendering the model a bit smoother. This is for demonstrational purposes only and not required for running this example.</p>
+<p>Next, we setup the optimizer. In our case we use the genetic algorithm <a class="reference external" href="https://pymoo.org/algorithms/soo/ga.html">GA from pymoo</a> via the <a class="reference external" href="https://github.com/FraunhoferIWES/iwopy">iwopy</a> interface, here in vectorized form (flag <code class="docutils literal notranslate"><span class="pre">vectorize=True</span></code>), with 100 generations (<code class="docutils literal notranslate"><span class="pre">n_max_gen=100</span></code>) with population size 50 (<code class="docutils literal notranslate"><span class="pre">pop_size=50</span></code>):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [8]:
+</code></pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">solver</span> <span class="o">=</span> <span class="n">Optimizer_pymoo</span><span class="p">(</span>
+    <span class="n">problem</span><span class="p">,</span>
+    <span class="n">problem_pars</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">vectorize</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">algo_pars</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;GA&quot;</span><span class="p">,</span>
+        <span class="n">pop_size</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+        <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">setup_pars</span><span class="o">=</span><span class="nb">dict</span><span class="p">(),</span>
+    <span class="n">term_pars</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+        <span class="n">n_max_gen</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">ftol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span>
+        <span class="n">xtol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">print_info</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Loading pymoo
+pymoo successfully loaded
+Initializing Optimizer_pymoo
+Selecting sampling: float_random (FloatRandomSampling)
+Selecting algorithm: GA (GA)
+Selecting termination: default (DefaultSingleObjectiveTermination)
+
+Problem:
+--------
+  vectorize: True
+
+Algorithm:
+----------
+  type: GA
+  pop_size: 50
+  seed: 42
+
+Termination:
+------------
+  n_max_gen: 100
+  ftol: 1e-06
+  xtol: 0.001
+
+</pre></div></div>
+</div>
+<p>After all the setup we can now solve the problem:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [9]:
+</code></pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">results</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">finalize</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">problem_results</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+=================================================================================
+n_gen  |  n_eval  |     cv_min    |     cv_avg    |     f_avg     |     f_min
+=================================================================================
+     1 |       50 |  4.257950E+02 |  1.094916E+03 |             - |             -
+     2 |      100 |  2.589298E+02 |  7.141458E+02 |             - |             -
+     3 |      150 |  2.108843E+02 |  5.097684E+02 |             - |             -
+     4 |      200 |  2.011586E+02 |  3.869307E+02 |             - |             -
+     5 |      250 |  1.250281E+02 |  3.238949E+02 |             - |             -
+     6 |      300 |  1.250281E+02 |  2.668302E+02 |             - |             -
+     7 |      350 |  1.250281E+02 |  2.500554E+02 |             - |             -
+     8 |      400 |  1.011095E+02 |  2.198486E+02 |             - |             -
+     9 |      450 |  8.571793E+01 |  1.998508E+02 |             - |             -
+    10 |      500 |  8.571793E+01 |  1.775495E+02 |             - |             -
+    11 |      550 |  2.695093E+01 |  1.482376E+02 |             - |             -
+    12 |      600 |  2.695093E+01 |  1.369663E+02 |             - |             -
+    13 |      650 |  2.695093E+01 |  1.255097E+02 |             - |             -
+    14 |      700 |  2.461710E+01 |  1.135664E+02 |             - |             -
+    15 |      750 |  2.461710E+01 |  1.098324E+02 |             - |             -
+    16 |      800 |  2.461710E+01 |  9.266611E+01 |             - |             -
+    17 |      850 |  2.446678E+01 |  8.484456E+01 |             - |             -
+    18 |      900 |  2.440080E+01 |  7.151751E+01 |             - |             -
+    19 |      950 |  2.440080E+01 |  5.917821E+01 |             - |             -
+    20 |     1000 |  1.998273E+01 |  4.871628E+01 |             - |             -
+    21 |     1050 |  1.019366E+01 |  4.071983E+01 |             - |             -
+    22 |     1100 |  6.4405916400 |  3.193676E+01 |             - |             -
+    23 |     1150 |  4.9794099827 |  2.349004E+01 |             - |             -
+    24 |     1200 |  0.000000E+00 |  1.738912E+01 | -5.005446E-01 | -5.005446E-01
+    25 |     1250 |  0.000000E+00 |  1.137290E+01 | -5.003716E-01 | -5.005446E-01
+    26 |     1300 |  0.000000E+00 |  6.4573986190 | -5.001255E-01 | -5.007026E-01
+    27 |     1350 |  0.000000E+00 |  2.2839046772 | -5.002029E-01 | -5.043050E-01
+    28 |     1400 |  0.000000E+00 |  0.0401518036 | -5.002328E-01 | -5.046954E-01
+    29 |     1450 |  0.000000E+00 |  0.000000E+00 | -5.010270E-01 | -5.047884E-01
+    30 |     1500 |  0.000000E+00 |  0.000000E+00 | -5.018469E-01 | -5.047952E-01
+    31 |     1550 |  0.000000E+00 |  0.000000E+00 | -5.033843E-01 | -5.048056E-01
+    32 |     1600 |  0.000000E+00 |  0.000000E+00 | -5.045212E-01 | -5.052518E-01
+    33 |     1650 |  0.000000E+00 |  0.000000E+00 | -5.047445E-01 | -5.054240E-01
+    34 |     1700 |  0.000000E+00 |  0.000000E+00 | -5.049293E-01 | -5.054240E-01
+    35 |     1750 |  0.000000E+00 |  0.000000E+00 | -5.051205E-01 | -5.058090E-01
+    36 |     1800 |  0.000000E+00 |  0.000000E+00 | -5.053169E-01 | -5.059597E-01
+    37 |     1850 |  0.000000E+00 |  0.000000E+00 | -5.055598E-01 | -5.067092E-01
+    38 |     1900 |  0.000000E+00 |  0.000000E+00 | -5.058344E-01 | -5.067092E-01
+    39 |     1950 |  0.000000E+00 |  0.000000E+00 | -5.061865E-01 | -5.072494E-01
+    40 |     2000 |  0.000000E+00 |  0.000000E+00 | -5.064220E-01 | -5.073431E-01
+    41 |     2050 |  0.000000E+00 |  0.000000E+00 | -5.068005E-01 | -5.081851E-01
+    42 |     2100 |  0.000000E+00 |  0.000000E+00 | -5.070952E-01 | -5.085442E-01
+    43 |     2150 |  0.000000E+00 |  0.000000E+00 | -5.074588E-01 | -5.085442E-01
+    44 |     2200 |  0.000000E+00 |  0.000000E+00 | -5.078524E-01 | -5.093114E-01
+    45 |     2250 |  0.000000E+00 |  0.000000E+00 | -5.082867E-01 | -5.098399E-01
+    46 |     2300 |  0.000000E+00 |  0.000000E+00 | -5.087176E-01 | -5.098399E-01
+    47 |     2350 |  0.000000E+00 |  0.000000E+00 | -5.091165E-01 | -5.099068E-01
+    48 |     2400 |  0.000000E+00 |  0.000000E+00 | -5.095298E-01 | -5.102335E-01
+    49 |     2450 |  0.000000E+00 |  0.000000E+00 | -5.098345E-01 | -5.105389E-01
+    50 |     2500 |  0.000000E+00 |  0.000000E+00 | -5.101265E-01 | -5.108688E-01
+    51 |     2550 |  0.000000E+00 |  0.000000E+00 | -5.104231E-01 | -5.112445E-01
+    52 |     2600 |  0.000000E+00 |  0.000000E+00 | -5.107525E-01 | -5.114826E-01
+    53 |     2650 |  0.000000E+00 |  0.000000E+00 | -5.110290E-01 | -5.118996E-01
+    54 |     2700 |  0.000000E+00 |  0.000000E+00 | -5.112750E-01 | -5.124239E-01
+    55 |     2750 |  0.000000E+00 |  0.000000E+00 | -5.115946E-01 | -5.124642E-01
+    56 |     2800 |  0.000000E+00 |  0.000000E+00 | -5.118256E-01 | -5.126645E-01
+    57 |     2850 |  0.000000E+00 |  0.000000E+00 | -5.121022E-01 | -5.126645E-01
+    58 |     2900 |  0.000000E+00 |  0.000000E+00 | -5.123371E-01 | -5.128177E-01
+    59 |     2950 |  0.000000E+00 |  0.000000E+00 | -5.125054E-01 | -5.128177E-01
+    60 |     3000 |  0.000000E+00 |  0.000000E+00 | -5.126078E-01 | -5.129150E-01
+    61 |     3050 |  0.000000E+00 |  0.000000E+00 | -5.127029E-01 | -5.129655E-01
+    62 |     3100 |  0.000000E+00 |  0.000000E+00 | -5.127876E-01 | -5.129655E-01
+    63 |     3150 |  0.000000E+00 |  0.000000E+00 | -5.128550E-01 | -5.131367E-01
+    64 |     3200 |  0.000000E+00 |  0.000000E+00 | -5.129328E-01 | -5.132712E-01
+    65 |     3250 |  0.000000E+00 |  0.000000E+00 | -5.130119E-01 | -5.132849E-01
+    66 |     3300 |  0.000000E+00 |  0.000000E+00 | -5.130944E-01 | -5.133150E-01
+    67 |     3350 |  0.000000E+00 |  0.000000E+00 | -5.131745E-01 | -5.133480E-01
+    68 |     3400 |  0.000000E+00 |  0.000000E+00 | -5.132618E-01 | -5.134317E-01
+    69 |     3450 |  0.000000E+00 |  0.000000E+00 | -5.133163E-01 | -5.134561E-01
+    70 |     3500 |  0.000000E+00 |  0.000000E+00 | -5.133671E-01 | -5.134833E-01
+    71 |     3550 |  0.000000E+00 |  0.000000E+00 | -5.134048E-01 | -5.134834E-01
+    72 |     3600 |  0.000000E+00 |  0.000000E+00 | -5.134433E-01 | -5.136118E-01
+    73 |     3650 |  0.000000E+00 |  0.000000E+00 | -5.134627E-01 | -5.136118E-01
+    74 |     3700 |  0.000000E+00 |  0.000000E+00 | -5.134814E-01 | -5.136118E-01
+    75 |     3750 |  0.000000E+00 |  0.000000E+00 | -5.135100E-01 | -5.136132E-01
+    76 |     3800 |  0.000000E+00 |  0.000000E+00 | -5.135378E-01 | -5.136557E-01
+    77 |     3850 |  0.000000E+00 |  0.000000E+00 | -5.135664E-01 | -5.136557E-01
+    78 |     3900 |  0.000000E+00 |  0.000000E+00 | -5.135939E-01 | -5.136844E-01
+    79 |     3950 |  0.000000E+00 |  0.000000E+00 | -5.136235E-01 | -5.137929E-01
+    80 |     4000 |  0.000000E+00 |  0.000000E+00 | -5.136583E-01 | -5.137983E-01
+    81 |     4050 |  0.000000E+00 |  0.000000E+00 | -5.136864E-01 | -5.138033E-01
+    82 |     4100 |  0.000000E+00 |  0.000000E+00 | -5.137170E-01 | -5.138508E-01
+    83 |     4150 |  0.000000E+00 |  0.000000E+00 | -5.137579E-01 | -5.138666E-01
+    84 |     4200 |  0.000000E+00 |  0.000000E+00 | -5.137994E-01 | -5.139128E-01
+    85 |     4250 |  0.000000E+00 |  0.000000E+00 | -5.138396E-01 | -5.140404E-01
+    86 |     4300 |  0.000000E+00 |  0.000000E+00 | -5.138854E-01 | -5.140498E-01
+    87 |     4350 |  0.000000E+00 |  0.000000E+00 | -5.139133E-01 | -5.141967E-01
+    88 |     4400 |  0.000000E+00 |  0.000000E+00 | -5.139546E-01 | -5.141967E-01
+    89 |     4450 |  0.000000E+00 |  0.000000E+00 | -5.140218E-01 | -5.147526E-01
+    90 |     4500 |  0.000000E+00 |  0.000000E+00 | -5.141040E-01 | -5.156605E-01
+    91 |     4550 |  0.000000E+00 |  0.000000E+00 | -5.142399E-01 | -5.156605E-01
+    92 |     4600 |  0.000000E+00 |  0.000000E+00 | -5.144019E-01 | -5.157213E-01
+    93 |     4650 |  0.000000E+00 |  0.000000E+00 | -5.147286E-01 | -5.157683E-01
+    94 |     4700 |  0.000000E+00 |  0.000000E+00 | -5.154050E-01 | -5.165078E-01
+    95 |     4750 |  0.000000E+00 |  0.000000E+00 | -5.157949E-01 | -5.165540E-01
+    96 |     4800 |  0.000000E+00 |  0.000000E+00 | -5.160264E-01 | -5.166291E-01
+    97 |     4850 |  0.000000E+00 |  0.000000E+00 | -5.163338E-01 | -5.166643E-01
+    98 |     4900 |  0.000000E+00 |  0.000000E+00 | -5.165219E-01 | -5.166849E-01
+    99 |     4950 |  0.000000E+00 |  0.000000E+00 | -5.165851E-01 | -5.167818E-01
+   100 |     5000 |  0.000000E+00 |  0.000000E+00 | -5.166481E-01 | -5.169221E-01
+
+
+Optimizer_pymoo: Optimization run finished
+  Success: True
+  Best maximize_power = 25846.105909172766
+
+Results problem &#39;layout_opt&#39;:
+------------------------------
+  Float variables:
+    0: X_0000 = 8.896358e+02
+    1: Y_0000 = -1.973433e+02
+    2: X_0001 = 1.084184e+01
+    3: Y_0001 = 7.604301e+02
+    4: X_0002 = 9.840827e+02
+    5: Y_0002 = 8.443889e+02
+    6: X_0003 = 9.159412e+02
+    7: Y_0003 = 1.499215e+03
+    8: X_0004 = 9.937176e+02
+    9: Y_0004 = 4.555305e+02
+    10: X_0005 = 8.251784e+00
+    11: Y_0005 = 1.145879e+03
+    12: X_0006 = 3.867863e+02
+    13: Y_0006 = 4.038220e+02
+    14: X_0007 = 5.260085e+02
+    15: Y_0007 = 1.497802e+03
+    16: X_0008 = 9.564081e+02
+    17: Y_0008 = 1.366148e+02
+    18: X_0009 = 9.822039e+02
+    19: Y_0009 = 1.209201e+03
+------------------------------
+  Objectives:
+    0: maximize_power = 2.584611e+04
+------------------------------
+  Constraints:
+    0: boundary_0000 = -3.451458e-01
+    1: boundary_0001 = -1.084184e+01
+    2: boundary_0002 = -1.591733e+01
+    3: boundary_0003 = -7.848904e-01
+    4: boundary_0004 = -6.282416e+00
+    5: boundary_0005 = -8.251784e+00
+    6: boundary_0006 = -5.693910e-01
+    7: boundary_0007 = -2.198379e+00
+    8: boundary_0008 = -4.359194e+01
+    9: boundary_0009 = -1.779611e+01
+    10: dist_0_1      = -1.047849e+03
+    11: dist_0_2      = -7.940049e+02
+    12: dist_0_3      = -1.444762e+03
+    13: dist_0_4      = -4.091182e+02
+    14: dist_0_5      = -1.354575e+03
+    15: dist_0_6      = -5.317457e+02
+    16: dist_0_7      = -1.481707e+03
+    17: dist_0_8      = -8.856793e+01
+    18: dist_0_9      = -1.157587e+03
+    19: dist_1_2      = -7.248556e+02
+    20: dist_1_3      = -9.163357e+02
+    21: dist_1_4      = -7.770814e+02
+    22: dist_1_5      = -1.334577e+02
+    23: dist_1_6      = -2.661733e+02
+    24: dist_1_7      = -6.475074e+02
+    25: dist_1_8      = -8.808023e+02
+    26: dist_1_9      = -8.180184e+02
+    27: dist_2_3      = -4.063621e+02
+    28: dist_2_4      = -1.369777e+02
+    29: dist_2_5      = -7.693433e+02
+    30: dist_2_6      = -4.902009e+02
+    31: dist_2_7      = -5.459850e+02
+    32: dist_2_8      = -4.563150e+02
+    33: dist_2_9      = -1.128167e+02
+    34: dist_3_4      = -7.945786e+02
+    35: dist_3_5      = -7.220362e+02
+    36: dist_3_6      = -9.645077e+02
+    37: dist_3_7      = -1.379353e+02
+    38: dist_3_8      = -1.111201e+03
+    39: dist_3_9      = -4.548794e+01
+    40: dist_4_5      = -9.512140e+02
+    41: dist_4_6      = -3.571300e+02
+    42: dist_4_7      = -8.904014e+02
+    43: dist_4_8      = -6.909073e+01
+    44: dist_4_9      = -5.017582e+02
+    45: dist_5_6      = -5.810288e+02
+    46: dist_5_7      = -3.740363e+02
+    47: dist_5_8      = -1.132780e+03
+    48: dist_5_9      = -7.240084e+02
+    49: dist_6_7      = -8.508029e+02
+    50: dist_6_8      = -3.771809e+02
+    51: dist_6_9      = -7.495773e+02
+    52: dist_7_8      = -1.175611e+03
+    53: dist_7_9      = -2.878191e+02
+    54: dist_8_9      = -8.208961e+02
+------------------------------
+  Success: True
+------------------------------
+
+&lt;xarray.Dataset&gt; Size: 436kB
+Dimensions:     (state: 216, turbine: 10)
+Coordinates:
+  * state       (state) int64 2kB 0 1 2 3 4 5 6 ... 209 210 211 212 213 214 215
+Dimensions without coordinates: turbine
+Data variables: (12/27)
+    AMB_CT      (state, turbine) float64 17kB 0.995 0.995 0.995 ... 0.081 0.081
+    AMB_P       (state, turbine) float64 17kB 109.1 109.1 109.1 ... 5e+03 5e+03
+    AMB_REWS    (state, turbine) float64 17kB 3.5 3.5 3.5 3.5 ... 20.0 20.0 20.0
+    AMB_REWS2   (state, turbine) float64 17kB 3.5 3.5 3.5 3.5 ... 20.0 20.0 20.0
+    AMB_REWS3   (state, turbine) float64 17kB 3.5 3.5 3.5 3.5 ... 20.0 20.0 20.0
+    AMB_RHO     (state, turbine) float64 17kB 1.225 1.225 1.225 ... 1.225 1.225
+    ...          ...
+    YAW         (state, turbine) float64 17kB 0.0 0.0 0.0 ... 350.0 350.0 350.0
+    order       (state, turbine) int64 17kB 3 7 9 5 2 1 4 6 ... 5 9 1 2 6 4 8 0
+    order_inv   (state, turbine) int64 17kB 2 3 6 9 7 0 1 5 ... 2 4 0 5 6 9 8 1
+    order_ssel  (state, turbine) int64 17kB 0 0 0 0 0 0 ... 215 215 215 215 215
+    weight      (state) float64 2kB 0.00158 0.00244 0.00319 ... 0.00061 0.00013
+    tname       (turbine) &lt;U2 80B &#39;T0&#39; &#39;T1&#39; &#39;T2&#39; &#39;T3&#39; ... &#39;T6&#39; &#39;T7&#39; &#39;T8&#39; &#39;T9&#39;
+</pre></div></div>
+</div>
+<p>This visualizes the results, once the layout and once the mean wind speed over all wind rose states:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [10]:
+</code></pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+
+<span class="n">foxes</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">FarmLayoutOutput</span><span class="p">(</span><span class="n">farm</span><span class="p">)</span><span class="o">.</span><span class="n">get_figure</span><span class="p">(</span><span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">o</span> <span class="o">=</span> <span class="n">foxes</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">FlowPlots2D</span><span class="p">(</span><span class="n">algo</span><span class="p">,</span> <span class="n">results</span><span class="o">.</span><span class="n">problem_results</span><span class="p">)</span>
+<span class="n">p_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">100.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">350.0</span><span class="p">])</span>
+<span class="n">p_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1100.0</span><span class="p">,</span> <span class="mf">1600.0</span><span class="p">])</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">get_mean_fig_xy</span><span class="p">(</span>
+    <span class="s2">&quot;WS&quot;</span><span class="p">,</span>
+    <span class="n">resolution</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">xmin</span><span class="o">=</span><span class="n">p_min</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+    <span class="n">xmax</span><span class="o">=</span><span class="n">p_max</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+    <span class="n">ymin</span><span class="o">=</span><span class="n">p_min</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">ymax</span><span class="o">=</span><span class="n">p_max</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">dpars</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">p_min</span><span class="o">=</span><span class="n">p_min</span><span class="p">,</span> <span class="n">p_max</span><span class="o">=</span><span class="n">p_max</span><span class="p">)</span>
+<span class="n">farm</span><span class="o">.</span><span class="n">boundary</span><span class="o">.</span><span class="n">add_to_figure</span><span class="p">(</span><span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">fill_mode</span><span class="o">=</span><span class="s2">&quot;outside_white&quot;</span><span class="p">,</span> <span class="n">pars_distance</span><span class="o">=</span><span class="n">dpars</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+States &#39;StatesTable&#39;: Reading file /home/jonas/gits/wakes/foxes/foxes/data/states/wind_rose_bremen.csv
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_layout_opt_20_1.png" src="../_images/notebooks_layout_opt_20_1.png" />
+</div>
+</div>
+<p>Finally, now that all calculations are done, we close the engine:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span><code>In [11]:
+</code></pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">engine</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  
+  
+  <div class="md-footer-meta md-typeset">
+    
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-footer-copyright__highlight">
+        &#169; Copyright 2025, Fraunhofer IWES.
+        
+    </div>
+  
+    Created using
+    <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
+    8.1.3.
+     and
+    <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
+  
+</div>
+      
+    </div>
+    
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+      
+        <script src="../_static/sphinx_immaterial_theme.32136f45f91ae6956.min.js?v=a7a9472a"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script id="MathJax-script" src="../_static/mathjax/tex-mml-chtml.js?v=cadf963e"></script>
+    
+  </body>
+</html>

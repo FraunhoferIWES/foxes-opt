@@ -175,3 +175,4 @@ result*.*
 results/
 
 !results_writer.py
+!docs/build/
