@@ -53,13 +53,15 @@ def read_dict(idict, *args, verbosity=None, **kwargs):
     pdict = jdict.get_item("problem")
     ldict = pdict.pop("local_fd", None)
     odicts = [
-        Dict(o, name=f"{pdict.name}.objective{i}")
+        Dict(o, _name=f"{pdict.name}.objective{i}")
         for i, o in enumerate(pdict.pop_item("objectives"))
     ]
     cdicts = pdict.pop("constraints", [])
-    cdicts = [Dict(c, name=f"{pdict.name}.constraint{i}") for i, c in enumerate(cdicts)]
+    cdicts = [
+        Dict(c, _name=f"{pdict.name}.constraint{i}") for i, c in enumerate(cdicts)
+    ]
     flist = [
-        Dict(f, name=f"{pdict.name}.function{i}")
+        Dict(f, _name=f"{pdict.name}.function{i}")
         for i, f in enumerate(pdict.pop("functions", []))
     ]
     problem = FarmOptProblem.new(algo=algo, **pdict)
@@ -183,7 +185,7 @@ def run_dict(idict, *args, extra_sig={}, verbosity=None, **kwargs):
         optimizer.print_info()
 
     # run optimizer:
-    rdict = idict.get_item("solve", Dict(name=idict.name + ".solve"))
+    rdict = idict.get_item("solve", Dict(_name=idict.name + ".solve"))
     if rdict.pop_item("run", True):
         _print("Running optimizer")
         opt_results = optimizer.solve(**rdict)
