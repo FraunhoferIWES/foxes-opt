@@ -77,7 +77,9 @@
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.5](https://github.com/FraunhoferIWES/foxes/commits/v0.5)
 
-## v0.5.1
+## v0.6
 
+- Compatibility with *foxes* v1.5
+- Dropping support for Python 3.8
 
-**Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.5.1](https://github.com/FraunhoferIWES/foxes/commits/v0.5.1)
+**Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.6](https://github.com/FraunhoferIWES/foxes/commits/v0.6)

@@ -25,7 +25,7 @@ wind_farm:
 algorithm:
   algo_type: Downwind
   wake_models: ["Bastankhah2016_linear_ka02", "CrespoHernandez_quadratic_ka04"]
-  wake_frame: yawed
+  wake_deflection: JimenezProj
 
 # ------------------
 # optimization setup
@@ -137,5 +137,4 @@ outputs:
     functions:
       - function: savefig
         fname: result.png
-      - function: show
-      
+      - function: close
