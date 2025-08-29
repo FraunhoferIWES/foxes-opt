@@ -87,4 +87,8 @@
 
 ## v0.6.1
 
+- Bug fixes:
+  - Bugs fixed that caused error with `RegularLayoutOptProblem`
+  - Bug fixed with `GG` and layout problems
+
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.6.1](https://github.com/FraunhoferIWES/foxes/commits/v0.6.1)

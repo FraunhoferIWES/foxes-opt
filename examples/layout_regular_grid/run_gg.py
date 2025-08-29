@@ -1,7 +1,8 @@
 import numpy as np
 import argparse
 import matplotlib.pyplot as plt
-from iwopy.interfaces.pymoo import Optimizer_pymoo
+from iwopy import LocalFD
+from iwopy.optimizers import GG
 
 import foxes
 from foxes_opt.problems.layout import RegularLayoutOptProblem
@@ -36,13 +37,11 @@ if __name__ == "__main__":
         default=500.0,
     )
     parser.add_argument(
-        "-A", "--opt_algo", help="The pymoo algorithm name", default="GA"
-    )
-    parser.add_argument(
-        "-P", "--n_pop", help="The population size", type=int, default=50
-    )
-    parser.add_argument(
-        "-G", "--n_gen", help="The nmber of generations", type=int, default=150
+        "-O",
+        "--fd_order",
+        help="Finite difference derivative order",
+        type=int,
+        default=1,
     )
     parser.add_argument(
         "-nop", "--no_pop", help="Switch off vectorization", action="store_true"
@@ -108,21 +107,24 @@ if __name__ == "__main__":
     ):
         problem = RegularLayoutOptProblem("layout_opt", algo, min_spacing=args.min_dist)
         problem.add_objective(MaxFarmPower(problem))
-        problem.initialize()
+        gproblem = LocalFD(problem, deltas=0.1, fd_order=args.fd_order)
+        gproblem.initialize()
 
-        solver = Optimizer_pymoo(
-            problem,
-            problem_pars=dict(
-                vectorize=not args.no_pop,
+        solver = GG(
+            gproblem,
+            step_min=1.0,
+            step_max=dict(
+                spacing_x=100,
+                spacing_y=100,
+                offset_x=100,
+                offset_y=100,
+                angle=5,
             ),
-            algo_pars=dict(
-                type=args.opt_algo,
-                pop_size=args.n_pop,
-                seed=None,
-            ),
-            setup_pars=dict(),
-            term_pars=("n_gen", args.n_gen),
+            f_tol=1e-8,
+            step_div_factor=2,
+            vectorized=not args.no_pop,
         )
+
         solver.initialize()
         solver.print_info()
 
