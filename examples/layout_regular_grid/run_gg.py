@@ -105,20 +105,34 @@ if __name__ == "__main__":
         chunk_size_points=args.chunksize_points,
         verbosity=0,
     ):
-        problem = RegularLayoutOptProblem("layout_opt", algo, min_spacing=args.min_dist)
+        problem = RegularLayoutOptProblem(
+            "layout_opt", 
+            algo, 
+            min_spacing=args.min_dist,
+            initial_values=dict(
+                offset_x=0.5,
+                offset_y=0.5,
+            ),
+        )
         problem.add_objective(MaxFarmPower(problem))
         gproblem = LocalFD(problem, deltas=0.1, fd_order=args.fd_order)
         gproblem.initialize()
 
         solver = GG(
             gproblem,
-            step_min=1.0,
+            step_min=dict(
+                spacing_x=1,
+                spacing_y=1,
+                offset_x=0.01,
+                offset_y=0.01,
+                angle=0.1,
+            ),
             step_max=dict(
                 spacing_x=100,
                 spacing_y=100,
-                offset_x=100,
-                offset_y=100,
-                angle=5,
+                offset_x=0.2,
+                offset_y=0.2,
+                angle=5.0,
             ),
             f_tol=1e-8,
             step_div_factor=2,

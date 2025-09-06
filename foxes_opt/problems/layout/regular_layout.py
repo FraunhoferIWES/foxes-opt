@@ -22,6 +22,9 @@ class RegularLayoutOptProblem(FarmVarsProblem):
     ----------
     min_spacing: float
         The minimal turbine spacing
+    initial_values: dict
+        Initial values for opt variables, key:
+        spacing_x, spacing_y, offset_x, offset_y, angle
 
     :group: opt.problems.layout
 
@@ -38,6 +41,7 @@ class RegularLayoutOptProblem(FarmVarsProblem):
         name,
         algo,
         min_spacing,
+        initial_values=None,
         **kwargs,
     ):
         """
@@ -51,12 +55,16 @@ class RegularLayoutOptProblem(FarmVarsProblem):
             The algorithm
         min_spacing: float
             The minimal turbine spacing
+        initial_values: dict, optional
+            Initial values for opt variables, key:
+            spacing_x, spacing_y, offset_x, offset_y, angle
         kwargs: dict, optional
             Additional parameters for `FarmVarsProblem`
 
         """
         super().__init__(name, algo, **kwargs)
         self.min_spacing = min_spacing
+        self.initial_values = initial_values
 
     def initialize(self, verbosity=1, **kwargs):
         """
@@ -88,7 +96,7 @@ class RegularLayoutOptProblem(FarmVarsProblem):
         pmax = b.p_max()
         pmin = b.p_min()
         self._pmin = pmin
-        self._xy0 = pmin#0.5 * (pmin + pmax)
+        self._xy0 = pmin
         self._halfspan = (pmax - pmin) / 2
         self._halflen = np.linalg.norm(self._halfspan)
         self.max_spacing = 2 * (self._halflen + self.min_spacing)
@@ -107,6 +115,27 @@ class RegularLayoutOptProblem(FarmVarsProblem):
             print(f"  n row turbns = {self._nrow}")
             print(f"  n turbines   = {self._nturb}")
             print(f"  turbine mdls = {self._turbine.models}")
+
+        iniv = self.initial_values
+        self.initial_values = {
+            self.SPACING_X: self.min_spacing,
+            self.SPACING_Y: self.min_spacing,
+            self.OFFSET_X: 0.0,
+            self.OFFSET_Y: 0.0,
+            self.ANGLE: 0.0,
+        }
+        if iniv is not None:
+            mins = {v: m for v, m in zip(self.var_names_float(), self.min_values_float())}
+            maxs = {v: m for v, m in zip(self.var_names_float(), self.max_values_float())}
+            for k, v in iniv.items():
+                assert k in self.initial_values, f"Invalid initial value key: '{k}', expected one of {list(self.initial_values.keys())}."
+                assert v >= mins[k], f"Initial value for '{k}' too small: {v} < {mins[k]}."
+                assert v <= maxs[k], f"Initial value for '{k}' too large: {v} > {maxs[k]}."
+                self.initial_values[k] = v
+        if verbosity > 0:
+            print(f"  initial values:")
+            for k, v in self.initial_values.items():
+                print(f"    {k:12s} = {v}")
 
         if self.farm.n_turbines < self._nturb:
             for i in range(self._nturb - self.farm.n_turbines):
@@ -153,7 +182,7 @@ class RegularLayoutOptProblem(FarmVarsProblem):
             Initial float values, shape: (n_vars_float,)
 
         """
-        return [self.min_spacing, self.min_spacing, 0.0, 0.0, 0.0]
+        return list(self.initial_values.values())
 
     def min_values_float(self):
         """
@@ -170,8 +199,8 @@ class RegularLayoutOptProblem(FarmVarsProblem):
         return np.array([
             self.min_spacing,
             self.min_spacing,
-            - self.max_spacing,
-            - self.max_spacing,
+            0.0,
+            0.0,
             0.0,
         ], dtype=config.dtype_double)
 
@@ -190,8 +219,8 @@ class RegularLayoutOptProblem(FarmVarsProblem):
         return np.array([
             self.max_spacing,
             self.max_spacing,
-            self.max_spacing,
-            self.max_spacing,
+            1.0,
+            1.0,
             90.0,
         ], dtype=config.dtype_double)
 
@@ -225,13 +254,12 @@ class RegularLayoutOptProblem(FarmVarsProblem):
         a = np.deg2rad(a)
         nax = np.array([np.cos(a), np.sin(a), 0.0], dtype=config.dtype_double)
         nay = np.cross(np.array([0.0, 0.0, 1.0], dtype=config.dtype_double), nax)
-        x0 = self._xy0 + np.array([ox, oy], dtype=config.dtype_double)
 
         pts = np.zeros((nx, ny, 2), dtype=config.dtype_double)
         pts[:] = (
-            x0[None, None, :]
-            + np.arange(nx)[:, None, None] * dx * nax[None, None, :2]
-            + np.arange(ny)[None, :, None] * dy * nay[None, None, :2]
+            self._xy0[None, None, :]
+            + (ox + np.arange(nx)[:, None, None]) * dx * nax[None, None, :2]
+            + (oy + np.arange(ny)[None, :, None]) * dy * nay[None, None, :2]
         )
 
         pts = pts.reshape(nx * ny, 2)
@@ -286,14 +314,12 @@ class RegularLayoutOptProblem(FarmVarsProblem):
         nay = np.cross(naz, nax)
 
         pts = np.zeros((n_pop, nx, ny, 2), dtype=config.dtype_double)
-        pts[:] = self._xy0[None, None, None, :]
-        pts[..., 0] += ox[:, None, None]
-        pts[..., 1] += oy[:, None, None]
-        pts[:] += (
-            np.arange(nx)[None, :, None, None]
+        pts[:] = (
+            self._xy0[None, None, None, :]
+            + (ox[:, None, None, None] + np.arange(nx)[None, :, None, None])
             * dx[:, None, None, None]
             * nax[:, None, None, :2]
-            + np.arange(ny)[None, None, :, None]
+            + (oy[:, None, None, None] + np.arange(ny)[None, None, :, None])
             * dy[:, None, None, None]
             * nay[:, None, None, :2]
         )
