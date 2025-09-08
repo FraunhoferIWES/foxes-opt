@@ -1,7 +1,7 @@
 import numpy as np
 from iwopy import Problem
 
-from foxes.core import PopulationStates
+from foxes.algorithms.downwind.models import PopulationStates
 from foxes.config import config
 from foxes.utils import new_instance
 
