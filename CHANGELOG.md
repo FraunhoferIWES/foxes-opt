@@ -87,6 +87,8 @@
 
 ## v0.6.1
 
+- Compatibility with *foxes* v1.5.3
+- Moving currently not running or deprecated opt problems to new `scratch` folder: `GeomLayoutGridded`, `GeomLayout`, `RegGridsLayoutOptProblem`
 - Bug fixes:
   - Bugs fixed that caused error with `RegularLayoutOptProblem`
   - Bug fixed with `GG` and layout problems

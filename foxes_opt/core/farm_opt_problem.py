@@ -1,10 +1,9 @@
 import numpy as np
 from iwopy import Problem
 
+from foxes.core import PopulationStates
 from foxes.config import config
 from foxes.utils import new_instance
-
-from .pop_states import PopStates
 
 
 class FarmOptProblem(Problem):
@@ -220,7 +219,7 @@ class FarmOptProblem(Problem):
 
         """
         # reset states, if needed:
-        if isinstance(self.algo.states, PopStates):
+        if isinstance(self.algo.states, PopulationStates):
             self._reset_states(self.algo.states.states)
             self.algo.n_states = self._org_n_states
 
@@ -242,11 +241,11 @@ class FarmOptProblem(Problem):
         """
         # set/reset pop states, if needed:
         n_pop = len(vars_float)
-        if not isinstance(self.algo.states, PopStates):
-            self._reset_states(PopStates(self.algo.states, n_pop))
+        if not isinstance(self.algo.states, PopulationStates):
+            self._reset_states(PopulationStates(self.algo.states, n_pop))
         elif self.algo.states.n_pop != n_pop:
             ostates = self.algo.states.states
-            self._reset_states(PopStates(ostates, n_pop))
+            self._reset_states(PopulationStates(ostates, n_pop))
 
     def apply_individual(self, vars_int, vars_float):
         """
