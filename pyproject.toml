@@ -33,7 +33,8 @@ classifiers = [
 ]
 requires-python = ">=3.9"
 dependencies = [
-    "foxes>=1.5.3",
+    #"foxes>=1.5.3",
+    "foxes @ git+https://github.com/FraunhoferIWES/foxes.git@dev",
     "iwopy>=0.3.1",
     "pymoo>=0.6",
     "xarray>=2023.9",
