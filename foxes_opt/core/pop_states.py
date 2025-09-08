@@ -1,7 +1,7 @@
 import numpy as np
 
 from foxes.config import config
-from foxes.core import States, Data
+from foxes.core import States, MData, FData, TData
 import foxes.constants as FC
 import foxes.variables as FV
 
@@ -140,7 +140,7 @@ class PopStates(States):
         """
         return self.states.output_point_vars(algo)
 
-    def calculate(self, algo, mdata, fdata, pdata):
+    def calculate(self, algo, mdata, fdata, tdata):
         """ "
         The main model calculation.
 
@@ -155,7 +155,7 @@ class PopStates(States):
             The model data
         fdata: foxes.core.Data
             The farm data
-        pdata: foxes.core.Data
+        tdata: foxes.core.Data
             The point data
 
         Returns
@@ -165,35 +165,43 @@ class PopStates(States):
             Values: numpy.ndarray with shape (n_states, n_points)
 
         """
-
-        hdata = {}
-        hdims = {}
         smap = mdata[self.SMAP]
-        for dname, data in mdata.items():
-            dms = mdata.dims[dname]
-            if dname == self.SMAP or dname == self.STATE0:
-                pass
-            elif dms[0] == self.STATE0:
-                hdata[dname] = data[smap]
-                hdims[dname] = tuple([FC.STATE] + list(dms)[1:])
-            elif self.STATE0 in dms:
-                raise ValueError(
-                    f"States '{self.name}': Found states variable not at dimension 0 for mdata entry '{dname}': {dms}"
-                )
-            else:
-                hdata[dname] = data
-                hdims[dname] = dms
-        hmdata = Data(hdata, hdims, mdata.loop_dims)
 
-        out = self.states.calculate(algo, hmdata, fdata, pdata)
-        assert FV.WEIGHT in pdata, (
-            f"Missing '{FV.WEIGHT}' in pdata results from states '{self.states.name}'"
+        def _map(in_data, DClass):
+            if in_data is None:
+                return None
+            
+            hdata = {}
+            hdims = {}
+            for dname, data in in_data.items():
+                dms = in_data.dims[dname]
+                if dname == self.SMAP or dname == self.STATE0:
+                    pass
+                elif dms[0] == self.STATE0:
+                    hdata[dname] = data[smap]
+                    hdims[dname] = tuple([FC.STATE] + list(dms)[1:])
+                elif self.STATE0 in dms:
+                    raise ValueError(
+                        f"States '{self.name}': Found states variable not at dimension 0 for mdata entry '{dname}': {dms}"
+                    )
+                else:
+                    hdata[dname] = data
+                    hdims[dname] = dms
+            return DClass(hdata, hdims, name=in_data.name + "_pop")
+
+        hmdata = _map(mdata, MData)
+        hfdata = _map(fdata, FData)
+        htdata = _map(tdata, TData)
+        out = self.states.calculate(algo, hmdata, hfdata, htdata)
+        del hmdata, hfdata
+
+        assert FV.WEIGHT in htdata, (
+            f"Missing '{FV.WEIGHT}' in tdata results from states '{self.states.name}'"
         )
-
         out[FV.WEIGHT] = np.zeros(
-            (pdata.n_states, pdata.n_targets, pdata.n_tpoints),
+            (htdata.n_states, htdata.n_targets, htdata.n_tpoints),
             dtype=config.dtype_double,
         )
-        out[FV.WEIGHT][:] = pdata[FV.WEIGHT]
+        out[FV.WEIGHT][:] = htdata[FV.WEIGHT]
 
         return out
