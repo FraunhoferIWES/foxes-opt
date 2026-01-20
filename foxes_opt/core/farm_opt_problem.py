@@ -2,6 +2,7 @@ import numpy as np
 from iwopy import Problem
 
 from foxes.algorithms.downwind.models import PopulationStates
+from foxes.core import has_engine, get_engine, Engine
 from foxes.config import config
 from foxes.utils import new_instance
 
@@ -267,14 +268,24 @@ class FarmOptProblem(Problem):
         """
         self._count += 1
         self.update_problem_individual(vars_int, vars_float)
-        farm_results = self.algo.calc_farm(**self.calc_farm_args)
-        self.algo.verbosity = 0
 
-        if self.points is None:
-            return farm_results
+        def _run_calc(algo):
+            """ Helper function to run main foxes calculations """
+            farm_results = algo.calc_farm(**self.calc_farm_args)
+            algo.verbosity = 0
+            if self.points is None:
+                return farm_results
+            else:
+                point_results = algo.calc_points(farm_results, self.points)
+                return farm_results, point_results
+            
+        if has_engine():
+            results = _run_calc(self.algo)
         else:
-            point_results = self.algo.calc_points(farm_results, self.points)
-            return farm_results, point_results
+            with Engine.new("default", verbosity=0):
+                results = _run_calc(self.algo)
+
+        return results
 
     def apply_population(self, vars_int, vars_float):
         """
