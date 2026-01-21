@@ -1,15 +1,8 @@
 Welcome to *foxes-opt*
 ======================
 
-.. versionadded:: 0.6
-    Compatibility with *foxes* version 1.5
-
-.. versionadded:: 0.5
-    Compatibility with *foxes* version 1.4
-
-.. versionadded:: 0.3
-    Running wind farm optimizations through :ref:`Input parameter files <Input parameter files>` in *yaml* format,
-    simply by `foxes_opt_yaml imputs.yaml` - no Python script needed.
+.. versionadded:: 0.7.0
+    Compatibility with *foxes* version 1.7.1
 
 The package *foxes-opt* provides optimization functionality for the
 *Farm Optimization and eXtended yield Evaluation Software* `foxes <https://github.com/FraunhoferIWES/foxes>`_

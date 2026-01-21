@@ -63,7 +63,7 @@ dev = [
 
 [project.urls]
 Homepage = "https://github.com/FraunhoferIWES/foxes-opt"
-Documentation = "https://fraunhoferiwes.github.io/foxes-opt/index.html"
+Documentation = "https://fraunhoferiwes.github.io/foxes-opt"
 Repository = "https://github.com/FraunhoferIWES/foxes-opt.git"
 "Bug Tracker" = "https://github.com/FraunhoferIWES/foxes-opt/issues"
 Changelog = "https://github.com/FraunhoferIWES/foxes-opt/blob/main/CHANGELOG.md"
