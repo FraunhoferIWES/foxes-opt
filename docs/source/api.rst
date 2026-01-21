@@ -1,14 +1,14 @@
 API
 ===
-Optimization problems define the basic wind farm problem setup and the variables that will be 
+Optimization problems define the basic wind farm problem setup and the variables that will be
 modified by the optimizer. Objectives and constraints are then subsequently added to the problem.
-Finally, any optimizer from `iwopy <https://github.com/FraunhoferIWES/iwopy>`_ can be used to find 
-optimal values of the optimization variables (or Pareto fronts). 
+Finally, any optimizer from `iwopy <https://github.com/FraunhoferIWES/iwopy>`_ can be used to find
+optimal values of the optimization variables (or Pareto fronts).
 
-Please consult the `iwopy documentation<https://fraunhoferiwes.github.io/iwopy.docs/index.html>`_ for details 
+Please consult the `iwopy documentation<https://fraunhoferiwes.github.io/iwopy.docs/index.html>`_ for details
 of the optimizers, and see the :ref:`Examples` section for applications.
 
-    .. table:: 
+    .. table::
         :widths: auto
 
         =======================================  ============================================================

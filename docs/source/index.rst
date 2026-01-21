@@ -19,7 +19,7 @@ Source code repository (and issue tracker):
     https://github.com/FraunhoferIWES/foxes-opt
 
 Please report code issues under the github link above.
-    
+
 License
 -------
     MIT_
@@ -30,12 +30,12 @@ Contents
 --------
     .. toctree::
         :maxdepth: 2
-    
+
         citation
 
     .. toctree::
         :maxdepth: 2
-    
+
         installation
 
     .. toctree::
@@ -45,7 +45,7 @@ Contents
 
     .. toctree::
         :maxdepth: 2
-    
+
         examples
 
     .. toctree::
@@ -75,10 +75,10 @@ Contributing
 Acknowledgements
 ----------------
 
-The development of *foxes* and its predecessors *flapFOAM* and *flappy* (internal - non public) 
-has been supported through multiple publicly funded research projects. We acknowledge in particular 
+The development of *foxes* and its predecessors *flapFOAM* and *flappy* (internal - non public)
+has been supported through multiple publicly funded research projects. We acknowledge in particular
 the funding by the Federal Ministry of Economic Affairs and Climate Action (BMWK) through the p
-rojects *Smart Wind Farms* (grant no. 0325851B), *GW-Wakes* (0325397B) and *X-Wakes* (03EE3008A) 
-as well as the funding by the Federal Ministry of Education and Research (BMBF) in the framework 
-of the project *H2Digital* (03SF0635). We furthermore acknowledge funding by the Horizon Europe 
+rojects *Smart Wind Farms* (grant no. 0325851B), *GW-Wakes* (0325397B) and *X-Wakes* (03EE3008A)
+as well as the funding by the Federal Ministry of Education and Research (BMBF) in the framework
+of the project *H2Digital* (03SF0635). We furthermore acknowledge funding by the Horizon Europe
 project FLOW (Atmospheric Flow, Loads and pOwer for Wind energy - grant id 101084205).

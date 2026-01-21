@@ -12,7 +12,7 @@ Farm layout turbine positioning problems.
 
 foxes_opt.problems.layout.geom_layouts
 --------------------------------------
-Purely geometrical layout problems (wake effects are 
+Purely geometrical layout problems (wake effects are
 not evaluated).
 
     .. toctree::

@@ -1,7 +1,7 @@
 # Input parameter files
 
-Instead of running wind farm optimizations via a Python script, it can also be run from input parameter 
-files in [YAML](https://de.wikipedia.org/wiki/YAML) format. For this purpose the 
+Instead of running wind farm optimizations via a Python script, it can also be run from input parameter
+files in [YAML](https://de.wikipedia.org/wiki/YAML) format. For this purpose the
 command line application `foxes_opt_yaml` has been added, following the conventions of [foxes_yaml](https://fraunhoferiwes.github.io/foxes.docs/parameter_files.html#foxes-yaml).
 
 ## foxes\_opt\_yaml
@@ -15,7 +15,7 @@ structure, that will be described shortly. A file with the name `inputs.yaml` ca
 foxes_opt_yaml inputs.yaml
 ```
 
-The usage is exactly the same as for [foxes_yaml](https://fraunhoferiwes.github.io/foxes.docs/parameter_files.html#foxes-yaml). 
+The usage is exactly the same as for [foxes_yaml](https://fraunhoferiwes.github.io/foxes.docs/parameter_files.html#foxes-yaml).
 The optimization specifications are simply another section that is added to the *yaml* file.
 
 ### Input file structure
@@ -38,7 +38,7 @@ states:
     WD: [0, 45, 90, 135, 180, 225, 270, 315]
     TI: [0.05]
     RHO: [1.225]
-  
+
 wind_farm:
   layouts:
     - function: add_grid
@@ -69,7 +69,7 @@ optimization:
         max: 30.0
         level: state-turbine          # one variable per state and turbine
     objectives:                       # add all objectives here to the list
-      - objective_type: MaxFarmPower  
+      - objective_type: MaxFarmPower
     # constraints can be added here similarly
 
   optimizer:
@@ -93,9 +93,9 @@ outputs:
     functions:
       - function: write_nc
         fname: results.nc
-  
+
   # Create a rather complex plot and save it:
-  - output_type: plt          
+  - output_type: plt
     functions:
       - function: figure
         figsize: [9, 9]
@@ -168,4 +168,3 @@ outputs:
 The details, especially concerning this complex output plot creation, are explained in the [foxes documentation](https://fraunhoferiwes.github.io/foxes.docs/parameter_files.html). The following image is produced by running the example:
 
 ![](parameter_files.png)
-
