@@ -167,7 +167,8 @@ cython_debug/
 uv.lock
 .ruff*
 
-docs/
+docs/build/
+docs/source/_*
 makedocs/
 result*.*
 results/
