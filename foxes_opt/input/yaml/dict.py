@@ -144,7 +144,7 @@ def run_outputs(
     return out
 
 
-def run_dict(idict, *args, extra_sig={}, verbosity=None, **kwargs):
+def run_dict(idict, *args, extra_sig={}, nofig=False, verbosity=None, **kwargs):
     """
     Run from a dictionary type parameter file.
 
@@ -157,6 +157,8 @@ def run_dict(idict, *args, extra_sig={}, verbosity=None, **kwargs):
     extra_sig: dict
         Extra function signature check, sets
         arguments (key) with data (value)
+    nofig: bool
+        Do not show figures, overrules settings from idict
     verbosity: int, optional
         Force a verbosity level, 0 = silent, overrules
         settings from idict
@@ -186,11 +188,29 @@ def run_dict(idict, *args, extra_sig={}, verbosity=None, **kwargs):
 
     # run optimizer:
     rdict = idict.get_item("solve", Dict(_name=idict.name + ".solve"))
+    results_storage = None
     if rdict.pop_item("run", True):
         _print("Running optimizer")
-        opt_results = optimizer.solve(**rdict)
-        optimizer.finalize(opt_results)
-        farm_results = opt_results.problem_results
+        with engine:
+            opt_results = optimizer.solve(**rdict)
+            optimizer.finalize(opt_results)
+            farm_results = opt_results.problem_results
+
+            # run outputs with engine:
+            out_w, results_storage = run_outputs(
+                idict,
+                algo,
+                farm_results,
+                opt_results,
+                extra_sig=extra_sig,
+                with_engine=True,
+                nofig=nofig,
+                results_storage=results_storage,
+                ret_results_storage=True,
+                verbosity=verbosity,
+            )
+            out_w = list(out_w)
+
     else:
         opt_results = None
         farm_results = None
@@ -199,14 +219,23 @@ def run_dict(idict, *args, extra_sig={}, verbosity=None, **kwargs):
     print(opt_results)
     print()
 
-    # run outputs:
-    out = run_outputs(
-        idict, algo, farm_results, opt_results, extra_sig=extra_sig, verbosity=verbosity
+    # run outputs w/o engine:
+    out_wo = list(
+        run_outputs(
+            idict,
+            algo,
+            farm_results,
+            opt_results,
+            extra_sig=extra_sig,
+            with_engine=False,
+            nofig=nofig,
+            results_storage=results_storage,
+            ret_results_storage=True,
+            verbosity=verbosity,
+        ),
     )
 
-    # shutdown engine, if created above:
-    if engine is not None:
-        _print(f"Finalizing engine: {engine}")
-        engine.finalize()
+    # combine outputs:
+    out = tuple(a if a is not None else b for a, b in zip(out_w, out_wo))
 
     return opt_results, out

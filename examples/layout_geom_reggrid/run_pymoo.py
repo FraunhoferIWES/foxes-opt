@@ -13,19 +13,16 @@ if __name__ == "__main__":
         "--min_dist",
         help="Minimal turbine distance in m",
         type=float,
-        default=400.0,
+        default=200.0,
     )
     parser.add_argument(
-        "-m", "--n_maxr", help="Maximal turbines per row", type=int, default=None
-    )
-    parser.add_argument(
-        "-g", "--n_grids", help="The number of grids", type=int, default=2
+        "-N", "--n_turbines", help="Maximal number of turbines", type=int, default=200
     )
     parser.add_argument(
         "-nop", "--no_pop", help="Switch off vectorization", action="store_true"
     )
     parser.add_argument(
-        "-A", "--opt_algo", help="The pymoo algorithm name", default="MixedVariableGA"
+        "-A", "--opt_algo", help="The pymoo algorithm name", default="GA"
     )
     parser.add_argument(
         "-P", "--n_pop", help="The population size", type=int, default=100
@@ -67,7 +64,9 @@ if __name__ == "__main__":
         )
     )
 
-    problem = grg.GeomRegGrids(boundary, args.min_dist, args.n_grids, args.n_maxr)
+    problem = grg.GeomRegGrid(
+        boundary, n_turbines=args.n_turbines, min_dist=args.min_dist
+    )
     problem.add_objective(grg.OMaxN(problem))
     problem.initialize()
 

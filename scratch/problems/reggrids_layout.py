@@ -10,7 +10,7 @@ import foxes.constants as FC
 from .geom_layouts.geom_reggrids import GeomRegGrids
 
 
-def _calc_func(valid, P, ct, st_sel):
+def _calc_func(valid, P, ct, **kwargs):
     """helper function for Calculator turbine model"""
     return (valid, P * valid, ct * valid)
 

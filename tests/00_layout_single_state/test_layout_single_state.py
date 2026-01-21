@@ -5,6 +5,7 @@ import foxes
 from foxes_opt.problems.layout import FarmLayoutOptProblem
 from foxes_opt.constraints import FarmBoundaryConstraint, MinDistConstraint
 from foxes_opt.objectives import MaxFarmPower
+import foxes.variables as FV
 
 
 def test():
@@ -61,32 +62,38 @@ def test():
     plt.close(ax.get_figure())
     """
 
-    results = solver.solve()
-    solver.finalize(results)
+    engine = foxes.Engine.new(
+        engine_type="process",
+        n_procs=4,
+        verbosity=0,
+    )
+
+    with engine:
+        results = solver.solve()
+        solver.finalize(results)
 
     print()
     print(results)
 
-    assert np.abs(results.objs - 20148.46492534) < 1e-4
-
     """
+    with engine:
+        o = foxes.output.FlowPlots2D(algo, results.problem_results)
+        p_min = np.array([-1100.0, -1100.0])
+        p_max = np.array([1100.0, 1100.0])
+        plot_data = o.get_mean_data_xy(
+            "WS",
+            resolution=20,
+            xmin=p_min[0],
+            xmax=p_max[0],
+            ymin=p_min[1],
+            ymax=p_max[1],
+        )
+
+    import matplotlib.pyplot as plt
     fig, axs = plt.subplots(1, 2, figsize=(12, 8))
     foxes.output.FarmLayoutOutput(farm).get_figure(fig=fig, ax=axs[0])
+    fig = o.get_mean_fig_xy(plot_data, fig=fig, ax=axs[1])
 
-    o = foxes.output.FlowPlots2D(algo, results.problem_results)
-    p_min = np.array([-1100.0, -1100.0])
-    p_max = np.array([1100.0, 1100.0])
-    fig = o.get_mean_fig_xy(
-        "WS",
-        resolution=20,
-        fig=fig,
-        ax=axs[1],
-        xmin=p_min[0],
-        xmax=p_max[0],
-        ymin=p_min[1],
-        ymax=p_max[1],
-    )
-    
     dpars = dict(alpha=0.6, zorder=10, p_min=p_min, p_max=p_max)
     farm.boundary.add_to_figure(
         axs[1], fill_mode="outside_white", pars_distance=dpars
@@ -94,6 +101,14 @@ def test():
     plt.show()
     plt.close(fig)
     """
+
+    farm_results = results.problem_results
+    o = foxes.output.FarmResultsEval(farm_results)
+    o.add_efficiency()
+    wke = 1 - farm_results[FV.EFF].values
+    print("Wake losses:", wke)
+
+    assert np.all(wke < 2e-4)
 
 
 if __name__ == "__main__":

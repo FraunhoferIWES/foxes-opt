@@ -2,9 +2,7 @@
 Purely geometric wind farm layout problems.
 """
 
-from .geom_layout import GeomLayout as GeomLayout
 from .geom_reggrid import GeomRegGrid as GeomRegGrid
-from .geom_layout_gridded import GeomLayoutGridded as GeomLayoutGridded
 from .geom_reggrids import GeomRegGrids as GeomRegGrids
 
 from .objectives import OMaxN as OMaxN

@@ -10,10 +10,11 @@ class GeomLayoutGridded(Problem):
     """
     A layout within a boundary geometry, purely
     defined by geometrical optimization (no wakes),
-    on a fixes background point grid.
+    on a fixed background point grid along (x, y)
+    directions.
 
     This optimization problem does not involve
-    wind farms.
+    wind farms. Note that this is an integer problem.
 
     Attributes
     ----------

@@ -4,6 +4,7 @@ from abc import abstractmethod
 from foxes.models.turbine_models import SetFarmVars
 from foxes.config import config
 from foxes.utils import new_instance
+import foxes.variables as FV
 
 from .farm_opt_problem import FarmOptProblem
 
@@ -214,6 +215,15 @@ class FarmVarsProblem(FarmOptProblem):
                         data[:, self.sel_turbines] = vals.reshape(shp1)
                         model.add_var(v, data)
                         del data
+
+                    # special case (x, y) needs to reshape turbine property. Value will be set by model
+                    if v in [FV.X, FV.Y]:
+                        for ti in self.sel_turbines:
+                            xy = self.algo.farm.turbines[ti].xy
+                            if len(xy.shape) > 1 and xy.shape[0] != n_pstates:
+                                self.algo.farm.turbines[ti].xy = np.full(
+                                    (n_pstates, 2), np.nan, dtype=config.dtype_double
+                                )
 
         if len(fvars):
             raise KeyError(

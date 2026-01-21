@@ -107,38 +107,40 @@ if __name__ == "__main__":
         verbosity=0,
     )
 
-    with foxes.Engine.new(
+    problem = OptFarmVars("opt_yawm", algo)
+    problem.add_var(FV.YAWM, float, 0.0, -40.0, 40.0, level="turbine")
+    problem.add_objective(MaxFarmPower(problem))
+    problem.initialize()
+
+    solver = Optimizer_pymoo(
+        problem,
+        problem_pars=dict(
+            vectorize=not args.no_pop,
+        ),
+        algo_pars=dict(
+            type=args.opt_algo,
+            pop_size=args.n_pop,
+            seed=None,
+        ),
+        setup_pars=dict(),
+        term_pars=("n_gen", args.n_gen),
+    )
+    solver.initialize()
+    solver.print_info()
+
+    ax = foxes.output.FarmLayoutOutput(farm).get_figure()
+    plt.show()
+    plt.close(ax.get_figure())
+
+    engine = foxes.Engine.new(
         engine_type=args.engine,
         n_procs=args.n_cpus,
         chunk_size_states=args.chunksize_states,
         chunk_size_points=args.chunksize_points,
         verbosity=0,
-    ):
-        problem = OptFarmVars("opt_yawm", algo)
-        problem.add_var(FV.YAWM, float, 0.0, -40.0, 40.0, level="turbine")
-        problem.add_objective(MaxFarmPower(problem))
-        problem.initialize()
+    )
 
-        solver = Optimizer_pymoo(
-            problem,
-            problem_pars=dict(
-                vectorize=not args.no_pop,
-            ),
-            algo_pars=dict(
-                type=args.opt_algo,
-                pop_size=args.n_pop,
-                seed=None,
-            ),
-            setup_pars=dict(),
-            term_pars=("n_gen", args.n_gen),
-        )
-        solver.initialize()
-        solver.print_info()
-
-        ax = foxes.output.FarmLayoutOutput(farm).get_figure()
-        plt.show()
-        plt.close(ax.get_figure())
-
+    with engine:
         results = solver.solve()
         solver.finalize(results)
 
@@ -149,5 +151,7 @@ if __name__ == "__main__":
         print(fr[[FV.X, FV.Y, FV.AMB_WD, FV.REWS, FV.TI, FV.P, FV.YAWM]])
 
         o = foxes.output.FlowPlots2D(algo, results.problem_results)
-        fig = o.get_mean_fig_xy("WS", resolution=10)
-        plt.show()
+        plot_data = o.get_mean_data_xy("WS", resolution=10)
+
+    fig = o.get_mean_fig_xy(plot_data)
+    plt.show()

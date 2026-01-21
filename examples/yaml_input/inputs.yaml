@@ -5,6 +5,7 @@
 engine:
   engine_type: process
   chunk_size_states: 400
+  verbosity: 0
 
 states:
   states_type: ScanStates
@@ -13,7 +14,7 @@ states:
     WD: [0, 45, 90, 135, 180, 225, 270, 315]
     TI: [0.05]
     RHO: [1.225]
-  
+
 wind_farm:
   layouts:
     - function: add_grid
@@ -44,7 +45,7 @@ optimization:
         max: 30.0
         level: state-turbine          # one variable per state and turbine
     objectives:                       # add all objectives here to the list
-      - objective_type: MaxFarmPower  
+      - objective_type: MaxFarmPower
     # constraints can be added here similarly
 
   optimizer:
@@ -68,9 +69,9 @@ outputs:
     functions:
       - function: write_nc
         fname: results.nc
-  
+
   # Create a rather complex plot and save it:
-  - output_type: plt          
+  - output_type: plt
     functions:
       - function: figure
         figsize: [9, 9]

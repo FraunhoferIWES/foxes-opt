@@ -1,10 +1,10 @@
 import numpy as np
 from iwopy import Problem
 
+from foxes.algorithms.downwind.models import PopulationStates
+from foxes.core import has_engine, Engine
 from foxes.config import config
 from foxes.utils import new_instance
-
-from .pop_states import PopStates
 
 
 class FarmOptProblem(Problem):
@@ -202,6 +202,7 @@ class FarmOptProblem(Problem):
             if self.algo.initialized:
                 self.algo.finalize()
             self.algo.states = states
+            self.algo.reset_chunk_store()
 
     def update_problem_individual(self, vars_int, vars_float):
         """
@@ -220,7 +221,7 @@ class FarmOptProblem(Problem):
 
         """
         # reset states, if needed:
-        if isinstance(self.algo.states, PopStates):
+        if isinstance(self.algo.states, PopulationStates):
             self._reset_states(self.algo.states.states)
             self.algo.n_states = self._org_n_states
 
@@ -242,11 +243,11 @@ class FarmOptProblem(Problem):
         """
         # set/reset pop states, if needed:
         n_pop = len(vars_float)
-        if not isinstance(self.algo.states, PopStates):
-            self._reset_states(PopStates(self.algo.states, n_pop))
+        if not isinstance(self.algo.states, PopulationStates):
+            self._reset_states(PopulationStates(self.algo.states, n_pop))
         elif self.algo.states.n_pop != n_pop:
             ostates = self.algo.states.states
-            self._reset_states(PopStates(ostates, n_pop))
+            self._reset_states(PopulationStates(ostates, n_pop))
 
     def apply_individual(self, vars_int, vars_float):
         """
@@ -268,14 +269,24 @@ class FarmOptProblem(Problem):
         """
         self._count += 1
         self.update_problem_individual(vars_int, vars_float)
-        farm_results = self.algo.calc_farm(**self.calc_farm_args)
-        self.algo.verbosity = 0
 
-        if self.points is None:
-            return farm_results
+        def _run_calc(algo):
+            """Helper function to run main foxes calculations"""
+            farm_results = algo.calc_farm(**self.calc_farm_args)
+            algo.verbosity = 0
+            if self.points is None:
+                return farm_results
+            else:
+                point_results = algo.calc_points(farm_results, self.points)
+                return farm_results, point_results
+
+        if has_engine():
+            results = _run_calc(self.algo)
         else:
-            point_results = self.algo.calc_points(farm_results, self.points)
-            return farm_results, point_results
+            with Engine.new("default", verbosity=0):
+                results = _run_calc(self.algo)
+
+        return results
 
     def apply_population(self, vars_int, vars_float):
         """
@@ -299,23 +310,34 @@ class FarmOptProblem(Problem):
         self._count += 1
 
         self.update_problem_population(vars_int, vars_float)
-        farm_results = self.algo.calc_farm(**self.calc_farm_args)
-        farm_results["n_pop"] = len(vars_float)
-        farm_results["n_org_states"] = self._org_n_states
-        self.algo.verbosity = 0
 
-        if self.points is None:
-            return farm_results
+        def _run_calc(algo):
+            """Helper function to run main foxes calculations"""
+            farm_results = algo.calc_farm(**self.calc_farm_args)
+            farm_results["n_pop"] = len(vars_float)
+            farm_results["n_org_states"] = self._org_n_states
+            algo.verbosity = 0
+
+            if self.points is None:
+                return farm_results
+            else:
+                n_pop = farm_results["n_pop"].values
+                n_states, n_points = self.points.shape[:2]
+                pop_points = np.zeros(
+                    (n_pop, n_states, n_points, 3), dtype=config.dtype_double
+                )
+                pop_points[:] = self.points[None, :, :, :]
+                pop_points = pop_points.reshape(n_pop * n_states, n_points, 3)
+                point_results = algo.calc_points(farm_results, pop_points)
+                return farm_results, point_results
+
+        if has_engine():
+            results = _run_calc(self.algo)
         else:
-            n_pop = farm_results["n_pop"].values
-            n_states, n_points = self.points.shape[:2]
-            pop_points = np.zeros(
-                (n_pop, n_states, n_points, 3), dtype=config.dtype_double
-            )
-            pop_points[:] = self.points[None, :, :, :]
-            pop_points = pop_points.reshape(n_pop * n_states, n_points, 3)
-            point_results = self.algo.calc_points(farm_results, pop_points)
-            return farm_results, point_results
+            with Engine.new("default", verbosity=0):
+                results = _run_calc(self.algo)
+
+        return results
 
     def add_to_layout_figure(self, ax, **kwargs):
         """

@@ -1,18 +1,15 @@
 import numpy as np
 import argparse
 import matplotlib.pyplot as plt
-from iwopy.interfaces.pymoo import Optimizer_pymoo
+from iwopy import LocalFD
+from iwopy.optimizers import GG
 
 import foxes
-from foxes_opt.problems.layout import FarmLayoutOptProblem
-from foxes_opt.constraints import FarmBoundaryConstraint, MinDistConstraint
+from foxes_opt.problems.layout import RegularLayoutOptProblem
 from foxes_opt.objectives import MaxFarmPower
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "-nt", "--n_t", help="The number of turbines", type=int, default=10
-    )
     parser.add_argument(
         "-t",
         "--turbine_file",
@@ -24,7 +21,7 @@ if __name__ == "__main__":
         "-w",
         "--wakes",
         help="The wake models",
-        default=["Bastankhah025_linear_k002"],
+        default=["Bastankhah2014_linear_k002"],
         nargs="+",
     )
     parser.add_argument("-p", "--pwakes", help="The partial wakes model", default=None)
@@ -35,18 +32,16 @@ if __name__ == "__main__":
     parser.add_argument(
         "-d",
         "--min_dist",
-        help="Minimal turbine distance in unit D",
+        help="Minimal turbine distance in m",
         type=float,
-        default=None,
+        default=500.0,
     )
     parser.add_argument(
-        "-A", "--opt_algo", help="The pymoo algorithm name", default="GA"
-    )
-    parser.add_argument(
-        "-P", "--n_pop", help="The population size", type=int, default=50
-    )
-    parser.add_argument(
-        "-G", "--n_gen", help="The nmber of generations", type=int, default=300
+        "-O",
+        "--fd_order",
+        help="Finite difference derivative order",
+        type=int,
+        default=1,
     )
     parser.add_argument(
         "-nop", "--no_pop", help="Switch off vectorization", action="store_true"
@@ -75,16 +70,19 @@ if __name__ == "__main__":
     ttype = foxes.models.turbine_types.PCtFile(args.turbine_file)
     mbook.turbine_types[ttype.name] = ttype
 
-    boundary = foxes.utils.geom2d.Circle([0.0, 0.0], 1000.0)
+    boundary = foxes.utils.geom2d.Circle(
+        [0.0, 0.0], 1000.0
+    ) + foxes.utils.geom2d.ClosedPolygon(
+        np.array([[0, 0], [0, 1600], [1000, 1800], [900, -200]], dtype=np.float64)
+    )
 
     farm = foxes.WindFarm(boundary=boundary)
-    foxes.input.farm_layout.add_row(
-        farm=farm,
-        xy_base=np.zeros(2),
-        xy_step=np.array([50.0, 0.0]),
-        n_turbines=args.n_t,
-        turbine_models=["kTI_02", ttype.name],
+    farm.add_turbine(
+        foxes.Turbine(
+            xy=np.array([0.0, 0.0]), turbine_models=["layout_opt", ttype.name]
+        )
     )
+
     states = foxes.input.states.SingleStateStates(
         ws=args.ws, wd=args.wd, ti=args.ti, rho=args.rho
     )
@@ -100,33 +98,40 @@ if __name__ == "__main__":
         verbosity=0,
     )
 
-    problem = FarmLayoutOptProblem("layout_opt", algo)
-    problem.add_objective(MaxFarmPower(problem))
-    problem.add_constraint(FarmBoundaryConstraint(problem, disc_inside=True))
-    if args.min_dist is not None:
-        problem.add_constraint(
-            MinDistConstraint(problem, min_dist=args.min_dist, min_dist_unit="D")
-        )
-    problem.initialize()
-
-    solver = Optimizer_pymoo(
-        problem,
-        problem_pars=dict(
-            vectorize=not args.no_pop,
-        ),
-        algo_pars=dict(
-            type=args.opt_algo,
-            pop_size=args.n_pop,
-            seed=None,
-        ),
-        setup_pars=dict(),
-        term_pars=dict(
-            type="default",
-            n_max_gen=args.n_gen,
-            ftol=1e-6,
-            xtol=1e-6,
+    problem = RegularLayoutOptProblem(
+        "layout_opt",
+        algo,
+        min_spacing=args.min_dist,
+        initial_values=dict(
+            offset_x=0.5,
+            offset_y=0.5,
         ),
     )
+    problem.add_objective(MaxFarmPower(problem))
+    gproblem = LocalFD(problem, deltas=0.1, fd_order=args.fd_order)
+    gproblem.initialize()
+
+    solver = GG(
+        gproblem,
+        step_min=dict(
+            spacing_x=1,
+            spacing_y=1,
+            offset_x=0.01,
+            offset_y=0.01,
+            angle=0.1,
+        ),
+        step_max=dict(
+            spacing_x=100,
+            spacing_y=100,
+            offset_x=0.2,
+            offset_y=0.2,
+            angle=5.0,
+        ),
+        f_tol=1e-8,
+        step_div_factor=2,
+        vectorized=not args.no_pop,
+    )
+
     solver.initialize()
     solver.print_info()
 
@@ -149,9 +154,9 @@ if __name__ == "__main__":
         print()
         print(results)
 
-        p_min = np.array([-1100.0, -1100.0])
-        p_max = np.array([1100.0, 1100.0])
         o = foxes.output.FlowPlots2D(algo, results.problem_results)
+        p_min = np.array([-1100.0, -1100.0])
+        p_max = np.array([1100.0, 2000.0])
         plot_data = o.get_mean_data_xy(
             "WS",
             resolution=20,
@@ -166,6 +171,8 @@ if __name__ == "__main__":
     foxes.output.FarmLayoutOutput(farm).get_figure(fig=fig, ax=axs[0])
 
     o = foxes.output.FlowPlots2D(algo, results.problem_results)
+    p_min = np.array([-1100.0, -1100.0])
+    p_max = np.array([1100.0, 2000.0])
     fig = o.get_mean_fig_xy(plot_data, fig=fig, ax=axs[1])
     dpars = dict(alpha=0.6, zorder=10, p_min=p_min, p_max=p_max)
     farm.boundary.add_to_figure(axs[1], fill_mode="outside_white", pars_distance=dpars)

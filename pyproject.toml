@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "foxes-opt"
-version = "0.6"
+version = "0.7.0"
 authors = [
   {name = "Jonas Schulte"},
 ]
@@ -33,7 +33,7 @@ classifiers = [
 ]
 requires-python = ">=3.9"
 dependencies = [
-    "foxes>=1.5",
+    "foxes>=1.7.1",
     "iwopy>=0.3.1",
     "pymoo>=0.6",
     "xarray>=2023.9",
@@ -41,19 +41,24 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-test = [
-    "flake8>=0.1", 
-    "pytest>=7.0",
-]
 doc = [
     "setuptools>=61.0",
     "sphinx>=5.0",
     "sphinx-immaterial>=0.10",
-    "nbsphinx>=0.5",
+    "myst-nb>=0.1",
     "ipykernel>=5.0",
     "ipywidgets>=5.0",
     "m2r2>=0.2",
     "lxml_html_clean>=0.4",
+]
+test = [
+    "pytest>=7.0",
+    "nbmake>1.0",
+]
+dev = [
+    "pre-commit>=0.1",
+    "objsize>=0.5",
+    "jupyter>=1.0",
 ]
 
 [project.urls]
