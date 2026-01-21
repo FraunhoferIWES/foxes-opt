@@ -2,6 +2,7 @@ import numpy as np
 from copy import deepcopy
 
 from foxes_opt.core import FarmVarsProblem, FarmOptProblem
+from foxes.core import WindFarm
 from foxes.models.turbine_models import Calculator
 from foxes.config import config
 import foxes.variables as FV
@@ -125,15 +126,25 @@ class RegularLayoutOptProblem(FarmVarsProblem):
             self.ANGLE: 0.0,
         }
         if iniv is not None:
-            mins = {v: m for v, m in zip(self.var_names_float(), self.min_values_float())}
-            maxs = {v: m for v, m in zip(self.var_names_float(), self.max_values_float())}
+            mins = {
+                v: m for v, m in zip(self.var_names_float(), self.min_values_float())
+            }
+            maxs = {
+                v: m for v, m in zip(self.var_names_float(), self.max_values_float())
+            }
             for k, v in iniv.items():
-                assert k in self.initial_values, f"Invalid initial value key: '{k}', expected one of {list(self.initial_values.keys())}."
-                assert v >= mins[k], f"Initial value for '{k}' too small: {v} < {mins[k]}."
-                assert v <= maxs[k], f"Initial value for '{k}' too large: {v} > {maxs[k]}."
+                assert k in self.initial_values, (
+                    f"Invalid initial value key: '{k}', expected one of {list(self.initial_values.keys())}."
+                )
+                assert v >= mins[k], (
+                    f"Initial value for '{k}' too small: {v} < {mins[k]}."
+                )
+                assert v <= maxs[k], (
+                    f"Initial value for '{k}' too large: {v} > {maxs[k]}."
+                )
                 self.initial_values[k] = v
         if verbosity > 0:
-            print(f"  initial values:")
+            print("  initial values:")
             for k, v in self.initial_values.items():
                 print(f"    {k:12s} = {v}")
 
@@ -196,13 +207,16 @@ class RegularLayoutOptProblem(FarmVarsProblem):
             Minimal float values, shape: (n_vars_float,)
 
         """
-        return np.array([
-            self.min_spacing,
-            self.min_spacing,
-            0.0,
-            0.0,
-            0.0,
-        ], dtype=config.dtype_double)
+        return np.array(
+            [
+                self.min_spacing,
+                self.min_spacing,
+                0.0,
+                0.0,
+                0.0,
+            ],
+            dtype=config.dtype_double,
+        )
 
     def max_values_float(self):
         """
@@ -216,13 +230,16 @@ class RegularLayoutOptProblem(FarmVarsProblem):
             Maximal float values, shape: (n_vars_float,)
 
         """
-        return np.array([
-            self.max_spacing,
-            self.max_spacing,
-            1.0,
-            1.0,
-            90.0,
-        ], dtype=config.dtype_double)
+        return np.array(
+            [
+                self.max_spacing,
+                self.max_spacing,
+                1.0,
+                1.0,
+                90.0,
+            ],
+            dtype=config.dtype_double,
+        )
 
     def opt2farm_vars_individual(self, vars_int, vars_float):
         """
@@ -323,7 +340,7 @@ class RegularLayoutOptProblem(FarmVarsProblem):
             * dy[:, None, None, None]
             * nay[:, None, None, :2]
         )
-    
+
         qts = np.zeros((n_pop, n_turbines, 2))
         qts[:, :N] = pts.reshape(n_pop, N, 2)
         del pts
@@ -369,13 +386,13 @@ class RegularLayoutOptProblem(FarmVarsProblem):
         x = farm_vars[FV.X][0, sel]
         y = farm_vars[FV.Y][0, sel]
 
-        self.farm.turbines = [t for i, t in enumerate(self.farm.turbines) if i in sel]
-        for i, t in enumerate(self.farm.turbines):
+        turbines = [t for i, t in enumerate(self.farm.turbines) if i in sel]
+        for i, t in enumerate(turbines):
             t.xy = np.array([x[i], y[i]], dtype=config.dtype_double)
             t.models = [m for m in t.models if m not in [self.name, self._mname]]
             t.index = i
             t.name = f"T{i}"
-        self.algo.update_n_turbines()
+        self.farm.reset_turbines(self.algo, turbines)
 
         return FarmOptProblem.finalize_individual(
             self, vars_int, vars_float, verbosity=1

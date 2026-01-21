@@ -2,7 +2,7 @@ import numpy as np
 from iwopy import Problem
 
 from foxes.algorithms.downwind.models import PopulationStates
-from foxes.core import has_engine, get_engine, Engine
+from foxes.core import has_engine, Engine
 from foxes.config import config
 from foxes.utils import new_instance
 
@@ -202,6 +202,7 @@ class FarmOptProblem(Problem):
             if self.algo.initialized:
                 self.algo.finalize()
             self.algo.states = states
+            self.algo.reset_chunk_store()
 
     def update_problem_individual(self, vars_int, vars_float):
         """
@@ -270,7 +271,7 @@ class FarmOptProblem(Problem):
         self.update_problem_individual(vars_int, vars_float)
 
         def _run_calc(algo):
-            """ Helper function to run main foxes calculations """
+            """Helper function to run main foxes calculations"""
             farm_results = algo.calc_farm(**self.calc_farm_args)
             algo.verbosity = 0
             if self.points is None:
@@ -278,7 +279,7 @@ class FarmOptProblem(Problem):
             else:
                 point_results = algo.calc_points(farm_results, self.points)
                 return farm_results, point_results
-            
+
         if has_engine():
             results = _run_calc(self.algo)
         else:
@@ -309,23 +310,34 @@ class FarmOptProblem(Problem):
         self._count += 1
 
         self.update_problem_population(vars_int, vars_float)
-        farm_results = self.algo.calc_farm(**self.calc_farm_args)
-        farm_results["n_pop"] = len(vars_float)
-        farm_results["n_org_states"] = self._org_n_states
-        self.algo.verbosity = 0
 
-        if self.points is None:
-            return farm_results
+        def _run_calc(algo):
+            """Helper function to run main foxes calculations"""
+            farm_results = algo.calc_farm(**self.calc_farm_args)
+            farm_results["n_pop"] = len(vars_float)
+            farm_results["n_org_states"] = self._org_n_states
+            algo.verbosity = 0
+
+            if self.points is None:
+                return farm_results
+            else:
+                n_pop = farm_results["n_pop"].values
+                n_states, n_points = self.points.shape[:2]
+                pop_points = np.zeros(
+                    (n_pop, n_states, n_points, 3), dtype=config.dtype_double
+                )
+                pop_points[:] = self.points[None, :, :, :]
+                pop_points = pop_points.reshape(n_pop * n_states, n_points, 3)
+                point_results = algo.calc_points(farm_results, pop_points)
+                return farm_results, point_results
+
+        if has_engine():
+            results = _run_calc(self.algo)
         else:
-            n_pop = farm_results["n_pop"].values
-            n_states, n_points = self.points.shape[:2]
-            pop_points = np.zeros(
-                (n_pop, n_states, n_points, 3), dtype=config.dtype_double
-            )
-            pop_points[:] = self.points[None, :, :, :]
-            pop_points = pop_points.reshape(n_pop * n_states, n_points, 3)
-            point_results = self.algo.calc_points(farm_results, pop_points)
-            return farm_results, point_results
+            with Engine.new("default", verbosity=0):
+                results = _run_calc(self.algo)
+
+        return results
 
     def add_to_layout_figure(self, ax, **kwargs):
         """

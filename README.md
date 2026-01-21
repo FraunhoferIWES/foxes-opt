@@ -24,7 +24,7 @@ Anaconda reference: [https://anaconda.org/conda-forge/foxes-opt](https://anacond
 
 There are multiple ways to install *foxes-opt*.
 
-### Installation as standard user 
+### Installation as standard user
 
 ```console
 pip install foxes[opt]
@@ -51,27 +51,27 @@ git clone https://github.com/FraunhoferIWES/foxes-opt.git
 pip install -e foxes-opt
 ```
 
-If you want to contribute your developments, please replace 
+If you want to contribute your developments, please replace
 the above repository locations by your personal forks.
 
 ## Citation
 
 Please cite the JOSS paper [FOXES: Farm Optimization and eXtended yield
-Evaluation Software](https://doi.org/10.21105/joss.05464). 
+Evaluation Software](https://doi.org/10.21105/joss.05464).
 
 Bibtex:
 ```
 @article{
-    Schmidt2023, 
-    author = {Jonas Schmidt and Lukas Vollmer and Martin Dörenkämper and Bernhard Stoevesandt}, 
-    title = {FOXES: Farm Optimization and eXtended yield Evaluation Software}, 
-    doi = {10.21105/joss.05464}, 
-    url = {https://doi.org/10.21105/joss.05464}, 
-    year = {2023}, 
-    publisher = {The Open Journal}, 
-    volume = {8}, 
-    number = {86}, 
-    pages = {5464}, 
-    journal = {Journal of Open Source Software} 
+    Schmidt2023,
+    author = {Jonas Schmidt and Lukas Vollmer and Martin Dörenkämper and Bernhard Stoevesandt},
+    title = {FOXES: Farm Optimization and eXtended yield Evaluation Software},
+    doi = {10.21105/joss.05464},
+    url = {https://doi.org/10.21105/joss.05464},
+    year = {2023},
+    publisher = {The Open Journal},
+    volume = {8},
+    number = {86},
+    pages = {5464},
+    journal = {Journal of Open Source Software}
 }
 ```

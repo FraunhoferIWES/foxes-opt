@@ -98,81 +98,86 @@ if __name__ == "__main__":
         verbosity=0,
     )
 
-    with foxes.Engine.new(
+    problem = RegularLayoutOptProblem(
+        "layout_opt",
+        algo,
+        min_spacing=args.min_dist,
+        initial_values=dict(
+            offset_x=0.5,
+            offset_y=0.5,
+        ),
+    )
+    problem.add_objective(MaxFarmPower(problem))
+    gproblem = LocalFD(problem, deltas=0.1, fd_order=args.fd_order)
+    gproblem.initialize()
+
+    solver = GG(
+        gproblem,
+        step_min=dict(
+            spacing_x=1,
+            spacing_y=1,
+            offset_x=0.01,
+            offset_y=0.01,
+            angle=0.1,
+        ),
+        step_max=dict(
+            spacing_x=100,
+            spacing_y=100,
+            offset_x=0.2,
+            offset_y=0.2,
+            angle=5.0,
+        ),
+        f_tol=1e-8,
+        step_div_factor=2,
+        vectorized=not args.no_pop,
+    )
+
+    solver.initialize()
+    solver.print_info()
+
+    ax = foxes.output.FarmLayoutOutput(farm).get_figure()
+    plt.show()
+    plt.close(ax.get_figure())
+    
+    engine = foxes.Engine.new(
         engine_type=args.engine,
         n_procs=args.n_cpus,
         chunk_size_states=args.chunksize_states,
         chunk_size_points=args.chunksize_points,
         verbosity=0,
-    ):
-        problem = RegularLayoutOptProblem(
-            "layout_opt", 
-            algo, 
-            min_spacing=args.min_dist,
-            initial_values=dict(
-                offset_x=0.5,
-                offset_y=0.5,
-            ),
-        )
-        problem.add_objective(MaxFarmPower(problem))
-        gproblem = LocalFD(problem, deltas=0.1, fd_order=args.fd_order)
-        gproblem.initialize()
+    )
 
-        solver = GG(
-            gproblem,
-            step_min=dict(
-                spacing_x=1,
-                spacing_y=1,
-                offset_x=0.01,
-                offset_y=0.01,
-                angle=0.1,
-            ),
-            step_max=dict(
-                spacing_x=100,
-                spacing_y=100,
-                offset_x=0.2,
-                offset_y=0.2,
-                angle=5.0,
-            ),
-            f_tol=1e-8,
-            step_div_factor=2,
-            vectorized=not args.no_pop,
-        )
-
-        solver.initialize()
-        solver.print_info()
-
-        ax = foxes.output.FarmLayoutOutput(farm).get_figure()
-        plt.show()
-        plt.close(ax.get_figure())
-
+    with engine:
         results = solver.solve()
         solver.finalize(results)
 
         print()
         print(results)
 
-        fig, axs = plt.subplots(1, 2, figsize=(12, 8))
-
-        foxes.output.FarmLayoutOutput(farm).get_figure(fig=fig, ax=axs[0])
-
         o = foxes.output.FlowPlots2D(algo, results.problem_results)
         p_min = np.array([-1100.0, -1100.0])
         p_max = np.array([1100.0, 2000.0])
-        fig = o.get_mean_fig_xy(
+        plot_data = o.get_mean_data_xy(
             "WS",
             resolution=20,
-            fig=fig,
-            ax=axs[1],
             xmin=p_min[0],
             xmax=p_max[0],
             ymin=p_min[1],
             ymax=p_max[1],
         )
-        dpars = dict(alpha=0.6, zorder=10, p_min=p_min, p_max=p_max)
-        farm.boundary.add_to_figure(
-            axs[1], fill_mode="outside_white", pars_distance=dpars
-        )
 
-        plt.show()
-        plt.close(fig)
+    fig, axs = plt.subplots(1, 2, figsize=(12, 8))
+
+    foxes.output.FarmLayoutOutput(farm).get_figure(fig=fig, ax=axs[0])
+
+    o = foxes.output.FlowPlots2D(algo, results.problem_results)
+    p_min = np.array([-1100.0, -1100.0])
+    p_max = np.array([1100.0, 2000.0])
+    fig = o.get_mean_fig_xy(plot_data, fig=fig, ax=axs[1])
+    dpars = dict(alpha=0.6, zorder=10, p_min=p_min, p_max=p_max)
+    farm.boundary.add_to_figure(
+        axs[1], fill_mode="outside_white", pars_distance=dpars
+    )
+
+    plt.show()
+    plt.close(fig)

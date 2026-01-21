@@ -64,48 +64,48 @@ if __name__ == "__main__":
         )
     )
 
-    with foxes.Engine.new(
+    problem = grg.GeomRegGrid(
+        boundary, n_turbines=args.n_turbines, min_dist=args.min_dist
+    )
+    problem.add_objective(grg.OMaxN(problem))
+    problem.initialize()
+
+    fig = problem.get_fig().get_figure()
+    plt.show()
+    plt.close(fig)
+
+    solver = Optimizer_pymoo(
+        problem,
+        problem_pars=dict(
+            vectorize=not args.no_pop,
+        ),
+        algo_pars=dict(
+            type=args.opt_algo,
+            pop_size=args.n_pop,
+            seed=None,
+        ),
+        setup_pars=dict(),
+        term_pars=("n_gen", args.n_gen),
+    )
+    solver.initialize()
+    solver.print_info()
+    
+    engine = foxes.Engine.new(
         engine_type=args.engine,
         n_procs=args.n_cpus,
         chunk_size_states=args.chunksize_states,
         chunk_size_points=args.chunksize_points,
         verbosity=0,
-    ):
-        problem = grg.GeomRegGrid(
-            boundary, 
-            n_turbines=args.n_turbines,
-            min_dist=args.min_dist
-        )
-        problem.add_objective(grg.OMaxN(problem))
-        problem.initialize()
+    )
 
-        fig = problem.get_fig().get_figure()
-        plt.show()
-        plt.close(fig)
-
-        solver = Optimizer_pymoo(
-            problem,
-            problem_pars=dict(
-                vectorize=not args.no_pop,
-            ),
-            algo_pars=dict(
-                type=args.opt_algo,
-                pop_size=args.n_pop,
-                seed=None,
-            ),
-            setup_pars=dict(),
-            term_pars=("n_gen", args.n_gen),
-        )
-        solver.initialize()
-        solver.print_info()
-
+    with engine:
         results = solver.solve()
         solver.finalize(results)
 
         print()
         print(results)
 
-        xy, valid = results.problem_results
-        fig = problem.get_fig(xy, valid).get_figure()
-        plt.show()
-        plt.close(fig)
+    xy, valid = results.problem_results
+    fig = problem.get_fig(xy, valid).get_figure()
+    plt.show()
+    plt.close(fig)

@@ -133,7 +133,7 @@ if __name__ == "__main__":
     ax = foxes.output.FarmLayoutOutput(farm).get_figure()
     plt.show()
     plt.close(ax.get_figure())
-    
+
     engine = foxes.Engine.new(
         engine_type=args.engine,
         n_procs=args.n_cpus,
@@ -143,7 +143,6 @@ if __name__ == "__main__":
     )
 
     with engine:
-
         results = solver.solve()
         solver.finalize(results)
 
@@ -169,9 +168,7 @@ if __name__ == "__main__":
     o = foxes.output.FlowPlots2D(algo, results.problem_results)
     fig = o.get_mean_fig_xy(plot_data, fig=fig, ax=axs[1])
     dpars = dict(alpha=0.6, zorder=10, p_min=p_min, p_max=p_max)
-    farm.boundary.add_to_figure(
-        axs[1], fill_mode="outside_white", pars_distance=dpars
-    )
+    farm.boundary.add_to_figure(axs[1], fill_mode="outside_white", pars_distance=dpars)
 
     plt.show()
     plt.close(fig)

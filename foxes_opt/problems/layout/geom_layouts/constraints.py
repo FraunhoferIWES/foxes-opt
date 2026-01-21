@@ -377,11 +377,11 @@ class CMinN(Constraint):
         )
         """
         Constructor.
-        
+
         Parameters
         ----------
         problem: foxes_opt.FarmOptProblem
-            The underlying geometrical layout 
+            The underlying geometrical layout
             optimization problem
         N: int
             The minimal number of turbines
