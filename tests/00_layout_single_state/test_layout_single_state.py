@@ -7,6 +7,7 @@ from foxes_opt.constraints import FarmBoundaryConstraint, MinDistConstraint
 from foxes_opt.objectives import MaxFarmPower
 import foxes.variables as FV
 
+
 def test():
     boundary = foxes.utils.geom2d.Circle([0.0, 0.0], 1000.0)
 
@@ -100,7 +101,7 @@ def test():
     plt.show()
     plt.close(fig)
     """
-    
+
     farm_results = results.problem_results
     o = foxes.output.FarmResultsEval(farm_results)
     o.add_efficiency()
@@ -108,6 +109,7 @@ def test():
     print("Wake losses:", wke)
 
     assert np.all(wke < 2e-4)
+
 
 if __name__ == "__main__":
     test()

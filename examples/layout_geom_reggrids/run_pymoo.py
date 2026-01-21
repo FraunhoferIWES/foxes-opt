@@ -90,7 +90,7 @@ if __name__ == "__main__":
     )
     solver.initialize()
     solver.print_info()
-    
+
     engine = foxes.Engine.new(
         engine_type=args.engine,
         n_procs=args.n_cpus,

@@ -126,7 +126,7 @@ if __name__ == "__main__":
     ax = foxes.output.FarmLayoutOutput(farm).get_figure()
     plt.show()
     plt.close(ax.get_figure())
-    
+
     engine = foxes.Engine.new(
         engine_type=args.engine,
         n_procs=args.n_cpus,

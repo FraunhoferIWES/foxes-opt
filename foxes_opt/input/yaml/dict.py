@@ -222,16 +222,16 @@ def run_dict(idict, *args, extra_sig={}, nofig=False, verbosity=None, **kwargs):
     # run outputs w/o engine:
     out_wo = list(
         run_outputs(
-                idict,
-                algo,
-                farm_results,
-                opt_results,
-                extra_sig=extra_sig,
-                with_engine=False,
-                nofig=nofig,
-                results_storage=results_storage,
-                ret_results_storage=True,
-                verbosity=verbosity,
+            idict,
+            algo,
+            farm_results,
+            opt_results,
+            extra_sig=extra_sig,
+            with_engine=False,
+            nofig=nofig,
+            results_storage=results_storage,
+            ret_results_storage=True,
+            verbosity=verbosity,
         ),
     )
 

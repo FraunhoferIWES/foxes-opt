@@ -2,7 +2,6 @@ import numpy as np
 from copy import deepcopy
 
 from foxes_opt.core import FarmVarsProblem, FarmOptProblem
-from foxes.core import WindFarm
 from foxes.models.turbine_models import Calculator
 from foxes.config import config
 import foxes.variables as FV
