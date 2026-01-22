@@ -94,3 +94,8 @@
   - Bug fixed with `GG` and layout problems
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.7.0](https://github.com/FraunhoferIWES/foxes/commits/v0.7.0)
+
+## v0.7.1
+
+
+**Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.7.1](https://github.com/FraunhoferIWES/foxes/commits/v0.7.1)
