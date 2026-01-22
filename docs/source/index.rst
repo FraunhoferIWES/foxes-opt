@@ -10,7 +10,7 @@ and is based on the optimization interface `iwopy <https://github.com/Fraunhofer
 
 All three open-source Python packages *foxes*, *foxes-opt* and *iwopy* are provided and maintained by Fraunhofer IWES.
 
-The calculation is fully vectorized and its fast performance is owed to the support of 
+The calculation is fully vectorized and its fast performance is owed to the support of
 parallel `foxes engines<https://fraunhoferiwes.github.io/foxes/notebooks/parallelization.html>`_. The wind farm
 optimization capabilities invoke the `iwopy <https://github.com/FraunhoferIWES/iwopy>`_
 package which as well supports vectorization.
