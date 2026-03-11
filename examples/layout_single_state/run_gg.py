@@ -115,7 +115,8 @@ if __name__ == "__main__":
     solver = GG(
         gproblem,
         step_max=100.0,
-        step_min=0.1,
+        step_min=1.0,
+        step_div_factor=2.0,
         f_tol=1e-4,
         vectorized=not args.no_pop,
     )
