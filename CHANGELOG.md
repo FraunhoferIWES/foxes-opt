@@ -97,5 +97,6 @@
 
 ## v0.7.1
 
+- Compatibility with *foxes* v1.7.4
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.7.1](https://github.com/FraunhoferIWES/foxes/commits/v0.7.1)

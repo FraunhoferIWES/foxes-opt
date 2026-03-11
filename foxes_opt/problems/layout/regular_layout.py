@@ -81,14 +81,13 @@ class RegularLayoutOptProblem(FarmVarsProblem):
         self._mname = self.name + "_calc"
         for t in self.algo.farm.turbines:
             if self._mname not in t.models:
-                t.models.append(self._mname)
+                t.add_model(self._mname)
         self._turbine = deepcopy(self.farm.turbines[-1])
 
         self.algo.mbook.turbine_models[self._mname] = Calculator(
             in_vars=[FC.VALID, FV.P, FV.CT],
             out_vars=[FC.VALID, FV.P, FV.CT],
             func=_calc_func,
-            pre_rotor=False,
         )
 
         b = self.farm.boundary
@@ -147,22 +146,23 @@ class RegularLayoutOptProblem(FarmVarsProblem):
             for k, v in self.initial_values.items():
                 print(f"    {k:12s} = {v}")
 
-        if self.farm.n_turbines < self._nturb:
-            for i in range(self._nturb - self.farm.n_turbines):
-                ti = len(self.farm.turbines)
-                self.farm.turbines.append(deepcopy(self._turbine))
-                self.farm.turbines[-1].index = ti
-                self.farm.turbines[-1].name = f"T{ti}"
-        elif self.farm.n_turbines > self._nturb:
-            self.farm.turbines = self.farm.turbines[: self._nturb]
-        self.algo.update_n_turbines()
-
         super().initialize(
-            pre_rotor_vars=[FV.X, FV.Y, FC.VALID],
-            post_rotor_vars=[],
+            model_vars=[FV.X, FV.Y, FC.VALID],
             verbosity=verbosity,
             **kwargs,
         )
+
+        if self.farm.n_turbines < self._nturb:
+            new_turbines = self.farm.turbines
+            for i in range(self._nturb - self.farm.n_turbines):
+                ti = len(new_turbines)
+                new_turbines.append(deepcopy(self._turbine))
+                new_turbines[-1].index = ti
+                new_turbines[-1].name = f"T{ti}"
+            self.farm.reset_turbines(self.algo, new_turbines)
+        elif self.farm.n_turbines > self._nturb:
+            new_turbines = self.farm.turbines[: self._nturb]
+            self.farm.reset_turbines(self.algo, new_turbines)
 
     def var_names_float(self):
         """

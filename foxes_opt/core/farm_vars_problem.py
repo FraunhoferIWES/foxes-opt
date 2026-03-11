@@ -18,65 +18,49 @@ class FarmVarsProblem(FarmOptProblem):
 
     """
 
-    def initialize(self, pre_rotor_vars, post_rotor_vars, verbosity=1, **kwargs):
+    def initialize(self, model_vars, verbosity=1, **kwargs):
         """
         Initialize the object.
 
         Parameters
         ----------
-        pre_rotor_vars: list of str or dict
-            The pre_rotor farm variables. If dict, then
-            key: sub-model str, value: var names as list of str
-        post_rotor_vars: list of str or dict
-            The post_rotor farm variables. If dict, then
-            key: sub-model str, value: var names as list of str
+        model_vars: dict or list
+            The variables to optimize. If dict, key: model name, value: list of variable names.
         verbosity: int
             The verbosity level, 0 = silent
         kwargs: dict, optional
             Additional parameters for super class init
 
         """
-        self._vars_pre = {}
-        self._vars_post = {}
-        if isinstance(pre_rotor_vars, dict):
-            self._vars_pre = {m: v for m, v in pre_rotor_vars.items() if len(v)}
-        elif len(pre_rotor_vars):
-            self._vars_pre = {self.name: pre_rotor_vars}
-        if isinstance(post_rotor_vars, dict):
-            self._vars_post = {m: v for m, v in post_rotor_vars.items() if len(v)}
-        elif len(post_rotor_vars):
-            self._vars_post = {self.name: post_rotor_vars}
+        self._model_vars = {}
+        if isinstance(model_vars, dict):
+            self._model_vars = {m: v for m, v in model_vars.items() if len(v)}
+        elif len(model_vars):
+            self._model_vars = {self.name: model_vars}
 
         cnt = 0
-        for src, pre in zip((self._vars_pre, self._vars_post), (True, False)):
-            for mname, vrs in src.items():
-                if mname in self.algo.mbook.turbine_models:
-                    m = self.algo.mbook.turbine_models[mname]
-                    if not isinstance(m, SetFarmVars):
-                        raise KeyError(
-                            f"FarmOptProblem '{self.name}': Turbine model entry '{mname}' already exists in model book, and is not of type SetFarmVars"
-                        )
-                    elif m.pre_rotor != pre:
-                        raise ValueError(
-                            f"FarmOptProblem '{self.name}': Turbine model entry '{mname}' exists in model book, and disagrees on pre_rotor = {pre}"
-                        )
-                else:
-                    self.algo.mbook.turbine_models[mname] = SetFarmVars(pre_rotor=pre)
-
-                found = False
-                for t in self.algo.farm.turbines:
-                    if mname in t.models:
-                        found = True
-                        break
-                if not found:
-                    raise ValueError(
-                        f"FarmOptProblem '{self.name}': Missing entry '{mname}' among any of the turbine models"
+        for mname, vrs in self._model_vars.items():
+            if mname in self.algo.mbook.turbine_models:
+                m = self.algo.mbook.turbine_models[mname]
+                if not isinstance(m, SetFarmVars):
+                    raise KeyError(
+                        f"FarmOptProblem '{self.name}': Turbine model entry '{mname}' already exists in model book, and is not of type SetFarmVars"
                     )
-                cnt += len(vrs)
+            else:
+                self.algo.mbook.turbine_models[mname] = SetFarmVars()
+
+            found = False
+            for t in self.algo.farm.turbines:
+                if mname in t.models:
+                    found = True
+                    break
+            if not found:
+                raise ValueError(
+                    f"FarmOptProblem '{self.name}': Missing entry '{mname}' among any of the turbine models"
+                )
+            cnt += len(vrs)
         if not cnt:
-            raise ValueError(
-                f"Problem '{self.name}': Neither pre_rotor_vars not post_rotor_vars containing variables"
-            )
+            raise ValueError(f"Problem '{self.name}': No variables to optimize")
 
         super().initialize(verbosity=verbosity, **kwargs)
 
@@ -153,20 +137,19 @@ class FarmVarsProblem(FarmOptProblem):
         fvars = self.opt2farm_vars_individual(vars_int, vars_float)
 
         # update turbine model that sets vars to opt values:
-        for src in (self._vars_pre, self._vars_post):
-            for mname, vrs in src.items():
-                model = self.algo.mbook.turbine_models[mname]
-                model.reset()
-                for v in vrs:
-                    vals = fvars.pop(v)
-                    if self.all_turbines:
-                        model.add_var(v, vals)
-                    else:
-                        data = np.zeros(
-                            (n_states, self.algo.n_turbines), dtype=config.dtype_double
-                        )
-                        data[:, self.sel_turbines] = vals
-                        model.add_var(v, data)
+        for mname, vrs in self._model_vars.items():
+            model = self.algo.mbook.turbine_models[mname]
+            model.reset()
+            for v in vrs:
+                vals = fvars.pop(v)
+                if self.all_turbines:
+                    model.add_var(v, vals)
+                else:
+                    data = np.zeros(
+                        (n_states, self.algo.n_turbines), dtype=config.dtype_double
+                    )
+                    data[:, self.sel_turbines] = vals
+                    model.add_var(v, data)
 
         if len(fvars):
             raise KeyError(
@@ -198,32 +181,31 @@ class FarmVarsProblem(FarmOptProblem):
         fvars = self.opt2farm_vars_population(vars_int, vars_float, n_states)
 
         # update turbine model that sets vars to opt values:
-        for src in (self._vars_pre, self._vars_post):
-            for mname, vrs in src.items():
-                model = self.algo.mbook.turbine_models[mname]
-                model.reset()
-                for v in vrs:
-                    vals = fvars.pop(v)
-                    shp0 = list(vals.shape)
-                    shp1 = [n_pstates] + shp0[2:]
-                    if self.all_turbines:
-                        model.add_var(v, vals.reshape(shp1))
-                    else:
-                        data = np.zeros(
-                            (n_pstates, self.algo.n_turbines), dtype=config.dtype_double
-                        )
-                        data[:, self.sel_turbines] = vals.reshape(shp1)
-                        model.add_var(v, data)
-                        del data
+        for mname, vrs in self._model_vars.items():
+            model = self.algo.mbook.turbine_models[mname]
+            model.reset()
+            for v in vrs:
+                vals = fvars.pop(v)
+                shp0 = list(vals.shape)
+                shp1 = [n_pstates] + shp0[2:]
+                if self.all_turbines:
+                    model.add_var(v, vals.reshape(shp1))
+                else:
+                    data = np.zeros(
+                        (n_pstates, self.algo.n_turbines), dtype=config.dtype_double
+                    )
+                    data[:, self.sel_turbines] = vals.reshape(shp1)
+                    model.add_var(v, data)
+                    del data
 
-                    # special case (x, y) needs to reshape turbine property. Value will be set by model
-                    if v in [FV.X, FV.Y]:
-                        for ti in self.sel_turbines:
-                            xy = self.algo.farm.turbines[ti].xy
-                            if len(xy.shape) > 1 and xy.shape[0] != n_pstates:
-                                self.algo.farm.turbines[ti].xy = np.full(
-                                    (n_pstates, 2), np.nan, dtype=config.dtype_double
-                                )
+                # special case (x, y) needs to reshape turbine property. Value will be set by model
+                if v in [FV.X, FV.Y]:
+                    for ti in self.sel_turbines:
+                        xy = self.algo.farm.turbines[ti].xy
+                        if len(xy.shape) > 1 and xy.shape[0] != n_pstates:
+                            self.algo.farm.turbines[ti].xy = np.full(
+                                (n_pstates, 2), np.nan, dtype=config.dtype_double
+                            )
 
         if len(fvars):
             raise KeyError(
