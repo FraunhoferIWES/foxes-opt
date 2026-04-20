@@ -1,30 +1,31 @@
 from iwopy import Pipeline
 from foxes import ModelBook
 
+
 class LayoutPipeline(Pipeline):
     """
-    Pipeline for layout generation.
+     Pipeline for layout generation.
 
-    Attributes
-    ----------
-    algo_pars: dict
-        The parameters for the foxes algorithm
-    n_turbines: int
-        The number of turbines in the wind farm
-    turbine_models: list of str
-        The turbine models
-    mbook: foxes.ModelBook
-        The model book
-    farm_boundary: foxes.utils.geom2d.AreaGeometry
-        The wind farm boundary
+     Attributes
+     ----------
+     algo_pars: dict
+         The parameters for the foxes algorithm
+     n_turbines: int
+         The number of turbines in the wind farm
+     turbine_models: list of str
+         The turbine models
+     mbook: foxes.ModelBook
+         The model book
+     farm_boundary: foxes.utils.geom2d.AreaGeometry
+         The wind farm boundary
 
-   :group: opt.pipelines
+    :group: opt.pipelines
 
     """
 
     def __init__(
-        self, 
-        base_dir, 
+        self,
+        base_dir,
         algo_pars,
         n_turbines,
         turbine_models,
@@ -35,7 +36,7 @@ class LayoutPipeline(Pipeline):
     ):
         """
         Constructor.
-        
+
         Parameters
         ----------
         base_dir: str

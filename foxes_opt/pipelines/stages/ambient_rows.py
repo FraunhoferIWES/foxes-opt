@@ -4,9 +4,8 @@ from scipy.interpolate import RegularGridInterpolator
 
 from iwopy.core import PipelineStage
 
-from foxes.algorithms import Downwind
 from foxes.input.states import SingleStateField
-from foxes import ModelBook, WindFarm, Turbine, config
+from foxes import config
 from foxes.utils.geom2d import ClosedPolygon
 from foxes.utils import wd2uv
 import foxes.variables as FV
@@ -30,11 +29,11 @@ class AmbientRowsStage(PipelineStage):
     """
 
     def __init__(
-        self, 
+        self,
         stepsize_ortho,
         mean_flow_states,
         mean_flow_var2ncvar={},
-        name="ambient_rows", 
+        name="ambient_rows",
         **kwargs,
     ):
         """
@@ -50,7 +49,7 @@ class AmbientRowsStage(PipelineStage):
             Mapping from mean flow variable names to NetCDF variable names.
         name: str, optional
             The name of the stage.
-        
+
         kwargs: dict
              Additional keyword arguments for the stage.
 
@@ -77,7 +76,7 @@ class AmbientRowsStage(PipelineStage):
         # load data:
         assert isinstance(self.mean_flow_states, SingleStateField), (
             f"{self.name}: mean_flow_states must be a SingleStateField, "
-            f"got {type(self.mean_flow_states)}"  
+            f"got {type(self.mean_flow_states)}"
         )
         if self.mean_flow_states.data is None:
             self.mean_flow_states.load_data(verbosity=verbosity)
@@ -111,12 +110,16 @@ class AmbientRowsStage(PipelineStage):
             y_min = data.coords[y_var].min().item()
             y_max = data.coords[y_var].max().item()
             self._farm_boundary = ClosedPolygon(
-                points=np.array([[x_min, y_min], [x_max, y_min], [x_max, y_max], [x_min, y_max]])
+                points=np.array(
+                    [[x_min, y_min], [x_max, y_min], [x_max, y_max], [x_min, y_max]]
+                )
             )
             if verbosity > 1:
-                print(f"{self.name}: No farm boundary given, using grid area: "
-                      f"x: {x_min:.2f} - {x_max:.2f} m, y: {y_min:.2f} - {y_max:.2f} m")
-                
+                print(
+                    f"{self.name}: No farm boundary given, using grid area: "
+                    f"x: {x_min:.2f} - {x_max:.2f} m, y: {y_min:.2f} - {y_max:.2f} m"
+                )
+
         # sort mean wind speeds on grid:
         ws_dims = data[mean_ws_var].dims
         if ws_dims != (x_var, y_var):
@@ -128,14 +131,19 @@ class AmbientRowsStage(PipelineStage):
         self._nx, self._ny = ws.shape
         self._n_points = self._nx * self._ny
         if verbosity > 1:
-            print(f"{self.name}: Grid dimensions: {self._nx} x {self._ny}, grid points: {self._n_points}")
+            print(
+                f"{self.name}: Grid dimensions: {self._nx} x {self._ny}, grid points: {self._n_points}"
+            )
         self._ws = ws.reshape(self._n_points)
         self._porder = np.argsort(self._ws)[::-1]
-        self._points = np.stack(np.meshgrid(
-            data.coords[x_var].values, 
-            data.coords[y_var].values, 
-            indexing="ij",
-        ), axis=-1).reshape(self._n_points, 2)
+        self._points = np.stack(
+            np.meshgrid(
+                data.coords[x_var].values,
+                data.coords[y_var].values,
+                indexing="ij",
+            ),
+            axis=-1,
+        ).reshape(self._n_points, 2)
         self._pvalid = self._farm_boundary.points_inside(self._points)
 
         # prepare main wind direction data:
@@ -148,15 +156,20 @@ class AmbientRowsStage(PipelineStage):
         self._wd = data[main_wd_var].values.reshape(self._n_points)
 
         if verbosity > 1:
-            print(f"{self.name}: Mean wind speeds range: {self._ws[self._porder[-1]]:.2f} - {self._ws[self._porder[0]]:.2f} m/s")
+            print(
+                f"{self.name}: Mean wind speeds range: {self._ws[self._porder[-1]]:.2f} - {self._ws[self._porder[0]]:.2f} m/s"
+            )
 
         # setup interpolator:
         uv = wd2uv(data[main_wd_var].values)
-        data = np.stack((
-            data[mean_ws_var].values,
-            uv[..., 0], 
-            uv[..., 1],
-        ), axis=-1)
+        data = np.stack(
+            (
+                data[mean_ws_var].values,
+                uv[..., 0],
+                uv[..., 1],
+            ),
+            axis=-1,
+        )
         del uv
         self._interpolator = RegularGridInterpolator(
             (
@@ -197,7 +210,9 @@ class AmbientRowsStage(PipelineStage):
         # prepare:
         results = None
         if verbosity > 0:
-            pbar = tqdm(total=self._n_turbines, desc=f"{self.name}: Running mean_ambient stage")
+            pbar = tqdm(
+                total=self._n_turbines, desc=f"{self.name}: Running mean_ambient stage"
+            )
         else:
             pbar = None
 
@@ -206,9 +221,8 @@ class AmbientRowsStage(PipelineStage):
             if self._pvalid[o]:
                 return o
             else:
-                p = self._points[o] + wd2uv(self._wd[o]) * self.stepsize_ortho
-                TODO
-                
+                # p = self._points[o] + wd2uv(self._wd[o]) * self.stepsize_ortho
+                raise NotImplementedError("TODO")
 
         # add turbines sequentially:
         for i in range(self._n_turbines):
@@ -223,6 +237,5 @@ class AmbientRowsStage(PipelineStage):
                 pbar.update()
         if pbar is not None:
             pbar.close()
-        
+
         return True, results
-    
