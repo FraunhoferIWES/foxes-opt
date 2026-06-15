@@ -18,10 +18,7 @@ of the optimizers, and see the :ref:`Examples` section for applications.
         :ref:`foxes_opt.problems`                Wind farm optimization problems.
         :ref:`foxes_opt.objectives`              Objectives for wind farm optimization problems.
         :ref:`foxes_opt.constraints`             Constraints for wind farm optimization problems.
-<<<<<<< HEAD
-=======
         :ref:`foxes_opt.pipelines`               Pipelines for combining multiple wind farm optimizations.
->>>>>>> dev
         =======================================  ============================================================
 
 foxes_opt.core
