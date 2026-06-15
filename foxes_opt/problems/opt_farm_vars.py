@@ -38,7 +38,6 @@ class OptFarmVars(FarmVarsProblem):
         max,
         level="uniform",
         sel=None,
-        pre_rotor=False,
         model_key=None,
     ):
         """
@@ -61,8 +60,6 @@ class OptFarmVars(FarmVarsProblem):
         sel: numpy.ndarray, optional
             States/turbines/state-turbine selection,
             depending on the level
-        pre_rotor: bool
-            Apply this variable before rotor model
         model_key: str, optional
             Creates sub-model which can then be placed in the
             turbine model list. Repeated keys are added to the
@@ -85,12 +82,8 @@ class OptFarmVars(FarmVarsProblem):
                 raise KeyError(
                     f"Problem '{self.name}': Turbine model entry '{mname}' already exists in model book, and is not of type SetFarmVars"
                 )
-            elif m.pre_rotor != pre_rotor:
-                raise ValueError(
-                    f"Problem '{self.name}': Turbine model entry '{mname}' exists in model book, and disagrees on pre_rotor = {pre_rotor}"
-                )
         else:
-            self.algo.mbook.turbine_models[mname] = SetFarmVars(pre_rotor=pre_rotor)
+            self.algo.mbook.turbine_models[mname] = SetFarmVars()
 
         if self._vars is None:
             i0 = 0
@@ -124,7 +117,6 @@ class OptFarmVars(FarmVarsProblem):
             hdata.loc[i0, "init"] = np.array([init], dtype=config.dtype_double)
             hdata.loc[i0, "min"] = np.array([min], dtype=config.dtype_double)
             hdata.loc[i0, "max"] = np.array([max], dtype=config.dtype_double)
-            hdata.loc[i0, "pre_rotor"] = pre_rotor
             hdata.loc[i0, "model_key"] = mname
 
         elif level == "state":
@@ -154,7 +146,6 @@ class OptFarmVars(FarmVarsProblem):
                 data[:] = d
                 hdata.loc[inds, c] = data
 
-            hdata.loc[inds, "pre_rotor"] = pre_rotor
             hdata.loc[inds, "model_key"] = mname
 
         elif level == "turbine":
@@ -184,7 +175,6 @@ class OptFarmVars(FarmVarsProblem):
                 data[:] = d
                 hdata.loc[inds, c] = data
 
-            hdata.loc[inds, "pre_rotor"] = pre_rotor
             hdata.loc[inds, "model_key"] = mname
 
         elif level == "state-turbine":
@@ -226,7 +216,6 @@ class OptFarmVars(FarmVarsProblem):
                     data[:] = d
                 hdata.loc[inds, c] = data
 
-            hdata.loc[inds, "pre_rotor"] = pre_rotor
             hdata.loc[inds, "model_key"] = mname
 
         else:
@@ -266,22 +255,15 @@ class OptFarmVars(FarmVarsProblem):
             print(self._vars)
             print()
 
-        prev = {}
-        postv = {}
-        for (mname, pre), g in self._vars.groupby(["model_key", "pre_rotor"]):
-            if (pre and mname in postv) or (not pre and mname in prev):
-                raise ValueError(
-                    f"Problem '{self.name}': Model '{mname}' reveived both pre_rotor and non-pre_rotor variables"
-                )
-            tg = prev if pre else postv
-            if mname not in tg:
-                tg[mname] = set(g["var"].tolist())
+        vrs = {}
+        for mname, g in self._vars.groupby("model_key"):
+            if mname not in vrs:
+                vrs[mname] = set(g["var"].tolist())
             else:
-                tg[mname] = tg[mname].update(g["var"].tolist())
+                vrs[mname] = vrs[mname].update(g["var"].tolist())
 
         super().initialize(
-            pre_rotor_vars={mname: list(vrs) for mname, vrs in prev.items()},
-            post_rotor_vars={mname: list(vrs) for mname, vrs in postv.items()},
+            model_vars={mname: list(vrs) for mname, vrs in vrs.items()},
             verbosity=verbosity,
             **kwargs,
         )

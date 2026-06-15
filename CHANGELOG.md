@@ -94,3 +94,11 @@
   - Bug fixed with `GG` and layout problems
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.7.0](https://github.com/FraunhoferIWES/foxes/commits/v0.7.0)
+
+## v0.7.1
+
+- Compatibility with *foxes* v1.7.4
+- Compatibility with *iwopy* v0.5.0
+- New optimization pipeline: `LayoutPipeline`, combining different optimizations for generating an optimal wind farm layout
+
+**Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.7.1](https://github.com/FraunhoferIWES/foxes/commits/v0.7.1)

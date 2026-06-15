@@ -114,7 +114,7 @@ if __name__ == "__main__":
         wake_frame="rotor_wd",
         partial_wakes=args.pwakes,
         mbook=mbook,
-        verbosity=0,
+        verbosity=1,
     )
 
     o = foxes.output.StatesRosePlotOutput(states, point=[0.0, 0.0, 100.0])

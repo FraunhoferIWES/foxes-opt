@@ -11,6 +11,7 @@ from . import problems as problems
 from . import constraints as constraints
 from . import objectives as objectives
 from . import output as output
+from . import callbacks as callbacks
 
 import importlib
 from pathlib import Path
