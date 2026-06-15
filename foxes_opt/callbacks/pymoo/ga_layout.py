@@ -4,6 +4,7 @@ from foxes.config import get_output_path
 
 from foxes_opt.core import FarmOptProblem
 
+
 class GAWriteLayoutCallbackTemplate(DefaultCallbackTemplate):
     """
     Template for the layout writing callback for genetic algorithms.
@@ -29,14 +30,14 @@ class GAWriteLayoutCallbackTemplate(DefaultCallbackTemplate):
     CLASS_DOC = "The layout writing callback for genetic algorithms"
 
     def __init__(
-            self,
-            out_dir, 
-            base_name, 
-            n_gen_step=1, 
-            figsize=None, 
-            from_farm_results=False, 
-            verbosity=0,
-        ):
+        self,
+        out_dir,
+        base_name,
+        n_gen_step=1,
+        figsize=None,
+        from_farm_results=False,
+        verbosity=0,
+    ):
         """
         Initialize the callback.
 
@@ -67,9 +68,10 @@ class GAWriteLayoutCallbackTemplate(DefaultCallbackTemplate):
         def notify(self, algorithm):
             super().notify(algorithm)
             if algorithm.n_gen % self.n_gen_step == 0:
-
                 problem = algorithm.problem.problem
-                assert isinstance(problem, FarmOptProblem), f"Expected problem of type {FarmOptProblem.__name__}, got {type(problem)}"
+                assert isinstance(problem, FarmOptProblem), (
+                    f"Expected problem of type {FarmOptProblem.__name__}, got {type(problem)}"
+                )
                 algo = problem.algo
                 farm = algo.farm
 
@@ -77,8 +79,12 @@ class GAWriteLayoutCallbackTemplate(DefaultCallbackTemplate):
 
                 if self.from_farm_results:
                     results = problem.current_problem_results
-                    raise NotImplementedError(f"Getting the layout from farm results is not implemented yet {results}")
-                    o = FarmLayoutOutput(farm, farm_results=results, from_results=True, results_state=0)
+                    raise NotImplementedError(
+                        f"Getting the layout from farm results is not implemented yet {results}"
+                    )
+                    o = FarmLayoutOutput(
+                        farm, farm_results=results, from_results=True, results_state=0
+                    )
                 else:
                     o = FarmLayoutOutput(farm)
 
