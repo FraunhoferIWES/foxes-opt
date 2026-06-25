@@ -208,10 +208,11 @@ class MinDistConstraint(FarmConstraint):
             [problem_results[FV.X].to_numpy(), problem_results[FV.Y].to_numpy()],
             axis=-1,
         )
-        xy = xy.reshape(n_pop, n_states, n_turbines, 2)
-        if not np.all(np.abs(np.min(xy, axis=1) - np.max(xy, axis=1)) < 1e-13):
+        
+        xy = xy.reshape(n_states, n_pop, n_turbines, 2)
+        if not np.all(np.abs(np.min(xy, axis=0) - np.max(xy, axis=0)) < 1e-13):
             raise ValueError(f"Constraint '{self.name}': Require state independet XY")
-        xy = xy[:, 0]
+        xy = xy[0]
 
         s = np.s_[:]
         if components is not None and len(components) < self.n_components():
@@ -225,15 +226,16 @@ class MinDistConstraint(FarmConstraint):
             mind = self.min_dist
 
         elif self.min_dist_unit == "D":
-            D = problem_results[FV.D].to_numpy().reshape(n_pop, n_states, n_turbines)
-            if not np.all(np.abs(np.min(D, axis=1) - np.max(D, axis=1)) < 1e-13):
+            D = problem_results[FV.D].to_numpy().reshape(n_states, n_pop, n_turbines)
+            if not np.all(np.abs(np.min(D, axis=0) - np.max(D, axis=0)) < 1e-13):
                 raise ValueError(
                     f"Constraint '{self.name}': Require state independet D"
                 )
-            D = D[:, 0]
+            D = D[0]
 
-            Da = np.take_along_axis(D, self._i2t[s][None, :, 0], axis=1)
-            Db = np.take_along_axis(D, self._i2t[s][None, :, 1], axis=1)
+            Da = np.take_along_axis(D, self._i2t[s][:, None, 0], axis=0)
+            Db = np.take_along_axis(D, self._i2t[s][:, None, 1], axis=0)
             mind = self.min_dist * np.maximum(Da, Db)
+            print("HERE MINDISTC",mind)
 
         return mind - d

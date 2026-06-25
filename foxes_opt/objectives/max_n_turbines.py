@@ -130,8 +130,9 @@ class MaxNTurbines(FarmObjective):
             vld = (
                 problem_results[FC.VALID]
                 .to_numpy()
-                .reshape(n_pop, n_states, n_turbines)
+                .reshape(n_states, n_pop, n_turbines)
             )
+            vld = np.swapaxes(vld, 0, 1)
             vld = np.sum(vld, axis=2)
             if np.any(np.min(vld, axis=1) != np.max(vld, axis=1)):
                 raise ValueError(

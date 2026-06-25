@@ -199,6 +199,7 @@ class FarmOptProblem(Problem):
         Reset the states in the algorithm
         """
         if states is not self.algo.states:
+            self.algo.clear_loaded_data()
             if self.algo.initialized:
                 self.algo.finalize()
             self.algo.states = states
@@ -324,10 +325,10 @@ class FarmOptProblem(Problem):
                 n_pop = farm_results["n_pop"].values
                 n_states, n_points = self.points.shape[:2]
                 pop_points = np.zeros(
-                    (n_pop, n_states, n_points, 3), dtype=config.dtype_double
+                    (n_states, n_pop, n_points, 3), dtype=config.dtype_double
                 )
-                pop_points[:] = self.points[None, :, :, :]
-                pop_points = pop_points.reshape(n_pop * n_states, n_points, 3)
+                pop_points[:] = self.points[:, None, :, :]
+                pop_points = pop_points.reshape(n_states * n_pop, n_points, 3)
                 point_results = algo.calc_points(farm_results, pop_points)
                 return farm_results, point_results
 

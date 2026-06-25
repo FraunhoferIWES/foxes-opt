@@ -532,7 +532,7 @@ class OptFarmVars(FarmVarsProblem):
         farm_vars: dict
             The foxes farm variables. Key: var name,
             value: numpy.ndarray with values, shape:
-            (n_pop, n_states, n_sel_turbines)
+            (n_states, n_pop, n_sel_turbines)
 
         """
         n_pop = vars_float.shape[0]
@@ -548,33 +548,34 @@ class OptFarmVars(FarmVarsProblem):
 
             if level == "uniform":
                 farm_vars[var] = np.full(
-                    (n_pop, n_states, n_sturb), np.nan, dtype=config.dtype_double
+                    (n_states, n_pop, n_sturb), np.nan, dtype=config.dtype_double
                 )
-                farm_vars[var][:] = data[:, 0, None, None]
+                farm_vars[var][:] = data[None, :, 0, None]
 
             elif level == "state":
                 farm_vars[var] = np.full(
-                    (n_pop, n_states, n_sturb), np.nan, dtype=config.dtype_double
+                    (n_states, n_pop, n_sturb), np.nan, dtype=config.dtype_double
                 )
+                sdata = np.swapaxes(data[:, :, None], 0, 1)
                 if np.all(g["state"] == np.arange(n_states)):
-                    farm_vars[var][:] = data[:, :, None]
+                    farm_vars[var][:] = sdata
                 else:
-                    farm_vars[var][:, g["state"]] = data[:, :, None]
+                    farm_vars[var][g["state"]] = sdata
 
             elif level == "turbine":
                 farm_vars[var] = np.full(
-                    (n_pop, n_states, n_sturb), np.nan, dtype=config.dtype_double
+                    (n_states, n_pop, n_sturb), np.nan, dtype=config.dtype_double
                 )
                 if np.all(g["sel_turbine"] == np.arange(n_sturb)):
-                    farm_vars[var][:] = data[:, None, :]
+                    farm_vars[var][:] = data[None, :, :]
                 else:
-                    farm_vars[var][:, :, g["sel_turbine"]] = data[:, None, :]
+                    farm_vars[var][:, :, g["sel_turbine"]] = data[None, :, :]
 
             elif level == "state-turbine":
                 farm_vars[var] = np.full(
-                    (n_pop, n_states, n_sturb), np.nan, dtype=config.dtype_double
+                    (n_states, n_pop, n_sturb), np.nan, dtype=config.dtype_double
                 )
-                farm_vars[var][:, g["state"], g["sel_turbine"]] = data
+                farm_vars[var][g["state"], :, g["sel_turbine"]] = data.T
 
             else:
                 raise ValueError(

@@ -309,7 +309,7 @@ class RegularLayoutOptProblem(FarmVarsProblem):
         farm_vars: dict
             The foxes farm variables. Key: var name,
             value: numpy.ndarray with values, shape:
-            (n_pop, n_states, n_sel_turbines)
+            (n_states, n_pop, n_sel_turbines)
 
         """
         n_pop = len(vars_float)
@@ -350,8 +350,8 @@ class RegularLayoutOptProblem(FarmVarsProblem):
 
         farm_vars = {}
         for v, d in zip([FV.X, FV.Y, FC.VALID], [qts[:, :, 0], qts[:, :, 1], valid]):
-            a = np.zeros((n_pop, n_states, n_turbines), dtype=config.dtype_double)
-            a[:] = d[:, None, :]
+            a = np.zeros((n_states, n_pop, n_turbines), dtype=config.dtype_double)
+            a[:] = d[None, :, :]
             farm_vars[v] = a
 
         return farm_vars

@@ -243,20 +243,23 @@ class FarmVarObjective(FarmObjective):
         data = (
             problem_results[self.variable]
             .to_numpy()
-            .reshape(n_pop, n_states, n_turbines)
+            .reshape(n_states, n_pop, n_turbines)
         )
+        data = np.swapaxes(data, 0, 1)
         data = xr.DataArray(data, dims=(FC.POP, FC.STATE, FC.TURBINE))
 
         weights = problem_results[FV.WEIGHT]
         if weights.dims == (FC.STATE,):
-            weights = problem_results[FV.WEIGHT].to_numpy().reshape(n_pop, n_states)
+            weights = problem_results[FV.WEIGHT].to_numpy().reshape(n_states, n_pop)
+            weights = np.swapaxes(weights, 0, 1)
             wdims = (FC.POP, FC.STATE)
         elif weights.dims == (FC.STATE, FC.TURBINE):
             weights = (
                 problem_results[FV.WEIGHT]
                 .to_numpy()
-                .reshape(n_pop, n_states, n_turbines)
+                .reshape(n_states, n_pop, n_turbines)
             )
+            weights = np.swapaxes(weights, 0, 1)
             wdims = (FC.POP, FC.STATE, FC.TURBINE)
         weights = xr.DataArray(weights, dims=wdims)
 

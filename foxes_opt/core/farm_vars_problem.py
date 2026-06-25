@@ -109,7 +109,7 @@ class FarmVarsProblem(FarmOptProblem):
         farm_vars: dict
             The foxes farm variables. Key: var name,
             value: numpy.ndarray with values, shape:
-            (n_pop, n_states, n_sel_turbines)
+            (n_states, n_pop, n_sel_turbines)
 
         """
         pass
