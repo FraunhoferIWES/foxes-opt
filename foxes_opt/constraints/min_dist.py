@@ -233,9 +233,8 @@ class MinDistConstraint(FarmConstraint):
                 )
             D = D[0]
 
-            Da = np.take_along_axis(D, self._i2t[s][:, None, 0], axis=0)
-            Db = np.take_along_axis(D, self._i2t[s][:, None, 1], axis=0)
+            Da = np.take_along_axis(D, self._i2t[s][None, :, 0], axis=1)
+            Db = np.take_along_axis(D, self._i2t[s][None, :, 1], axis=1)
             mind = self.min_dist * np.maximum(Da, Db)
-            print("HERE MINDISTC", mind)
 
         return mind - d

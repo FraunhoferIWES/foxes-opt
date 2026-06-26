@@ -162,6 +162,8 @@ cython_debug/
 #.idea/
 #
 
+Agents.md
+
 .vscode/
 .venv/
 uv.lock
@@ -172,5 +174,7 @@ makedocs/
 result*.*
 results/
 *_cache/
+
+examples/layout_field_data/data/
 
 !results_writer.py

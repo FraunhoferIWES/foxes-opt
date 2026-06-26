@@ -105,6 +105,7 @@
 
 ## v0.7.2
 
-
+- Examples:
+  - New example `layout_field_data`, demonstrating pymoo-based layout optimization with `FieldData` states loaded from multiple NetCDF files
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.7.2](https://github.com/FraunhoferIWES/foxes/commits/v0.7.2)
