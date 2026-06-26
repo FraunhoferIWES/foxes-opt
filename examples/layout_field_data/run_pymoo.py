@@ -175,7 +175,7 @@ def parse_args():
         "-P", "--n_pop", help="The population size", type=int, default=40
     )
     parser.add_argument(
-        "-G", "--n_gen", help="The number of generations", type=int, default=50
+        "-G", "--n_gen", help="The number of generations", type=int, default=100
     )
     parser.add_argument(
         "-nop", "--no_pop", help="Switch off vectorization", action="store_true"
@@ -277,7 +277,9 @@ def main():
         plt.show()
         plt.close(fig)
     elif not args.nofig:
-        print("No plot data available because the optimizer did not return farm results.")
+        print(
+            "No plot data available because the optimizer did not return farm results."
+        )
 
 
 if __name__ == "__main__":
