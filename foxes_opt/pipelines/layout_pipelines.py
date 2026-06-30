@@ -1,24 +1,25 @@
+import numpy as np
+
 from iwopy import Pipeline
 from foxes import ModelBook
 
-
 class LayoutPipeline(Pipeline):
     """
-     Pipeline for layout generation.
+    Pipeline for layout generation.
 
-     Attributes
-     ----------
-     algo_pars: dict
-         The parameters for the foxes algorithm
-     n_turbines: int
-         The number of turbines in the wind farm
-     turbine_models: list of str
-         The turbine models
-     mbook: foxes.ModelBook
-         The model book
-     farm_boundary: foxes.utils.geom2d.AreaGeometry
-         The wind farm boundary
-
+    Attributes
+    ----------
+    algo_pars: dict
+        The parameters for the foxes algorithm
+    n_turbines: int
+        The number of turbines in the wind farm
+    turbine_models: list of str
+        The turbine models
+    mbook: foxes.ModelBook
+        The model book
+    farm_pars: dict, optional
+        Additional parameters for the wind farm
+            
     :group: opt.pipelines
 
     """
@@ -29,8 +30,9 @@ class LayoutPipeline(Pipeline):
         algo_pars,
         n_turbines,
         turbine_models,
-        farm_boundary=None,
+        farm_boundary,
         mbook=None,
+        farm_pars={},
         name="layout_pipeline",
         **kwargs,
     ):
@@ -47,10 +49,12 @@ class LayoutPipeline(Pipeline):
             The number of turbines in the wind farm
         turbine_models: list of str
             The turbine models
-        farm_boundary: foxes.utils.geom2d.AreaGeometry, optional
+        farm_boundary: foxes.utils.geom2d.AreaGeometry
             The wind farm boundary
         mbook: foxes.ModelBook, optional
             The model book to be used
+        farm_pars: dict, optional
+            Additional parameters for the wind farm
         name: str, optional
             The name of the pipeline
 
@@ -64,3 +68,4 @@ class LayoutPipeline(Pipeline):
         self.farm_boundary = farm_boundary
         self.turbine_models = turbine_models
         self.mbook = mbook if mbook is not None else ModelBook()
+        self.farm_pars = farm_pars

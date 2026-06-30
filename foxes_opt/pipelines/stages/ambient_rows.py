@@ -4,6 +4,8 @@ from scipy.interpolate import RegularGridInterpolator
 
 from iwopy.core import PipelineStage
 
+from foxes import WindFarm, Turbine
+from foxes.core import Algorithm
 from foxes.input.states import SingleStateField
 from foxes import config
 from foxes.utils.geom2d import ClosedPolygon
@@ -73,14 +75,33 @@ class AmbientRowsStage(PipelineStage):
         """
         super().initialize(pipeline, verbosity=verbosity)
 
-        # load data:
+        # create algorithm object:
+        farm = WindFarm(boundary=pipeline.farm_boundary, **pipeline.farm_pars)
+        p_min = farm.boundary.p_min()
+        p_max = farm.boundary.p_max()
+        xy = np.linspace(p_min, p_max, pipeline.n_turbines)
+        for i in range(pipeline.n_turbines):
+            farm.add_turbine(Turbine(
+                xy=xy[i], 
+                turbine_models=pipeline.turbine_models, 
+                index=i,
+            ))
+        pars = pipeline.algo_pars.copy()
+        pars.setdefault("verbosity", verbosity)
+        self._algo = Algorithm.new(
+            farm=farm, 
+            states=self.mean_flow_states,
+            mbook=pipeline.mbook, 
+            **pars,
+        )
+        self._algo.initialize()
+        
+        # get data:
         assert isinstance(self.mean_flow_states, SingleStateField), (
             f"{self.name}: mean_flow_states must be a SingleStateField, "
             f"got {type(self.mean_flow_states)}"
         )
-        if self.mean_flow_states.data is None:
-            self.mean_flow_states.load_data(verbosity=verbosity)
-        data = self.mean_flow_states.data
+        data = self._algo.loaded_data["extra_data"][self.mean_flow_states.DATA]
 
         # check variables:
         mean_ws_var = self.mean_flow_var2ncvar.get(FV.MEAN_WS, FV.MEAN_WS)
@@ -216,17 +237,31 @@ class AmbientRowsStage(PipelineStage):
         else:
             pbar = None
 
+        u0 = 0
         def _find_next(u):
+            nonlocal u0
             o = self._porder[u]
             if self._pvalid[o]:
                 return o
             else:
-                # p = self._points[o] + wd2uv(self._wd[o]) * self.stepsize_ortho
-                raise NotImplementedError("TODO")
+                p = self._points[o]
+                uv = wd2uv(self._wd[o])
+                
+                def _march(p):
+                    q = p + uv * self.stepsize_ortho
+                
+                while True:
+                    q = p + uv * self.stepsize_ortho
+                    vld = self._farm_boundary.points_inside(q[None, ...])[0]
+                    if not vld:
+                    q = p + uv * self.stepsize_ortho
+                    vld = self._farm_boundary.points_inside(q[None, ...])[0]   
+                    
+                raise NotImplementedError(f"TODO {p} {}")
 
         # add turbines sequentially:
         for i in range(self._n_turbines):
-            o = _find_next(0)
+            o = _find_next(u0)
             if o is not None:
                 self._xy[i] = self._points[o]
                 self._pvalid[o] = False
