@@ -3,6 +3,7 @@ from iwopy import Pipeline
 
 from foxes import ModelBook, WindFarm, Turbine
 from foxes.core import Algorithm, run_with_engine
+import foxes.variables as FV
 
 
 class LayoutPipeline(Pipeline):
@@ -167,6 +168,10 @@ class LayoutPipeline(Pipeline):
         ):
             algo, farm_results = self._run_foxes(results, verbosity=verbosity - 1)
             results = (algo, farm_results)
+            if verbosity > 0:
+                print(
+                    f"Mean ambient REWS: {farm_results[FV.AMB_REWS].mean().values:.8f} m/s "
+                )
         else:
             results = (results, None)
 

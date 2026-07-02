@@ -1,6 +1,7 @@
 import numpy as np
 from tqdm.autonotebook import tqdm
 from scipy.interpolate import RegularGridInterpolator
+from scipy.spatial.distance import cdist
 
 from iwopy.core import PipelineStage
 
@@ -80,6 +81,10 @@ class AmbientRowsStage(PipelineStage):
 
         """
         super().initialize(pipeline, verbosity=verbosity)
+
+        if verbosity > 0:
+            print(f"{self.name}: stepsize_ortho: {self.stepsize_ortho} m")
+            print(f"{self.name}: stepsize_wd: {self.stepsize_wd} m")
 
         # create algorithm object:
         farm = WindFarm(boundary=pipeline.farm_boundary, **pipeline.farm_pars)
@@ -165,7 +170,6 @@ class AmbientRowsStage(PipelineStage):
                 f"{self.name}: Grid dimensions: {self._nx} x {self._ny}, grid points: {self._n_points}"
             )
         self._ws = ws.reshape(self._n_points)
-        self._porder = np.argsort(self._ws)[::-1]
         self._points = np.stack(
             np.meshgrid(
                 data.coords[x_var].values,
@@ -174,7 +178,7 @@ class AmbientRowsStage(PipelineStage):
             ),
             axis=-1,
         ).reshape(self._n_points, 2)
-        self._pvalid = self._farm_boundary.points_inside(self._points)
+        pvalid = self._farm_boundary.points_inside(self._points)
 
         # prepare main wind direction data:
         wd_dims = data[main_wd_var].dims
@@ -184,11 +188,6 @@ class AmbientRowsStage(PipelineStage):
                 f"('{x_var}', '{y_var}'), got {wd_dims}"
             )
         self._wd = data[main_wd_var].values.reshape(self._n_points)
-
-        if verbosity > 1:
-            print(
-                f"{self.name}: Mean wind speeds range: {self._ws[self._porder[-1]]:.2f} - {self._ws[self._porder[0]]:.2f} m/s"
-            )
 
         # setup interpolator:
         uv = wd2uv(data[main_wd_var].values)
@@ -213,7 +212,18 @@ class AmbientRowsStage(PipelineStage):
 
         # initial data:
         self._n_turbines = pipeline.n_turbines
-        self._xy = np.full((self._n_turbines, 2), np.nan, dtype=config.dtype_double)
+
+        # filter points outside farm boundary:
+        self._points = self._points[pvalid]
+        self._n_points = self._points.shape[0]
+        self._ws = self._ws[pvalid]
+        self._wd = self._wd[pvalid]
+        self._porder = np.argsort(self._ws)[::-1]
+
+        if verbosity > 0:
+            print(
+                f"{self.name}: Mean wind speeds range: {self._ws[self._porder[-1]]:.2f} - {self._ws[self._porder[0]]:.2f} m/s"
+            )
 
     def run(self, prev_stage=None, prev_results=None, verbosity=1):
         """
@@ -257,108 +267,254 @@ class AmbientRowsStage(PipelineStage):
             if pbar is not None:
                 pbar.update(1)
 
-        def _next_u(u=-1):
-            if u is None:
-                return None
-            while u + 1 < self._n_points:
-                u = u + 1
-                o = self._porder[u]
-                if self._pvalid[o]:
-                    d = np.linalg.norm(pts[:i] - self._points[None, o], axis=1)
-                    if np.all(d >= self.stepsize_ortho):
-                        break
-            return u if u < self._n_points else None
+        def _is_near(p, pts, uv=None, n=None):
+            d = pts - p[None, :]
+            if self.stepsize_wd is not None:
+                if uv is None:
+                    uv = self._interpolator(p[None, :])[0, 1:3]
+                if n is None:
+                    n = np.array([-uv[1], uv[0]])
+                return np.any(
+                    (np.abs(d @ uv) < self.stepsize_wd - 1e-10)
+                    & (np.abs(d @ n) < self.stepsize_ortho - 1e-10)
+                )
+            else:
+                return np.any(np.linalg.norm(d, axis=1) < self.stepsize_ortho - 1e-10)
 
-        def _walk(p, n, dir, stepsize, res_p, res_ws, ws_next, cond=None):
+        skip_u = set()
+
+        def _next_u(u=-1):
+            # u = -1
+            while True:
+                u = u + 1
+                if u in skip_u:
+                    continue
+                if u >= self._n_points:
+                    return None
+                o = self._porder[u]
+                uv = wd2uv(self._wd[o])
+                if _is_near(self._points[o], pts[:i], uv=uv):
+                    skip_u.add(u)
+                else:
+                    return u
+
+        def _walk(
+            p,
+            n,
+            dir,
+            stepsize,
+            res_puvdir,
+            res_ws,
+            ws_next,
+            cnd_puvdir=None,
+            cnd_ws=None,
+            cond=None,
+        ):
             if i < self._n_turbines:
+                # search candidates:
+                ws0 = None
+                if cnd_puvdir is not None and len(cnd_puvdir):
+                    pops = set()
+                    for j in np.argsort(cnd_ws)[::-1]:
+                        q0, uv0, __ = cnd_puvdir[j]
+                        if _is_near(q0, pts[:i], uv=uv0):
+                            pops.add(j)
+                        elif (cond is None or cond(cnd_puvdir[j][0])) and (
+                            ws_next is None or cnd_ws[j] >= ws_next
+                        ):
+                            q0, uv0, dir0 = cnd_puvdir[j]
+                            ws0 = cnd_ws[j]
+                            pops.add(j)
+                            break
+                    for j in sorted(pops, reverse=True):
+                        cnd_puvdir.pop(j)
+                        cnd_ws.pop(j)
+
+                # walk in direction:
                 q = p + stepsize * dir * n
-                if self._farm_boundary.points_inside(q[None, :])[0] and (
+                valid = self._farm_boundary.points_inside(q[None, :])[0] and (
                     cond is None or cond(q)
-                ):
+                )
+                if valid:
                     r = self._interpolator(q[None, :])[0]
                     ws = r[0]
-                    if ws_next is None or ws >= ws_next:
-                        d = np.linalg.norm(pts[:i] - q[None, :], axis=1)
-                        if np.all(d >= stepsize):
-                            n = np.array([-r[2], r[1]])
-                            res_p.append(q)
-                            res_ws.append(ws)
-                            _walk(
-                                q, n, dir, stepsize, res_p, res_ws, ws_next, cond=cond
-                            )
+                    uv = r[1:3]
 
-        u = _next_u()
+                # select candidate or walk:
+                if ws0 is None and not valid:
+                    return
+                elif ws0 is None:
+                    pass
+                elif not valid or ws0 >= ws:
+                    q = q0
+                    ws = ws0
+                    uv = uv0
+                    dir = dir0
+                else:
+                    cnd_puvdir.append((q0, uv0, dir0))
+                    cnd_ws.append(ws0)
+
+                # check if better then next row point:
+                if ws_next is None or ws >= ws_next:
+                    n = np.array([-uv[1], uv[0]])
+                    if not _is_near(q, pts[:i], uv=uv):
+                        res_puvdir.append((q, uv, dir))
+                        res_ws.append(ws)
+                        _walk(
+                            q,
+                            n,
+                            dir,
+                            stepsize,
+                            res_puvdir,
+                            res_ws,
+                            ws_next,
+                            cnd_puvdir,
+                            cnd_ws,
+                            cond=cond,
+                        )
+                elif cnd_puvdir is not None and cnd_ws is not None:
+                    cnd_puvdir.append((q, uv, dir))
+                    cnd_ws.append(ws)
+
+        u = 0
+        cnd_puvdir = []
+        cnd_ws = []
         while i < self._n_turbines:
             # get grid point data:
-            if u is not None:
-                o = self._porder[u]
-                p = self._points[o]
-                ws = self._ws[o]
-                uv = wd2uv(self._wd[o])
-                n = np.array([-uv[1], uv[0]])
+            o = self._porder[u]
+            p = self._points[o]
+            ws = self._ws[o]
+            uv = wd2uv(self._wd[o])
+            n = np.array([-uv[1], uv[0]])
+            if _is_near(p, pts[:i], uv=uv):
+                u = _next_u(u)
+                if u is None:
+                    break
+                continue
 
             # find better point in up/donwstream direction if possible:
+            new_p = False
             if self.stepsize_wd is not None and self.stepsize_wd > 0:
 
                 def cond(q):
-                    return np.all(
-                        np.linalg.norm(self._points - q[None, :], axis=1)
-                        >= self.stepsize_wd
-                    )
+                    return not _is_near(q, self._points)
 
-                res_p = [p]
+                res_puvdir = [(p, uv, 0)]
                 res_ws = [ws]
                 _walk(
-                    p, uv, 1, self.stepsize_wd, res_p, res_ws, ws_next=None, cond=cond
+                    p,
+                    uv,
+                    1,
+                    self.stepsize_wd,
+                    res_puvdir,
+                    res_ws,
+                    ws_next=None,
+                    cond=cond,
                 )
                 _walk(
-                    p, uv, -1, self.stepsize_wd, res_p, res_ws, ws_next=None, cond=cond
+                    p,
+                    uv,
+                    -1,
+                    self.stepsize_wd,
+                    res_puvdir,
+                    res_ws,
+                    ws_next=None,
+                    cond=cond,
                 )
-                if len(res_p) > 1:
+                if len(res_puvdir) > 1:
+                    new_p = True
                     j = np.argmax(res_ws)
-                    p = res_p[j]
-                    uv = self._interpolator(p[None, :])[0, 1:3]
+                    p, uv, _ = res_puvdir[j]
                     n = np.array([-uv[1], uv[0]])
+
+            if not new_p:
+                u = _next_u(u)
+                ws = self._ws[self._porder[u]] if u is not None else None
+                if u is None:
+                    break
 
             # set first point in row:
             _new_turbine(p)
 
-            # find next grid point:
-            u = _next_u(u)
-            ws_next = self._ws[self._porder[u]] if u is not None else None
-
             # add points in orthogonal direction:
-            res_p_a = []
+            res_puvdir_a = []
             res_ws_a = []
-            _walk(p, n, 1, self.stepsize_ortho, res_p_a, res_ws_a, ws_next)
-            res_p_b = []
+            _walk(
+                p,
+                n,
+                1,
+                self.stepsize_ortho,
+                res_puvdir_a,
+                res_ws_a,
+                ws,
+                cnd_puvdir,
+                cnd_ws,
+            )
+            res_puvdir_b = []
             res_ws_b = []
-            _walk(p, n, -1, self.stepsize_ortho, res_p_b, res_ws_b, ws_next)
-            while len(res_p_a) > 0 or len(res_p_b) > 0:
+            _walk(
+                p,
+                n,
+                -1,
+                self.stepsize_ortho,
+                res_puvdir_b,
+                res_ws_b,
+                ws,
+                cnd_puvdir,
+                cnd_ws,
+            )
+            while i < self._n_turbines and (
+                len(res_puvdir_a) > 0 or len(res_puvdir_b) > 0
+            ):
                 if len(res_ws_a) > 0 and (
                     len(res_ws_b) == 0 or res_ws_a[0] >= res_ws_b[0]
                 ):
-                    _new_turbine(res_p_a.pop(0))
+                    p0 = res_puvdir_a.pop(0)[0]
+                    if not _is_near(p0, pts[:i]):
+                        _new_turbine(p0)
                     res_ws_a.pop(0)
                 elif len(res_ws_b) > 0:
-                    _new_turbine(res_p_b.pop(0))
+                    p0 = res_puvdir_b.pop(0)[0]
+                    if not _is_near(p0, pts[:i]):
+                        _new_turbine(p0)
                     res_ws_b.pop(0)
 
         if pbar is not None:
             pbar.close()
 
-        """
+        """ # Debugging: Plot turbine positions
         import matplotlib.pyplot as plt
         plt.figure()
-        plt.scatter(pts[:, 0], pts[:, 1], s=1)
+        #plt.scatter(self._points[:, 0], self._points[:, 1], s=1, alpha=0.5, label="Grid Points")
+        plt.scatter(pts[:, 0], pts[:, 1], s=1, label="Turbine Positions")
+        #pts = self._points[[self._porder[u] for u in skip_u], :]
+        #plt.scatter(pts[:, 0], pts[:, 1], s=1, alpha=0.5, label="Skipped Points")
         plt.xlabel("X coordinate (m)")
         plt.ylabel("Y coordinate (m)")
         plt.title("Turbine Positions in Ambient Rows")
         plt.axis("equal")
+        #plt.legend()
         plt.show()
-        quit()
         """
 
-        success = not np.any(np.isnan(pts))
+        # check minimum distance between turbines:
+        mindist = cdist(pts, pts)
+        np.fill_diagonal(mindist, np.inf)
+        mindist = np.min(mindist)
+        if verbosity > 0:
+            print(
+                f"{self.name}: Minimum distance between turbines: {mindist:.2f} m, minimum required: {self.stepsize_ortho:.2f} m"
+            )
+
+        # evaluate success criteria:
+        mdist = min(
+            self.stepsize_ortho,
+            self.stepsize_wd if self.stepsize_wd is not None else np.inf,
+        )
+        success = (
+            i == self._n_turbines
+            and not np.any(np.isnan(pts))
+            and mindist >= mdist - 1e-10
+        )
 
         return success, pts
