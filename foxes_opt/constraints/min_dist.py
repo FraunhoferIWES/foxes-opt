@@ -15,16 +15,15 @@ class MinDistConstraint(FarmConstraint):
 
     Attributes
     ----------
-    farm: foxes.WindFarm
+    farm
         The wind farm
-    sel_turbines: list
+    sel_turbines
         The selected turbines
-    min_dist: float
+    min_dist
         The minimal distance
-    min_dist_unit: str
+    min_dist_unit
         The minimal distance unit, either m or D
 
-    :group: opt.constraints
 
     """
 
@@ -42,17 +41,17 @@ class MinDistConstraint(FarmConstraint):
 
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying optimization problem
-        min_dist: float
+        min_dist
             The minimal distance
-        min_dist_unit: str
+        min_dist_unit
             The minimal distance unit, either m or D
-        name: str
+        name
             The name of the constraint
-        sel_turbines: list of int, optional
+        sel_turbines
             The selected turbines
-        kwargs: dict, optional
+        kwargs
             Additional parameters for `iwopy.Constraint`
 
         """
@@ -72,7 +71,7 @@ class MinDistConstraint(FarmConstraint):
 
         Parameters
         ----------
-        verbosity: int
+        verbosity
             The verbosity level, 0 = silent
 
         """
@@ -102,7 +101,7 @@ class MinDistConstraint(FarmConstraint):
 
         Returns
         -------
-        int:
+        value
             The number of components.
 
         """
@@ -115,9 +114,9 @@ class MinDistConstraint(FarmConstraint):
 
         Returns
         -------
-        deps: numpy.ndarray of bool
+        deps
             The dependencies of components on function
-            variables, shape: (n_components, n_vars_float)
+            variables, shape
 
         """
         turbs = list(self.problem.sel_turbines)
@@ -144,19 +143,19 @@ class MinDistConstraint(FarmConstraint):
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
-        problem_results: Any
+        problem_results
             The results of the variable application
             to the problem
-        components: list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values: np.array
+        values
             The component values, shape: (n_sel_components,)
 
         """
@@ -209,19 +208,19 @@ class MinDistConstraint(FarmConstraint):
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
-        problem_results: Any
+        problem_results
             The results of the variable application
             to the problem
-        components: list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values: np.array
+        values
             The component values, shape: (n_pop, n_sel_components)
 
         """

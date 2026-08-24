@@ -12,7 +12,6 @@ class OptFarmVars(FarmVarsProblem):
     """
     Optimize a selection of farm variables.
 
-    :group: opt.problems
 
     """
 
@@ -22,9 +21,9 @@ class OptFarmVars(FarmVarsProblem):
 
         Parameters
         ----------
-        args: tuple, optional
+        args
             Arguments for `FarmVarsProblem`
-        kwargs: dict, optional
+        kwargs
             Keyword arguments for `FarmVarsProblem`
 
         """
@@ -47,22 +46,22 @@ class OptFarmVars(FarmVarsProblem):
 
         Parameters
         ----------
-        variable: str
+        variable
             The foxes farm variable name
-        typ: type
+        typ
             The variable type, either float or int
-        init: float or int
+        init
             The initial value
-        min: float or int
+        min
             The min value
-        max: float or int
+        max
             The max value
-        level: str
-            Choices: uniform, state, turbine, state-turbine
-        sel: numpy.ndarray, optional
+        level
+            Choices
+        sel
             States/turbines/state-turbine selection,
             depending on the level
-        model_key: str, optional
+        model_key
             Creates sub-model which can then be placed in the
             turbine model list. Repeated keys are added to the
             same turbine model
@@ -245,9 +244,9 @@ class OptFarmVars(FarmVarsProblem):
 
         Parameters
         ----------
-        verbosity: int
+        verbosity
             The verbosity level, 0 = silent
-        kwargs: dict, optional
+        kwargs
             Additional parameters for super class init
 
         """
@@ -281,7 +280,7 @@ class OptFarmVars(FarmVarsProblem):
 
         Returns
         -------
-        names: list of str
+        names
             The names of the int variables
 
         """
@@ -302,7 +301,7 @@ class OptFarmVars(FarmVarsProblem):
 
         Returns
         -------
-        values: numpy.ndarray
+        values
             Initial int values, shape: (n_vars_int,)
 
         """
@@ -325,7 +324,7 @@ class OptFarmVars(FarmVarsProblem):
 
         Returns
         -------
-        values: numpy.ndarray
+        values
             Minimal int values, shape: (n_vars_int,)
 
         """
@@ -348,7 +347,7 @@ class OptFarmVars(FarmVarsProblem):
 
         Returns
         -------
-        values: numpy.ndarray
+        values
             Maximal int values, shape: (n_vars_int,)
 
         """
@@ -369,7 +368,7 @@ class OptFarmVars(FarmVarsProblem):
 
         Returns
         -------
-        names: list of str
+        names
             The names of the float variables
 
         """
@@ -390,7 +389,7 @@ class OptFarmVars(FarmVarsProblem):
 
         Returns
         -------
-        values: numpy.ndarray
+        values
             Initial float values, shape: (n_vars_float,)
 
         """
@@ -413,7 +412,7 @@ class OptFarmVars(FarmVarsProblem):
 
         Returns
         -------
-        values: numpy.ndarray
+        values
             Minimal float values, shape: (n_vars_float,)
 
         """
@@ -436,7 +435,7 @@ class OptFarmVars(FarmVarsProblem):
 
         Returns
         -------
-        values: numpy.ndarray
+        values
             Maximal float values, shape: (n_vars_float,)
 
         """
@@ -459,18 +458,18 @@ class OptFarmVars(FarmVarsProblem):
 
         Parameters
         ----------
-        vars_int: numpy.ndarray
+        vars_int
             The integer optimization variable values,
-            shape: (n_vars_int,)
-        vars_float: numpy.ndarray
+            shape
+        vars_float
             The float optimization variable values,
-            shape: (n_vars_float,)
+            shape
 
         Returns
         -------
-        farm_vars: dict
+        farm_vars
             The foxes farm variables. Key: var name,
-            value: numpy.ndarray with values, shape:
+            value
             (n_states, n_sel_turbines)
 
         """
@@ -534,20 +533,20 @@ class OptFarmVars(FarmVarsProblem):
 
         Parameters
         ----------
-        vars_int: numpy.ndarray
+        vars_int
             The integer optimization variable values,
-            shape: (n_pop, n_vars_int)
-        vars_float: numpy.ndarray
+            shape
+        vars_float
             The float optimization variable values,
-            shape: (n_pop, n_vars_float)
-        n_states: int
+            shape
+        n_states
             The number of original (non-pop) states
 
         Returns
         -------
-        farm_vars: dict
+        farm_vars
             The foxes farm variables. Key: var name,
-            value: numpy.ndarray with values, shape:
+            value
             (n_states, n_pop, n_sel_turbines)
 
         """

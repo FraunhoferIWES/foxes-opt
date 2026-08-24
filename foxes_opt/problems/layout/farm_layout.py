@@ -9,7 +9,6 @@ class FarmLayoutOptProblem(FarmOptProblem):
     """
     The turbine positioning optimization problem
 
-    :group: opt.problems.layout
 
     """
 
@@ -19,7 +18,7 @@ class FarmLayoutOptProblem(FarmOptProblem):
 
         Returns
         -------
-        names: list of str
+        names
             The names of the float variables
 
         """
@@ -34,7 +33,7 @@ class FarmLayoutOptProblem(FarmOptProblem):
 
         Returns
         -------
-        values: numpy.ndarray
+        values
             Initial float values, shape: (n_vars_float,)
 
         """
@@ -51,7 +50,7 @@ class FarmLayoutOptProblem(FarmOptProblem):
 
         Returns
         -------
-        values: numpy.ndarray
+        values
             Minimal float values, shape: (n_vars_float,)
 
         """
@@ -69,7 +68,7 @@ class FarmLayoutOptProblem(FarmOptProblem):
 
         Returns
         -------
-        values: numpy.ndarray
+        values
             Maximal float values, shape: (n_vars_float,)
 
         """
@@ -91,9 +90,9 @@ class FarmLayoutOptProblem(FarmOptProblem):
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
 
         """
@@ -116,9 +115,9 @@ class FarmLayoutOptProblem(FarmOptProblem):
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int,)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float,)
 
         """

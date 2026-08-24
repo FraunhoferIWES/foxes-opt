@@ -23,16 +23,15 @@ class AmbientRowsStage(PipelineStage):
 
     Attributes
     ----------
-    stepsize_ortho: float
+    stepsize_ortho
         The stepsize_ortho orthogonal to main wind direction.
-    stepsize_wd: float, optional
+    stepsize_wd
         The stepsize along the main wind direction.
-    mean_flow_states: foxes.input.input.states.SingleStateField
+    mean_flow_states
         The mean field flow states
-    mean_flow_var2ncvar: dict
+    mean_flow_var2ncvar
         Mapping from mean flow variable names to NetCDF variable names.
 
-    :group: opt.pipelines
 
     """
 
@@ -50,18 +49,18 @@ class AmbientRowsStage(PipelineStage):
 
         Parameters
         ----------
-        stepsize_ortho: float
+        stepsize_ortho
             The stepsize_ortho orthogonal to main wind direction.
-        mean_flow_states: foxes.input.states.SingleStateField
+        mean_flow_states
             The mean field flow states
-        mean_flow_var2ncvar: dict
+        mean_flow_var2ncvar
             Mapping from mean flow variable names to NetCDF variable names.
-        stepsize_wd: float, optional
+        stepsize_wd
             The stepsize along the main wind direction.
-        name: str, optional
+        name
             The name of the stage.
 
-        kwargs: dict
+        kwargs
              Additional keyword arguments for the stage.
 
         """
@@ -79,9 +78,9 @@ class AmbientRowsStage(PipelineStage):
 
         Parameters
         ----------
-        pipeline: Pipeline
+        pipeline
             The pipeline this stage belongs to
-        verbosity: int
+        verbosity
             The verbosity level, 0 = silent
 
         """
@@ -249,18 +248,18 @@ class AmbientRowsStage(PipelineStage):
 
         Parameters
         ----------
-        prev_stage: PipelineStage, optional
+        prev_stage
             The previous stage
-        prev_results: object, optional
+        prev_results
             The results from the previous stage
-        verbosity: int
+        verbosity
             The verbosity level, 0 = silent
 
         Returns
         -------
-        success: bool
+        success
             Whether the stage was successful
-        results: object
+        results
             The stage results
 
         """

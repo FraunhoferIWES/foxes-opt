@@ -30,13 +30,12 @@ class RegularLayoutOptProblem(FarmVarsProblem):
 
     Attributes
     ----------
-    min_spacing: float
+    min_spacing
         The minimal turbine spacing
-    initial_values: dict
+    initial_values
         Initial values for opt variables, key:
         spacing_x, spacing_y, offset_x, offset_y, angle
 
-    :group: opt.problems.layout
 
     """
 
@@ -59,16 +58,16 @@ class RegularLayoutOptProblem(FarmVarsProblem):
 
         Parameters
         ----------
-        name: str
+        name
             The problem's name
-        algo: foxes.core.Algorithm
+        algo
             The algorithm
-        min_spacing: float
+        min_spacing
             The minimal turbine spacing
-        initial_values: dict, optional
+        initial_values
             Initial values for opt variables, key:
             spacing_x, spacing_y, offset_x, offset_y, angle
-        kwargs: dict, optional
+        kwargs
             Additional parameters for `FarmVarsProblem`
 
         """
@@ -87,9 +86,9 @@ class RegularLayoutOptProblem(FarmVarsProblem):
 
         Parameters
         ----------
-        verbosity: int
+        verbosity
             The verbosity level, 0 = silent
-        kwargs: dict, optional
+        kwargs
             Additional parameters for super class init
 
         """
@@ -185,7 +184,7 @@ class RegularLayoutOptProblem(FarmVarsProblem):
 
         Returns
         -------
-        names: list of str
+        names
             The names of the float variables
 
         """
@@ -203,7 +202,7 @@ class RegularLayoutOptProblem(FarmVarsProblem):
 
         Returns
         -------
-        values: numpy.ndarray
+        values
             Initial float values, shape: (n_vars_float,)
 
         """
@@ -218,7 +217,7 @@ class RegularLayoutOptProblem(FarmVarsProblem):
 
         Returns
         -------
-        values: numpy.ndarray
+        values
             Minimal float values, shape: (n_vars_float,)
 
         """
@@ -241,7 +240,7 @@ class RegularLayoutOptProblem(FarmVarsProblem):
 
         Returns
         -------
-        values: numpy.ndarray
+        values
             Maximal float values, shape: (n_vars_float,)
 
         """
@@ -264,18 +263,18 @@ class RegularLayoutOptProblem(FarmVarsProblem):
 
         Parameters
         ----------
-        vars_int: numpy.ndarray
+        vars_int
             The integer optimization variable values,
-            shape: (n_vars_int,)
-        vars_float: numpy.ndarray
+            shape
+        vars_float
             The float optimization variable values,
-            shape: (n_vars_float,)
+            shape
 
         Returns
         -------
-        farm_vars: dict
+        farm_vars
             The foxes farm variables. Key: var name,
-            value: numpy.ndarray with values, shape:
+            value
             (n_states, n_sel_turbines)
 
         """
@@ -315,20 +314,20 @@ class RegularLayoutOptProblem(FarmVarsProblem):
 
         Parameters
         ----------
-        vars_int: numpy.ndarray
+        vars_int
             The integer optimization variable values,
-            shape: (n_pop, n_vars_int)
-        vars_float: numpy.ndarray
+            shape
+        vars_float
             The float optimization variable values,
-            shape: (n_pop, n_vars_float)
-        n_states: int
+            shape
+        n_states
             The number of original (non-pop) states
 
         Returns
         -------
-        farm_vars: dict
+        farm_vars
             The foxes farm variables. Key: var name,
-            value: numpy.ndarray with values, shape:
+            value
             (n_states, n_pop, n_sel_turbines)
 
         """
@@ -384,21 +383,21 @@ class RegularLayoutOptProblem(FarmVarsProblem):
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The optimal integer variable values, shape: (n_vars_int,)
-        vars_float: np.array
+        vars_float
             The optimal float variable values, shape: (n_vars_float,)
-        verbosity: int
+        verbosity
             The verbosity level, 0 = silent
 
         Returns
         -------
-        problem_results: Any
+        problem_results
             The results of the variable application
             to the problem
-        objs: np.array
+        objs
             The objective function values, shape: (n_objectives,)
-        cons: np.array
+        cons
             The constraints values, shape: (n_constraints,)
 
         """

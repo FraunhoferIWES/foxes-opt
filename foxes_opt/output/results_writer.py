@@ -11,7 +11,6 @@ class SingleObjResultsWriter(OptOutput):
     """
     Writes optimization results to files.
 
-    :group: output
 
     """
 
@@ -21,9 +20,9 @@ class SingleObjResultsWriter(OptOutput):
 
         Parameters
         ----------
-        opt_results: iwopy.core.SingleObjOptResults
+        opt_results
             The optimization results
-        kwargs: dict, optional
+        kwargs
             Additional parameters for the base class
 
         """
@@ -41,7 +40,7 @@ class SingleObjResultsWriter(OptOutput):
 
         Returns
         -------
-        ds: xarray.Dataset
+        ds
             The results dataset
 
         """
@@ -77,11 +76,11 @@ class SingleObjResultsWriter(OptOutput):
 
         Parameters
         ----------
-        fname: str
+        fname
             Name of the file to be written
-        verbosity: int
+        verbosity
             The verbosity level, 0 = silent
-        kwargs: dict, optional
+        kwargs
             Parameters for foxes.utils.write_nc
 
         """
@@ -94,7 +93,6 @@ class MultiObjResultsWriter(OptOutput):
     """
     Writes optimization results to files.
 
-    :group: output
 
     """
 
@@ -104,9 +102,9 @@ class MultiObjResultsWriter(OptOutput):
 
         Parameters
         ----------
-        opt_results: iwopy.core.MultiObjOptResults
+        opt_results
             The optimization results
-        kwargs: dict, optional
+        kwargs
             Additional parameters for the base class
 
         """
@@ -124,7 +122,7 @@ class MultiObjResultsWriter(OptOutput):
 
         Returns
         -------
-        ds: xarray.Dataset
+        ds
             The results dataset
 
         """
@@ -161,11 +159,11 @@ class MultiObjResultsWriter(OptOutput):
 
         Parameters
         ----------
-        fname: str
+        fname
             Name of the file to be written
-        verbosity: int
+        verbosity
             The verbosity level, 0 = silent
-        kwargs: dict, optional
+        kwargs
             Parameters for foxes.utils.write_nc
 
         """

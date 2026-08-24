@@ -20,26 +20,25 @@ def read_dict(
 
     Parameters
     ----------
-    idict: foxes.utils.Dict
+    idict
         The input parameter dictionary
-    args: tuple, optional
+    args
         Additional parameters for foxes.input.run_dict
-    verbosity: int, optional
+    verbosity
         Force a verbosity level, 0 = silent, overrules
         settings from idict
-    kwargs: dict, optional
+    kwargs
         Additional parameters for foxes.input.run_dict
 
     Returns
     -------
-    algo: foxes.core.Algorithm
+    algo
         The algorithm
-    engine: foxes.core.Engine
+    engine
         The engine, or None if not set
-    optimizer: iwopy.core.Optimizer
+    optimizer
         The optimization problem solver
 
-    :group: input.yaml
 
     """
 
@@ -113,28 +112,27 @@ def run_outputs(
 
     Parameters
     ----------
-    idict: foxes.utils.Dict
+    idict
         The input parameter dictionary
-    algo: foxes.core.Algorithm, optional
+    algo
         The algorithm
-    farm_results: xarray.Dataset, optional
+    farm_results
         The farm results
-    opt_results: iwopy.core.SingleObjOptResults or iwopy.core.MultiObjOptResults, optional
+    opt_results
         The optimization results
-    extra_sig: dict
+    extra_sig
         Extra function signature check, sets
         arguments (key) with data (value)
-    kwargs: dict, optional
+    kwargs
         Additional parameters for foxes_run_output
 
     Returns
     -------
-    outputs: list of tuple
+    outputs
         For each output enty, a tuple (dict, results),
         where results is a tuple that represents one
         entry per function call
 
-    :group: input.yaml
 
     """
     if extra_sig is None:
@@ -166,26 +164,26 @@ def run_dict(
 
     Parameters
     ----------
-    idict: foxes.utils.Dict
+    idict
         The input parameter dictionary
-    args: tuple, optional
+    args
         Additional parameters for foxes.input.run_dict
-    extra_sig: dict
+    extra_sig
         Extra function signature check, sets
         arguments (key) with data (value)
-    nofig: bool
+    nofig
         Do not show figures, overrules settings from idict
-    verbosity: int, optional
+    verbosity
         Force a verbosity level, 0 = silent, overrules
         settings from idict
-    kwargs: dict, optional
+    kwargs
         Additional parameters for foxes.input.run_dict
 
     Returns
     -------
-    opt_results: iwopy.core.SingleObjOptResults or iwopy.core.MultiObjOptResults
+    opt_results
         The optimization results
-    outputs: list of tuple
+    outputs
         For each output enty, a tuple (dict, results),
         where results is a tuple that represents one
         entry per function call

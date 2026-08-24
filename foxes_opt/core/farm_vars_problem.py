@@ -15,7 +15,6 @@ class FarmVarsProblem(FarmOptProblem):
     Abstract base class for models that optimize
     farm variables.
 
-    :group: opt.core
 
     """
 
@@ -30,11 +29,11 @@ class FarmVarsProblem(FarmOptProblem):
 
         Parameters
         ----------
-        model_vars: dict or list
-            The variables to optimize. If dict, key: model name, value: list of variable names.
-        verbosity: int
+        model_vars
+            The variables to optimize. For mappings, each model name maps to the configured variable names.
+        verbosity
             The verbosity level, 0 = silent
-        kwargs: dict, optional
+        kwargs
             Additional parameters for super class init
 
         """
@@ -84,18 +83,18 @@ class FarmVarsProblem(FarmOptProblem):
 
         Parameters
         ----------
-        vars_int: numpy.ndarray
+        vars_int
             The integer optimization variable values,
-            shape: (n_vars_int,)
-        vars_float: numpy.ndarray
+            shape
+        vars_float
             The float optimization variable values,
-            shape: (n_vars_float,)
+            shape
 
         Returns
         -------
-        farm_vars: dict
+        farm_vars
             The foxes farm variables. Key: var name,
-            value: numpy.ndarray with values, shape:
+            value
             (n_states, n_sel_turbines)
 
         """
@@ -110,20 +109,20 @@ class FarmVarsProblem(FarmOptProblem):
 
         Parameters
         ----------
-        vars_int: numpy.ndarray
+        vars_int
             The integer optimization variable values,
-            shape: (n_pop, n_vars_int)
-        vars_float: numpy.ndarray
+            shape
+        vars_float
             The float optimization variable values,
-            shape: (n_pop, n_vars_float)
-        n_states: int
+            shape
+        n_states
             The number of original (non-pop) states
 
         Returns
         -------
-        farm_vars: dict
+        farm_vars
             The foxes farm variables. Key: var name,
-            value: numpy.ndarray with values, shape:
+            value
             (n_states, n_pop, n_sel_turbines)
 
         """
@@ -141,9 +140,9 @@ class FarmVarsProblem(FarmOptProblem):
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
 
         """
@@ -185,9 +184,9 @@ class FarmVarsProblem(FarmOptProblem):
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int,)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float,)
 
         """
@@ -238,11 +237,11 @@ class FarmVarsProblem(FarmOptProblem):
 
         Parameters
         ----------
-        problem_type: string
+        problem_type
             The selected derived class name
-        args: tuple, optional
+        args
             Additional parameters for the constructor
-        kwargs: dict, optional
+        kwargs
             Additional parameters for the constructor
 
         """

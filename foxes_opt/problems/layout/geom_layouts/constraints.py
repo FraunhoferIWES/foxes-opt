@@ -11,7 +11,6 @@ class Valid(Constraint):
     """
     Validity constraint for purely geometrical layouts problems.
 
-    :group: opt.problems.layout.geom_layouts.constraints
 
     """
 
@@ -21,12 +20,12 @@ class Valid(Constraint):
 
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying geometrical layout
             optimization problem
-        name: str
+        name
             The constraint name
-        kwargs: dict, optional
+        kwargs
             Additioal parameters for the base class
 
         """
@@ -45,7 +44,7 @@ class Valid(Constraint):
 
         Returns
         -------
-        int:
+        value
             The number of components.
 
         """
@@ -64,19 +63,19 @@ class Valid(Constraint):
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_sel_components,)
 
         """
@@ -95,19 +94,19 @@ class Valid(Constraint):
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_pop, n_sel_components)
 
         """
@@ -119,7 +118,6 @@ class Boundary(Constraint):
     """
     Boundary constraint for purely geometrical layouts problems.
 
-    :group: opt.problems.layout.geom_layouts.constraints
 
     """
 
@@ -136,16 +134,16 @@ class Boundary(Constraint):
 
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying geometrical layout
             optimization problem
-        n_turbines: int, optional
+        n_turbines
             The number of turbines
-        D: float, optional
+        D
             The rotor diameter
-        name: str
+        name
             The constraint name
-        kwargs: dict, optional
+        kwargs
             Additioal parameters for the base class
 
         """
@@ -166,7 +164,7 @@ class Boundary(Constraint):
 
         Returns
         -------
-        int:
+        value
             The number of components.
 
         """
@@ -185,19 +183,19 @@ class Boundary(Constraint):
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_sel_components,)
 
         """
@@ -223,19 +221,19 @@ class Boundary(Constraint):
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_pop, n_sel_components)
 
         """
@@ -257,7 +255,6 @@ class MinDist(Constraint):
     """
     Minimal distance constraint for purely geometrical layouts problems.
 
-    :group: opt.problems.layout.geom_layouts.constraints
 
     """
 
@@ -274,16 +271,16 @@ class MinDist(Constraint):
 
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying geometrical layout
             optimization problem
-        min_dist: float, optional
+        min_dist
             The minimal distance between turbines
-        n_turbines: int, optional
+        n_turbines
             The number of turbines
-        name: str
+        name
             The constraint name
-        kwargs: dict, optional
+        kwargs
             Additioal parameters for the base class
 
         """
@@ -303,7 +300,7 @@ class MinDist(Constraint):
 
         Parameters
         ----------
-        verbosity: int
+        verbosity
             The verbosity level, 0 = silent
 
         """
@@ -333,7 +330,7 @@ class MinDist(Constraint):
 
         Returns
         -------
-        int:
+        value
             The number of components.
 
         """
@@ -352,19 +349,19 @@ class MinDist(Constraint):
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_sel_components,)
 
         """
@@ -388,19 +385,19 @@ class MinDist(Constraint):
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_pop, n_sel_components)
 
         """
@@ -417,7 +414,6 @@ class CMinN(Constraint):
     """
     Minimal number of turbines constraint for purely geometrical layouts problems.
 
-    :group: opt.problems.layout.geom_layouts.constraints
 
     """
 
@@ -436,14 +432,14 @@ class CMinN(Constraint):
 
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying geometrical layout
             optimization problem
-        N: int
+        N
             The minimal number of turbines
-        name: str
+        name
             The constraint name
-        kwargs: dict, optional
+        kwargs
             Additioal parameters for the base class
 
         """
@@ -456,7 +452,7 @@ class CMinN(Constraint):
 
         Returns
         -------
-        int:
+        value
             The number of components.
 
         """
@@ -475,19 +471,19 @@ class CMinN(Constraint):
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_sel_components,)
 
         """
@@ -506,19 +502,19 @@ class CMinN(Constraint):
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_pop, n_sel_components)
 
         """
@@ -530,7 +526,6 @@ class CMaxN(Constraint):
     """
     Maximal number of turbines constraint for purely geometrical layouts problems.
 
-    :group: opt.problems.layout.geom_layouts.constraints
 
     """
 
@@ -542,14 +537,14 @@ class CMaxN(Constraint):
 
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying geometrical layout
             optimization problem
-        N: int
+        N
             The maximal number of turbines
-        name: str
+        name
             The constraint name
-        kwargs: dict, optional
+        kwargs
             Additioal parameters for the base class
 
         """
@@ -569,7 +564,7 @@ class CMaxN(Constraint):
 
         Returns
         -------
-        int:
+        value
             The number of components.
 
         """
@@ -588,19 +583,19 @@ class CMaxN(Constraint):
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_sel_components,)
 
         """
@@ -619,19 +614,19 @@ class CMaxN(Constraint):
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_pop, n_sel_components)
 
         """
@@ -643,7 +638,6 @@ class CFixN(Constraint):
     """
     Fixed number of turbines constraint for purely geometrical layouts problems.
 
-    :group: opt.problems.layout.geom_layouts.constraints
 
     """
 
@@ -655,14 +649,14 @@ class CFixN(Constraint):
 
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying geometrical layout
             optimization problem
-        N: int
+        N
             The number of turbines
-        name: str
+        name
             The constraint name
-        kwargs: dict, optional
+        kwargs
             Additioal parameters for the base class
 
         """
@@ -683,7 +677,7 @@ class CFixN(Constraint):
 
         Returns
         -------
-        int:
+        value
             The number of components.
 
         """
@@ -702,19 +696,19 @@ class CFixN(Constraint):
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_sel_components,)
 
         """
@@ -734,19 +728,19 @@ class CFixN(Constraint):
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_pop, n_sel_components)
 
         """
@@ -759,7 +753,6 @@ class CMinDensity(Constraint):
     """
     Minimal turbine density constraint for purely geometrical layouts problems.
 
-    :group: opt.problems.layout.geom_layouts.constraints
 
     """
 
@@ -775,16 +768,16 @@ class CMinDensity(Constraint):
 
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying geometrical layout
             optimization problem
-        min_value: float
+        min_value
             The minimal turbine density
-        dfactor: float
+        dfactor
             Delta factor for grid spacing
-        name: str
+        name
             The constraint name
-        kwargs: dict, optional
+        kwargs
             Additioal parameters for the base class
 
         """
@@ -804,7 +797,7 @@ class CMinDensity(Constraint):
 
         Returns
         -------
-        int:
+        value
             The number of components.
 
         """
@@ -816,7 +809,7 @@ class CMinDensity(Constraint):
 
         Parameters
         ----------
-        verbosity: int
+        verbosity
             The verbosity level, 0 = silent
 
         """
@@ -856,19 +849,19 @@ class CMinDensity(Constraint):
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_sel_components,)
 
         """
@@ -891,19 +884,19 @@ class CMinDensity(Constraint):
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_pop, n_sel_components)
 
         """

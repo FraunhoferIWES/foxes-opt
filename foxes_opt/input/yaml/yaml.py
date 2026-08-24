@@ -14,7 +14,6 @@ def foxes_opt_yaml() -> None:
     --------
     >>> foxes_opt_yaml input.yaml
 
-    :group: input.yaml
 
     """
 

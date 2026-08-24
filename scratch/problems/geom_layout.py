@@ -16,18 +16,17 @@ class GeomLayout(Problem):
 
     Attributes
     ----------
-    boundary: foxes.utils.geom2d.AreaGeometry
+    boundary
         The boundary geometry
-    n_turbines: int
+    n_turbines
         The number of turbines in the layout
-    min_dist: float
+    min_dist
         The minimal distance between points
-    D: float
+    D
         The diameter of circle fully within boundary
-    calc_valid: bool
+    calc_valid
         Evaluate validity
 
-    :group: opt.problems.layout.geom_layouts
 
     """
 
@@ -44,15 +43,15 @@ class GeomLayout(Problem):
 
         Parameters
         ----------
-        boundary: foxes.utils.geom2d.AreaGeometry
+        boundary
             The boundary geometry
-        n_turbines: int
+        n_turbines
             The number of turbines in the layout
-        min_dist: float, optional
+        min_dist
             The minimal distance between points
-        D: float, optional
+        D
             The diameter of circle fully within boundary
-        calc_valid: bool, optional
+        calc_valid
             Evaluate validity
 
         """
@@ -75,7 +74,7 @@ class GeomLayout(Problem):
 
         Parameters
         ----------
-        verbosity: int
+        verbosity
             The verbosity level, 0 = silent
 
         """
@@ -88,7 +87,7 @@ class GeomLayout(Problem):
 
         Returns
         -------
-        names: list of str
+        names
             The names of the float variables
 
         """
@@ -100,7 +99,7 @@ class GeomLayout(Problem):
 
         Returns
         -------
-        values: numpy.ndarray
+        values
             Initial float values, shape: (n_vars_float,)
 
         """
@@ -125,7 +124,7 @@ class GeomLayout(Problem):
 
         Returns
         -------
-        values: numpy.ndarray
+        values
             Minimal float values, shape: (n_vars_float,)
 
         """
@@ -141,7 +140,7 @@ class GeomLayout(Problem):
 
         Returns
         -------
-        values: numpy.ndarray
+        values
             Maximal float values, shape: (n_vars_float,)
 
         """
@@ -155,14 +154,14 @@ class GeomLayout(Problem):
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
 
         Returns
         -------
-        problem_results: Any
+        problem_results
             The results of the variable application
             to the problem
 
@@ -193,14 +192,14 @@ class GeomLayout(Problem):
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
 
         Returns
         -------
-        problem_results: Any
+        problem_results
             The results of the variable application
             to the problem
 
@@ -236,22 +235,22 @@ class GeomLayout(Problem):
 
         Parameters
         ----------
-        xy: numpy.ndarary, optional
+        xy
             The xy coordinate array, shape: (n_points, 2)
-        valid: numpy.ndarray, optional
+        valid
             Boolean array of validity, shape: (n_points,)
-        ax: pyplot.Axis, optional
+        ax
             The figure axis
-        title: str, optional
+        title
             The figure title
-        true_circle: bool
+        true_circle
             Draw points as circles with diameter self.D
-        bars: dict, optional
+        bars
             The boundary plot arguments
 
         Returns
         -------
-        ax: pyplot.Axis
+        ax
             The figure axis
 
         """

@@ -18,18 +18,17 @@ class GeomLayoutGridded(Problem):
 
     Attributes
     ----------
-    boundary: foxes.utils.geom2d.AreaGeometry
+    boundary
         The boundary geometry
-    n_turbines: int
+    n_turbines
         The number of turbines in the layout
-    grid_spacing: float
+    grid_spacing
         The background grid spacing
-    min_dist: float
+    min_dist
         The minimal distance between points
-    D: float
+    D
         The diameter of circle fully within boundary
 
-    :group: opt.problems.layout.geom_layouts
 
     """
 
@@ -46,15 +45,15 @@ class GeomLayoutGridded(Problem):
 
         Parameters
         ----------
-        boundary: foxes.utils.geom2d.AreaGeometry
+        boundary
             The boundary geometry
-        n_turbines: int
+        n_turbines
             The number of turbines in the layout
-        grid_spacing: float
+        grid_spacing
             The background grid spacing
-        min_dist: float, optional
+        min_dist
             The minimal distance between points
-        D: float, optional
+        D
             The diameter of circle fully within boundary
 
         """
@@ -74,7 +73,7 @@ class GeomLayoutGridded(Problem):
 
         Parameters
         ----------
-        verbosity: int
+        verbosity
             The verbosity level, 0 = silent
 
         """
@@ -118,7 +117,7 @@ class GeomLayoutGridded(Problem):
 
         Returns
         -------
-        names: list of str
+        names
             The names of the int variables
 
         """
@@ -130,7 +129,7 @@ class GeomLayoutGridded(Problem):
 
         Returns
         -------
-        values: numpy.ndarray
+        values
             Initial int values, shape: (n_vars_int,)
 
         """
@@ -142,7 +141,7 @@ class GeomLayoutGridded(Problem):
 
         Returns
         -------
-        values: numpy.ndarray
+        values
             Minimal int values, shape: (n_vars_int,)
 
         """
@@ -154,7 +153,7 @@ class GeomLayoutGridded(Problem):
 
         Returns
         -------
-        values: numpy.ndarray
+        values
             Maximal int values, shape: (n_vars_int,)
 
         """
@@ -166,14 +165,14 @@ class GeomLayoutGridded(Problem):
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
 
         Returns
         -------
-        problem_results: Any
+        problem_results
             The results of the variable application
             to the problem
 
@@ -191,14 +190,14 @@ class GeomLayoutGridded(Problem):
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
 
         Returns
         -------
-        problem_results: Any
+        problem_results
             The results of the variable application
             to the problem
 
@@ -223,22 +222,22 @@ class GeomLayoutGridded(Problem):
 
         Parameters
         ----------
-        xy: numpy.ndarary, optional
+        xy
             The xy coordinate array, shape: (n_points, 2)
-        valid: numpy.ndarray, optional
+        valid
             Boolean array of validity, shape: (n_points,)
-        ax: pyplot.Axis, optional
+        ax
             The figure axis
-        title: str, optional
+        title
             The figure title
-        true_circle: bool
+        true_circle
             Draw points as circles with diameter self.D
-        bars: dict, optional
+        bars
             The boundary plot arguments
 
         Returns
         -------
-        ax: pyplot.Axis
+        ax
             The figure axis
 
         """

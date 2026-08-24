@@ -10,7 +10,6 @@ class OMaxN(Objective):
     Maximal number of turbines objective
     for purely geometrical layouts problems.
 
-    :group: opt.problems.layout.geom_layouts.objectives
 
     """
 
@@ -20,10 +19,10 @@ class OMaxN(Objective):
 
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying geometrical layout
             optimization problem
-        name: str
+        name
             The constraint name
 
         """
@@ -41,7 +40,7 @@ class OMaxN(Objective):
 
         Returns
         -------
-        int:
+        value
             The number of components.
 
         """
@@ -53,9 +52,9 @@ class OMaxN(Objective):
 
         Returns
         -------
-        flags: np.array
+        flags
             Bool array for component maximization,
-            shape: (n_components,)
+            shape
 
         """
         return [True]
@@ -73,19 +72,19 @@ class OMaxN(Objective):
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_sel_components,)
 
         """
@@ -104,19 +103,19 @@ class OMaxN(Objective):
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_pop, n_sel_components)
 
         """
@@ -129,7 +128,6 @@ class OMinN(OMaxN):
     Minimal number of turbines objective
     for purely geometrical layouts problems.
 
-    :group: opt.problems.layout.geom_layouts.objectives
 
     """
 
@@ -139,10 +137,10 @@ class OMinN(OMaxN):
 
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying geometrical layout
             optimization problem
-        name: str
+        name
             The constraint name
 
         """
@@ -157,7 +155,6 @@ class OFixN(Objective):
     Fixed number of turbines objective
     for purely geometrical layouts problems.
 
-    :group: opt.problems.layout.geom_layouts.objectives
 
     """
 
@@ -167,12 +164,12 @@ class OFixN(Objective):
 
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying geometrical layout
             optimization problem
-        N: int
+        N
             The number of turbines
-        name: str
+        name
             The constraint name
 
         """
@@ -191,7 +188,7 @@ class OFixN(Objective):
 
         Returns
         -------
-        int:
+        value
             The number of components.
 
         """
@@ -203,9 +200,9 @@ class OFixN(Objective):
 
         Returns
         -------
-        flags: np.array
+        flags
             Bool array for component maximization,
-            shape: (n_components,)
+            shape
 
         """
         return [False]
@@ -223,19 +220,19 @@ class OFixN(Objective):
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_sel_components,)
 
         """
@@ -255,19 +252,19 @@ class OFixN(Objective):
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_pop, n_sel_components)
 
         """
@@ -281,7 +278,6 @@ class MaxGridSpacing(Objective):
     Maximal grid spacing objective
     for purely geometrical layouts problems.
 
-    :group: opt.problems.layout.geom_layouts.objectives
 
     """
 
@@ -291,10 +287,10 @@ class MaxGridSpacing(Objective):
 
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying geometrical layout
             optimization problem
-        name: str
+        name
             The constraint name
 
         """
@@ -312,7 +308,7 @@ class MaxGridSpacing(Objective):
 
         Returns
         -------
-        int:
+        value
             The number of components.
 
         """
@@ -324,9 +320,9 @@ class MaxGridSpacing(Objective):
 
         Returns
         -------
-        flags: np.array
+        flags
             Bool array for component maximization,
-            shape: (n_components,)
+            shape
 
         """
         return [True]
@@ -344,19 +340,19 @@ class MaxGridSpacing(Objective):
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_sel_components,)
 
         """
@@ -376,19 +372,19 @@ class MaxGridSpacing(Objective):
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_pop, n_sel_components)
 
         """
@@ -403,7 +399,6 @@ class MaxDensity(Objective):
     Maximal turbine density objective
     for purely geometrical layouts problems.
 
-    :group: opt.problems.layout.geom_layouts.objectives
 
     """
 
@@ -419,14 +414,14 @@ class MaxDensity(Objective):
 
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying geometrical layout
             optimization problem
-        dfactor: float
+        dfactor
             Delta factor for grid spacing
-        min_dist: float, optional
+        min_dist
             The minimal distance
-        name: str
+        name
             The constraint name
 
         """
@@ -446,7 +441,7 @@ class MaxDensity(Objective):
 
         Returns
         -------
-        int:
+        value
             The number of components.
 
         """
@@ -458,9 +453,9 @@ class MaxDensity(Objective):
 
         Returns
         -------
-        flags: np.array
+        flags
             Bool array for component maximization,
-            shape: (n_components,)
+            shape
 
         """
         return [False]
@@ -471,7 +466,7 @@ class MaxDensity(Objective):
 
         Parameters
         ----------
-        verbosity: int
+        verbosity
             The verbosity level, 0 = silent
 
         """
@@ -511,19 +506,19 @@ class MaxDensity(Objective):
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_sel_components,)
 
         """
@@ -546,19 +541,19 @@ class MaxDensity(Objective):
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_pop, n_sel_components)
 
         """
@@ -580,7 +575,6 @@ class MeMiMaDist(Objective):
     Mean-min-max distance objective
     for purely geometrical layouts problems.
 
-    :group: opt.problems.layout.geom_layouts.objectives
 
     """
 
@@ -598,18 +592,18 @@ class MeMiMaDist(Objective):
 
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying geometrical layout
             optimization problem
-        scale: float
+        scale
             The distance scale
-        c1: float
+        c1
             Parameter for mean weighting
-        c2: float
+        c2
             Parameter for max diff weighting
-        c3: float
+        c3
             Parameter for min diff weighting
-        name: str
+        name
             The constraint name
 
         """
@@ -631,7 +625,7 @@ class MeMiMaDist(Objective):
 
         Returns
         -------
-        int:
+        value
             The number of components.
 
         """
@@ -643,9 +637,9 @@ class MeMiMaDist(Objective):
 
         Returns
         -------
-        flags: np.array
+        flags
             Bool array for component maximization,
-            shape: (n_components,)
+            shape
 
         """
         return [True]
@@ -663,19 +657,19 @@ class MeMiMaDist(Objective):
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_sel_components,)
 
         """
@@ -705,19 +699,19 @@ class MeMiMaDist(Objective):
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_pop, n_sel_components)
 
         """

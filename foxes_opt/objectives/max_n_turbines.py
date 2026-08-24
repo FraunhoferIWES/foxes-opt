@@ -13,10 +13,9 @@ class MaxNTurbines(FarmObjective):
 
     Attributes
     ----------
-    check_valid: bool
+    check_valid
         Check FC.VALID variable before counting
 
-    :group: opt.objectives
 
     """
 
@@ -32,13 +31,13 @@ class MaxNTurbines(FarmObjective):
 
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying optimization problem
-        name: str
+        name
             The name of the objective function
-        check_valid: bool
+        check_valid
             Check FC.VALID variable before counting
-        kwargs: dict, optional
+        kwargs
             Additional parameters for `FarmObjective`
 
         """
@@ -52,7 +51,7 @@ class MaxNTurbines(FarmObjective):
 
         Returns
         -------
-        int:
+        value
             The number of components.
 
         """
@@ -64,9 +63,9 @@ class MaxNTurbines(FarmObjective):
 
         Returns
         -------
-        flags: np.array
+        flags
             Bool array for component maximization,
-            shape: (n_components,)
+            shape
 
         """
         return [True]
@@ -84,19 +83,19 @@ class MaxNTurbines(FarmObjective):
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
-        problem_results: Any
+        problem_results
             The results of the variable application
             to the problem
-        components: list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values: np.array
+        values
             The component values, shape: (n_sel_components,)
 
         """
@@ -122,19 +121,19 @@ class MaxNTurbines(FarmObjective):
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
-        problem_results: Any
+        problem_results
             The results of the variable application
             to the problem
-        components: list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values: np.array
+        values
             The component values, shape: (n_pop, n_sel_components)
 
         """

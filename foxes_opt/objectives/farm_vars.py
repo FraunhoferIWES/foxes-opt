@@ -15,20 +15,19 @@ class FarmVarObjective(FarmObjective):
 
     Attributes
     ----------
-    variable: str
+    variable
         The variable name
-    minimize: bool
+    minimize
         Switch for maximizing or minimizing
-    deps: list of str
+    deps
         The foxes variables on which the variable depends,
         or None for all
-    rules: dict
+    rules
         Contraction rules. Key: coordinate name str, value
-        is str: weights, mean_no_weights, sum, min, max
-    scale: float
+        is: weights, mean_no_weights, sum, min, max
+    scale
         The scaling factor
 
-    :group: opt.objectives
 
     """
 
@@ -49,24 +48,24 @@ class FarmVarObjective(FarmObjective):
 
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying optimization problem
-        name: str
+        name
             The name of the objective function
-        variable: str
+        variable
             The foxes variable name
-        contract_states: str
+        contract_states
             Contraction rule for states: min, max, sum, mean, weights
-        contract_turbines: str
+        contract_turbines
             Contraction rule for turbines: min, max, sum, mean
-        minimize: bool
+        minimize
             Switch for maximizing or minimizing
-        deps: list of str
+        deps
             The foxes variables on which the variable depends,
             or None for all
-        scale: float
+        scale
             The scaling factor
-        kwargs: dict, optional
+        kwargs
             Additional parameters for `FarmObjective`
 
         """
@@ -83,7 +82,7 @@ class FarmVarObjective(FarmObjective):
 
         Parameters
         ----------
-        verbosity: int
+        verbosity
             The verbosity level, 0 = silent
 
         """
@@ -96,7 +95,7 @@ class FarmVarObjective(FarmObjective):
 
         Returns
         -------
-        int:
+        value
             The number of components.
 
         """
@@ -108,9 +107,9 @@ class FarmVarObjective(FarmObjective):
 
         Returns
         -------
-        flags: np.array
+        flags
             Bool array for component maximization,
-            shape: (n_components,)
+            shape
 
         """
         return [not self.minimize]
@@ -122,9 +121,9 @@ class FarmVarObjective(FarmObjective):
 
         Returns
         -------
-        deps: numpy.ndarray of bool
+        deps
             The dependencies of components on function
-            variables, shape: (n_components, n_vars_float)
+            variables, shape
 
         """
         if self.deps is None:
@@ -199,19 +198,19 @@ class FarmVarObjective(FarmObjective):
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
-        problem_results: Any
+        problem_results
             The results of the variable application
             to the problem
-        components: list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values: np.array
+        values
             The component values, shape: (n_sel_components,)
 
         """
@@ -235,19 +234,19 @@ class FarmVarObjective(FarmObjective):
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
-        problem_results: Any
+        problem_results
             The results of the variable application
             to the problem
-        components: list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values: np.array
+        values
             The component values, shape: (n_pop, n_sel_components)
 
         """
@@ -300,19 +299,19 @@ class FarmVarObjective(FarmObjective):
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The optimal integer variable values, shape: (n_vars_int,)
-        vars_float: np.array
+        vars_float
             The optimal float variable values, shape: (n_vars_float,)
-        problem_results: Any
+        problem_results
             The results of the variable application
             to the problem
-        verbosity: int
+        verbosity
             The verbosity level, 0 = silent
 
         Returns
         -------
-        values: np.array
+        values
             The component values, shape: (n_components,)
 
         """
@@ -330,14 +329,13 @@ class MaxFarmPower(FarmVarObjective):
 
     Parameters
     ----------
-    problem: foxes_opt.FarmOptProblem
+    problem
         The underlying optimization problem
-    name: str
+    name
         The name of the objective function
-    kwargs: dict, optional
+    kwargs
         Additional parameters for `FarmVarObjective`
 
-    :group: opt.objectives
 
     """
 
@@ -373,14 +371,13 @@ class MinimalMaxTI(FarmVarObjective):
 
     Parameters
     ----------
-    problem: foxes_opt.FarmOptProblem
+    problem
         The underlying optimization problem
-    name: str
+    name
         The name of the objective function
-    kwargs: dict, optional
+    kwargs
         Additional parameters for `FarmVarObjective`
 
-    :group: opt.objectives
 
     """
 

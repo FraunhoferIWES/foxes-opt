@@ -15,20 +15,19 @@ class LayoutPipeline(Pipeline):
 
     Attributes
     ----------
-    algo_pars: dict
+    algo_pars
         The parameters for the foxes algorithm
-    n_turbines: int
+    n_turbines
         The number of turbines in the wind farm
-    turbine_models: list of str
+    turbine_models
         The turbine models
-    mbook: foxes.ModelBook
+    mbook
         The model book
-    farm_pars: dict, optional
+    farm_pars
         Additional parameters for the wind farm
-    states: foxes.core.States, optional
+    states
         The states to optimize the layout for
 
-    :group: opt.pipelines
 
     """
 
@@ -50,26 +49,26 @@ class LayoutPipeline(Pipeline):
 
         Parameters
         ----------
-        base_dir: str
+        base_dir
             Base directory for the self.
-        algo_pars: dict
+        algo_pars
             The parameters for the foxes algorithm
-        n_turbines: int
+        n_turbines
             The number of turbines in the wind farm
-        turbine_models: list of str
+        turbine_models
             The turbine models
-        farm_boundary: foxes.utils.geom2d.AreaGeometry
+        farm_boundary
             The wind farm boundary
-        states: foxes.core.States, optional
+        states
             The states to optimize the layout for
-        mbook: foxes.ModelBook, optional
+        mbook
             The model book to be used
-        farm_pars: dict, optional
+        farm_pars
             Additional parameters for the wind farm
-        name: str, optional
+        name
             The name of the pipeline
 
-        kwargs: dict
+        kwargs
             Additional keyword arguments for the self.
 
         """
@@ -90,16 +89,16 @@ class LayoutPipeline(Pipeline):
 
         Parameters
         ----------
-        layout_xy: np.ndarray
+        layout_xy
             The layout coordinates of the turbines, shape (n_turbines, 2)
-        verbosity: int
+        verbosity
             The verbosity level, 0 = silent
 
         Returns
         -------
-        algo: foxes.core.Algorithm
+        algo
             The foxes algorithm instance
-        farm_results: xarray.Dataset
+        farm_results
             The results of the wind farm simulation
 
         """
@@ -139,22 +138,23 @@ class LayoutPipeline(Pipeline):
 
         Parameters
         ----------
-        start_stage: int
+        start_stage
             The stage index to start from
-        end_stage: int, optional
+        end_stage
             The stage index to end at, default None (run all stages)
-        finalize: bool
+        finalize
             Whether to finalize the pipeline after running, default True
-        verbosity: int
+        verbosity
             The verbosity level, 0 = silent
 
         Returns
         -------
-        success: bool
+        success
             Whether all stages were successful
-        results: tuple
-            The results of the pipeline, a tuple of (algo, farm_results)
-            if successful, otherwise (layout_xy, None)
+        results
+            The results of the pipeline, containing the algorithm and farm
+            results when successful, otherwise the layout coordinates and no
+            farm result.
 
         """
         success, results = super().run(

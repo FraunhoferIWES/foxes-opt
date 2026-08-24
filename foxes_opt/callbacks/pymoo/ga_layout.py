@@ -13,18 +13,17 @@ class GAWriteLayoutCallbackTemplate(DefaultCallbackTemplate):
 
     Parameters
     ----------
-    out_dir : str
+    out_dir
         The output directory where the layout will be written
-    base_name : str
+    base_name
         The base name for the layout files
-    n_gen_step : int
+    n_gen_step
         The number of generations between writing the layout
-    figsize : tuple, optional
+    figsize
         The figure size for the layout plot
-    verbosity : int
+    verbosity
         The verbosity level, 0 = silent
 
-    :group: opt.callbacks.pymoo
 
     """
 
@@ -45,17 +44,17 @@ class GAWriteLayoutCallbackTemplate(DefaultCallbackTemplate):
 
         Parameters
         ----------
-        out_dir : str
+        out_dir
             The output directory where the layout will be written
-        base_name : str
+        base_name
             The base name for the layout files
-        n_gen_step : int
+        n_gen_step
             The number of generations between writing the layout
-        figsize : tuple, optional
+        figsize
             The figure size for the layout plot
-        verbosity : int
+        verbosity
             The verbosity level, 0 = silent
-        from_farm_results : bool
+        from_farm_results
             Whether to get the layout from farm results
 
         """

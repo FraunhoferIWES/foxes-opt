@@ -18,14 +18,13 @@ class FarmOptProblem(Problem):
 
     Attributes
     ----------
-    algo: foxes.core.Algorithm
+    algo
         The algorithm
-    calc_farm_args: dict
+    calc_farm_args
         Additional parameters for algo.calc_farm()
-    points : numpy.ndarray
+    points
         The probe points, shape: (n_states, n_points, 3)
 
-    :group: opt.core
 
     """
 
@@ -43,18 +42,18 @@ class FarmOptProblem(Problem):
 
         Parameters
         ----------
-        name: str
+        name
             The problem's name
-        algo: foxes.core.Algorithm
+        algo
             The algorithm
-        sel_turbines: list of int, optional
+        sel_turbines
             The turbines selected for optimization,
             or None for all
-        calc_farm_args: dict
+        calc_farm_args
             Additional parameters for algo.calc_farm()
-        points: numpy.ndarray, optional
+        points
             The probe points, shape: (n_states, n_points, 3)
-        kwargs: dict, optional
+        kwargs
             Additional parameters for `iwopy.Problem`
 
         """
@@ -74,7 +73,7 @@ class FarmOptProblem(Problem):
 
         Returns
         -------
-        foxes.core.WindFarm :
+        value
             The wind farm
 
         """
@@ -87,7 +86,7 @@ class FarmOptProblem(Problem):
 
         Returns
         -------
-        list of int :
+        value
             Indices of the selected turbines
 
         """
@@ -104,7 +103,7 @@ class FarmOptProblem(Problem):
 
         Returns
         -------
-        int :
+        value
             The numer of selected turbines
 
         """
@@ -117,7 +116,7 @@ class FarmOptProblem(Problem):
 
         Returns
         -------
-        bool :
+        value
             True if all turbines are subject to optimization
 
         """
@@ -130,7 +129,7 @@ class FarmOptProblem(Problem):
 
         Returns
         -------
-        int :
+        value
             The current value of the application counter
 
         """
@@ -143,14 +142,14 @@ class FarmOptProblem(Problem):
 
         Parameters
         ----------
-        var: str
+        var
             The variable name
-        turbine_i: int
+        turbine_i
             The turbine index
 
         Returns
         -------
-        str :
+        value
             The turbine variable name
 
         """
@@ -164,14 +163,14 @@ class FarmOptProblem(Problem):
 
         Parameters
         ----------
-        tvr: str
+        tvr
             The turbine variable name
 
         Returns
         -------
-        var: str
+        var
             The foxes variable name
-        turbine_i: int
+        turbine_i
             The turbine index
 
         """
@@ -184,7 +183,7 @@ class FarmOptProblem(Problem):
 
         Parameters
         ----------
-        verbosity: int
+        verbosity
             The verbosity level, 0 = silent
 
         """
@@ -251,9 +250,9 @@ class FarmOptProblem(Problem):
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
 
         """
@@ -274,9 +273,9 @@ class FarmOptProblem(Problem):
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int,)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float,)
 
         """
@@ -296,14 +295,14 @@ class FarmOptProblem(Problem):
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
 
         Returns
         -------
-        problem_results: Any
+        problem_results
             The results of the variable application
             to the problem
 
@@ -338,14 +337,14 @@ class FarmOptProblem(Problem):
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
 
         Returns
         -------
-        problem_results: Any
+        problem_results
             The results of the variable application
             to the problem
 
@@ -390,7 +389,7 @@ class FarmOptProblem(Problem):
 
         Parameters
         ----------
-        ax: matplotlib.pyplot.Axis
+        ax
             The figure axis
 
         """
@@ -408,11 +407,11 @@ class FarmOptProblem(Problem):
 
         Parameters
         ----------
-        problem_type: string
+        problem_type
             The selected derived class name
-        args: tuple, optional
+        args
             Additional parameters for the constructor
-        kwargs: dict, optional
+        kwargs
             Additional parameters for the constructor
 
         """
