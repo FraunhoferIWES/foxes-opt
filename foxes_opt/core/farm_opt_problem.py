@@ -242,13 +242,15 @@ class FarmOptProblem(Problem):
             The float variable values, shape: (n_pop, n_vars_float,)
 
         """
-        # set/reset pop states, if needed:
+        # Always rebuild the population-states wrapper. Repeated vectorized
+        # evaluations (e.g. solver finalization) must start from a clean
+        # mapping between original and expanded state dimensions.
         n_pop = len(vars_float)
         if not isinstance(self.algo.states, PopulationStates):
-            self._reset_states(PopulationStates(self.algo.states, n_pop))
-        elif self.algo.states.n_pop != n_pop:
+            ostates = self.algo.states
+        else:
             ostates = self.algo.states.states
-            self._reset_states(PopulationStates(ostates, n_pop))
+        self._reset_states(PopulationStates(ostates, n_pop))
 
     def apply_individual(self, vars_int, vars_float):
         """

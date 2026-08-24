@@ -8,6 +8,7 @@ from foxes_opt.core.farm_opt_problem import FarmOptProblem
 from foxes_opt.core.farm_vars_problem import FarmVarsProblem
 from foxes_opt.constraints import FarmBoundaryConstraint
 from foxes_opt.objectives import MaxFarmPower
+from foxes_opt.problems import OptFarmVars
 from foxes_opt.problems.layout import FarmLayoutOptProblem
 
 
@@ -150,3 +151,44 @@ def test_farm_vars_population_flattening_is_state_major(monkeypatch):
     got = algo.mbook.turbine_models["dummy"].data["dummy_var"][:, 0]
     expected = np.array([11.0, 22.0, 33.0, 101.0, 202.0, 303.0])
     assert np.allclose(got, expected)
+
+
+def test_opt_farm_vars_population_repeated_apply_is_consistent():
+    farm = foxes.WindFarm(boundary=foxes.utils.geom2d.Circle([0.0, 0.0], 1000.0))
+    foxes.input.farm_layout.add_row(
+        farm=farm,
+        xy_base=np.array([0.0, 0.0]),
+        xy_step=np.array([200.0, 0.0]),
+        n_turbines=2,
+        turbine_models=["opt_yawm", "yawm2yaw", "NREL5MW"],
+    )
+
+    states = foxes.input.states.ScanStates(
+        scans={FV.WS: [8.0], FV.WD: [270.0], FV.TI: [0.08], FV.RHO: [1.225]}
+    )
+
+    algo = foxes.algorithms.Downwind(
+        farm,
+        states,
+        rotor_model="centre",
+        wake_models=["Bastankhah2016_linear_ka02"],
+        wake_deflection="JimenezProj",
+        verbosity=0,
+    )
+
+    problem = OptFarmVars("opt_yawm", algo)
+    problem.add_var(FV.YAWM, float, 0.0, -30.0, 30.0, level="state-turbine")
+    problem.add_objective(MaxFarmPower(problem))
+    problem.initialize(verbosity=0)
+
+    n_pop = 4
+    vars_int = np.zeros((n_pop, problem.n_vars_int), dtype=int)
+    vars_float = np.zeros((n_pop, problem.n_vars_float), dtype=float)
+
+    res0 = problem.apply_population(vars_int, vars_float)
+    res1 = problem.apply_population(vars_int, vars_float)
+
+    assert isinstance(algo.states, PopulationStates)
+    assert algo.states.n_pop == n_pop
+    assert res0.sizes["state"] == n_pop
+    assert res1.sizes["state"] == n_pop

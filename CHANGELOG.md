@@ -105,7 +105,9 @@
 
 ## v0.7.2
 
+- Compatibility with *foxes* v1.9.0
 - Examples:
   - New example `layout_field_data`, demonstrating pymoo-based layout optimization with `FieldData` states loaded from multiple NetCDF files
+- Fixing the single-state pymoo example for current *foxes* layout output arguments
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.7.2](https://github.com/FraunhoferIWES/foxes/commits/v0.7.2)
