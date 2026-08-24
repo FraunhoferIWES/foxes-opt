@@ -1,6 +1,13 @@
+from typing import Any, TYPE_CHECKING
+
 from iwopy import Constraint
+from foxes.core import WindFarm
 
 from foxes.utils import all_subclasses, new_instance
+
+if TYPE_CHECKING:
+    from matplotlib.axes import Axes
+    from .farm_opt_problem import FarmOptProblem
 
 
 class FarmConstraint(Constraint):
@@ -12,7 +19,13 @@ class FarmConstraint(Constraint):
 
     """
 
-    def __init__(self, problem, name, sel_turbines=None, **kwargs):
+    def __init__(
+        self,
+        problem: "FarmOptProblem",
+        name: str,
+        sel_turbines: list[int] | None = None,
+        **kwargs: Any,
+    ) -> None:
         """
         Constructor.
 
@@ -32,7 +45,7 @@ class FarmConstraint(Constraint):
         self._sel_turbines = sel_turbines
 
     @property
-    def farm(self):
+    def farm(self) -> WindFarm:
         """
         The wind farm
 
@@ -45,7 +58,7 @@ class FarmConstraint(Constraint):
         return self.problem.farm
 
     @property
-    def sel_turbines(self):
+    def sel_turbines(self) -> list[int]:
         """
         The list of selected turbines
 
@@ -62,7 +75,7 @@ class FarmConstraint(Constraint):
         )
 
     @property
-    def n_sel_turbines(self):
+    def n_sel_turbines(self) -> int:
         """
         The numer of selected turbines
 
@@ -74,7 +87,7 @@ class FarmConstraint(Constraint):
         """
         return len(self.sel_turbines)
 
-    def add_to_layout_figure(self, ax, **kwargs):
+    def add_to_layout_figure(self, ax: "Axes", **kwargs: Any) -> "Axes":
         """
         Add to a layout figure
 
@@ -87,7 +100,7 @@ class FarmConstraint(Constraint):
         return ax
 
     @classmethod
-    def print_models(cls):
+    def print_models(cls) -> None:
         """
         Prints all model names.
         """
@@ -96,7 +109,7 @@ class FarmConstraint(Constraint):
             print(n)
 
     @classmethod
-    def new(cls, constraint_type, *args, **kwargs):
+    def new(cls, constraint_type: str, *args: Any, **kwargs: Any) -> Any:
         """
         Run-time farm constraint factory.
 

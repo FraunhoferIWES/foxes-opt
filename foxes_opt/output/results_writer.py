@@ -1,3 +1,5 @@
+from typing import Any
+
 from xarray import Dataset
 from iwopy.core import SingleObjOptResults, MultiObjOptResults
 from foxes.utils import write_nc
@@ -13,7 +15,7 @@ class SingleObjResultsWriter(OptOutput):
 
     """
 
-    def __init__(self, opt_results, **kwargs):
+    def __init__(self, opt_results: SingleObjOptResults, **kwargs: Any) -> None:
         """
         Constructor
 
@@ -33,7 +35,7 @@ class SingleObjResultsWriter(OptOutput):
                 f"{type(self).__name__}: Require results of type 'SingleObjOptResults', got '{type(opt_results).__name__}'"
             )
 
-    def get_dataset(self):
+    def get_dataset(self) -> Dataset:
         """
         Translates results into dataset
 
@@ -69,7 +71,7 @@ class SingleObjResultsWriter(OptOutput):
 
         return ds
 
-    def write_nc(self, fname, verbosity=1, **kwargs):
+    def write_nc(self, fname: str, verbosity: int = 1, **kwargs: Any) -> None:
         """
         Writes to NetCDF file
 
@@ -96,7 +98,7 @@ class MultiObjResultsWriter(OptOutput):
 
     """
 
-    def __init__(self, opt_results, **kwargs):
+    def __init__(self, opt_results: MultiObjOptResults, **kwargs: Any) -> None:
         """
         Constructor
 
@@ -116,7 +118,7 @@ class MultiObjResultsWriter(OptOutput):
                 f"{type(self).__name__}: Require results of type 'MultiObjOptResults', got '{type(opt_results).__name__}'"
             )
 
-    def get_dataset(self):
+    def get_dataset(self) -> Dataset:
         """
         Translates results into dataset
 
@@ -153,7 +155,7 @@ class MultiObjResultsWriter(OptOutput):
 
         return ds
 
-    def write_nc(self, fname, verbosity=1, **kwargs):
+    def write_nc(self, fname: str, verbosity: int = 1, **kwargs: Any) -> None:
         """
         Writes to NetCDF file
 

@@ -1,3 +1,5 @@
+from typing import Any
+
 import numpy as np
 import pandas as pd
 
@@ -14,7 +16,7 @@ class OptFarmVars(FarmVarsProblem):
 
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         """
         Constructor.
 
@@ -27,19 +29,19 @@ class OptFarmVars(FarmVarsProblem):
 
         """
         super().__init__(*args, **kwargs)
-        self._vars = None
+        self._vars: pd.DataFrame | None = None
 
     def add_var(
         self,
-        variable,
-        typ,
-        init,
-        min,
-        max,
-        level="uniform",
-        sel=None,
-        model_key=None,
-    ):
+        variable: str,
+        typ: type[float] | type[int] | str,
+        init: float | int,
+        min: float | int,
+        max: float | int,
+        level: str = "uniform",
+        sel: Any = None,
+        model_key: str | None = None,
+    ) -> None:
         """
         Add a variable.
 
@@ -232,7 +234,12 @@ class OptFarmVars(FarmVarsProblem):
         for c in icols:
             self._vars[c] = self._vars[c].astype(config.dtype_int)
 
-    def initialize(self, verbosity=1, **kwargs):
+    def initialize(
+        self,
+        verbosity: int = 1,
+        model_vars: dict[str, list[str]] | list[str] | None = None,
+        **kwargs: Any,
+    ) -> None:
         """
         Initialize the object.
 
@@ -260,7 +267,7 @@ class OptFarmVars(FarmVarsProblem):
             if mname not in vrs:
                 vrs[mname] = set(g["var"].tolist())
             else:
-                vrs[mname] = vrs[mname].update(g["var"].tolist())
+                vrs[mname].update(g["var"].tolist())
 
         super().initialize(
             model_vars={mname: list(vrs) for mname, vrs in vrs.items()},
@@ -268,7 +275,7 @@ class OptFarmVars(FarmVarsProblem):
             **kwargs,
         )
 
-    def var_names_int(self):
+    def var_names_int(self) -> list[str]:
         """
         The names of int variables.
 
@@ -289,7 +296,7 @@ class OptFarmVars(FarmVarsProblem):
         else:
             return grps.get_group("int")["name"].tolist()
 
-    def initial_values_int(self):
+    def initial_values_int(self) -> np.ndarray:
         """
         The initial values of the int variables.
 
@@ -306,11 +313,11 @@ class OptFarmVars(FarmVarsProblem):
 
         grps = self._vars.groupby("type")
         if "int" not in grps.groups.keys():
-            return []
+            return np.array([], dtype=config.dtype_int)
         else:
             return grps.get_group("int")["init"].to_numpy(config.dtype_int)
 
-    def min_values_int(self):
+    def min_values_int(self) -> np.ndarray:
         """
         The minimal values of the integer variables.
 
@@ -329,11 +336,11 @@ class OptFarmVars(FarmVarsProblem):
 
         grps = self._vars.groupby("type")
         if "int" not in grps.groups.keys():
-            return []
+            return np.array([], dtype=config.dtype_int)
         else:
             return grps.get_group("int")["min"].to_numpy(config.dtype_int)
 
-    def max_values_int(self):
+    def max_values_int(self) -> np.ndarray:
         """
         The maximal values of the integer variables.
 
@@ -352,11 +359,11 @@ class OptFarmVars(FarmVarsProblem):
 
         grps = self._vars.groupby("type")
         if "int" not in grps.groups.keys():
-            return []
+            return np.array([], dtype=config.dtype_int)
         else:
             return grps.get_group("int")["max"].to_numpy(config.dtype_int)
 
-    def var_names_float(self):
+    def var_names_float(self) -> list[str]:
         """
         The names of float variables.
 
@@ -377,7 +384,7 @@ class OptFarmVars(FarmVarsProblem):
         else:
             return grps.get_group("float")["name"].tolist()
 
-    def initial_values_float(self):
+    def initial_values_float(self) -> np.ndarray:
         """
         The initial values of the float variables.
 
@@ -394,11 +401,11 @@ class OptFarmVars(FarmVarsProblem):
 
         grps = self._vars.groupby("type")
         if "float" not in grps.groups.keys():
-            return []
+            return np.array([], dtype=config.dtype_double)
         else:
             return grps.get_group("float")["init"].to_numpy(config.dtype_double)
 
-    def min_values_float(self):
+    def min_values_float(self) -> np.ndarray:
         """
         The minimal values of the float variables.
 
@@ -417,11 +424,11 @@ class OptFarmVars(FarmVarsProblem):
 
         grps = self._vars.groupby("type")
         if "float" not in grps.groups.keys():
-            return []
+            return np.array([], dtype=config.dtype_double)
         else:
             return grps.get_group("float")["min"].to_numpy(config.dtype_double)
 
-    def max_values_float(self):
+    def max_values_float(self) -> np.ndarray:
         """
         The maximal values of the float variables.
 
@@ -440,11 +447,13 @@ class OptFarmVars(FarmVarsProblem):
 
         grps = self._vars.groupby("type")
         if "float" not in grps.groups.keys():
-            return []
+            return np.array([], dtype=config.dtype_double)
         else:
             return grps.get_group("float")["max"].to_numpy(config.dtype_double)
 
-    def opt2farm_vars_individual(self, vars_int, vars_float):
+    def opt2farm_vars_individual(
+        self, vars_int: np.ndarray, vars_float: np.ndarray
+    ) -> dict[str, np.ndarray]:
         """
         Translates optimization variables to farm variables
 
@@ -465,6 +474,11 @@ class OptFarmVars(FarmVarsProblem):
             (n_states, n_sel_turbines)
 
         """
+        if self._vars is None:
+            raise ValueError(
+                f"Problem '{self.name}': No variables added for optimization."
+            )
+
         n_states = self.algo.n_states
         n_sturb = self.n_sel_turbines
 
@@ -512,7 +526,9 @@ class OptFarmVars(FarmVarsProblem):
 
         return farm_vars
 
-    def opt2farm_vars_population(self, vars_int, vars_float, n_states):
+    def opt2farm_vars_population(
+        self, vars_int: np.ndarray, vars_float: np.ndarray, n_states: int
+    ) -> dict[str, np.ndarray]:
         """
         Translates optimization variables to farm variables
 
@@ -535,6 +551,11 @@ class OptFarmVars(FarmVarsProblem):
             (n_states, n_pop, n_sel_turbines)
 
         """
+        if self._vars is None:
+            raise ValueError(
+                f"Problem '{self.name}': No variables added for optimization."
+            )
+
         n_pop = vars_float.shape[0]
         n_sturb = self.n_sel_turbines
 

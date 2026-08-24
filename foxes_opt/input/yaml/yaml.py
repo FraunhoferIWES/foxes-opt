@@ -6,7 +6,7 @@ from foxes.utils import Dict
 from .dict import run_dict
 
 
-def foxes_opt_yaml():
+def foxes_opt_yaml() -> None:
     """
     Command line tool for running foxes from yaml file input.
 

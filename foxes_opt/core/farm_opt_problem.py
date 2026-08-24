@@ -1,10 +1,15 @@
+from typing import Any, TYPE_CHECKING
+
 import numpy as np
 from iwopy import Problem
 
 from foxes.algorithms.downwind.models import PopulationStates
-from foxes.core import has_engine, Engine
+from foxes.core import has_engine, Engine, Algorithm, States, WindFarm
 from foxes.config import config
 from foxes.utils import new_instance
+
+if TYPE_CHECKING:
+    from matplotlib.axes import Axes
 
 
 class FarmOptProblem(Problem):
@@ -26,13 +31,13 @@ class FarmOptProblem(Problem):
 
     def __init__(
         self,
-        name,
-        algo,
-        sel_turbines=None,
-        calc_farm_args={},
-        points=None,
-        **kwargs,
-    ):
+        name: str,
+        algo: Algorithm,
+        sel_turbines: list[int] | None = None,
+        calc_farm_args: dict[str, Any] | None = None,
+        points: np.ndarray | None = None,
+        **kwargs: Any,
+    ) -> None:
         """
         Constructor.
 
@@ -56,14 +61,14 @@ class FarmOptProblem(Problem):
         super().__init__(name, **kwargs)
 
         self.algo = algo
-        self.calc_farm_args = calc_farm_args
+        self.calc_farm_args = {} if calc_farm_args is None else calc_farm_args
         self.points = points
 
         self._sel_turbines = sel_turbines
-        self._count = None
+        self._count: int | None = None
 
     @property
-    def farm(self):
+    def farm(self) -> WindFarm:
         """
         The wind farm
 
@@ -76,7 +81,7 @@ class FarmOptProblem(Problem):
         return self.algo.farm
 
     @property
-    def sel_turbines(self):
+    def sel_turbines(self) -> list[int]:
         """
         The selected turbines
 
@@ -93,7 +98,7 @@ class FarmOptProblem(Problem):
         )
 
     @property
-    def n_sel_turbines(self):
+    def n_sel_turbines(self) -> int:
         """
         The numer of selected turbines
 
@@ -106,7 +111,7 @@ class FarmOptProblem(Problem):
         return len(self.sel_turbines)
 
     @property
-    def all_turbines(self):
+    def all_turbines(self) -> bool:
         """
         Flag for all turbines optimization
 
@@ -119,7 +124,7 @@ class FarmOptProblem(Problem):
         return len(self.sel_turbines) == self.algo.n_turbines
 
     @property
-    def counter(self):
+    def counter(self) -> int | None:
         """
         The current value of the application counter
 
@@ -132,7 +137,7 @@ class FarmOptProblem(Problem):
         return self._count
 
     @classmethod
-    def tvar(cls, var, turbine_i):
+    def tvar(cls, var: str, turbine_i: int) -> str:
         """
         Gets turbine variable name
 
@@ -152,7 +157,7 @@ class FarmOptProblem(Problem):
         return f"{var}_{turbine_i:04d}"
 
     @classmethod
-    def parse_tvar(cls, tvr):
+    def parse_tvar(cls, tvr: str) -> tuple[str, int]:
         """
         Parse foxes variable name and turbine index
         from turbine variable
@@ -173,7 +178,7 @@ class FarmOptProblem(Problem):
         t = tvr.split("_")
         return t[0], int(t[1])
 
-    def initialize(self, verbosity=1):
+    def initialize(self, verbosity: int = 1) -> None:
         """
         Initialize the object.
 
@@ -194,18 +199,49 @@ class FarmOptProblem(Problem):
 
         super().initialize(verbosity)
 
-    def _reset_states(self, states):
+    def _reset_states(self, states: States) -> None:
         """
         Reset the states in the algorithm
         """
         if states is not self.algo.states:
-            self.algo.clear_loaded_data()
+            if hasattr(self.algo, "clear_loaded_data"):
+                self.algo.clear_loaded_data()
             if self.algo.initialized:
                 self.algo.finalize()
             self.algo.states = states
-            self.algo.reset_chunk_store()
+            if hasattr(self.algo, "reset_chunk_store"):
+                self.algo.reset_chunk_store()
 
-    def update_problem_individual(self, vars_int, vars_float):
+            # Compatibility shim for older foxes versions that keep model data
+            # in idata_mem/get_model_data but do not expose loaded_data.
+            if not hasattr(self.algo, "loaded_data") and hasattr(
+                self.algo, "get_model_data"
+            ):
+                try:
+                    idata = self.algo.get_model_data(self.algo.states)
+                except Exception:
+                    idata = {"coords": {}, "data_vars": {}}
+                data_vars = dict(idata.get("data_vars", {}))
+                if (
+                    "PopulationStates_SMAP" in data_vars
+                    and "PopulationStates_smap" not in data_vars
+                ):
+                    data_vars["PopulationStates_smap"] = data_vars[
+                        "PopulationStates_SMAP"
+                    ]
+                setattr(
+                    self.algo,
+                    "loaded_data",
+                    {
+                        "coords": dict(idata.get("coords", {})),
+                        "data_vars": data_vars,
+                        "extra_data": {},
+                    },
+                )
+
+    def update_problem_individual(
+        self, vars_int: np.ndarray, vars_float: np.ndarray
+    ) -> None:
         """
         Update the algo and other data using
         the latest optimization variables.
@@ -226,7 +262,9 @@ class FarmOptProblem(Problem):
             self._reset_states(self.algo.states.states)
             self.algo.n_states = self._org_n_states
 
-    def update_problem_population(self, vars_int, vars_float):
+    def update_problem_population(
+        self, vars_int: np.ndarray, vars_float: np.ndarray
+    ) -> None:
         """
         Update the algo and other data using
         the latest optimization variables.
@@ -245,14 +283,14 @@ class FarmOptProblem(Problem):
         # Always rebuild the population-states wrapper. Repeated vectorized
         # evaluations (e.g. solver finalization) must start from a clean
         # mapping between original and expanded state dimensions.
-        n_pop = len(vars_float)
+        n_pop: int = len(vars_float)
         if not isinstance(self.algo.states, PopulationStates):
             ostates = self.algo.states
         else:
             ostates = self.algo.states.states
         self._reset_states(PopulationStates(ostates, n_pop))
 
-    def apply_individual(self, vars_int, vars_float):
+    def apply_individual(self, vars_int: np.ndarray, vars_float: np.ndarray) -> Any:
         """
         Apply new variables to the problem.
 
@@ -270,10 +308,12 @@ class FarmOptProblem(Problem):
             to the problem
 
         """
+        if self._count is None:
+            raise RuntimeError(f"Problem '{self.name}' not initialized")
         self._count += 1
         self.update_problem_individual(vars_int, vars_float)
 
-        def _run_calc(algo):
+        def _run_calc(algo: Algorithm) -> Any:
             """Helper function to run main foxes calculations"""
             farm_results = algo.calc_farm(**self.calc_farm_args)
             algo.verbosity = 0
@@ -291,7 +331,7 @@ class FarmOptProblem(Problem):
 
         return results
 
-    def apply_population(self, vars_int, vars_float):
+    def apply_population(self, vars_int: np.ndarray, vars_float: np.ndarray) -> Any:
         """
         Apply new variables to the problem,
         for a whole population.
@@ -310,11 +350,13 @@ class FarmOptProblem(Problem):
             to the problem
 
         """
+        if self._count is None:
+            raise RuntimeError(f"Problem '{self.name}' not initialized")
         self._count += 1
 
         self.update_problem_population(vars_int, vars_float)
 
-        def _run_calc(algo):
+        def _run_calc(algo: Algorithm) -> Any:
             """Helper function to run main foxes calculations"""
             farm_results = algo.calc_farm(**self.calc_farm_args)
             farm_results["n_pop"] = len(vars_float)
@@ -342,7 +384,7 @@ class FarmOptProblem(Problem):
 
         return results
 
-    def add_to_layout_figure(self, ax, **kwargs):
+    def add_to_layout_figure(self, ax: "Axes", **kwargs: Any) -> "Axes":
         """
         Add to a layout figure
 
@@ -360,7 +402,7 @@ class FarmOptProblem(Problem):
         return ax
 
     @classmethod
-    def new(cls, problem_type, *args, **kwargs):
+    def new(cls, problem_type: str, *args: Any, **kwargs: Any) -> Any:
         """
         Run-time farm opt problem factory.
 

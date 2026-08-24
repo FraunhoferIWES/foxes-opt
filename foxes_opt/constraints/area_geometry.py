@@ -1,6 +1,10 @@
+from typing import Any
+
 import numpy as np
+from foxes.utils.geom2d import AreaGeometry
 
 from foxes_opt.core.farm_constraint import FarmConstraint
+from foxes_opt.core.farm_opt_problem import FarmOptProblem
 import foxes.variables as FV
 
 
@@ -28,14 +32,14 @@ class AreaGeometryConstraint(FarmConstraint):
 
     def __init__(
         self,
-        problem,
-        name,
-        geometry,
-        sel_turbines=None,
-        disc_inside=False,
-        D=None,
-        **kwargs,
-    ):
+        problem: FarmOptProblem,
+        name: str,
+        geometry: AreaGeometry,
+        sel_turbines: list[int] | None = None,
+        disc_inside: bool = False,
+        D: float | None = None,
+        **kwargs: Any,
+    ) -> None:
         """
         Constructor.
 
@@ -72,7 +76,7 @@ class AreaGeometryConstraint(FarmConstraint):
             problem, name, sel_turbines, vnames_float=vrs, cnames=cns, **kwargs
         )
 
-    def n_components(self):
+    def n_components(self) -> int:
         """
         Returns the number of components of the
         function.
@@ -85,7 +89,7 @@ class AreaGeometryConstraint(FarmConstraint):
         """
         return self.n_sel_turbines
 
-    def vardeps_float(self):
+    def vardeps_float(self) -> np.ndarray[tuple[int, int], np.dtype[np.bool_]]:
         """
         Gets the dependencies of all components
         on the function float variables
@@ -102,7 +106,13 @@ class AreaGeometryConstraint(FarmConstraint):
         np.fill_diagonal(deps[:, :, 1], True)
         return deps.reshape(self.n_components(), self.n_components() * 2)
 
-    def calc_individual(self, vars_int, vars_float, problem_results, components=None):
+    def calc_individual(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: Any,
+        components: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for a single individual of the
         underlying problem.
@@ -125,9 +135,9 @@ class AreaGeometryConstraint(FarmConstraint):
             The component values, shape: (n_sel_components,)
 
         """
-        s = np.s_[:]
+        s: slice | np.ndarray[Any, np.dtype[np.int_]] = np.s_[:]
         if components is not None and len(components) < self.n_components():
-            s = components
+            s = np.asarray(components, dtype=int)
         xy = vars_float.reshape(self.n_components(), 2)[s]
 
         dists = self.geometry.points_distance(xy)
@@ -141,7 +151,13 @@ class AreaGeometryConstraint(FarmConstraint):
 
         return dists
 
-    def calc_population(self, vars_int, vars_float, problem_results, components=None):
+    def calc_population(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: Any,
+        components: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for all individuals of a population.
 
@@ -165,10 +181,10 @@ class AreaGeometryConstraint(FarmConstraint):
         """
         n_pop = len(vars_float)
         n_cmpnts = self.n_components()
-        s = np.s_[:]
+        s: slice | np.ndarray[Any, np.dtype[np.int_]] = np.s_[:]
         if components is not None and len(components) < self.n_components():
             n_cmpnts = len(components)
-            s = components
+            s = np.asarray(components, dtype=int)
         xy = vars_float[:, s].reshape(n_pop * n_cmpnts, 2)
 
         dists = self.geometry.points_distance(xy)
@@ -195,7 +211,9 @@ class FarmBoundaryConstraint(AreaGeometryConstraint):
 
     """
 
-    def __init__(self, problem, name="boundary", **kwargs):
+    def __init__(
+        self, problem: FarmOptProblem, name: str = "boundary", **kwargs: Any
+    ) -> None:
         """
         Constructor.
 

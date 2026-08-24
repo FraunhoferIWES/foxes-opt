@@ -1,8 +1,11 @@
+from typing import Any
+
 import numpy as np
 from tqdm.autonotebook import tqdm
 from scipy.interpolate import RegularGridInterpolator
 from scipy.spatial.distance import cdist
 
+from iwopy import Pipeline
 from iwopy.core import PipelineStage
 
 from foxes import WindFarm, Turbine
@@ -35,13 +38,13 @@ class AmbientRowsStage(PipelineStage):
 
     def __init__(
         self,
-        stepsize_ortho,
-        mean_flow_states,
-        mean_flow_var2ncvar={},
-        stepsize_wd=None,
-        name="ambient_rows",
-        **kwargs,
-    ):
+        stepsize_ortho: float,
+        mean_flow_states: SingleStateField,
+        mean_flow_var2ncvar: dict[str, str] | None = None,
+        stepsize_wd: float | None = None,
+        name: str = "ambient_rows",
+        **kwargs: Any,
+    ) -> None:
         """
         Constructor.
 
@@ -66,9 +69,11 @@ class AmbientRowsStage(PipelineStage):
         self.stepsize_ortho = stepsize_ortho
         self.stepsize_wd = stepsize_wd
         self.mean_flow_states = mean_flow_states
-        self.mean_flow_var2ncvar = mean_flow_var2ncvar
+        self.mean_flow_var2ncvar = (
+            {} if mean_flow_var2ncvar is None else mean_flow_var2ncvar
+        )
 
-    def initialize(self, pipeline, verbosity=0):
+    def initialize(self, pipeline: Pipeline, verbosity: int = 0) -> None:
         """
         Initialize the stage. This method is called before running the stage.
 
@@ -200,7 +205,13 @@ class AmbientRowsStage(PipelineStage):
             axis=-1,
         )
         del uv
-        self._interpolator = RegularGridInterpolator(
+        self._interpolator: RegularGridInterpolator[
+            tuple[
+                np.ndarray[tuple[int, ...], np.dtype[Any]],
+                np.ndarray[tuple[int, ...], np.dtype[Any]],
+            ],
+            np.ndarray[tuple[int, ...], np.dtype],
+        ] = RegularGridInterpolator(
             (
                 self._points[:, 0].reshape(self._nx, self._ny)[:, 0],
                 self._points[:, 1].reshape(self._nx, self._ny)[0, :],
@@ -218,14 +229,21 @@ class AmbientRowsStage(PipelineStage):
         self._n_points = self._points.shape[0]
         self._ws = self._ws[pvalid]
         self._wd = self._wd[pvalid]
-        self._porder = np.argsort(self._ws)[::-1]
+        self._porder: np.ndarray[tuple[int, ...], np.dtype[np.signedinteger]] = (
+            np.argsort(self._ws)[::-1]
+        )
 
         if verbosity > 0:
             print(
                 f"{self.name}: Mean wind speeds range: {self._ws[self._porder[-1]]:.2f} - {self._ws[self._porder[0]]:.2f} m/s"
             )
 
-    def run(self, prev_stage=None, prev_results=None, verbosity=1):
+    def run(
+        self,
+        prev_stage: PipelineStage | None = None,
+        prev_results: Any = None,
+        verbosity: int = 1,
+    ) -> tuple[bool, np.ndarray]:
         """
         Run the pipeline stage.
 
@@ -249,7 +267,7 @@ class AmbientRowsStage(PipelineStage):
 
         # prepare:
         if verbosity > 0:
-            pbar = tqdm(
+            pbar: tqdm = tqdm(
                 total=self._n_turbines, desc=f"{self.name}: Running mean_ambient stage"
             )
         else:
@@ -260,14 +278,19 @@ class AmbientRowsStage(PipelineStage):
         pts = np.full((self._n_turbines, 2), np.nan, dtype=config.dtype_double)
         i = 0
 
-        def _new_turbine(p):
+        def _new_turbine(p: np.ndarray) -> None:
             nonlocal i
             pts[i] = p
             i += 1
             if pbar is not None:
                 pbar.update(1)
 
-        def _is_near(p, pts, uv=None, n=None):
+        def _is_near(
+            p: np.ndarray,
+            pts: np.ndarray,
+            uv: np.ndarray | None = None,
+            n: np.ndarray | None = None,
+        ) -> np.bool_:
             d = pts - p[None, :]
             if self.stepsize_wd is not None:
                 if uv is None:
@@ -283,7 +306,7 @@ class AmbientRowsStage(PipelineStage):
 
         skip_u = set()
 
-        def _next_u(u=-1):
+        def _next_u(u: int = -1) -> None | int:
             # u = -1
             while True:
                 u = u + 1
@@ -299,36 +322,38 @@ class AmbientRowsStage(PipelineStage):
                     return u
 
         def _walk(
-            p,
-            n,
-            dir,
-            stepsize,
-            res_puvdir,
-            res_ws,
-            ws_next,
-            cnd_puvdir=None,
-            cnd_ws=None,
-            cond=None,
-        ):
+            p: np.ndarray,
+            n: np.ndarray,
+            dir: int,
+            stepsize: float,
+            res_puvdir: list[tuple[np.ndarray, np.ndarray, int]],
+            res_ws: list[float],
+            ws_next: float | None,
+            cnd_puvdir: list[tuple[np.ndarray, np.ndarray, int]] | None = None,
+            cnd_ws: list[float] | None = None,
+            cond: Any = None,
+        ) -> None:
+            cnd_puvdir_l = [] if cnd_puvdir is None else cnd_puvdir
+            cnd_ws_l = [] if cnd_ws is None else cnd_ws
             if i < self._n_turbines:
                 # search candidates:
                 ws0 = None
-                if cnd_puvdir is not None and len(cnd_puvdir):
+                if len(cnd_puvdir_l):
                     pops = set()
-                    for j in np.argsort(cnd_ws)[::-1]:
-                        q0, uv0, __ = cnd_puvdir[j]
+                    for j in np.argsort(cnd_ws_l)[::-1]:
+                        q0, uv0, __ = cnd_puvdir_l[j]
                         if _is_near(q0, pts[:i], uv=uv0):
                             pops.add(j)
-                        elif (cond is None or cond(cnd_puvdir[j][0])) and (
-                            ws_next is None or cnd_ws[j] >= ws_next
+                        elif (cond is None or cond(cnd_puvdir_l[j][0])) and (
+                            ws_next is None or cnd_ws_l[j] >= ws_next
                         ):
-                            q0, uv0, dir0 = cnd_puvdir[j]
-                            ws0 = cnd_ws[j]
+                            q0, uv0, dir0 = cnd_puvdir_l[j]
+                            ws0 = cnd_ws_l[j]
                             pops.add(j)
                             break
                     for j in sorted(pops, reverse=True):
-                        cnd_puvdir.pop(j)
-                        cnd_ws.pop(j)
+                        cnd_puvdir_l.pop(j)
+                        cnd_ws_l.pop(j)
 
                 # walk in direction:
                 q = p + stepsize * dir * n
@@ -351,8 +376,8 @@ class AmbientRowsStage(PipelineStage):
                     uv = uv0
                     dir = dir0
                 else:
-                    cnd_puvdir.append((q0, uv0, dir0))
-                    cnd_ws.append(ws0)
+                    cnd_puvdir_l.append((q0, uv0, dir0))
+                    cnd_ws_l.append(ws0)
 
                 # check if better then next row point:
                 if ws_next is None or ws >= ws_next:
@@ -373,16 +398,18 @@ class AmbientRowsStage(PipelineStage):
                             cond=cond,
                         )
                 elif cnd_puvdir is not None and cnd_ws is not None:
-                    cnd_puvdir.append((q, uv, dir))
-                    cnd_ws.append(ws)
+                    cnd_puvdir_l.append((q, uv, dir))
+                    cnd_ws_l.append(ws)
 
-        u = 0
-        cnd_puvdir = []
-        cnd_ws = []
+        u: int | None = 0
+        cnd_puvdir: list[tuple[np.ndarray, np.ndarray, int]] = []
+        cnd_ws: list[float] = []
         while i < self._n_turbines:
+            if u is None:
+                break
             # get grid point data:
             o = self._porder[u]
-            p = self._points[o]
+            p: np.ndarray = self._points[o]
             ws = self._ws[o]
             uv = wd2uv(self._wd[o])
             n = np.array([-uv[1], uv[0]])
@@ -396,7 +423,7 @@ class AmbientRowsStage(PipelineStage):
             new_p = False
             if self.stepsize_wd is not None and self.stepsize_wd > 0:
 
-                def cond(q):
+                def cond(q: np.ndarray) -> bool:
                     return not _is_near(q, self._points)
 
                 res_puvdir = [(p, uv, 0)]
@@ -423,7 +450,7 @@ class AmbientRowsStage(PipelineStage):
                 )
                 if len(res_puvdir) > 1:
                     new_p = True
-                    j = np.argmax(res_ws)
+                    j = int(np.argmax(res_ws))
                     p, uv, _ = res_puvdir[j]
                     n = np.array([-uv[1], uv[0]])
 
@@ -437,8 +464,8 @@ class AmbientRowsStage(PipelineStage):
             _new_turbine(p)
 
             # add points in orthogonal direction:
-            res_puvdir_a = []
-            res_ws_a = []
+            res_puvdir_a: list[tuple[np.ndarray, np.ndarray, int]] = []
+            res_ws_a: list[float] = []
             _walk(
                 p,
                 n,
@@ -450,8 +477,8 @@ class AmbientRowsStage(PipelineStage):
                 cnd_puvdir,
                 cnd_ws,
             )
-            res_puvdir_b = []
-            res_ws_b = []
+            res_puvdir_b: list[tuple[np.ndarray, np.ndarray, int]] = []
+            res_ws_b: list[float] = []
             _walk(
                 p,
                 n,
@@ -498,9 +525,9 @@ class AmbientRowsStage(PipelineStage):
         """
 
         # check minimum distance between turbines:
-        mindist = cdist(pts, pts)
-        np.fill_diagonal(mindist, np.inf)
-        mindist = np.min(mindist)
+        dmat: np.ndarray[tuple[int, ...], np.dtype[np.floating]] = cdist(pts, pts)
+        np.fill_diagonal(dmat, np.inf)
+        mindist = float(np.min(dmat))
         if verbosity > 0:
             print(
                 f"{self.name}: Minimum distance between turbines: {mindist:.2f} m, minimum required: {self.stepsize_ortho:.2f} m"

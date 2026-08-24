@@ -1,3 +1,5 @@
+from typing import Any
+
 from iwopy import LocalFD
 from iwopy.core import Optimizer
 from foxes.input.yaml import read_dict as foxes_read_dict
@@ -7,7 +9,12 @@ from foxes.utils import Dict
 from foxes_opt.core import FarmOptProblem, FarmObjective, FarmConstraint
 
 
-def read_dict(idict, *args, verbosity=None, **kwargs):
+def read_dict(
+    idict: Dict,
+    *args: Any,
+    verbosity: int | None = None,
+    **kwargs: Any,
+) -> tuple[Any, Any, Optimizer]:
     """
     Read dictionary input into foxes objects
 
@@ -36,7 +43,7 @@ def read_dict(idict, *args, verbosity=None, **kwargs):
 
     """
 
-    def _print(*args, level=1, **kwargs):
+    def _print(*args: Any, level: int = 1, **kwargs: Any) -> None:
         if verbosity is None or verbosity >= level:
             print(*args, **kwargs)
 
@@ -94,13 +101,13 @@ def read_dict(idict, *args, verbosity=None, **kwargs):
 
 
 def run_outputs(
-    idict,
-    algo=None,
-    farm_results=None,
-    opt_results=None,
-    extra_sig={},
-    **kwargs,
-):
+    idict: Dict,
+    algo: Any = None,
+    farm_results: Any = None,
+    opt_results: Any = None,
+    extra_sig: dict[str, Any] | None = None,
+    **kwargs: Any,
+) -> Any:
     """
     Run outputs from dict.
 
@@ -130,6 +137,8 @@ def run_outputs(
     :group: input.yaml
 
     """
+    if extra_sig is None:
+        extra_sig = {}
     extra_sig.update({"opt_results": opt_results})
 
     out = foxes_run_output(
@@ -144,7 +153,14 @@ def run_outputs(
     return out
 
 
-def run_dict(idict, *args, extra_sig={}, nofig=False, verbosity=None, **kwargs):
+def run_dict(
+    idict: Dict,
+    *args: Any,
+    extra_sig: dict[str, Any] | None = None,
+    nofig: bool = False,
+    verbosity: int | None = None,
+    **kwargs: Any,
+) -> tuple[Any, tuple[Any, ...]]:
     """
     Run from a dictionary type parameter file.
 
@@ -176,9 +192,12 @@ def run_dict(idict, *args, extra_sig={}, nofig=False, verbosity=None, **kwargs):
 
     """
 
-    def _print(*args, level=1, **kwargs):
+    def _print(*args: Any, level: int = 1, **kwargs: Any) -> None:
         if verbosity is None or verbosity >= level:
             print(*args, **kwargs)
+
+    if extra_sig is None:
+        extra_sig = {}
 
     # read components:
     algo, engine, optimizer = read_dict(idict, *args, verbosity=verbosity, **kwargs)
@@ -189,6 +208,7 @@ def run_dict(idict, *args, extra_sig={}, nofig=False, verbosity=None, **kwargs):
     # run optimizer:
     rdict = idict.get_item("solve", Dict(_name=idict.name + ".solve"))
     results_storage = None
+    out_w: list[Any] = []
     if rdict.pop_item("run", True):
         _print("Running optimizer")
         with engine:

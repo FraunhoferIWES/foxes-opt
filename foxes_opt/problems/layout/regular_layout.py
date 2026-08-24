@@ -1,14 +1,24 @@
 import numpy as np
 from copy import deepcopy
+from typing import Any
 
 from foxes_opt.core import FarmVarsProblem, FarmOptProblem
 from foxes.models.turbine_models import Calculator
+from foxes.core import Algorithm, MData, FData
 from foxes.config import config
 import foxes.variables as FV
 import foxes.constants as FC
 
 
-def _calc_func(valid, P, ct, algo, mdata, fdata, st_sel):
+def _calc_func(
+    valid: np.ndarray,
+    P: np.ndarray,
+    ct: np.ndarray,
+    algo: Algorithm,
+    mdata: MData,
+    fdata: FData,
+    st_sel: Any,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """helper function for Calculator turbine model"""
     return (valid, P * valid, ct * valid)
 
@@ -38,12 +48,12 @@ class RegularLayoutOptProblem(FarmVarsProblem):
 
     def __init__(
         self,
-        name,
-        algo,
-        min_spacing,
-        initial_values=None,
-        **kwargs,
-    ):
+        name: str,
+        algo: Algorithm,
+        min_spacing: float,
+        initial_values: dict[str, float] | None = None,
+        **kwargs: Any,
+    ) -> None:
         """
         Constructor.
 
@@ -66,7 +76,12 @@ class RegularLayoutOptProblem(FarmVarsProblem):
         self.min_spacing = min_spacing
         self.initial_values = initial_values
 
-    def initialize(self, verbosity=1, **kwargs):
+    def initialize(
+        self,
+        verbosity: int = 1,
+        model_vars: dict[str, list[str]] | list[str] | None = None,
+        **kwargs: Any,
+    ) -> None:
         """
         Initialize the object.
 
@@ -164,7 +179,7 @@ class RegularLayoutOptProblem(FarmVarsProblem):
             new_turbines = self.farm.turbines[: self._nturb]
             self.farm.reset_turbines(self.algo, new_turbines)
 
-    def var_names_float(self):
+    def var_names_float(self) -> list[str]:
         """
         The names of float variables.
 
@@ -182,7 +197,7 @@ class RegularLayoutOptProblem(FarmVarsProblem):
             self.ANGLE,
         ]
 
-    def initial_values_float(self):
+    def initial_values_float(self) -> list[float]:
         """
         The initial values of the float variables.
 
@@ -192,9 +207,10 @@ class RegularLayoutOptProblem(FarmVarsProblem):
             Initial float values, shape: (n_vars_float,)
 
         """
+        assert self.initial_values is not None
         return list(self.initial_values.values())
 
-    def min_values_float(self):
+    def min_values_float(self) -> np.ndarray:
         """
         The minimal values of the float variables.
 
@@ -217,7 +233,7 @@ class RegularLayoutOptProblem(FarmVarsProblem):
             dtype=config.dtype_double,
         )
 
-    def max_values_float(self):
+    def max_values_float(self) -> np.ndarray:
         """
         The maximal values of the float variables.
 
@@ -240,7 +256,9 @@ class RegularLayoutOptProblem(FarmVarsProblem):
             dtype=config.dtype_double,
         )
 
-    def opt2farm_vars_individual(self, vars_int, vars_float):
+    def opt2farm_vars_individual(
+        self, vars_int: np.ndarray, vars_float: np.ndarray
+    ) -> dict[str, np.ndarray]:
         """
         Translates optimization variables to farm variables
 
@@ -289,7 +307,9 @@ class RegularLayoutOptProblem(FarmVarsProblem):
 
         return farm_vars
 
-    def opt2farm_vars_population(self, vars_int, vars_float, n_states):
+    def opt2farm_vars_population(
+        self, vars_int: np.ndarray, vars_float: np.ndarray, n_states: int
+    ) -> dict[str, np.ndarray]:
         """
         Translates optimization variables to farm variables
 
@@ -356,7 +376,9 @@ class RegularLayoutOptProblem(FarmVarsProblem):
 
         return farm_vars
 
-    def finalize_individual(self, vars_int, vars_float, verbosity=1):
+    def finalize_individual(
+        self, vars_int: np.ndarray, vars_float: np.ndarray, verbosity: int = 1
+    ) -> Any:
         """
         Finalization, given the champion data.
 

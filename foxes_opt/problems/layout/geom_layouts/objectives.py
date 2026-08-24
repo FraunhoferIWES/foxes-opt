@@ -1,5 +1,5 @@
 import numpy as np
-from iwopy import Objective
+from iwopy import Objective, Problem
 from scipy.spatial.distance import cdist
 
 from foxes.config import config
@@ -14,7 +14,7 @@ class OMaxN(Objective):
 
     """
 
-    def __init__(self, problem, name="maxN"):
+    def __init__(self, problem: Problem, name: str = "maxN") -> None:
         """
         Constructor.
 
@@ -34,7 +34,7 @@ class OMaxN(Objective):
             vnames_float=problem.var_names_float(),
         )
 
-    def n_components(self):
+    def n_components(self) -> int:
         """
         Returns the number of components of the
         function.
@@ -47,7 +47,7 @@ class OMaxN(Objective):
         """
         return 1
 
-    def maximize(self):
+    def maximize(self) -> list[bool]:
         """
         Returns flag for maximization of each component.
 
@@ -60,7 +60,13 @@ class OMaxN(Objective):
         """
         return [True]
 
-    def calc_individual(self, vars_int, vars_float, problem_results, cmpnts=None):
+    def calc_individual(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: tuple[np.ndarray, np.ndarray],
+        cmpnts: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for a single individual of the
         underlying problem.
@@ -84,9 +90,15 @@ class OMaxN(Objective):
 
         """
         __, valid = problem_results
-        return np.sum(valid)
+        return np.atleast_1d(np.sum(valid))
 
-    def calc_population(self, vars_int, vars_float, problem_results, cmpnts=None):
+    def calc_population(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: tuple[np.ndarray, np.ndarray],
+        cmpnts: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for all individuals of a population.
 
@@ -121,7 +133,7 @@ class OMinN(OMaxN):
 
     """
 
-    def __init__(self, problem, name="ominN"):
+    def __init__(self, problem: Problem, name: str = "ominN") -> None:
         """
         Constructor.
 
@@ -136,7 +148,7 @@ class OMinN(OMaxN):
         """
         super().__init__(problem, name)
 
-    def maximize(self):
+    def maximize(self) -> list[bool]:
         return [False]
 
 
@@ -149,7 +161,7 @@ class OFixN(Objective):
 
     """
 
-    def __init__(self, problem, N, name="ofixN"):
+    def __init__(self, problem: Problem, N: int, name: str = "ofixN") -> None:
         """
         Constructor.
 
@@ -172,7 +184,7 @@ class OFixN(Objective):
         )
         self.N = N
 
-    def n_components(self):
+    def n_components(self) -> int:
         """
         Returns the number of components of the
         function.
@@ -185,7 +197,7 @@ class OFixN(Objective):
         """
         return 1
 
-    def maximize(self):
+    def maximize(self) -> list[bool]:
         """
         Returns flag for maximization of each component.
 
@@ -198,7 +210,13 @@ class OFixN(Objective):
         """
         return [False]
 
-    def calc_individual(self, vars_int, vars_float, problem_results, cmpnts=None):
+    def calc_individual(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: tuple[np.ndarray, np.ndarray],
+        cmpnts: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for a single individual of the
         underlying problem.
@@ -222,10 +240,16 @@ class OFixN(Objective):
 
         """
         __, valid = problem_results
-        N = np.sum(valid, dtype=np.float64)
-        return np.maximum(N - self.N, self.N - N)
+        N: np.float64 = np.sum(valid, dtype=np.float64)
+        return np.atleast_1d(np.maximum(N - self.N, self.N - N))
 
-    def calc_population(self, vars_int, vars_float, problem_results, cmpnts=None):
+    def calc_population(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: tuple[np.ndarray, np.ndarray],
+        cmpnts: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for all individuals of a population.
 
@@ -261,7 +285,7 @@ class MaxGridSpacing(Objective):
 
     """
 
-    def __init__(self, problem, name="max_dxdy"):
+    def __init__(self, problem: Problem, name: str = "max_dxdy") -> None:
         """
         Constructor.
 
@@ -281,7 +305,7 @@ class MaxGridSpacing(Objective):
             vnames_float=problem.var_names_float(),
         )
 
-    def n_components(self):
+    def n_components(self) -> int:
         """
         Returns the number of components of the
         function.
@@ -294,7 +318,7 @@ class MaxGridSpacing(Objective):
         """
         return 1
 
-    def maximize(self):
+    def maximize(self) -> list[bool]:
         """
         Returns flag for maximization of each component.
 
@@ -307,7 +331,13 @@ class MaxGridSpacing(Objective):
         """
         return [True]
 
-    def calc_individual(self, vars_int, vars_float, problem_results, cmpnts=None):
+    def calc_individual(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: tuple[np.ndarray, np.ndarray],
+        cmpnts: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for a single individual of the
         underlying problem.
@@ -332,9 +362,15 @@ class MaxGridSpacing(Objective):
         """
         vflt = vars_float.reshape(self.problem.n_grids, 5)
         delta = np.minimum(vflt[:, 2], vflt[:, 3])
-        return np.nanmin(delta)
+        return np.atleast_1d(np.nanmin(delta))
 
-    def calc_population(self, vars_int, vars_float, problem_results, cmpnts=None):
+    def calc_population(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: tuple[np.ndarray, np.ndarray],
+        cmpnts: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for all individuals of a population.
 
@@ -371,7 +407,13 @@ class MaxDensity(Objective):
 
     """
 
-    def __init__(self, problem, dfactor=1, min_dist=None, name="max_density"):
+    def __init__(
+        self,
+        problem: Problem,
+        dfactor: int = 1,
+        min_dist: float | None = None,
+        name: str = "max_density",
+    ) -> None:
         """
         Constructor.
 
@@ -394,10 +436,10 @@ class MaxDensity(Objective):
             vnames_int=problem.var_names_int(),
             vnames_float=problem.var_names_float(),
         )
-        self.dfactor = dfactor
+        self.dfactor: int = dfactor
         self.min_dist = problem.min_dist if min_dist is None else min_dist
 
-    def n_components(self):
+    def n_components(self) -> int:
         """
         Returns the number of components of the
         function.
@@ -410,7 +452,7 @@ class MaxDensity(Objective):
         """
         return 1
 
-    def maximize(self):
+    def maximize(self) -> list[bool]:
         """
         Returns flag for maximization of each component.
 
@@ -423,7 +465,7 @@ class MaxDensity(Objective):
         """
         return [False]
 
-    def initialize(self, verbosity):
+    def initialize(self, verbosity: int) -> None:
         """
         Initialize the object.
 
@@ -449,14 +491,20 @@ class MaxDensity(Objective):
             axis=-1,
         )
         nx, ny = self._probes.shape[:2]
-        n = nx * ny
+        n: int = nx * ny
         self._probes = self._probes.reshape(n, 2)
 
         # reduce to points within geometry:
         valid = geom.points_inside(self._probes)
         self._probes = self._probes[valid]
 
-    def calc_individual(self, vars_int, vars_float, problem_results, cmpnts=None):
+    def calc_individual(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: tuple[np.ndarray, np.ndarray],
+        cmpnts: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for a single individual of the
         underlying problem.
@@ -481,10 +529,18 @@ class MaxDensity(Objective):
         """
         xy, valid = problem_results
         xy = xy[valid]
-        dists = cdist(self._probes, xy)
-        return np.nanmax(np.nanmin(dists, axis=1))
+        dists: np.ndarray[tuple[int, ...], np.dtype[np.floating]] = cdist(
+            self._probes, xy
+        )
+        return np.atleast_1d(np.nanmax(np.nanmin(dists, axis=1)))
 
-    def calc_population(self, vars_int, vars_float, problem_results, cmpnts=None):
+    def calc_population(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: tuple[np.ndarray, np.ndarray],
+        cmpnts: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for all individuals of a population.
 
@@ -512,7 +568,9 @@ class MaxDensity(Objective):
         for pi in range(n_pop):
             if np.any(valid[pi]):
                 hxy = xy[pi][valid[pi]]
-                dists = cdist(self._probes, hxy)
+                dists: np.ndarray[tuple[int, ...], np.dtype[np.floating]] = cdist(
+                    self._probes, hxy
+                )
                 out[pi] = np.nanmax(np.nanmin(dists, axis=1))
         return out[:, None]
 
@@ -526,7 +584,15 @@ class MeMiMaDist(Objective):
 
     """
 
-    def __init__(self, problem, scale=500.0, c1=1, c2=1, c3=1, name="MiMaMean"):
+    def __init__(
+        self,
+        problem: Problem,
+        scale: float = 500.0,
+        c1: int = 1,
+        c2: int = 1,
+        c3: int = 1,
+        name: str = "MiMaMean",
+    ) -> None:
         """
         Constructor.
 
@@ -553,12 +619,12 @@ class MeMiMaDist(Objective):
             vnames_int=problem.var_names_int(),
             vnames_float=problem.var_names_float(),
         )
-        self.scale = scale
-        self.c1 = c1
-        self.c2 = c2
-        self.c3 = c3
+        self.scale: float = scale
+        self.c1: int = c1
+        self.c2: int = c2
+        self.c3: int = c3
 
-    def n_components(self):
+    def n_components(self) -> int:
         """
         Returns the number of components of the
         function.
@@ -571,7 +637,7 @@ class MeMiMaDist(Objective):
         """
         return 1
 
-    def maximize(self):
+    def maximize(self) -> list[bool]:
         """
         Returns flag for maximization of each component.
 
@@ -584,7 +650,13 @@ class MeMiMaDist(Objective):
         """
         return [True]
 
-    def calc_individual(self, vars_int, vars_float, problem_results, cmpnts=None):
+    def calc_individual(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: tuple[np.ndarray, np.ndarray],
+        cmpnts: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for a single individual of the
         underlying problem.
@@ -610,18 +682,24 @@ class MeMiMaDist(Objective):
         xy, valid = problem_results
         # xy = xy[valid]
 
-        dists = cdist(xy, xy)
+        dists: np.ndarray[tuple[int, ...], np.dtype[np.floating]] = cdist(xy, xy)
         np.fill_diagonal(dists, np.inf)
         dists = np.min(dists, axis=1) / self.scale / len(xy)
 
-        mean = np.average(dists)
-        mi = np.min(dists)
-        ma = np.max(dists)
+        mean: np.floating = np.average(dists)
+        mi: np.floating = np.min(dists)
+        ma: np.floating = np.max(dists)
         return np.atleast_1d(
             self.c1 * mean**2 - self.c2 * (mean - mi) ** 2 - self.c3 * (mean - ma) ** 2
         )
 
-    def calc_population(self, vars_int, vars_float, problem_results, cmpnts=None):
+    def calc_population(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: tuple[np.ndarray, np.ndarray],
+        cmpnts: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for all individuals of a population.
 
@@ -650,13 +728,13 @@ class MeMiMaDist(Objective):
         for pi in range(n_pop):
             hxy = xy[pi]  # , valid[pi]]
 
-            dists = cdist(hxy, hxy)
+            dists: np.ndarray[tuple[int, ...], np.dtype[np.floating]] = cdist(hxy, hxy)
             np.fill_diagonal(dists, np.inf)
             dists = np.min(dists, axis=1) / self.scale / n_xy
 
-            mean = np.average(dists)
-            mi = np.min(dists)
-            ma = np.max(dists)
+            mean: np.floating = np.average(dists)
+            mi: np.floating = np.min(dists)
+            ma: np.floating = np.max(dists)
             out[pi, 0] = (
                 self.c1 * mean**2
                 - self.c2 * (mean - mi) ** 2

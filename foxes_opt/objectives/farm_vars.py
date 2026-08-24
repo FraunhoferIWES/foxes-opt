@@ -1,7 +1,10 @@
+from typing import Any
+
 import numpy as np
 import xarray as xr
 
 from foxes_opt.core.farm_objective import FarmObjective
+from foxes_opt.core.farm_opt_problem import FarmOptProblem
 from foxes import variables as FV
 import foxes.constants as FC
 
@@ -31,16 +34,16 @@ class FarmVarObjective(FarmObjective):
 
     def __init__(
         self,
-        problem,
-        name,
-        variable,
-        contract_states,
-        contract_turbines,
-        minimize,
-        deps=None,
-        scale=1.0,
-        **kwargs,
-    ):
+        problem: FarmOptProblem,
+        name: str,
+        variable: str,
+        contract_states: str,
+        contract_turbines: str,
+        minimize: bool,
+        deps: list[str] | None = None,
+        scale: float = 1.0,
+        **kwargs: Any,
+    ) -> None:
         """
         Constructor.
 
@@ -74,7 +77,7 @@ class FarmVarObjective(FarmObjective):
         self.scale = scale
         self.rules = {FC.STATE: contract_states, FC.TURBINE: contract_turbines}
 
-    def initialize(self, verbosity=0):
+    def initialize(self, verbosity: int = 0) -> None:
         """
         Initialize the object.
 
@@ -86,7 +89,7 @@ class FarmVarObjective(FarmObjective):
         """
         super().initialize(verbosity)
 
-    def n_components(self):
+    def n_components(self) -> int:
         """
         Returns the number of components of the
         function.
@@ -99,7 +102,7 @@ class FarmVarObjective(FarmObjective):
         """
         return 1
 
-    def maximize(self):
+    def maximize(self) -> list[bool]:
         """
         Returns flag for maximization of each component.
 
@@ -112,7 +115,7 @@ class FarmVarObjective(FarmObjective):
         """
         return [not self.minimize]
 
-    def vardeps_float(self):
+    def vardeps_float(self) -> np.ndarray[tuple[int, int], np.dtype[np.bool_]]:
         """
         Gets the dependencies of all components
         on the function float variables
@@ -135,7 +138,7 @@ class FarmVarObjective(FarmObjective):
 
         return out
 
-    def _contract(self, data, weights):
+    def _contract(self, data: xr.DataArray, weights: xr.DataArray) -> xr.DataArray:
         """
         Helper function for data contraction
         """
@@ -183,7 +186,13 @@ class FarmVarObjective(FarmObjective):
                 )
         return data
 
-    def calc_individual(self, vars_int, vars_float, problem_results, components=None):
+    def calc_individual(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: Any,
+        components: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for a single individual of the
         underlying problem.
@@ -214,7 +223,13 @@ class FarmVarObjective(FarmObjective):
 
         return np.array([data], dtype=np.float64)
 
-    def calc_population(self, vars_int, vars_float, problem_results, components=None):
+    def calc_population(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: Any,
+        components: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for all individuals of a population.
 
@@ -249,6 +264,7 @@ class FarmVarObjective(FarmObjective):
         data = xr.DataArray(data, dims=(FC.POP, FC.STATE, FC.TURBINE))
 
         weights = problem_results[FV.WEIGHT]
+        wdims: tuple[str, ...]
         if weights.dims == (FC.STATE,):
             weights = problem_results[FV.WEIGHT].to_numpy().reshape(n_states, n_pop)
             weights = np.swapaxes(weights, 0, 1)
@@ -261,6 +277,10 @@ class FarmVarObjective(FarmObjective):
             )
             weights = np.swapaxes(weights, 0, 1)
             wdims = (FC.POP, FC.STATE, FC.TURBINE)
+        else:
+            raise ValueError(
+                f"Objective '{self.name}': Unsupported weight dimensions {weights.dims}"
+            )
         weights = xr.DataArray(weights, dims=wdims)
 
         if self.n_sel_turbines < self.farm.n_turbines:
@@ -268,7 +288,13 @@ class FarmVarObjective(FarmObjective):
 
         return self._contract(data / self.scale, weights).to_numpy()[:, None]
 
-    def finalize_individual(self, vars_int, vars_float, problem_results, verbosity=1):
+    def finalize_individual(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: Any,
+        verbosity: int = 1,
+    ) -> np.ndarray:
         """
         Finalization, given the champion data.
 
@@ -315,7 +341,9 @@ class MaxFarmPower(FarmVarObjective):
 
     """
 
-    def __init__(self, problem, name="maximize_power", **kwargs):
+    def __init__(
+        self, problem: FarmOptProblem, name: str = "maximize_power", **kwargs: Any
+    ) -> None:
         if "scale" in kwargs:
             scale = kwargs.pop("scale")
         else:
@@ -356,7 +384,9 @@ class MinimalMaxTI(FarmVarObjective):
 
     """
 
-    def __init__(self, problem, name="minimize_TI", **kwargs):
+    def __init__(
+        self, problem: FarmOptProblem, name: str = "minimize_TI", **kwargs: Any
+    ) -> None:
         scale = kwargs.pop("scale") if "scale" in kwargs else 1.0
         super().__init__(
             problem,

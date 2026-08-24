@@ -1,8 +1,11 @@
+from typing import Any
+
 import numpy as np
 from iwopy import Pipeline
 
 from foxes import ModelBook, WindFarm, Turbine
-from foxes.core import Algorithm, run_with_engine
+from foxes.core import Algorithm, States, run_with_engine
+from foxes.utils.geom2d import AreaGeometry
 import foxes.variables as FV
 
 
@@ -31,17 +34,17 @@ class LayoutPipeline(Pipeline):
 
     def __init__(
         self,
-        base_dir,
-        algo_pars,
-        n_turbines,
-        turbine_models,
-        farm_boundary,
-        states=None,
-        mbook=None,
-        farm_pars={},
-        name="layout_pipeline",
-        **kwargs,
-    ):
+        base_dir: str,
+        algo_pars: dict[str, Any],
+        n_turbines: int,
+        turbine_models: list[str],
+        farm_boundary: AreaGeometry | None,
+        states: States | None = None,
+        mbook: ModelBook | None = None,
+        farm_pars: dict[str, Any] | None = None,
+        name: str = "layout_pipeline",
+        **kwargs: Any,
+    ) -> None:
         """
         Constructor.
 
@@ -77,9 +80,11 @@ class LayoutPipeline(Pipeline):
         self.farm_boundary = farm_boundary
         self.turbine_models = turbine_models
         self.mbook = mbook if mbook is not None else ModelBook()
-        self.farm_pars = farm_pars
+        self.farm_pars = {} if farm_pars is None else farm_pars
 
-    def _run_foxes(self, layout_xy, verbosity=0):
+    def _run_foxes(
+        self, layout_xy: np.ndarray, verbosity: int = 0
+    ) -> tuple[Algorithm, Any]:
         """
         Run the foxes algorithm.
 
@@ -122,7 +127,13 @@ class LayoutPipeline(Pipeline):
 
         return algo, run_with_engine(algo.calc_farm)
 
-    def run(self, start_stage=0, end_stage=None, finalize=True, verbosity=1):
+    def run(
+        self,
+        start_stage: int = 0,
+        end_stage: int | None = None,
+        finalize: bool = True,
+        verbosity: int = 1,
+    ) -> tuple[bool, tuple[Any, Any]]:
         """
         Run the pipeline.
 

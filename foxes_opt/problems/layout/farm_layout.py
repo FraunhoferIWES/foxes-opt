@@ -13,7 +13,7 @@ class FarmLayoutOptProblem(FarmOptProblem):
 
     """
 
-    def var_names_float(self):
+    def var_names_float(self) -> list[str]:
         """
         The names of float variables.
 
@@ -28,7 +28,7 @@ class FarmLayoutOptProblem(FarmOptProblem):
             vrs += [self.tvar(FV.X, ti), self.tvar(FV.Y, ti)]
         return vrs
 
-    def initial_values_float(self):
+    def initial_values_float(self) -> np.ndarray:
         """
         The initial values of the float variables.
 
@@ -43,7 +43,7 @@ class FarmLayoutOptProblem(FarmOptProblem):
             out[i] = self.farm.turbines[ti].xy
         return out.reshape(self.n_sel_turbines * 2)
 
-    def min_values_float(self):
+    def min_values_float(self) -> np.ndarray:
         """
         The minimal values of the float variables.
 
@@ -61,7 +61,7 @@ class FarmLayoutOptProblem(FarmOptProblem):
         out[:] = b.p_min()[None, :]
         return out.reshape(self.n_sel_turbines * 2)
 
-    def max_values_float(self):
+    def max_values_float(self) -> np.ndarray:
         """
         The maximal values of the float variables.
 
@@ -79,7 +79,9 @@ class FarmLayoutOptProblem(FarmOptProblem):
         out[:] = b.p_max()[None, :]
         return out.reshape(self.n_sel_turbines * 2)
 
-    def update_problem_individual(self, vars_int, vars_float):
+    def update_problem_individual(
+        self, vars_int: np.ndarray, vars_float: np.ndarray
+    ) -> None:
         """
         Update the algo and other data using
         the latest optimization variables.
@@ -102,7 +104,9 @@ class FarmLayoutOptProblem(FarmOptProblem):
             t = self.algo.farm.turbines[ti]
             t.xy = xy[i]
 
-    def update_problem_population(self, vars_int, vars_float):
+    def update_problem_population(
+        self, vars_int: np.ndarray, vars_float: np.ndarray
+    ) -> None:
         """
         Update the algo and other data using
         the latest optimization variables.
@@ -120,8 +124,9 @@ class FarmLayoutOptProblem(FarmOptProblem):
         """
         super().update_problem_population(vars_int, vars_float)
 
-        n_pop = len(vars_float)
+        n_pop: int = len(vars_float)
         n_ostates = self._org_n_states
+        assert n_ostates is not None
         n_states = n_pop * n_ostates
 
         xy = vars_float.reshape(n_pop, self.n_sel_turbines, 2)

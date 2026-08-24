@@ -1,3 +1,5 @@
+from typing import Any
+
 from iwopy.interfaces.pymoo import DefaultCallbackTemplate
 from foxes.output import FarmLayoutOutput
 from foxes.config import get_output_path
@@ -31,13 +33,13 @@ class GAWriteLayoutCallbackTemplate(DefaultCallbackTemplate):
 
     def __init__(
         self,
-        out_dir,
-        base_name,
-        n_gen_step=1,
-        figsize=None,
-        from_farm_results=False,
-        verbosity=0,
-    ):
+        out_dir: Any,
+        base_name: str,
+        n_gen_step: int = 1,
+        figsize: tuple[float, float] | None = None,
+        from_farm_results: bool = False,
+        verbosity: int = 0,
+    ) -> None:
         """
         Initialize the callback.
 
@@ -65,7 +67,7 @@ class GAWriteLayoutCallbackTemplate(DefaultCallbackTemplate):
         self.verbosity = verbosity
         self.from_farm_results = from_farm_results
 
-        def notify(self, algorithm):
+        def notify(self: GAWriteLayoutCallbackTemplate, algorithm: Any) -> None:
             super().notify(algorithm)
             if algorithm.n_gen % self.n_gen_step == 0:
                 problem = algorithm.problem.problem
