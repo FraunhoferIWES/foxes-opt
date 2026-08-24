@@ -106,8 +106,12 @@
 ## v0.7.2
 
 - Compatibility with *foxes* v1.9.0
+- Dropping support for Python 3.9
 - Examples:
   - New example `layout_field_data`, demonstrating pymoo-based layout optimization with `FieldData` states loaded from multiple NetCDF files
 - Fixing the single-state pymoo example for current *foxes* layout output arguments
+- CI and typing:
+  - Requiring `mypy` via the `test`/`dev` extras and running pre-commit in CI from the uv-managed environment
+  - Aligning GitHub publish/docs workflows with the foxes uv-based pre-commit and docs build pattern
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.7.2](https://github.com/FraunhoferIWES/foxes/commits/v0.7.2)
