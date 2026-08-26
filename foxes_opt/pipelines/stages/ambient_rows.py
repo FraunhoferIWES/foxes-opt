@@ -540,7 +540,24 @@ class AmbientRowsStage(PipelineStage):
         success = (
             i == self._n_turbines
             and not np.any(np.isnan(pts))
-            and mindist >= mdist - 1e-10
+            and mindist >= mdist - 1e-6
         )
+        if verbosity > 0:
+            if success:
+                print(f"{self.name}: Successfully placed all turbines.")
+            else:
+                print(f"{self.name}: Failed to place all turbines.")
+                if i != self._n_turbines:
+                    print(
+                        f"{self.name}: Could only place {i} out of {self._n_turbines} turbines."
+                    )
+                if np.any(np.isnan(pts)):
+                    print(
+                        f"{self.name}: Some turbine positions are NaN: {np.isnan(pts).sum()} turbines."
+                    )
+                if mindist < mdist - 1e-6:
+                    print(
+                        f"{self.name}: Minimum distance between turbines is {mindist:.2f} m, which is less than the required {mdist:.2f} m."
+                    )
 
         return success, pts
