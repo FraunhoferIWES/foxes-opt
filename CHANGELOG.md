@@ -105,7 +105,8 @@
 
 ## v0.8.0
 
-- Compatibility with *foxes* v1.9.2
+- Compatibility with *foxes* v1.9.3
+- Fixed vectorized wake-steering optimization with gridded rotor weights
 - Dropping support for Python 3.9
 - Introducing type annotations
 - Excluding `scratch/` prototype modules from mypy project checks
