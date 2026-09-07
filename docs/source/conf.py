@@ -61,8 +61,8 @@ intersphinx_mapping = {
 source_suffix = {
     ".rst": "restructuredtext",
     ".md": "myst-nb",
-    ".ipynb": "myst-nb",
     ".myst": "myst-nb",
+    ".ipynb": "myst-nb",
 }
 
 master_doc = "index"
