@@ -80,9 +80,83 @@ class LayoutPipeline(Pipeline):
         self.turbine_models = turbine_models
         self.mbook = mbook if mbook is not None else ModelBook()
         self.farm_pars = {} if farm_pars is None else farm_pars
+    
+    def get_algo(
+        self,
+        layout_xy: np.ndarray | None = None, 
+        farm: WindFarm | None = None,
+        states: States | None = None,
+        initialize: bool = True,
+        force: bool = False,
+        verbosity: int = 0,
+        **kwargs,
+    ):
+        """
+        Create an algorithm instance
 
-    def _run_foxes(
-        self, layout_xy: np.ndarray, verbosity: int = 0
+        Parameters
+        ----------
+        layout_xy
+            The layout coordinates of the turbines, shape (n_turbines, 2)
+        farm
+            The wind farm instance, if None a new one will be created
+        states
+            The states to optimize the layout for, if None the states of the pipeline will be used
+        initialize
+            Whether to initialize the algorithm after creation
+        force
+            Whether to force re-initialization of the algorithm
+        verbosity
+            The verbosity level, 0 = silent
+        kwargs
+            Additional keyword arguments for the algorithm creation
+
+        Returns
+        -------
+        algo
+            The algorithm instance
+
+        """
+        if farm is None:
+            farm = WindFarm(boundary=self.farm_boundary, **self.farm_pars)
+            assert layout_xy is not None, f"{self.name}: layout_xy must be provided if farm is None"
+            for i in range(self.n_turbines):
+                farm.add_turbine(
+                    Turbine(
+                        xy=layout_xy[i],
+                        turbine_models=self.turbine_models,
+                        index=i,
+                    ),
+                    verbosity=verbosity,
+                )
+
+        pars = self.algo_pars.copy()
+        if kwargs is not None:
+            pars.update(kwargs)
+        pars.setdefault("verbosity", verbosity)
+        algo = Algorithm.new(
+            farm=farm,
+            states=states if states is not None else self.states,
+            mbook=self.mbook,
+            **pars,
+        )
+
+        if force or initialize:
+            algo.initialize(force=force)
+
+        return algo
+
+    def run_foxes(
+        self, 
+        layout_xy: np.ndarray | None = None, 
+        algo: Algorithm | None = None,
+        farm: WindFarm | None = None,
+        states: States | None = None,
+        algo_pars: dict[str, Any] | None = None,
+        initialize: bool = False,
+        force: bool = True,
+        verbosity: int = 0,
+        **kwargs,
     ) -> tuple[Algorithm, Any]:
         """
         Run the foxes algorithm.
@@ -91,8 +165,22 @@ class LayoutPipeline(Pipeline):
         ----------
         layout_xy
             The layout coordinates of the turbines, shape (n_turbines, 2)
+        algo
+            The foxes algorithm instance, if None a new one will be created
+        farm
+            The wind farm instance, if None a new one will be created
+        states
+            The states to optimize the layout for, if None the states of the pipeline will be used
+        algo_pars
+            Additional parameters for the foxes algorithm
         verbosity
             The verbosity level, 0 = silent
+        force
+            Whether to force the initialization of the algorithm
+        initialize
+            Whether to initialize the algorithm after creation
+        kwargs
+            Additional keyword arguments for the calc_farm method of the foxes algorithm
 
         Returns
         -------
@@ -103,28 +191,49 @@ class LayoutPipeline(Pipeline):
 
         """
 
-        farm = WindFarm(boundary=self.farm_boundary, **self.farm_pars)
-
-        for i in range(self.n_turbines):
-            farm.add_turbine(
-                Turbine(
-                    xy=layout_xy[i],
-                    turbine_models=self.turbine_models,
-                    index=i,
-                ),
+        if algo is None:
+            apars = algo_pars if algo_pars is not None else {}
+            algo = self.get_algo(
+                layout_xy=layout_xy,
+                farm=farm,
+                states=states,
                 verbosity=verbosity,
+                initialize=initialize,
+                force=force,
+                **apars,
             )
-        pars = self.algo_pars.copy()
-        pars.setdefault("verbosity", verbosity)
-        algo = Algorithm.new(
-            farm=farm,
-            states=self.states,
-            mbook=self.mbook,
-            **pars,
-        )
-        algo.initialize(force=True)
 
-        return algo, run_with_engine(algo.calc_farm)
+        results = run_with_engine(algo.calc_farm, **kwargs)
+
+        return algo, results
+
+    def read_layout(self, results: Any) -> np.ndarray:
+        """
+        Read the layout coordinates from the results.
+
+        Parameters
+        ----------
+        results
+            The results of the pipeline
+
+        Returns
+        -------
+        layout_xy
+            The layout coordinates of the turbines, shape (n_turbines, 2)
+
+        """
+        if isinstance(results, tuple):
+            layout_xy = results[0]
+        else:
+            layout_xy = results
+
+        if isinstance(layout_xy, np.ndarray):
+            if layout_xy.shape == (self.n_turbines, 2):
+                return layout_xy
+            else:
+                raise ValueError(f"Invalid layout coordinates shape, got {layout_xy.shape}, expected {(self.n_turbines, 2)}.")
+        else:
+            raise ValueError(f"Invalid results format for reading layout coordinates, got {type(layout_xy)}.")
 
     def run(
         self,
@@ -177,7 +286,8 @@ class LayoutPipeline(Pipeline):
             and results.shape == (self.n_turbines, 2)
             and not np.any(np.isnan(results))
         ):
-            algo, farm_results = self._run_foxes(results, verbosity=verbosity - 1)
+            layout_xy = self.read_layout(results)
+            algo, farm_results = self.run_foxes(layout_xy, force=True, verbosity=verbosity - 1)
             results = (algo, farm_results)
             if verbosity > 0:
                 print(
