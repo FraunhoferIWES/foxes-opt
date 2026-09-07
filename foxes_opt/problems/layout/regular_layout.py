@@ -27,16 +27,6 @@ class RegularLayoutOptProblem(FarmVarsProblem):
     """
     Places turbines on a regular grid and optimizes
     its parameters.
-
-    Attributes
-    ----------
-    min_spacing
-        The minimal turbine spacing
-    initial_values
-        Initial values for opt variables, key:
-        spacing_x, spacing_y, offset_x, offset_y, angle
-
-
     """
 
     SPACING_X = "spacing_x"
@@ -54,8 +44,6 @@ class RegularLayoutOptProblem(FarmVarsProblem):
         **kwargs: Any,
     ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
         name

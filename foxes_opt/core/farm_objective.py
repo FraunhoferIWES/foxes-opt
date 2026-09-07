@@ -15,7 +15,6 @@ class FarmObjective(Objective):
     Abstract base class for foxes wind farm
     objective functions.
 
-
     """
 
     def __init__(
@@ -26,8 +25,6 @@ class FarmObjective(Objective):
         **kwargs: Any,
     ) -> None:
         """
-        Constraints.
-
         Parameters
         ----------
         problem

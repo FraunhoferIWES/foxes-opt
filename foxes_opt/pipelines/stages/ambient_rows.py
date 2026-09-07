@@ -20,19 +20,6 @@ import foxes.variables as FV
 class AmbientRowsStage(PipelineStage):
     """
     Pipeline stage for ambient rows.
-
-    Attributes
-    ----------
-    stepsize_ortho
-        The stepsize_ortho orthogonal to main wind direction.
-    stepsize_wd
-        The stepsize along the main wind direction.
-    mean_flow_states
-        The mean field flow states
-    mean_flow_var2ncvar
-        Mapping from mean flow variable names to NetCDF variable names.
-
-
     """
 
     def __init__(
@@ -45,8 +32,6 @@ class AmbientRowsStage(PipelineStage):
         **kwargs: Any,
     ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
         stepsize_ortho

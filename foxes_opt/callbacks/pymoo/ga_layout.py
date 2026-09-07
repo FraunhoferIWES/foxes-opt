@@ -24,7 +24,6 @@ class GAWriteLayoutCallbackTemplate(DefaultCallbackTemplate):
     verbosity
         The verbosity level, 0 = silent
 
-
     """
 
     CLASS_NAME = "GAWriteLayoutCallback"
@@ -40,8 +39,6 @@ class GAWriteLayoutCallbackTemplate(DefaultCallbackTemplate):
         verbosity: int = 0,
     ) -> None:
         """
-        Initialize the callback.
-
         Parameters
         ----------
         out_dir

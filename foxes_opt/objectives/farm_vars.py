@@ -12,23 +12,6 @@ import foxes.constants as FC
 class FarmVarObjective(FarmObjective):
     """
     Objectives based on farm variables.
-
-    Attributes
-    ----------
-    variable
-        The variable name
-    minimize
-        Switch for maximizing or minimizing
-    deps
-        The foxes variables on which the variable depends,
-        or None for all
-    rules
-        Contraction rules. Key: coordinate name str, value
-        is: weights, mean_no_weights, sum, min, max
-    scale
-        The scaling factor
-
-
     """
 
     def __init__(
@@ -44,8 +27,6 @@ class FarmVarObjective(FarmObjective):
         **kwargs: Any,
     ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
         problem
@@ -336,7 +317,6 @@ class MaxFarmPower(FarmVarObjective):
     kwargs
         Additional parameters for `FarmVarObjective`
 
-
     """
 
     def __init__(
@@ -377,7 +357,6 @@ class MinimalMaxTI(FarmVarObjective):
         The name of the objective function
     kwargs
         Additional parameters for `FarmVarObjective`
-
 
     """
 

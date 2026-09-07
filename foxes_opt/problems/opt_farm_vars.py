@@ -12,13 +12,10 @@ class OptFarmVars(FarmVarsProblem):
     """
     Optimize a selection of farm variables.
 
-
     """
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
         args

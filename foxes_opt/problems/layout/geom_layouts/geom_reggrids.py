@@ -18,25 +18,6 @@ class GeomRegGrids(Problem):
 
     This optimization problem does not involve
     wind farms.
-
-    Attributes
-    ----------
-    boundary
-        The boundary geometry
-    min_dist
-        The minimal distance between points
-    n_grids
-        The number of grids
-    n_max
-        The maximal number of points
-    n_row_max
-        The maximal number of points in a row
-    max_dist
-        The maximal distance between points
-    D
-        The diameter of circle fully within boundary
-
-
     """
 
     def __init__(
@@ -50,8 +31,6 @@ class GeomRegGrids(Problem):
         D: float | None = None,
     ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
         boundary

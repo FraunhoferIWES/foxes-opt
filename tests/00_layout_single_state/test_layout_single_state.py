@@ -43,7 +43,7 @@ def test():
         algo_pars=dict(
             type="GA",
             pop_size=100,
-            seed=41,
+            seed=42,
         ),
         setup_pars=dict(),
         term_pars=dict(

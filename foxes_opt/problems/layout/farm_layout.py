@@ -9,7 +9,6 @@ class FarmLayoutOptProblem(FarmOptProblem):
     """
     The turbine positioning optimization problem
 
-
     """
 
     def var_names_float(self) -> list[str]:

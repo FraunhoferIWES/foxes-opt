@@ -10,13 +10,10 @@ class OMaxN(Objective):
     Maximal number of turbines objective
     for purely geometrical layouts problems.
 
-
     """
 
     def __init__(self, problem: Problem, name: str = "maxN") -> None:
         """
-        Constructor.
-
         Parameters
         ----------
         problem
@@ -128,13 +125,10 @@ class OMinN(OMaxN):
     Minimal number of turbines objective
     for purely geometrical layouts problems.
 
-
     """
 
     def __init__(self, problem: Problem, name: str = "ominN") -> None:
         """
-        Constructor.
-
         Parameters
         ----------
         problem
@@ -155,13 +149,10 @@ class OFixN(Objective):
     Fixed number of turbines objective
     for purely geometrical layouts problems.
 
-
     """
 
     def __init__(self, problem: Problem, N: int, name: str = "ofixN") -> None:
         """
-        Constructor.
-
         Parameters
         ----------
         problem
@@ -278,13 +269,10 @@ class MaxGridSpacing(Objective):
     Maximal grid spacing objective
     for purely geometrical layouts problems.
 
-
     """
 
     def __init__(self, problem: Problem, name: str = "max_dxdy") -> None:
         """
-        Constructor.
-
         Parameters
         ----------
         problem
@@ -399,7 +387,6 @@ class MaxDensity(Objective):
     Maximal turbine density objective
     for purely geometrical layouts problems.
 
-
     """
 
     def __init__(
@@ -410,8 +397,6 @@ class MaxDensity(Objective):
         name: str = "max_density",
     ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
         problem
@@ -575,7 +560,6 @@ class MeMiMaDist(Objective):
     Mean-min-max distance objective
     for purely geometrical layouts problems.
 
-
     """
 
     def __init__(
@@ -588,8 +572,6 @@ class MeMiMaDist(Objective):
         name: str = "MiMaMean",
     ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
         problem

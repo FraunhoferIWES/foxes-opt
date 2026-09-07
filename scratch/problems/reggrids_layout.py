@@ -22,18 +22,6 @@ class RegGridsLayoutOptProblem(FarmVarsProblem):
 
     Note that this problem has both int and float variables
     (mixed problem).
-
-    Attributes
-    ----------
-    min_spacing
-        The minimal turbine spacing
-    n_grids
-        The number of grids
-    max_n_row
-        The maximal number of turbines per
-        grid and row
-
-
     """
 
     def __init__(
@@ -48,8 +36,6 @@ class RegGridsLayoutOptProblem(FarmVarsProblem):
         **kwargs,
     ):
         """
-        Constraints.
-
         Parameters
         ----------
         name

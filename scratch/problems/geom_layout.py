@@ -13,21 +13,6 @@ class GeomLayout(Problem):
 
     This optimization problem does not involve
     wind farms.
-
-    Attributes
-    ----------
-    boundary
-        The boundary geometry
-    n_turbines
-        The number of turbines in the layout
-    min_dist
-        The minimal distance between points
-    D
-        The diameter of circle fully within boundary
-    calc_valid
-        Evaluate validity
-
-
     """
 
     def __init__(
@@ -39,8 +24,6 @@ class GeomLayout(Problem):
         calc_valid=None,
     ):
         """
-        Constructor.
-
         Parameters
         ----------
         boundary

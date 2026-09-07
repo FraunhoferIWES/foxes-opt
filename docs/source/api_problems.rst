@@ -1,19 +1,26 @@
 foxes_opt.problems
-------------------
+==================
 Generic wind farm optimization problems.
 
-    .. python-apigen-group:: opt.problems
+.. toctree::
+    :maxdepth: 2
+
+    _autoapi/foxes_opt/problems/index
 
 foxes_opt.problems.layout
--------------------------
 Farm layout turbine positioning problems.
 
-    .. python-apigen-group:: opt.problems.layout
+.. toctree::
+    :maxdepth: 2
+
+    _autoapi/foxes_opt/problems/layout/index
 
 foxes_opt.problems.layout.geom_layouts
 --------------------------------------
 Purely geometrical layout problems (wake effects are
 not evaluated).
 
-    .. toctree::
-        api_problems_geom
+.. toctree::
+    :maxdepth: 2
+
+    api_problems_geom

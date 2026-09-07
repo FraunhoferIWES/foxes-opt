@@ -12,23 +12,6 @@ import foxes.variables as FV
 class LayoutPipeline(Pipeline):
     """
     Pipeline for layout generation.
-
-    Attributes
-    ----------
-    algo_pars
-        The parameters for the foxes algorithm
-    n_turbines
-        The number of turbines in the wind farm
-    turbine_models
-        The turbine models
-    mbook
-        The model book
-    farm_pars
-        Additional parameters for the wind farm
-    states
-        The states to optimize the layout for
-
-
     """
 
     def __init__(
@@ -45,8 +28,6 @@ class LayoutPipeline(Pipeline):
         **kwargs: Any,
     ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
         base_dir

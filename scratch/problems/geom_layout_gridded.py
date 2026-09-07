@@ -15,21 +15,6 @@ class GeomLayoutGridded(Problem):
 
     This optimization problem does not involve
     wind farms. Note that this is an integer problem.
-
-    Attributes
-    ----------
-    boundary
-        The boundary geometry
-    n_turbines
-        The number of turbines in the layout
-    grid_spacing
-        The background grid spacing
-    min_dist
-        The minimal distance between points
-    D
-        The diameter of circle fully within boundary
-
-
     """
 
     def __init__(
@@ -41,8 +26,6 @@ class GeomLayoutGridded(Problem):
         D=None,
     ):
         """
-        Constructor.
-
         Parameters
         ----------
         boundary

@@ -11,13 +11,10 @@ class SingleObjResultsWriter(OptOutput):
     """
     Writes optimization results to files.
 
-
     """
 
     def __init__(self, opt_results: SingleObjOptResults, **kwargs: Any) -> None:
         """
-        Constructor
-
         Parameters
         ----------
         opt_results
@@ -93,13 +90,10 @@ class MultiObjResultsWriter(OptOutput):
     """
     Writes optimization results to files.
 
-
     """
 
     def __init__(self, opt_results: MultiObjOptResults, **kwargs: Any) -> None:
         """
-        Constructor
-
         Parameters
         ----------
         opt_results
