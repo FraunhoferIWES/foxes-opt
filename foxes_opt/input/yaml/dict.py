@@ -1,3 +1,5 @@
+from typing import Any
+
 from iwopy import LocalFD
 from iwopy.core import Optimizer
 from foxes.input.yaml import read_dict as foxes_read_dict
@@ -7,36 +9,39 @@ from foxes.utils import Dict
 from foxes_opt.core import FarmOptProblem, FarmObjective, FarmConstraint
 
 
-def read_dict(idict, *args, verbosity=None, **kwargs):
+def read_dict(
+    idict: Dict,
+    *args: Any,
+    verbosity: int | None = None,
+    **kwargs: Any,
+) -> tuple[Any, Any, Optimizer]:
     """
     Read dictionary input into foxes objects
 
     Parameters
     ----------
-    idict: foxes.utils.Dict
+    idict
         The input parameter dictionary
-    args: tuple, optional
+    args
         Additional parameters for foxes.input.run_dict
-    verbosity: int, optional
+    verbosity
         Force a verbosity level, 0 = silent, overrules
         settings from idict
-    kwargs: dict, optional
+    kwargs
         Additional parameters for foxes.input.run_dict
 
     Returns
     -------
-    algo: foxes.core.Algorithm
+    algo
         The algorithm
-    engine: foxes.core.Engine
+    engine
         The engine, or None if not set
-    optimizer: iwopy.core.Optimizer
+    optimizer
         The optimization problem solver
-
-    :group: input.yaml
 
     """
 
-    def _print(*args, level=1, **kwargs):
+    def _print(*args: Any, level: int = 1, **kwargs: Any) -> None:
         if verbosity is None or verbosity >= level:
             print(*args, **kwargs)
 
@@ -94,42 +99,42 @@ def read_dict(idict, *args, verbosity=None, **kwargs):
 
 
 def run_outputs(
-    idict,
-    algo=None,
-    farm_results=None,
-    opt_results=None,
-    extra_sig={},
-    **kwargs,
-):
+    idict: Dict,
+    algo: Any = None,
+    farm_results: Any = None,
+    opt_results: Any = None,
+    extra_sig: dict[str, Any] | None = None,
+    **kwargs: Any,
+) -> Any:
     """
     Run outputs from dict.
 
     Parameters
     ----------
-    idict: foxes.utils.Dict
+    idict
         The input parameter dictionary
-    algo: foxes.core.Algorithm, optional
+    algo
         The algorithm
-    farm_results: xarray.Dataset, optional
+    farm_results
         The farm results
-    opt_results: iwopy.core.SingleObjOptResults or iwopy.core.MultiObjOptResults, optional
+    opt_results
         The optimization results
-    extra_sig: dict
+    extra_sig
         Extra function signature check, sets
         arguments (key) with data (value)
-    kwargs: dict, optional
+    kwargs
         Additional parameters for foxes_run_output
 
     Returns
     -------
-    outputs: list of tuple
+    outputs
         For each output enty, a tuple (dict, results),
         where results is a tuple that represents one
         entry per function call
 
-    :group: input.yaml
-
     """
+    if extra_sig is None:
+        extra_sig = {}
     extra_sig.update({"opt_results": opt_results})
 
     out = foxes_run_output(
@@ -144,41 +149,51 @@ def run_outputs(
     return out
 
 
-def run_dict(idict, *args, extra_sig={}, nofig=False, verbosity=None, **kwargs):
+def run_dict(
+    idict: Dict,
+    *args: Any,
+    extra_sig: dict[str, Any] | None = None,
+    nofig: bool = False,
+    verbosity: int | None = None,
+    **kwargs: Any,
+) -> tuple[Any, tuple[Any, ...]]:
     """
     Run from a dictionary type parameter file.
 
     Parameters
     ----------
-    idict: foxes.utils.Dict
+    idict
         The input parameter dictionary
-    args: tuple, optional
+    args
         Additional parameters for foxes.input.run_dict
-    extra_sig: dict
+    extra_sig
         Extra function signature check, sets
         arguments (key) with data (value)
-    nofig: bool
+    nofig
         Do not show figures, overrules settings from idict
-    verbosity: int, optional
+    verbosity
         Force a verbosity level, 0 = silent, overrules
         settings from idict
-    kwargs: dict, optional
+    kwargs
         Additional parameters for foxes.input.run_dict
 
     Returns
     -------
-    opt_results: iwopy.core.SingleObjOptResults or iwopy.core.MultiObjOptResults
+    opt_results
         The optimization results
-    outputs: list of tuple
+    outputs
         For each output enty, a tuple (dict, results),
         where results is a tuple that represents one
         entry per function call
 
     """
 
-    def _print(*args, level=1, **kwargs):
+    def _print(*args: Any, level: int = 1, **kwargs: Any) -> None:
         if verbosity is None or verbosity >= level:
             print(*args, **kwargs)
+
+    if extra_sig is None:
+        extra_sig = {}
 
     # read components:
     algo, engine, optimizer = read_dict(idict, *args, verbosity=verbosity, **kwargs)
@@ -189,6 +204,7 @@ def run_dict(idict, *args, extra_sig={}, nofig=False, verbosity=None, **kwargs):
     # run optimizer:
     rdict = idict.get_item("solve", Dict(_name=idict.name + ".solve"))
     results_storage = None
+    out_w: list[Any] = []
     if rdict.pop_item("run", True):
         _print("Running optimizer")
         with engine:

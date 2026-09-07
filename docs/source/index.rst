@@ -1,8 +1,8 @@
 Welcome to *foxes-opt*
 ======================
 
-.. versionadded:: 0.7.0
-    Compatibility with *foxes* version 1.7.1
+.. versionadded:: 0.8.0
+    Compatibility with *foxes* version 1.9.2
 
 The package *foxes-opt* provides optimization functionality for the
 *Farm Optimization and eXtended yield Evaluation Software* `foxes <https://github.com/FraunhoferIWES/foxes>`_

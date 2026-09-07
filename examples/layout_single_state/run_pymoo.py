@@ -130,7 +130,7 @@ if __name__ == "__main__":
     solver.initialize()
     solver.print_info()
 
-    ax = foxes.output.FarmLayoutOutput(farm).get_figure()
+    ax = foxes.output.FarmLayoutOutput(farm).get_figure(bargs={})
     plt.show()
     plt.close(ax.get_figure())
 
@@ -163,7 +163,7 @@ if __name__ == "__main__":
 
     fig, axs = plt.subplots(1, 2, figsize=(12, 8))
 
-    foxes.output.FarmLayoutOutput(farm).get_figure(fig=fig, ax=axs[0])
+    foxes.output.FarmLayoutOutput(farm).get_figure(fig=fig, ax=axs[0], bargs={})
 
     o = foxes.output.FlowPlots2D(algo, results.problem_results)
     fig = o.get_mean_fig_xy(plot_data, fig=fig, ax=axs[1])

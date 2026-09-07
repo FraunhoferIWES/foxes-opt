@@ -1,93 +1,92 @@
+from typing import Any
+
 import numpy as np
 
 from foxes_opt.core.farm_objective import FarmObjective
+from foxes_opt.core.farm_opt_problem import FarmOptProblem
 import foxes.constants as FC
 
 
 class MaxNTurbines(FarmObjective):
     """
     Maximizes the number of turrbines.
-
-    Attributes
-    ----------
-    check_valid: bool
-        Check FC.VALID variable before counting
-
-    :group: opt.objectives
-
     """
 
     def __init__(
         self,
-        problem,
-        name="max_n_turbines",
-        check_valid=True,
-        **kwargs,
-    ):
+        problem: FarmOptProblem,
+        name: str = "max_n_turbines",
+        check_valid: bool = True,
+        **kwargs: Any,
+    ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying optimization problem
-        name: str
+        name
             The name of the objective function
-        check_valid: bool
+        check_valid
             Check FC.VALID variable before counting
-        kwargs: dict, optional
+        kwargs
             Additional parameters for `FarmObjective`
 
         """
         super().__init__(problem, name, **kwargs)
         self.check_valid = check_valid
 
-    def n_components(self):
+    def n_components(self) -> int:
         """
         Returns the number of components of the
         function.
 
         Returns
         -------
-        int:
+        value
             The number of components.
 
         """
         return 1
 
-    def maximize(self):
+    def maximize(self) -> list[bool]:
         """
         Returns flag for maximization of each component.
 
         Returns
         -------
-        flags: np.array
+        flags
             Bool array for component maximization,
-            shape: (n_components,)
+            shape
 
         """
         return [True]
 
-    def calc_individual(self, vars_int, vars_float, problem_results, components=None):
+    def calc_individual(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: Any,
+        components: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for a single individual of the
         underlying problem.
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
-        problem_results: Any
+        problem_results
             The results of the variable application
             to the problem
-        components: list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values: np.array
+        values
             The component values, shape: (n_sel_components,)
 
         """
@@ -101,25 +100,31 @@ class MaxNTurbines(FarmObjective):
         else:
             return np.array([self.farm.n_turbines], dtype=np.float64)
 
-    def calc_population(self, vars_int, vars_float, problem_results, components=None):
+    def calc_population(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: Any,
+        components: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for all individuals of a population.
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
-        problem_results: Any
+        problem_results
             The results of the variable application
             to the problem
-        components: list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values: np.array
+        values
             The component values, shape: (n_pop, n_sel_components)
 
         """
@@ -130,8 +135,9 @@ class MaxNTurbines(FarmObjective):
             vld = (
                 problem_results[FC.VALID]
                 .to_numpy()
-                .reshape(n_pop, n_states, n_turbines)
+                .reshape(n_states, n_pop, n_turbines)
             )
+            vld = np.swapaxes(vld, 0, 1)
             vld = np.sum(vld, axis=2)
             if np.any(np.min(vld, axis=1) != np.max(vld, axis=1)):
                 raise ValueError(

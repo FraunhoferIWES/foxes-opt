@@ -1,6 +1,10 @@
+from typing import Any
+
 import numpy as np
+from foxes.utils.geom2d import AreaGeometry
 
 from foxes_opt.core.farm_constraint import FarmConstraint
+from foxes_opt.core.farm_opt_problem import FarmOptProblem
 import foxes.variables as FV
 
 
@@ -8,52 +12,34 @@ class AreaGeometryConstraint(FarmConstraint):
     """
     Constrains turbine positions to the inside
     of a given area geometry.
-
-    Attributes
-    ----------
-    farm: foxes.WindFarm
-        The wind farm
-    sel_turbines: list
-        The selected turbines
-    geometry: foxes.utils.geom2d.AreaGeometry
-        The area geometry
-    disc_inside: bool
-        Ensure full rotor disc inside boundary
-    D: float
-        Use this radius for rotor disc inside condition
-
-    :group: opt.constraints
-
     """
 
     def __init__(
         self,
-        problem,
-        name,
-        geometry,
-        sel_turbines=None,
-        disc_inside=False,
-        D=None,
-        **kwargs,
-    ):
+        problem: FarmOptProblem,
+        name: str,
+        geometry: AreaGeometry,
+        sel_turbines: list[int] | None = None,
+        disc_inside: bool = False,
+        D: float | None = None,
+        **kwargs: Any,
+    ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
-        problem : foxes_opt.FarmOptProblem
+        problem
             The underlying optimization problem
-        name : str
+        name
             The name of the constraint
-        geometry : foxes.utils.geom2d.AreaGeometry
+        geometry
             The area geometry
-        sel_turbines : list of int, optional
+        sel_turbines
             The selected turbines
-        disc_inside : bool
+        disc_inside
             Ensure full rotor disc inside boundary
-        D : float, optional
+        D
             Use this radius for rotor disc inside condition
-        kwargs : dict, optional
+        kwargs
             Additional parameters for `iwopy.Constraint`
 
         """
@@ -72,29 +58,29 @@ class AreaGeometryConstraint(FarmConstraint):
             problem, name, sel_turbines, vnames_float=vrs, cnames=cns, **kwargs
         )
 
-    def n_components(self):
+    def n_components(self) -> int:
         """
         Returns the number of components of the
         function.
 
         Returns
         -------
-        int:
+        value
             The number of components.
 
         """
         return self.n_sel_turbines
 
-    def vardeps_float(self):
+    def vardeps_float(self) -> np.ndarray[tuple[int, int], np.dtype[np.bool_]]:
         """
         Gets the dependencies of all components
         on the function float variables
 
         Returns
         -------
-        deps: numpy.ndarray of bool
+        deps
             The dependencies of components on function
-            variables, shape: (n_components, n_vars_float)
+            variables, shape
 
         """
         deps = np.zeros((self.n_components(), self.n_components(), 2), dtype=bool)
@@ -102,32 +88,38 @@ class AreaGeometryConstraint(FarmConstraint):
         np.fill_diagonal(deps[:, :, 1], True)
         return deps.reshape(self.n_components(), self.n_components() * 2)
 
-    def calc_individual(self, vars_int, vars_float, problem_results, components=None):
+    def calc_individual(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: Any,
+        components: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for a single individual of the
         underlying problem.
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
-        problem_results: Any
+        problem_results
             The results of the variable application
             to the problem
-        components: list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values: np.array
+        values
             The component values, shape: (n_sel_components,)
 
         """
-        s = np.s_[:]
+        s: slice | np.ndarray[Any, np.dtype[np.int_]] = np.s_[:]
         if components is not None and len(components) < self.n_components():
-            s = components
+            s = np.asarray(components, dtype=int)
         xy = vars_float.reshape(self.n_components(), 2)[s]
 
         dists = self.geometry.points_distance(xy)
@@ -141,34 +133,40 @@ class AreaGeometryConstraint(FarmConstraint):
 
         return dists
 
-    def calc_population(self, vars_int, vars_float, problem_results, components=None):
+    def calc_population(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: Any,
+        components: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for all individuals of a population.
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
-        problem_results: Any
+        problem_results
             The results of the variable application
             to the problem
-        components: list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values: np.array
+        values
             The component values, shape: (n_pop, n_sel_components)
 
         """
         n_pop = len(vars_float)
         n_cmpnts = self.n_components()
-        s = np.s_[:]
+        s: slice | np.ndarray[Any, np.dtype[np.int_]] = np.s_[:]
         if components is not None and len(components) < self.n_components():
             n_cmpnts = len(components)
-            s = components
+            s = np.asarray(components, dtype=int)
         xy = vars_float[:, s].reshape(n_pop * n_cmpnts, 2)
 
         dists = self.geometry.points_distance(xy)
@@ -191,21 +189,19 @@ class FarmBoundaryConstraint(AreaGeometryConstraint):
     Constrains turbine positions to the inside of
     the wind farm boundary
 
-    :group: opt.constraints
-
     """
 
-    def __init__(self, problem, name="boundary", **kwargs):
+    def __init__(
+        self, problem: FarmOptProblem, name: str = "boundary", **kwargs: Any
+    ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying optimization problem
-        name: str
+        name
             The name of the constraint
-        kwargs: dict, optional
+        kwargs
             Additional parameters for `AreaGeometryConstraint`
 
         """

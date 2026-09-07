@@ -1,6 +1,8 @@
+from typing import Any
+
 import numpy as np
 from scipy.spatial.distance import cdist
-from iwopy import Constraint
+from iwopy import Constraint, Problem
 
 from foxes.config import config
 
@@ -9,22 +11,18 @@ class Valid(Constraint):
     """
     Validity constraint for purely geometrical layouts problems.
 
-    :group: opt.problems.layout.geom_layouts.constraints
-
     """
 
-    def __init__(self, problem, name="valid", **kwargs):
+    def __init__(self, problem: Problem, name: str = "valid", **kwargs: Any) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying geometrical layout
             optimization problem
-        name: str
+        name
             The constraint name
-        kwargs: dict, optional
+        kwargs
             Additioal parameters for the base class
 
         """
@@ -36,64 +34,76 @@ class Valid(Constraint):
             **kwargs,
         )
 
-    def n_components(self):
+    def n_components(self) -> int:
         """
         Returns the number of components of the
         function.
 
         Returns
         -------
-        int:
+        value
             The number of components.
 
         """
         return 1
 
-    def calc_individual(self, vars_int, vars_float, problem_results, cmpnts=None):
+    def calc_individual(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: tuple[np.ndarray, np.ndarray],
+        cmpnts: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for a single individual of the
         underlying problem.
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_sel_components,)
 
         """
         __, valid = problem_results
-        return np.sum(~valid)
+        return np.atleast_1d(np.sum(~valid))
 
-    def calc_population(self, vars_int, vars_float, problem_results, cmpnts=None):
+    def calc_population(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: tuple[np.ndarray, np.ndarray],
+        cmpnts: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for all individuals of a population.
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_pop, n_sel_components)
 
         """
@@ -105,26 +115,29 @@ class Boundary(Constraint):
     """
     Boundary constraint for purely geometrical layouts problems.
 
-    :group: opt.problems.layout.geom_layouts.constraints
-
     """
 
-    def __init__(self, problem, n_turbines=None, D=None, name="boundary", **kwargs):
+    def __init__(
+        self,
+        problem: Problem,
+        n_turbines: int | None = None,
+        D: float | None = None,
+        name: str = "boundary",
+        **kwargs: Any,
+    ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying geometrical layout
             optimization problem
-        n_turbines: int, optional
+        n_turbines
             The number of turbines
-        D: float, optional
+        D
             The rotor diameter
-        name: str
+        name
             The constraint name
-        kwargs: dict, optional
+        kwargs
             Additioal parameters for the base class
 
         """
@@ -138,39 +151,45 @@ class Boundary(Constraint):
         self.n_turbines = problem.n_turbines if n_turbines is None else n_turbines
         self.D = problem.D if D is None else D
 
-    def n_components(self):
+    def n_components(self) -> int:
         """
         Returns the number of components of the
         function.
 
         Returns
         -------
-        int:
+        value
             The number of components.
 
         """
         return self.n_turbines
 
-    def calc_individual(self, vars_int, vars_float, problem_results, cmpnts=None):
+    def calc_individual(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: tuple[np.ndarray, np.ndarray],
+        cmpnts: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for a single individual of the
         underlying problem.
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_sel_components,)
 
         """
@@ -184,25 +203,31 @@ class Boundary(Constraint):
 
         return dists
 
-    def calc_population(self, vars_int, vars_float, problem_results, cmpnts=None):
+    def calc_population(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: tuple[np.ndarray, np.ndarray],
+        cmpnts: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for all individuals of a population.
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_pop, n_sel_components)
 
         """
@@ -224,28 +249,29 @@ class MinDist(Constraint):
     """
     Minimal distance constraint for purely geometrical layouts problems.
 
-    :group: opt.problems.layout.geom_layouts.constraints
-
     """
 
     def __init__(
-        self, problem, min_dist=None, n_turbines=None, name="min_dist", **kwargs
-    ):
+        self,
+        problem: Problem,
+        min_dist: float | None = None,
+        n_turbines: int | None = None,
+        name: str = "min_dist",
+        **kwargs: Any,
+    ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying geometrical layout
             optimization problem
-        min_dist: float, optional
+        min_dist
             The minimal distance between turbines
-        n_turbines: int, optional
+        n_turbines
             The number of turbines
-        name: str
+        name
             The constraint name
-        kwargs: dict, optional
+        kwargs
             Additioal parameters for the base class
 
         """
@@ -259,64 +285,74 @@ class MinDist(Constraint):
         self.min_dist = problem.min_dist if min_dist is None else min_dist
         self.n_turbines = problem.n_turbines if n_turbines is None else n_turbines
 
-    def initialize(self, verbosity=0):
+    def initialize(self, verbosity: int = 0) -> None:
         """
         Initialize the constaint.
 
         Parameters
         ----------
-        verbosity: int
+        verbosity
             The verbosity level, 0 = silent
 
         """
         N = self.n_turbines
-        self._i2t = []  # i --> (ti, tj)
-        self._t2i = np.full([N, N], -1)  # (ti, tj) --> i
+        i2t: list[list[int]] = []  # i --> (ti, tj)
+        self._t2i: np.ndarray[tuple[int, ...], np.dtype[Any]] = np.full(
+            [N, N], -1
+        )  # (ti, tj) --> i
         i = 0
         for ti in range(N):
             for tj in range(N):
                 if ti != tj and self._t2i[ti, tj] < 0:
-                    self._i2t.append([ti, tj])
+                    i2t.append([ti, tj])
                     self._t2i[ti, tj] = i
                     self._t2i[tj, ti] = i
                     i += 1
-        self._i2t = np.array(self._i2t)
-        self._cnames = [f"{self.name}_{ti}_{tj}" for ti, tj in self._i2t]
+        self._i2t: np.ndarray[tuple[int, int], np.dtype[np.int_]] = np.asarray(
+            i2t, dtype=int
+        )
+        self._cnames: list[str] = [f"{self.name}_{ti}_{tj}" for ti, tj in self._i2t]
         super().initialize(verbosity)
 
-    def n_components(self):
+    def n_components(self) -> int:
         """
         Returns the number of components of the
         function.
 
         Returns
         -------
-        int:
+        value
             The number of components.
 
         """
         return len(self._i2t)
 
-    def calc_individual(self, vars_int, vars_float, problem_results, cmpnts=None):
+    def calc_individual(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: tuple[np.ndarray, np.ndarray],
+        cmpnts: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for a single individual of the
         underlying problem.
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_sel_components,)
 
         """
@@ -328,25 +364,31 @@ class MinDist(Constraint):
 
         return self.min_dist - d
 
-    def calc_population(self, vars_int, vars_float, problem_results, cmpnts=None):
+    def calc_population(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: tuple[np.ndarray, np.ndarray],
+        cmpnts: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for all individuals of a population.
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_pop, n_sel_components)
 
         """
@@ -363,11 +405,11 @@ class CMinN(Constraint):
     """
     Minimal number of turbines constraint for purely geometrical layouts problems.
 
-    :group: opt.problems.layout.geom_layouts.constraints
-
     """
 
-    def __init__(self, problem, N, name="cminN", **kwargs):
+    def __init__(
+        self, problem: Problem, N: int, name: str = "cminN", **kwargs: Any
+    ) -> None:
         super().__init__(
             problem,
             name,
@@ -380,77 +422,89 @@ class CMinN(Constraint):
 
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying geometrical layout
             optimization problem
-        N: int
+        N
             The minimal number of turbines
-        name: str
+        name
             The constraint name
-        kwargs: dict, optional
+        kwargs
             Additioal parameters for the base class
 
         """
         self.N = N
 
-    def n_components(self):
+    def n_components(self) -> int:
         """
         Returns the number of components of the
         function.
 
         Returns
         -------
-        int:
+        value
             The number of components.
 
         """
         return 1
 
-    def calc_individual(self, vars_int, vars_float, problem_results, cmpnts=None):
+    def calc_individual(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: tuple[np.ndarray, np.ndarray],
+        cmpnts: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for a single individual of the
         underlying problem.
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_sel_components,)
 
         """
         __, valid = problem_results
-        return self.N - np.sum(valid)
+        return np.atleast_1d(self.N - np.sum(valid))
 
-    def calc_population(self, vars_int, vars_float, problem_results, cmpnts=None):
+    def calc_population(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: tuple[np.ndarray, np.ndarray],
+        cmpnts: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for all individuals of a population.
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_pop, n_sel_components)
 
         """
@@ -462,24 +516,22 @@ class CMaxN(Constraint):
     """
     Maximal number of turbines constraint for purely geometrical layouts problems.
 
-    :group: opt.problems.layout.geom_layouts.constraints
-
     """
 
-    def __init__(self, problem, N, name="cmaxN", **kwargs):
+    def __init__(
+        self, problem: Problem, N: int, name: str = "cmaxN", **kwargs: Any
+    ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying geometrical layout
             optimization problem
-        N: int
+        N
             The maximal number of turbines
-        name: str
+        name
             The constraint name
-        kwargs: dict, optional
+        kwargs
             Additioal parameters for the base class
 
         """
@@ -492,64 +544,76 @@ class CMaxN(Constraint):
         )
         self.N = N
 
-    def n_components(self):
+    def n_components(self) -> int:
         """
         Returns the number of components of the
         function.
 
         Returns
         -------
-        int:
+        value
             The number of components.
 
         """
         return 1
 
-    def calc_individual(self, vars_int, vars_float, problem_results, cmpnts=None):
+    def calc_individual(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: tuple[np.ndarray, np.ndarray],
+        cmpnts: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for a single individual of the
         underlying problem.
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_sel_components,)
 
         """
         __, valid = problem_results
-        return np.sum(valid) - self.N
+        return np.atleast_1d(np.sum(valid) - self.N)
 
-    def calc_population(self, vars_int, vars_float, problem_results, cmpnts=None):
+    def calc_population(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: tuple[np.ndarray, np.ndarray],
+        cmpnts: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for all individuals of a population.
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_pop, n_sel_components)
 
         """
@@ -561,24 +625,22 @@ class CFixN(Constraint):
     """
     Fixed number of turbines constraint for purely geometrical layouts problems.
 
-    :group: opt.problems.layout.geom_layouts.constraints
-
     """
 
-    def __init__(self, problem, N, name="cfixN", **kwargs):
+    def __init__(
+        self, problem: Problem, N: int, name: str = "cfixN", **kwargs: Any
+    ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying geometrical layout
             optimization problem
-        N: int
+        N
             The number of turbines
-        name: str
+        name
             The constraint name
-        kwargs: dict, optional
+        kwargs
             Additioal parameters for the base class
 
         """
@@ -592,39 +654,45 @@ class CFixN(Constraint):
         )
         self.N = N
 
-    def n_components(self):
+    def n_components(self) -> int:
         """
         Returns the number of components of the
         function.
 
         Returns
         -------
-        int:
+        value
             The number of components.
 
         """
         return 2
 
-    def calc_individual(self, vars_int, vars_float, problem_results, cmpnts=None):
+    def calc_individual(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: tuple[np.ndarray, np.ndarray],
+        cmpnts: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for a single individual of the
         underlying problem.
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_sel_components,)
 
         """
@@ -632,25 +700,31 @@ class CFixN(Constraint):
         vld = np.sum(valid)
         return np.array([self.N - vld, vld - self.N])
 
-    def calc_population(self, vars_int, vars_float, problem_results, cmpnts=None):
+    def calc_population(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: tuple[np.ndarray, np.ndarray],
+        cmpnts: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for all individuals of a population.
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_pop, n_sel_components)
 
         """
@@ -663,26 +737,28 @@ class CMinDensity(Constraint):
     """
     Minimal turbine density constraint for purely geometrical layouts problems.
 
-    :group: opt.problems.layout.geom_layouts.constraints
-
     """
 
-    def __init__(self, problem, min_value, dfactor=1, name="min_density"):
+    def __init__(
+        self,
+        problem: Problem,
+        min_value: float,
+        dfactor: int = 1,
+        name: str = "min_density",
+    ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying geometrical layout
             optimization problem
-        min_value: float
+        min_value
             The minimal turbine density
-        dfactor: float
+        dfactor
             Delta factor for grid spacing
-        name: str
+        name
             The constraint name
-        kwargs: dict, optional
+        kwargs
             Additioal parameters for the base class
 
         """
@@ -695,26 +771,26 @@ class CMinDensity(Constraint):
         self.min_value = min_value
         self.dfactor = dfactor
 
-    def n_components(self):
+    def n_components(self) -> int:
         """
         Returns the number of components of the
         function.
 
         Returns
         -------
-        int:
+        value
             The number of components.
 
         """
         return 1
 
-    def initialize(self, verbosity):
+    def initialize(self, verbosity: int) -> None:
         """
         Initialize the object.
 
         Parameters
         ----------
-        verbosity: int
+        verbosity
             The verbosity level, 0 = silent
 
         """
@@ -734,60 +810,74 @@ class CMinDensity(Constraint):
             axis=-1,
         )
         nx, ny = self._probes.shape[:2]
-        n = nx * ny
+        n: int = nx * ny
         self._probes = self._probes.reshape(n, 2)
 
         # reduce to points within geometry:
         valid = geom.points_inside(self._probes)
         self._probes = self._probes[valid]
 
-    def calc_individual(self, vars_int, vars_float, problem_results, cmpnts=None):
+    def calc_individual(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: tuple[np.ndarray, np.ndarray],
+        cmpnts: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for a single individual of the
         underlying problem.
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_sel_components,)
 
         """
         xy, valid = problem_results
         xy = xy[valid]
-        dists = cdist(self._probes, xy)
-        return np.nanmax(np.nanmin(dists, axis=1)) - self.min_value
+        dists: np.ndarray[tuple[int, ...], np.dtype[np.floating]] = cdist(
+            self._probes, xy
+        )
+        return np.atleast_1d(np.nanmax(np.nanmin(dists, axis=1)) - self.min_value)
 
-    def calc_population(self, vars_int, vars_float, problem_results, cmpnts=None):
+    def calc_population(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        problem_results: tuple[np.ndarray, np.ndarray],
+        cmpnts: list[int] | None = None,
+    ) -> np.ndarray:
         """
         Calculate values for all individuals of a population.
 
         Parameters
         ----------
-        vars_int : np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float : np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
-        problem_results : Any
+        problem_results
             The results of the variable application
             to the problem
-        components : list of int, optional
+        components
             The selected components or None for all
 
         Returns
         -------
-        values : np.array
+        values
             The component values, shape: (n_pop, n_sel_components)
 
         """
@@ -797,6 +887,8 @@ class CMinDensity(Constraint):
         for pi in range(n_pop):
             if np.any(valid[pi]):
                 hxy = xy[pi][valid[pi]]
-                dists = cdist(self._probes, hxy)
+                dists: np.ndarray[tuple[int, ...], np.dtype[np.floating]] = cdist(
+                    self._probes, hxy
+                )
                 out[pi] = np.nanmax(np.nanmin(dists, axis=1)) - self.min_value
         return out[:, None]

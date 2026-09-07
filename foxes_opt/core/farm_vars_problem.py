@@ -1,5 +1,6 @@
 import numpy as np
 from abc import abstractmethod
+from typing import Any
 
 from foxes.models.turbine_models import SetFarmVars
 from foxes.config import config
@@ -14,25 +15,33 @@ class FarmVarsProblem(FarmOptProblem):
     Abstract base class for models that optimize
     farm variables.
 
-    :group: opt.core
-
     """
 
-    def initialize(self, model_vars, verbosity=1, **kwargs):
+    def initialize(
+        self,
+        verbosity: int = 1,
+        model_vars: dict[str, list[str]] | list[str] | None = None,
+        **kwargs: Any,
+    ) -> None:
         """
         Initialize the object.
 
         Parameters
         ----------
-        model_vars: dict or list
-            The variables to optimize. If dict, key: model name, value: list of variable names.
-        verbosity: int
+        model_vars
+            The variables to optimize. For mappings, each model name maps to the configured variable names.
+        verbosity
             The verbosity level, 0 = silent
-        kwargs: dict, optional
+        kwargs
             Additional parameters for super class init
 
         """
-        self._model_vars = {}
+        if model_vars is None:
+            raise ValueError(
+                f"Problem '{self.name}': Missing model_vars for initialization"
+            )
+
+        self._model_vars: dict[str, list[str]] = {}
         if isinstance(model_vars, dict):
             self._model_vars = {m: v for m, v in model_vars.items() if len(v)}
         elif len(model_vars):
@@ -65,56 +74,62 @@ class FarmVarsProblem(FarmOptProblem):
         super().initialize(verbosity=verbosity, **kwargs)
 
     @abstractmethod
-    def opt2farm_vars_individual(self, vars_int, vars_float):
+    def opt2farm_vars_individual(
+        self, vars_int: np.ndarray, vars_float: np.ndarray
+    ) -> dict[str, np.ndarray]:
         """
         Translates optimization variables to farm variables
 
         Parameters
         ----------
-        vars_int: numpy.ndarray
+        vars_int
             The integer optimization variable values,
-            shape: (n_vars_int,)
-        vars_float: numpy.ndarray
+            shape
+        vars_float
             The float optimization variable values,
-            shape: (n_vars_float,)
+            shape
 
         Returns
         -------
-        farm_vars: dict
+        farm_vars
             The foxes farm variables. Key: var name,
-            value: numpy.ndarray with values, shape:
+            value
             (n_states, n_sel_turbines)
 
         """
         pass
 
     @abstractmethod
-    def opt2farm_vars_population(self, vars_int, vars_float, n_states):
+    def opt2farm_vars_population(
+        self, vars_int: np.ndarray, vars_float: np.ndarray, n_states: int
+    ) -> dict[str, np.ndarray]:
         """
         Translates optimization variables to farm variables
 
         Parameters
         ----------
-        vars_int: numpy.ndarray
+        vars_int
             The integer optimization variable values,
-            shape: (n_pop, n_vars_int)
-        vars_float: numpy.ndarray
+            shape
+        vars_float
             The float optimization variable values,
-            shape: (n_pop, n_vars_float)
-        n_states: int
+            shape
+        n_states
             The number of original (non-pop) states
 
         Returns
         -------
-        farm_vars: dict
+        farm_vars
             The foxes farm variables. Key: var name,
-            value: numpy.ndarray with values, shape:
-            (n_pop, n_states, n_sel_turbines)
+            value
+            (n_states, n_pop, n_sel_turbines)
 
         """
         pass
 
-    def update_problem_individual(self, vars_int, vars_float):
+    def update_problem_individual(
+        self, vars_int: np.ndarray, vars_float: np.ndarray
+    ) -> None:
         """
         Update the algo and other data using
         the latest optimization variables.
@@ -124,9 +139,9 @@ class FarmVarsProblem(FarmOptProblem):
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
 
         """
@@ -156,7 +171,9 @@ class FarmVarsProblem(FarmOptProblem):
                 f"Problem '{self.name}': Too many farm vars from opt2farm_vars_individual: {list(fvars.keys())}"
             )
 
-    def update_problem_population(self, vars_int, vars_float):
+    def update_problem_population(
+        self, vars_int: np.ndarray, vars_float: np.ndarray
+    ) -> None:
         """
         Update the algo and other data using
         the latest optimization variables.
@@ -166,9 +183,9 @@ class FarmVarsProblem(FarmOptProblem):
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int,)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float,)
 
         """
@@ -213,17 +230,17 @@ class FarmVarsProblem(FarmOptProblem):
             )
 
     @classmethod
-    def new(cls, problem_type, *args, **kwargs):
+    def new(cls, problem_type: str, *args: Any, **kwargs: Any) -> Any:
         """
         Run-time farm vars opt problem factory.
 
         Parameters
         ----------
-        problem_type: string
+        problem_type
             The selected derived class name
-        args: tuple, optional
+        args
             Additional parameters for the constructor
-        kwargs: dict, optional
+        kwargs
             Additional parameters for the constructor
 
         """

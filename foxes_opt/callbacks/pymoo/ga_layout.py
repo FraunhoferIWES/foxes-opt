@@ -1,3 +1,5 @@
+from typing import Any
+
 from iwopy.interfaces.pymoo import DefaultCallbackTemplate
 from foxes.output import FarmLayoutOutput
 from foxes.config import get_output_path
@@ -11,18 +13,16 @@ class GAWriteLayoutCallbackTemplate(DefaultCallbackTemplate):
 
     Parameters
     ----------
-    out_dir : str
+    out_dir
         The output directory where the layout will be written
-    base_name : str
+    base_name
         The base name for the layout files
-    n_gen_step : int
+    n_gen_step
         The number of generations between writing the layout
-    figsize : tuple, optional
+    figsize
         The figure size for the layout plot
-    verbosity : int
+    verbosity
         The verbosity level, 0 = silent
-
-    :group: opt.callbacks.pymoo
 
     """
 
@@ -31,29 +31,27 @@ class GAWriteLayoutCallbackTemplate(DefaultCallbackTemplate):
 
     def __init__(
         self,
-        out_dir,
-        base_name,
-        n_gen_step=1,
-        figsize=None,
-        from_farm_results=False,
-        verbosity=0,
-    ):
+        out_dir: Any,
+        base_name: str,
+        n_gen_step: int = 1,
+        figsize: tuple[float, float] | None = None,
+        from_farm_results: bool = False,
+        verbosity: int = 0,
+    ) -> None:
         """
-        Initialize the callback.
-
         Parameters
         ----------
-        out_dir : str
+        out_dir
             The output directory where the layout will be written
-        base_name : str
+        base_name
             The base name for the layout files
-        n_gen_step : int
+        n_gen_step
             The number of generations between writing the layout
-        figsize : tuple, optional
+        figsize
             The figure size for the layout plot
-        verbosity : int
+        verbosity
             The verbosity level, 0 = silent
-        from_farm_results : bool
+        from_farm_results
             Whether to get the layout from farm results
 
         """
@@ -65,7 +63,7 @@ class GAWriteLayoutCallbackTemplate(DefaultCallbackTemplate):
         self.verbosity = verbosity
         self.from_farm_results = from_farm_results
 
-        def notify(self, algorithm):
+        def notify(self: GAWriteLayoutCallbackTemplate, algorithm: Any) -> None:
             super().notify(algorithm)
             if algorithm.n_gen % self.n_gen_step == 0:
                 problem = algorithm.problem.problem

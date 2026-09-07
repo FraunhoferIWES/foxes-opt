@@ -1,9 +1,15 @@
+from typing import Any, TYPE_CHECKING
+
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.spatial.distance import cdist
 from iwopy import Problem
 
 from foxes.config import config
+from foxes.utils.geom2d import AreaGeometry
+
+if TYPE_CHECKING:
+    from matplotlib.axes import Axes
 
 
 class GeomRegGrid(Problem):
@@ -13,45 +19,28 @@ class GeomRegGrid(Problem):
     This optimization problem does not involve
     wind farms.
 
-    Attributes
-    ----------
-    boundary: foxes.utils.geom2d.AreaGeometry
-        The boundary geometry
-    n_turbines: int
-        The number of turbines in the layout
-    min_dist: float
-        The minimal distance between points
-    max_dist: float
-        The maximal distance between points
-    D: float
-        The diameter of circle fully within boundary
-
-    :group: opt.problems.layout.geom_layouts
-
     """
 
     def __init__(
         self,
-        boundary,
-        n_turbines,
-        min_dist,
-        max_dist=None,
-        D=None,
-    ):
+        boundary: AreaGeometry,
+        n_turbines: int,
+        min_dist: float,
+        max_dist: float | None = None,
+        D: float | None = None,
+    ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
-        boundary: foxes.utils.geom2d.AreaGeometry
+        boundary
             The boundary geometry
-        n_turbines: int
+        n_turbines
             The number of turbines in the layout
-        min_dist: float
+        min_dist
             The minimal distance between points
-        max_dist: float, optional
+        max_dist
             The maximal distance between points
-        D: float, optional
+        D
             The diameter of circle fully within boundary
 
         """
@@ -60,7 +49,9 @@ class GeomRegGrid(Problem):
         self.boundary = boundary
         self.n_turbines = n_turbines
         self.min_dist = float(min_dist)
-        self.max_dist = float(max_dist) if max_dist is not None else max_dist
+        self.max_dist: float | None = (
+            float(max_dist) if max_dist is not None else max_dist
+        )
         self.D = D
 
         self._SX = "sx"
@@ -69,13 +60,13 @@ class GeomRegGrid(Problem):
         self._DY = "dy"
         self._ALPHA = "alpha"
 
-    def initialize(self, verbosity=1):
+    def initialize(self, verbosity: int = 1) -> None:
         """
         Initialize the object.
 
         Parameters
         ----------
-        verbosity: int
+        verbosity
             The verbosity level, 0 = silent
 
         """
@@ -84,9 +75,9 @@ class GeomRegGrid(Problem):
         pmin = self.boundary.p_min()
         pmax = self.boundary.p_max()
         self._pc = 0.5 * (pmin + pmax)
-        self._diag = np.linalg.norm(pmax - pmin)
+        self._diag: float = float(np.linalg.norm(pmax - pmin))
         self.max_dist = self._diag if self.max_dist is None else self.max_dist
-        self._nrow = (
+        self._nrow: int = (
             int(np.maximum(self._diag / self.min_dist, np.sqrt(self.n_turbines) + 0.5))
             + 3
         )
@@ -102,25 +93,25 @@ class GeomRegGrid(Problem):
 
         self.apply_individual(self.initial_values_int(), self.initial_values_float())
 
-    def var_names_float(self):
+    def var_names_float(self) -> list[str]:
         """
         The names of float variables.
 
         Returns
         -------
-        names: list of str
+        names
             The names of the float variables
 
         """
-        return list(np.array([self._SX, self._SY, self._DX, self._DY, self._ALPHA]))
+        return [self._SX, self._SY, self._DX, self._DY, self._ALPHA]
 
-    def initial_values_float(self):
+    def initial_values_float(self) -> np.ndarray:
         """
         The initial values of the float variables.
 
         Returns
         -------
-        values: numpy.ndarray
+        values
             Initial float values, shape: (n_vars_float,)
 
         """
@@ -128,7 +119,7 @@ class GeomRegGrid(Problem):
         vals[2:4] = self.min_dist
         return vals
 
-    def min_values_float(self):
+    def min_values_float(self) -> np.ndarray:
         """
         The minimal values of the float variables.
 
@@ -136,7 +127,7 @@ class GeomRegGrid(Problem):
 
         Returns
         -------
-        values: numpy.ndarray
+        values
             Minimal float values, shape: (n_vars_float,)
 
         """
@@ -145,7 +136,7 @@ class GeomRegGrid(Problem):
         vals[2:4] = self.min_dist
         return vals
 
-    def max_values_float(self):
+    def max_values_float(self) -> np.ndarray:
         """
         The maximal values of the float variables.
 
@@ -153,7 +144,7 @@ class GeomRegGrid(Problem):
 
         Returns
         -------
-        values: numpy.ndarray
+        values
             Maximal float values, shape: (n_vars_float,)
 
         """
@@ -163,20 +154,22 @@ class GeomRegGrid(Problem):
         vals[4] = 90.0
         return vals
 
-    def apply_individual(self, vars_int, vars_float):
+    def apply_individual(
+        self, vars_int: np.ndarray, vars_float: np.ndarray
+    ) -> tuple[np.ndarray, np.ndarray]:
         """
         Apply new variables to the problem.
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_vars_int,)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_vars_float,)
 
         Returns
         -------
-        problem_results: Any
+        problem_results
             The results of the variable application
             to the problem
 
@@ -184,8 +177,12 @@ class GeomRegGrid(Problem):
         sx, sy, dx, dy, alpha = vars_float
 
         a = np.deg2rad(alpha)
-        nax = np.stack([np.cos(a), np.sin(a)], axis=-1)
-        nay = np.stack([-np.sin(a), np.cos(a)], axis=-1)
+        nax: np.ndarray[tuple[int, ...], np.dtype[Any]] = np.stack(
+            [np.cos(a), np.sin(a)], axis=-1
+        )
+        nay: np.ndarray[tuple[int, ...], np.dtype[Any]] = np.stack(
+            [-np.sin(a), np.cos(a)], axis=-1
+        )
 
         pts = (
             self._pc[None, None, :]
@@ -209,26 +206,32 @@ class GeomRegGrid(Problem):
         if nvl >= self.n_turbines:
             return pts[valid][: self.n_turbines], np.ones(self.n_turbines, dtype=bool)
         else:
-            qts = np.append(pts[valid], pts[~valid][: (self.n_turbines - nvl)], axis=0)
-            vld = np.zeros(self.n_turbines, dtype=bool)
+            qts: np.ndarray[tuple[int, ...], np.dtype[Any]] = np.append(
+                pts[valid], pts[~valid][: (self.n_turbines - nvl)], axis=0
+            )
+            vld: np.ndarray[tuple[int], np.dtype[Any]] = np.zeros(
+                self.n_turbines, dtype=bool
+            )
             vld[:nvl] = True
             return qts, vld
 
-    def apply_population(self, vars_int, vars_float):
+    def apply_population(
+        self, vars_int: np.ndarray, vars_float: np.ndarray
+    ) -> tuple[np.ndarray, np.ndarray]:
         """
         Apply new variables to the problem,
         for a whole population.
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The integer variable values, shape: (n_pop, n_vars_int)
-        vars_float: np.array
+        vars_float
             The float variable values, shape: (n_pop, n_vars_float)
 
         Returns
         -------
-        problem_results: Any
+        problem_results
             The results of the variable application
             to the problem
 
@@ -241,8 +244,12 @@ class GeomRegGrid(Problem):
         alpha = vars_float[:, 4]
 
         a = np.deg2rad(alpha)
-        nax = np.stack([np.cos(a), np.sin(a)], axis=-1)
-        nay = np.stack([-np.sin(a), np.cos(a)], axis=-1)
+        nax: np.ndarray[tuple[int, ...], np.dtype[Any]] = np.stack(
+            [np.cos(a), np.sin(a)], axis=-1
+        )
+        nay: np.ndarray[tuple[int, ...], np.dtype[Any]] = np.stack(
+            [-np.sin(a), np.cos(a)], axis=-1
+        )
 
         pts = (
             self._pc[None, None, None, :]
@@ -274,7 +281,9 @@ class GeomRegGrid(Problem):
 
         nvl = np.sum(valid, axis=1)
         qts = np.zeros((n_pop, self.n_turbines, 2), dtype=config.dtype_double)
-        vld = np.zeros((n_pop, self.n_turbines), dtype=bool)
+        vld: np.ndarray[tuple[int, int], np.dtype[Any]] = np.zeros(
+            (n_pop, self.n_turbines), dtype=bool
+        )
         for pi in range(n_pop):
             if nvl[pi] >= self.n_turbines:
                 qts[pi] = pts[pi, valid[pi]][: self.n_turbines]
@@ -290,36 +299,42 @@ class GeomRegGrid(Problem):
         return qts, vld
 
     def get_fig(
-        self, xy=None, valid=None, ax=None, title=None, true_circle=True, **bargs
-    ):
+        self,
+        xy: np.ndarray | None = None,
+        valid: np.ndarray | None = None,
+        ax: "Axes | None" = None,
+        title: str | None = None,
+        true_circle: bool = True,
+        **bargs: Any,
+    ) -> "Axes":
         """
         Return plotly figure axis.
 
         Parameters
         ----------
-        xy: numpy.ndarary, optional
+        xy
             The xy coordinate array, shape: (n_points, 2)
-        valid: numpy.ndarray, optional
+        valid
             Boolean array of validity, shape: (n_points,)
-        ax: pyplot.Axis, optional
+        ax
             The figure axis
-        title: str, optional
+        title
             The figure title
-        true_circle: bool
+        true_circle
             Draw points as circles with diameter self.D
-        bars: dict, optional
+        bars
             The boundary plot arguments
 
         Returns
         -------
-        ax: pyplot.Axis
+        ax
             The figure axis
 
         """
         if ax is None:
             __, ax = plt.subplots()
 
-        hbargs = {"fill_mode": "inside_lightgray"}
+        hbargs: dict[str, str] = {"fill_mode": "inside_lightgray"}
         hbargs.update(bargs)
         self.boundary.add_to_figure(ax, **hbargs)
 
@@ -342,8 +357,10 @@ class GeomRegGrid(Problem):
             if xy is None:
                 title = "Optimization area"
             else:
-                lxy = len(xy) if xy is not None else 0
-                dists = cdist(xy, xy)
+                lxy: int = len(xy) if xy is not None else 0
+                dists: np.ndarray[tuple[int, ...], np.dtype[np.floating]] = cdist(
+                    xy, xy
+                )
                 np.fill_diagonal(dists, 1e20)
                 title = f"N = {lxy}, min_dist = {np.min(dists):.1f} m"
         ax.set_title(title)

@@ -1,6 +1,13 @@
+from typing import Any, TYPE_CHECKING
+
 from iwopy import Objective
+from foxes.core import WindFarm
 
 from foxes.utils import new_instance, all_subclasses
+
+if TYPE_CHECKING:
+    from matplotlib.axes import Axes
+    from .farm_opt_problem import FarmOptProblem
 
 
 class FarmObjective(Objective):
@@ -8,23 +15,25 @@ class FarmObjective(Objective):
     Abstract base class for foxes wind farm
     objective functions.
 
-    :group: opt.core
-
     """
 
-    def __init__(self, problem, name, sel_turbines=None, **kwargs):
+    def __init__(
+        self,
+        problem: "FarmOptProblem",
+        name: str,
+        sel_turbines: list[int] | None = None,
+        **kwargs: Any,
+    ) -> None:
         """
-        Constraints.
-
         Parameters
         ----------
-        problem: foxes_opt.FarmOptProblem
+        problem
             The underlying optimization problem
-        name: str
+        name
             The name of the objective function
-        sel_turbines: list of int, optional
+        sel_turbines
             The selected turbines
-        kwargs: dict, optional
+        kwargs
             Additional parameters for `iwopy.Objective`
 
         """
@@ -32,26 +41,26 @@ class FarmObjective(Objective):
         self._sel_turbines = sel_turbines
 
     @property
-    def farm(self):
+    def farm(self) -> WindFarm:
         """
         The wind farm
 
         Returns
         -------
-        foxes.core.WindFarm :
+        value
             The wind farm
 
         """
         return self.problem.farm
 
     @property
-    def sel_turbines(self):
+    def sel_turbines(self) -> list[int]:
         """
         The list of selected turbines
 
         Returns
         -------
-        list of int :
+        value
             The list of selected turbines
 
         """
@@ -62,32 +71,32 @@ class FarmObjective(Objective):
         )
 
     @property
-    def n_sel_turbines(self):
+    def n_sel_turbines(self) -> int:
         """
         The numer of selected turbines
 
         Returns
         -------
-        int :
+        value
             The numer of selected turbines
 
         """
         return len(self.sel_turbines)
 
-    def add_to_layout_figure(self, ax, **kwargs):
+    def add_to_layout_figure(self, ax: "Axes", **kwargs: Any) -> "Axes":
         """
         Add to a layout figure
 
         Parameters
         ----------
-        ax: matplotlib.pyplot.Axis
+        ax
             The figure axis
 
         """
         return ax
 
     @classmethod
-    def print_models(cls):
+    def print_models(cls) -> None:
         """
         Prints all model names.
         """
@@ -96,17 +105,17 @@ class FarmObjective(Objective):
             print(n)
 
     @classmethod
-    def new(cls, objective_type, *args, **kwargs):
+    def new(cls, objective_type: str, *args: Any, **kwargs: Any) -> Any:
         """
         Run-time farm objective factory.
 
         Parameters
         ----------
-        objective_type: string
+        objective_type
             The selected derived class name
-        args: tuple, optional
+        args
             Additional parameters for the constructor
-        kwargs: dict, optional
+        kwargs
             Additional parameters for the constructor
 
         """

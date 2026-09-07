@@ -1,14 +1,24 @@
 import numpy as np
 from copy import deepcopy
+from typing import Any
 
 from foxes_opt.core import FarmVarsProblem, FarmOptProblem
 from foxes.models.turbine_models import Calculator
+from foxes.core import Algorithm, MData, FData
 from foxes.config import config
 import foxes.variables as FV
 import foxes.constants as FC
 
 
-def _calc_func(valid, P, ct, algo, mdata, fdata, st_sel):
+def _calc_func(
+    valid: np.ndarray,
+    P: np.ndarray,
+    ct: np.ndarray,
+    algo: Algorithm,
+    mdata: MData,
+    fdata: FData,
+    st_sel: Any,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """helper function for Calculator turbine model"""
     return (valid, P * valid, ct * valid)
 
@@ -17,17 +27,6 @@ class RegularLayoutOptProblem(FarmVarsProblem):
     """
     Places turbines on a regular grid and optimizes
     its parameters.
-
-    Attributes
-    ----------
-    min_spacing: float
-        The minimal turbine spacing
-    initial_values: dict
-        Initial values for opt variables, key:
-        spacing_x, spacing_y, offset_x, offset_y, angle
-
-    :group: opt.problems.layout
-
     """
 
     SPACING_X = "spacing_x"
@@ -38,27 +37,25 @@ class RegularLayoutOptProblem(FarmVarsProblem):
 
     def __init__(
         self,
-        name,
-        algo,
-        min_spacing,
-        initial_values=None,
-        **kwargs,
-    ):
+        name: str,
+        algo: Algorithm,
+        min_spacing: float,
+        initial_values: dict[str, float] | None = None,
+        **kwargs: Any,
+    ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
-        name: str
+        name
             The problem's name
-        algo: foxes.core.Algorithm
+        algo
             The algorithm
-        min_spacing: float
+        min_spacing
             The minimal turbine spacing
-        initial_values: dict, optional
+        initial_values
             Initial values for opt variables, key:
             spacing_x, spacing_y, offset_x, offset_y, angle
-        kwargs: dict, optional
+        kwargs
             Additional parameters for `FarmVarsProblem`
 
         """
@@ -66,15 +63,20 @@ class RegularLayoutOptProblem(FarmVarsProblem):
         self.min_spacing = min_spacing
         self.initial_values = initial_values
 
-    def initialize(self, verbosity=1, **kwargs):
+    def initialize(
+        self,
+        verbosity: int = 1,
+        model_vars: dict[str, list[str]] | list[str] | None = None,
+        **kwargs: Any,
+    ) -> None:
         """
         Initialize the object.
 
         Parameters
         ----------
-        verbosity: int
+        verbosity
             The verbosity level, 0 = silent
-        kwargs: dict, optional
+        kwargs
             Additional parameters for super class init
 
         """
@@ -164,13 +166,13 @@ class RegularLayoutOptProblem(FarmVarsProblem):
             new_turbines = self.farm.turbines[: self._nturb]
             self.farm.reset_turbines(self.algo, new_turbines)
 
-    def var_names_float(self):
+    def var_names_float(self) -> list[str]:
         """
         The names of float variables.
 
         Returns
         -------
-        names: list of str
+        names
             The names of the float variables
 
         """
@@ -182,19 +184,20 @@ class RegularLayoutOptProblem(FarmVarsProblem):
             self.ANGLE,
         ]
 
-    def initial_values_float(self):
+    def initial_values_float(self) -> list[float]:
         """
         The initial values of the float variables.
 
         Returns
         -------
-        values: numpy.ndarray
+        values
             Initial float values, shape: (n_vars_float,)
 
         """
+        assert self.initial_values is not None
         return list(self.initial_values.values())
 
-    def min_values_float(self):
+    def min_values_float(self) -> np.ndarray:
         """
         The minimal values of the float variables.
 
@@ -202,7 +205,7 @@ class RegularLayoutOptProblem(FarmVarsProblem):
 
         Returns
         -------
-        values: numpy.ndarray
+        values
             Minimal float values, shape: (n_vars_float,)
 
         """
@@ -217,7 +220,7 @@ class RegularLayoutOptProblem(FarmVarsProblem):
             dtype=config.dtype_double,
         )
 
-    def max_values_float(self):
+    def max_values_float(self) -> np.ndarray:
         """
         The maximal values of the float variables.
 
@@ -225,7 +228,7 @@ class RegularLayoutOptProblem(FarmVarsProblem):
 
         Returns
         -------
-        values: numpy.ndarray
+        values
             Maximal float values, shape: (n_vars_float,)
 
         """
@@ -240,24 +243,26 @@ class RegularLayoutOptProblem(FarmVarsProblem):
             dtype=config.dtype_double,
         )
 
-    def opt2farm_vars_individual(self, vars_int, vars_float):
+    def opt2farm_vars_individual(
+        self, vars_int: np.ndarray, vars_float: np.ndarray
+    ) -> dict[str, np.ndarray]:
         """
         Translates optimization variables to farm variables
 
         Parameters
         ----------
-        vars_int: numpy.ndarray
+        vars_int
             The integer optimization variable values,
-            shape: (n_vars_int,)
-        vars_float: numpy.ndarray
+            shape
+        vars_float
             The float optimization variable values,
-            shape: (n_vars_float,)
+            shape
 
         Returns
         -------
-        farm_vars: dict
+        farm_vars
             The foxes farm variables. Key: var name,
-            value: numpy.ndarray with values, shape:
+            value
             (n_states, n_sel_turbines)
 
         """
@@ -289,27 +294,29 @@ class RegularLayoutOptProblem(FarmVarsProblem):
 
         return farm_vars
 
-    def opt2farm_vars_population(self, vars_int, vars_float, n_states):
+    def opt2farm_vars_population(
+        self, vars_int: np.ndarray, vars_float: np.ndarray, n_states: int
+    ) -> dict[str, np.ndarray]:
         """
         Translates optimization variables to farm variables
 
         Parameters
         ----------
-        vars_int: numpy.ndarray
+        vars_int
             The integer optimization variable values,
-            shape: (n_pop, n_vars_int)
-        vars_float: numpy.ndarray
+            shape
+        vars_float
             The float optimization variable values,
-            shape: (n_pop, n_vars_float)
-        n_states: int
+            shape
+        n_states
             The number of original (non-pop) states
 
         Returns
         -------
-        farm_vars: dict
+        farm_vars
             The foxes farm variables. Key: var name,
-            value: numpy.ndarray with values, shape:
-            (n_pop, n_states, n_sel_turbines)
+            value
+            (n_states, n_pop, n_sel_turbines)
 
         """
         n_pop = len(vars_float)
@@ -350,33 +357,35 @@ class RegularLayoutOptProblem(FarmVarsProblem):
 
         farm_vars = {}
         for v, d in zip([FV.X, FV.Y, FC.VALID], [qts[:, :, 0], qts[:, :, 1], valid]):
-            a = np.zeros((n_pop, n_states, n_turbines), dtype=config.dtype_double)
-            a[:] = d[:, None, :]
+            a = np.zeros((n_states, n_pop, n_turbines), dtype=config.dtype_double)
+            a[:] = d[None, :, :]
             farm_vars[v] = a
 
         return farm_vars
 
-    def finalize_individual(self, vars_int, vars_float, verbosity=1):
+    def finalize_individual(
+        self, vars_int: np.ndarray, vars_float: np.ndarray, verbosity: int = 1
+    ) -> Any:
         """
         Finalization, given the champion data.
 
         Parameters
         ----------
-        vars_int: np.array
+        vars_int
             The optimal integer variable values, shape: (n_vars_int,)
-        vars_float: np.array
+        vars_float
             The optimal float variable values, shape: (n_vars_float,)
-        verbosity: int
+        verbosity
             The verbosity level, 0 = silent
 
         Returns
         -------
-        problem_results: Any
+        problem_results
             The results of the variable application
             to the problem
-        objs: np.array
+        objs
             The objective function values, shape: (n_objectives,)
-        cons: np.array
+        cons
             The constraints values, shape: (n_constraints,)
 
         """
