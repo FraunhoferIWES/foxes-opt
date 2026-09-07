@@ -1,6 +1,7 @@
 stages:
   - pre-commit
-  - test
+  - tests
+  - notebooks
 variables:
   UV_VERSION: "0.9.24"
   PYTHON_VERSION: "3.13"
@@ -18,6 +19,7 @@ pre-commit:
     refs:
       - main
       - dev
+      - merge_requests
   before_script:
     - apt-get update
     - apt-get install -y --no-install-recommends git
@@ -32,7 +34,7 @@ pre-commit:
 # ===== TEST =====
 test:
   image: ghcr.io/astral-sh/uv:$UV_VERSION-python$PYTHON_VERSION-$BASE_LAYER
-  stage: test
+  stage: tests
   cache:
     - key:
         files:
@@ -47,7 +49,7 @@ test:
 # ===== NOTEBOOKS =====
 notebooks:
   image: ghcr.io/astral-sh/uv:$UV_VERSION-python$PYTHON_VERSION-$BASE_LAYER
-  stage: test
+  stage: notebooks
   cache:
     - key:
         files:
