@@ -12,21 +12,6 @@ class AreaGeometryConstraint(FarmConstraint):
     """
     Constrains turbine positions to the inside
     of a given area geometry.
-
-    Attributes
-    ----------
-    farm
-        The wind farm
-    sel_turbines
-        The selected turbines
-    geometry
-        The area geometry
-    disc_inside
-        Ensure full rotor disc inside boundary
-    D
-        Use this radius for rotor disc inside condition
-
-
     """
 
     def __init__(
@@ -40,8 +25,6 @@ class AreaGeometryConstraint(FarmConstraint):
         **kwargs: Any,
     ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
         problem
@@ -206,15 +189,12 @@ class FarmBoundaryConstraint(AreaGeometryConstraint):
     Constrains turbine positions to the inside of
     the wind farm boundary
 
-
     """
 
     def __init__(
         self, problem: FarmOptProblem, name: str = "boundary", **kwargs: Any
     ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
         problem

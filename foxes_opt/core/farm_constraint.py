@@ -15,7 +15,6 @@ class FarmConstraint(Constraint):
     Abstract base class for foxes wind farm
     optimization constraints.
 
-
     """
 
     def __init__(
@@ -26,8 +25,6 @@ class FarmConstraint(Constraint):
         **kwargs: Any,
     ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
         problem

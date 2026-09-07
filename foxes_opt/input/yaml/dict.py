@@ -39,7 +39,6 @@ def read_dict(
     optimizer
         The optimization problem solver
 
-
     """
 
     def _print(*args: Any, level: int = 1, **kwargs: Any) -> None:
@@ -132,7 +131,6 @@ def run_outputs(
         For each output enty, a tuple (dict, results),
         where results is a tuple that represents one
         entry per function call
-
 
     """
     if extra_sig is None:

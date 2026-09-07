@@ -1,12 +1,12 @@
 # pyproject.toml file specified at the root of the directory
 
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=84.0.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "foxes-opt"
-version = "0.7.2"
+version = "0.8.0"
 authors = [
   {name = "Jonas Schulte"},
 ]
@@ -32,7 +32,7 @@ classifiers = [
 ]
 requires-python = ">=3.10"
 dependencies = [
-    "foxes>=1.7.1",
+    "foxes>=1.9.2",
     "iwopy>=0.3.1",
     "pymoo>=0.6",
     "xarray>=2023.9",
@@ -41,23 +41,25 @@ dependencies = [
 
 [project.optional-dependencies]
 doc = [
-    "setuptools>=61.0",
+    "setuptools>=84.0.0",
     "sphinx>=5.0",
+    "sphinx-autoapi>=3.0",
+    "numpydoc>=1.0",
     "sphinx-immaterial>=0.10",
-    "myst-nb>=0.1",
-    "ipykernel>=5.0",
-    "ipywidgets>=5.0",
-    "m2r2>=0.2",
+    "myst-nb>=1.0",
+    "tomli>=2.0; python_version < '3.11'",
+    "ipykernel>=6.0.2",
+    "ipywidgets>=8.0",
     "lxml_html_clean>=0.4",
 ]
 test = [
     "pytest>=7.0",
     "nbmake>1.0",
-    "pre-commit>=0.1",
+    "pre-commit>=3.0",
     "mypy>=1.11.0,!=2.3.1",
 ]
 dev = [
-    "pre-commit>=0.1",
+    "pre-commit>=3.0",
     "mypy>=1.11.0,!=2.3.1",
     "objsize>=0.5",
     "jupyter>=1.0",
@@ -81,6 +83,7 @@ exclude = [
     "docs/",
     "notebooks/",
     "tests/",
+    "scratch/",
 ]
 no_site_packages = true
 ignore_missing_imports = true

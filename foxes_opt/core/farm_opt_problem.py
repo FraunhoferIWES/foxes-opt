@@ -15,17 +15,6 @@ if TYPE_CHECKING:
 class FarmOptProblem(Problem):
     """
     Abstract base class of wind farm optimization problems.
-
-    Attributes
-    ----------
-    algo
-        The algorithm
-    calc_farm_args
-        Additional parameters for algo.calc_farm()
-    points
-        The probe points, shape: (n_states, n_points, 3)
-
-
     """
 
     def __init__(
@@ -38,8 +27,6 @@ class FarmOptProblem(Problem):
         **kwargs: Any,
     ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
         name

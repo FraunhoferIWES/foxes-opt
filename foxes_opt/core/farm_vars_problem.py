@@ -15,7 +15,6 @@ class FarmVarsProblem(FarmOptProblem):
     Abstract base class for models that optimize
     farm variables.
 
-
     """
 
     def initialize(

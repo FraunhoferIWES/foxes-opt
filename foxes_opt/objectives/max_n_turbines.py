@@ -10,13 +10,6 @@ import foxes.constants as FC
 class MaxNTurbines(FarmObjective):
     """
     Maximizes the number of turrbines.
-
-    Attributes
-    ----------
-    check_valid
-        Check FC.VALID variable before counting
-
-
     """
 
     def __init__(
@@ -27,8 +20,6 @@ class MaxNTurbines(FarmObjective):
         **kwargs: Any,
     ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
         problem

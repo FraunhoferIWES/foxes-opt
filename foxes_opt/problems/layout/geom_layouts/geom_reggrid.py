@@ -19,20 +19,6 @@ class GeomRegGrid(Problem):
     This optimization problem does not involve
     wind farms.
 
-    Attributes
-    ----------
-    boundary
-        The boundary geometry
-    n_turbines
-        The number of turbines in the layout
-    min_dist
-        The minimal distance between points
-    max_dist
-        The maximal distance between points
-    D
-        The diameter of circle fully within boundary
-
-
     """
 
     def __init__(
@@ -44,8 +30,6 @@ class GeomRegGrid(Problem):
         D: float | None = None,
     ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
         boundary

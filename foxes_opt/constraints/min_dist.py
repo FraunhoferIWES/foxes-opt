@@ -12,19 +12,6 @@ class MinDistConstraint(FarmConstraint):
     """
     Turbines must keep at least a minimal
     spatial distance.
-
-    Attributes
-    ----------
-    farm
-        The wind farm
-    sel_turbines
-        The selected turbines
-    min_dist
-        The minimal distance
-    min_dist_unit
-        The minimal distance unit, either m or D
-
-
     """
 
     def __init__(
@@ -37,8 +24,6 @@ class MinDistConstraint(FarmConstraint):
         **kwargs: Any,
     ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
         problem

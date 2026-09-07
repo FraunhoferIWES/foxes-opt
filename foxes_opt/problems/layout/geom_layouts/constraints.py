@@ -11,13 +11,10 @@ class Valid(Constraint):
     """
     Validity constraint for purely geometrical layouts problems.
 
-
     """
 
     def __init__(self, problem: Problem, name: str = "valid", **kwargs: Any) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
         problem
@@ -118,7 +115,6 @@ class Boundary(Constraint):
     """
     Boundary constraint for purely geometrical layouts problems.
 
-
     """
 
     def __init__(
@@ -130,8 +126,6 @@ class Boundary(Constraint):
         **kwargs: Any,
     ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
         problem
@@ -255,7 +249,6 @@ class MinDist(Constraint):
     """
     Minimal distance constraint for purely geometrical layouts problems.
 
-
     """
 
     def __init__(
@@ -267,8 +260,6 @@ class MinDist(Constraint):
         **kwargs: Any,
     ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
         problem
@@ -414,7 +405,6 @@ class CMinN(Constraint):
     """
     Minimal number of turbines constraint for purely geometrical layouts problems.
 
-
     """
 
     def __init__(
@@ -526,15 +516,12 @@ class CMaxN(Constraint):
     """
     Maximal number of turbines constraint for purely geometrical layouts problems.
 
-
     """
 
     def __init__(
         self, problem: Problem, N: int, name: str = "cmaxN", **kwargs: Any
     ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
         problem
@@ -638,15 +625,12 @@ class CFixN(Constraint):
     """
     Fixed number of turbines constraint for purely geometrical layouts problems.
 
-
     """
 
     def __init__(
         self, problem: Problem, N: int, name: str = "cfixN", **kwargs: Any
     ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
         problem
@@ -753,7 +737,6 @@ class CMinDensity(Constraint):
     """
     Minimal turbine density constraint for purely geometrical layouts problems.
 
-
     """
 
     def __init__(
@@ -764,8 +747,6 @@ class CMinDensity(Constraint):
         name: str = "min_density",
     ) -> None:
         """
-        Constructor.
-
         Parameters
         ----------
         problem
