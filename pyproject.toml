@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "foxes-opt"
-version = "0.8.0"
+version = "0.8.1"
 authors = [
   {name = "Jonas Schulte"},
 ]
@@ -32,7 +32,7 @@ classifiers = [
 ]
 requires-python = ">=3.10"
 dependencies = [
-    "foxes>=1.9.2",
+    "foxes>=1.9.3",
     "iwopy>=0.3.1",
     "pymoo>=0.6",
     "xarray>=2023.9",
@@ -67,7 +67,7 @@ dev = [
 
 [project.urls]
 Homepage = "https://github.com/FraunhoferIWES/foxes-opt"
-Documentation = "https://fraunhoferiwes.github.io/foxes-opt/index.html"
+Documentation = "https://fraunhoferiwes.github.io/foxes-opt"
 Repository = "https://github.com/FraunhoferIWES/foxes-opt.git"
 "Bug Tracker" = "https://github.com/FraunhoferIWES/foxes-opt/issues"
 Changelog = "https://github.com/FraunhoferIWES/foxes-opt/blob/main/CHANGELOG.md"

@@ -105,17 +105,21 @@
 
 ## v0.8.0
 
-- Compatibility with *foxes* v1.9.3
-- Fixed vectorized wake-steering optimization with gridded rotor weights
-- Dropping support for Python 3.9
-- Introducing type annotations
-- Excluding `scratch/` prototype modules from mypy project checks
-- Raising overlapping dependency minimum versions in `pyproject.toml` to be no lower than the corresponding minimum versions in *foxes*
+- General:
+  - Compatibility with *foxes* v1.9.2
+  - Fixed vectorized wake-steering optimization with gridded rotor weights
+  - Dropping support for Python 3.9
+  - Introducing type annotations
+  - Raising overlapping dependency minimum versions in `pyproject.toml` to be no lower than the corresponding minimum versions in *foxes*
 - Documentation:
   - Migrating Sphinx API docs from `sphinx_immaterial.apidoc.python.apigen` to AutoAPI
-  - Aligning `docs/source/conf.py` defaults with *foxes* (pyproject version lookup, MyST markdown parsing, and numpydoc/autodoc defaults)
 - Examples:
   - New example `layout_field_data`, demonstrating pymoo-based layout optimization with `FieldData` states loaded from multiple NetCDF files
-- Fixing the single-state pymoo example for current *foxes* layout output arguments
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.8.0](https://github.com/FraunhoferIWES/foxes/commits/v0.8.0)
+
+## v0.8.1
+
+- Compatibility with *foxes* v1.9.3
+
+**Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.8.1](https://github.com/FraunhoferIWES/foxes/commits/v0.8.1)
