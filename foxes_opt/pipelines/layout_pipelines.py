@@ -6,6 +6,7 @@ from iwopy import Pipeline
 from foxes import ModelBook, WindFarm, Turbine
 from foxes.core import Algorithm, States, run_with_engine
 from foxes.utils.geom2d import AreaGeometry
+from foxes.output import FarmResultsEval
 import foxes.variables as FV
 
 
@@ -270,11 +271,16 @@ class LayoutPipeline(Pipeline):
             layout_xy = self.read_layout(results)
             algo, farm_results = self.run_foxes(layout_xy, force=True, verbosity=verbosity - 1)
             results = (algo, farm_results)
-            if verbosity > 0:
-                print(
-                    f"Mean ambient REWS: {farm_results[FV.AMB_REWS].mean().values:.8f} m/s "
-                )
+
+            o = FarmResultsEval(farm_results, algo)
+            Y = o.calc_farm_yield(annual=True)
+            print(f"Final annual farm yield: {Y} GWh")
+
+
         else:
             results = (results, None)
+
+        if success:
+            o = FarmResultsEval(farm_results, algo)
 
         return success, results
