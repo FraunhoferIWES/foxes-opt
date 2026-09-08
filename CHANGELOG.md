@@ -105,11 +105,12 @@
 
 ## v0.8.0
 
-- Compatibility with *foxes* v1.9.2
-- Fixed vectorized wake-steering optimization with gridded rotor weights
-- Dropping support for Python 3.9
-- Introducing type annotations
-- Raising overlapping dependency minimum versions in `pyproject.toml` to be no lower than the corresponding minimum versions in *foxes*
+- General:
+  - Compatibility with *foxes* v1.9.2
+  - Fixed vectorized wake-steering optimization with gridded rotor weights
+  - Dropping support for Python 3.9
+  - Introducing type annotations
+  - Raising overlapping dependency minimum versions in `pyproject.toml` to be no lower than the corresponding minimum versions in *foxes*
 - Documentation:
   - Migrating Sphinx API docs from `sphinx_immaterial.apidoc.python.apigen` to AutoAPI
 - Examples:
