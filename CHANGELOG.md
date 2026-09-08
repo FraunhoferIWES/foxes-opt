@@ -105,7 +105,7 @@
 
 ## v0.8.0
 
-- Compatibility with *foxes* v1.9.3
+- Compatibility with *foxes* v1.9.2
 - Fixed vectorized wake-steering optimization with gridded rotor weights
 - Dropping support for Python 3.9
 - Introducing type annotations
@@ -119,5 +119,6 @@
 
 ## v0.8.1
 
+- Compatibility with *foxes* v1.9.3
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.8.1](https://github.com/FraunhoferIWES/foxes/commits/v0.8.1)
