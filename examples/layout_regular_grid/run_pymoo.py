@@ -1,11 +1,12 @@
-import numpy as np
 import argparse
-import matplotlib.pyplot as plt
-from iwopy.interfaces.pymoo import Optimizer_pymoo
 
 import foxes
-from foxes_opt.problems.layout import RegularLayoutOptProblem
+import matplotlib.pyplot as plt
+import numpy as np
+from iwopy.interfaces.pymoo import Optimizer_pymoo
+
 from foxes_opt.objectives import MaxFarmPower
+from foxes_opt.problems.layout import RegularLayoutOptProblem
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -105,15 +106,15 @@ if __name__ == "__main__":
 
     solver = Optimizer_pymoo(
         problem,
-        problem_pars=dict(
-            vectorize=not args.no_pop,
-        ),
-        algo_pars=dict(
-            type=args.opt_algo,
-            pop_size=args.n_pop,
-            seed=None,
-        ),
-        setup_pars=dict(),
+        problem_pars={
+            "vectorize": not args.no_pop,
+        },
+        algo_pars={
+            "type": args.opt_algo,
+            "pop_size": args.n_pop,
+            "seed": None,
+        },
+        setup_pars={},
         term_pars=("n_gen", args.n_gen),
     )
     solver.initialize()
@@ -158,7 +159,7 @@ if __name__ == "__main__":
     p_min = np.array([-1100.0, -1100.0])
     p_max = np.array([1100.0, 2000.0])
     fig = o.get_mean_fig_xy(plot_data, fig=fig, ax=axs[1])
-    dpars = dict(alpha=0.6, zorder=10, p_min=p_min, p_max=p_max)
+    dpars = {"alpha": 0.6, "zorder": 10, "p_min": p_min, "p_max": p_max}
     farm.boundary.add_to_figure(axs[1], fill_mode="outside_white", pars_distance=dpars)
 
     plt.show()

@@ -6,5 +6,3 @@ class OptOutput(Output):
     Base class for foxes_opt outputs
 
     """
-
-    pass

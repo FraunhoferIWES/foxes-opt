@@ -1,9 +1,8 @@
-import numpy as np
 import matplotlib.pyplot as plt
-from scipy.spatial.distance import cdist
-from iwopy import Problem
-
+import numpy as np
 from foxes.config import config
+from iwopy import Problem
+from scipy.spatial.distance import cdist
 
 
 class GeomLayout(Problem):

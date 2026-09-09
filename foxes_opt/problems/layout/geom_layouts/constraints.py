@@ -1,10 +1,9 @@
 from typing import Any
 
 import numpy as np
-from scipy.spatial.distance import cdist
-from iwopy import Constraint, Problem
-
 from foxes.config import config
+from iwopy import Constraint, Problem
+from scipy.spatial.distance import cdist
 
 
 class Valid(Constraint):

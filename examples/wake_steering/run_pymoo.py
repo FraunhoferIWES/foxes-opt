@@ -1,12 +1,13 @@
-import numpy as np
 import argparse
-import matplotlib.pyplot as plt
-from iwopy.interfaces.pymoo import Optimizer_pymoo
 
 import foxes
-from foxes_opt.problems import OptFarmVars
-from foxes_opt.objectives import MaxFarmPower
 import foxes.variables as FV
+import matplotlib.pyplot as plt
+import numpy as np
+from iwopy.interfaces.pymoo import Optimizer_pymoo
+
+from foxes_opt.objectives import MaxFarmPower
+from foxes_opt.problems import OptFarmVars
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -114,15 +115,15 @@ if __name__ == "__main__":
 
     solver = Optimizer_pymoo(
         problem,
-        problem_pars=dict(
-            vectorize=not args.no_pop,
-        ),
-        algo_pars=dict(
-            type=args.opt_algo,
-            pop_size=args.n_pop,
-            seed=None,
-        ),
-        setup_pars=dict(),
+        problem_pars={
+            "vectorize": not args.no_pop,
+        },
+        algo_pars={
+            "type": args.opt_algo,
+            "pop_size": args.n_pop,
+            "seed": None,
+        },
+        setup_pars={},
         term_pars=("n_gen", args.n_gen),
     )
     solver.initialize()

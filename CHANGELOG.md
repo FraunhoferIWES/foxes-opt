@@ -121,5 +121,7 @@
 ## v0.8.1
 
 - Compatibility with *foxes* v1.9.3
+- Adding type annotations and stricter code checks across the package
+- Adding persistent stage result tracking and layout plot and CSV output to `LayoutPipeline`
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.8.1](https://github.com/FraunhoferIWES/foxes/commits/v0.8.1)

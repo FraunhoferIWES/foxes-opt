@@ -1,11 +1,11 @@
-import numpy as np
 from abc import abstractmethod
 from typing import Any
 
-from foxes.models.turbine_models import SetFarmVars
-from foxes.config import config
-from foxes.utils import new_instance
 import foxes.variables as FV
+import numpy as np
+from foxes.config import config
+from foxes.models.turbine_models import SetFarmVars
+from foxes.utils import new_instance
 
 from .farm_opt_problem import FarmOptProblem
 
@@ -97,7 +97,6 @@ class FarmVarsProblem(FarmOptProblem):
             (n_states, n_sel_turbines)
 
         """
-        pass
 
     @abstractmethod
     def opt2farm_vars_population(
@@ -125,7 +124,6 @@ class FarmVarsProblem(FarmOptProblem):
             (n_states, n_pop, n_sel_turbines)
 
         """
-        pass
 
     def update_problem_individual(
         self, vars_int: np.ndarray, vars_float: np.ndarray

@@ -1,13 +1,14 @@
-import numpy as np
 import argparse
+
+import foxes
+import foxes.variables as FV
 import matplotlib.pyplot as plt
+import numpy as np
 from iwopy import LocalFD
 from iwopy.optimizers import GG
 
-import foxes
-from foxes_opt.problems import OptFarmVars
 from foxes_opt.objectives import MaxFarmPower
-import foxes.variables as FV
+from foxes_opt.problems import OptFarmVars
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

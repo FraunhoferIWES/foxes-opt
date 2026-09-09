@@ -1,11 +1,12 @@
-import numpy as np
 from copy import deepcopy
 
-from foxes_opt.core import FarmOptProblem, FarmVarsProblem
-from foxes.models.turbine_models import Calculator
-from foxes.config import config
-import foxes.variables as FV
 import foxes.constants as FC
+import foxes.variables as FV
+import numpy as np
+from foxes.config import config
+from foxes.models.turbine_models import Calculator
+
+from foxes_opt.core import FarmOptProblem, FarmVarsProblem
 
 from .geom_layouts.geom_reggrids import GeomRegGrids
 

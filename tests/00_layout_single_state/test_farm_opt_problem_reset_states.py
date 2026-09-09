@@ -1,12 +1,13 @@
-import numpy as np
 from types import SimpleNamespace
 
 import foxes
 import foxes.variables as FV
+import numpy as np
 from foxes.algorithms.downwind.models import PopulationStates
+
+from foxes_opt.constraints import FarmBoundaryConstraint
 from foxes_opt.core.farm_opt_problem import FarmOptProblem
 from foxes_opt.core.farm_vars_problem import FarmVarsProblem
-from foxes_opt.constraints import FarmBoundaryConstraint
 from foxes_opt.objectives import MaxFarmPower
 from foxes_opt.problems import OptFarmVars
 from foxes_opt.problems.layout import FarmLayoutOptProblem

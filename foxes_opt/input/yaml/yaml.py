@@ -77,13 +77,13 @@ def foxes_opt_yaml() -> None:
         or args.chunksize_states is not None
         or args.chunksize_points is not None
     ):
-        epars = dict(
-            engine_type=args.engine,
-            n_procs=args.n_procs,
-            chunk_size_states=args.chunksize_states,
-            chunk_size_points=args.chunksize_points,
-            verbosity=v,
-        )
+        epars = {
+            "engine_type": args.engine,
+            "n_procs": args.n_procs,
+            "chunk_size_states": args.chunksize_states,
+            "chunk_size_points": args.chunksize_points,
+            "verbosity": v,
+        }
     else:
         epars = None
 

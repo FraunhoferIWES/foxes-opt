@@ -1,11 +1,11 @@
+import foxes
+import foxes.variables as FV
 import numpy as np
 from iwopy.interfaces.pymoo import Optimizer_pymoo
 
-import foxes
-from foxes_opt.problems.layout import FarmLayoutOptProblem
 from foxes_opt.constraints import FarmBoundaryConstraint, MinDistConstraint
 from foxes_opt.objectives import MaxFarmPower
-import foxes.variables as FV
+from foxes_opt.problems.layout import FarmLayoutOptProblem
 
 
 def test():
@@ -37,21 +37,21 @@ def test():
 
     solver = Optimizer_pymoo(
         problem,
-        problem_pars=dict(
-            vectorize=True,
-        ),
-        algo_pars=dict(
-            type="GA",
-            pop_size=100,
-            seed=42,
-        ),
-        setup_pars=dict(),
-        term_pars=dict(
-            type="default",
-            n_max_gen=100,
-            ftol=1e-6,
-            xtol=1e-6,
-        ),
+        problem_pars={
+            "vectorize": True,
+        },
+        algo_pars={
+            "type": "GA",
+            "pop_size": 100,
+            "seed": 42,
+        },
+        setup_pars={},
+        term_pars={
+            "type": "default",
+            "n_max_gen": 100,
+            "ftol": 1e-6,
+            "xtol": 1e-6,
+        },
     )
     solver.initialize()
     solver.print_info()

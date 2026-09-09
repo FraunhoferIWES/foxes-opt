@@ -2,19 +2,18 @@
 Wind farm optimization.
 """
 
-from .core import FarmOptProblem as FarmOptProblem
-from .core import FarmObjective as FarmObjective
-from .core import FarmConstraint as FarmConstraint
-
-from . import input as input
-from . import problems as problems
-from . import constraints as constraints
-from . import objectives as objectives
-from . import output as output
-from . import callbacks as callbacks
-
 import importlib
 from pathlib import Path
+
+from . import callbacks as callbacks
+from . import constraints as constraints
+from . import input as input
+from . import objectives as objectives
+from . import output as output
+from . import problems as problems
+from .core import FarmConstraint as FarmConstraint
+from .core import FarmObjective as FarmObjective
+from .core import FarmOptProblem as FarmOptProblem
 
 try:
     tomllib = importlib.import_module("tomllib")

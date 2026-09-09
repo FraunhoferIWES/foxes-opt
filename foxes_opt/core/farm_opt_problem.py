@@ -1,12 +1,11 @@
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
-from iwopy import Problem
-
 from foxes.algorithms.downwind.models import PopulationStates
-from foxes.core import has_engine, Engine, Algorithm, States, WindFarm
 from foxes.config import config
+from foxes.core import Algorithm, Engine, States, WindFarm, has_engine
 from foxes.utils import new_instance
+from iwopy import Problem
 
 if TYPE_CHECKING:
     from matplotlib.axes import Axes
@@ -215,15 +214,11 @@ class FarmOptProblem(Problem):
                     data_vars["PopulationStates_smap"] = data_vars[
                         "PopulationStates_SMAP"
                     ]
-                setattr(
-                    self.algo,
-                    "loaded_data",
-                    {
-                        "coords": dict(idata.get("coords", {})),
-                        "data_vars": data_vars,
-                        "extra_data": {},
-                    },
-                )
+                self.algo.loaded_data = {
+                    "coords": dict(idata.get("coords", {})),
+                    "data_vars": data_vars,
+                    "extra_data": {},
+                }
 
     def update_problem_individual(
         self, vars_int: np.ndarray, vars_float: np.ndarray

@@ -2,10 +2,10 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
+from foxes.config import config
+from foxes.models.turbine_models import SetFarmVars
 
 from foxes_opt.core import FarmVarsProblem
-from foxes.models.turbine_models import SetFarmVars
-from foxes.config import config
 
 
 class OptFarmVars(FarmVarsProblem):
@@ -31,9 +31,9 @@ class OptFarmVars(FarmVarsProblem):
         self,
         variable: str,
         typ: type[float] | type[int] | str,
-        init: float | int,
-        min: float | int,
-        max: float | int,
+        init: float,
+        min: float,
+        max: float,
         level: str = "uniform",
         sel: Any = None,
         model_key: str | None = None,
@@ -94,12 +94,8 @@ class OptFarmVars(FarmVarsProblem):
                 )
             i0 = len(self._vars.index)
             grps = self._vars.groupby("type")
-            i0i = len(grps.get_group("int").index) if "int" in grps.groups.keys() else 0
-            i0f = (
-                len(grps.get_group("float").index)
-                if "float" in grps.groups.keys()
-                else 0
-            )
+            i0i = len(grps.get_group("int").index) if "int" in grps.groups else 0
+            i0f = len(grps.get_group("float").index) if "float" in grps.groups else 0
             del grps
 
         if level == "uniform":
@@ -287,7 +283,7 @@ class OptFarmVars(FarmVarsProblem):
             )
 
         grps = self._vars.groupby("type")
-        if "int" not in grps.groups.keys():
+        if "int" not in grps.groups:
             return []
         else:
             return grps.get_group("int")["name"].tolist()
@@ -308,7 +304,7 @@ class OptFarmVars(FarmVarsProblem):
             )
 
         grps = self._vars.groupby("type")
-        if "int" not in grps.groups.keys():
+        if "int" not in grps.groups:
             return np.array([], dtype=config.dtype_int)
         else:
             return grps.get_group("int")["init"].to_numpy(config.dtype_int)
@@ -331,7 +327,7 @@ class OptFarmVars(FarmVarsProblem):
             )
 
         grps = self._vars.groupby("type")
-        if "int" not in grps.groups.keys():
+        if "int" not in grps.groups:
             return np.array([], dtype=config.dtype_int)
         else:
             return grps.get_group("int")["min"].to_numpy(config.dtype_int)
@@ -354,7 +350,7 @@ class OptFarmVars(FarmVarsProblem):
             )
 
         grps = self._vars.groupby("type")
-        if "int" not in grps.groups.keys():
+        if "int" not in grps.groups:
             return np.array([], dtype=config.dtype_int)
         else:
             return grps.get_group("int")["max"].to_numpy(config.dtype_int)
@@ -375,7 +371,7 @@ class OptFarmVars(FarmVarsProblem):
             )
 
         grps = self._vars.groupby("type")
-        if "float" not in grps.groups.keys():
+        if "float" not in grps.groups:
             return []
         else:
             return grps.get_group("float")["name"].tolist()
@@ -396,7 +392,7 @@ class OptFarmVars(FarmVarsProblem):
             )
 
         grps = self._vars.groupby("type")
-        if "float" not in grps.groups.keys():
+        if "float" not in grps.groups:
             return np.array([], dtype=config.dtype_double)
         else:
             return grps.get_group("float")["init"].to_numpy(config.dtype_double)
@@ -419,7 +415,7 @@ class OptFarmVars(FarmVarsProblem):
             )
 
         grps = self._vars.groupby("type")
-        if "float" not in grps.groups.keys():
+        if "float" not in grps.groups:
             return np.array([], dtype=config.dtype_double)
         else:
             return grps.get_group("float")["min"].to_numpy(config.dtype_double)
@@ -442,7 +438,7 @@ class OptFarmVars(FarmVarsProblem):
             )
 
         grps = self._vars.groupby("type")
-        if "float" not in grps.groups.keys():
+        if "float" not in grps.groups:
             return np.array([], dtype=config.dtype_double)
         else:
             return grps.get_group("float")["max"].to_numpy(config.dtype_double)

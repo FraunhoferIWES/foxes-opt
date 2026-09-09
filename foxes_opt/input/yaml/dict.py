@@ -1,12 +1,12 @@
 from typing import Any
 
-from iwopy import LocalFD
-from iwopy.core import Optimizer
 from foxes.input.yaml import read_dict as foxes_read_dict
 from foxes.input.yaml import run_outputs as foxes_run_output
 from foxes.utils import Dict
+from iwopy import LocalFD
+from iwopy.core import Optimizer
 
-from foxes_opt.core import FarmOptProblem, FarmObjective, FarmConstraint
+from foxes_opt.core import FarmConstraint, FarmObjective, FarmOptProblem
 
 
 def read_dict(

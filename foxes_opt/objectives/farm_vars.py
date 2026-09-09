@@ -1,12 +1,12 @@
 from typing import Any
 
+import foxes.constants as FC
 import numpy as np
 import xarray as xr
+from foxes import variables as FV
 
 from foxes_opt.core.farm_objective import FarmObjective
 from foxes_opt.core.farm_opt_problem import FarmOptProblem
-from foxes import variables as FV
-import foxes.constants as FC
 
 
 class FarmVarObjective(FarmObjective):

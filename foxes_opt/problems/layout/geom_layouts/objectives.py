@@ -1,8 +1,7 @@
 import numpy as np
+from foxes.config import config
 from iwopy import Objective, Problem
 from scipy.spatial.distance import cdist
-
-from foxes.config import config
 
 
 class OMaxN(Objective):
@@ -655,7 +654,7 @@ class MeMiMaDist(Objective):
             The component values, shape: (n_sel_components,)
 
         """
-        xy, valid = problem_results
+        xy, _valid = problem_results
         # xy = xy[valid]
 
         dists: np.ndarray[tuple[int, ...], np.dtype[np.floating]] = cdist(xy, xy)
@@ -697,7 +696,7 @@ class MeMiMaDist(Objective):
             The component values, shape: (n_pop, n_sel_components)
 
         """
-        xy, valid = problem_results
+        xy, _valid = problem_results
         n_pop, n_xy = xy.shape[:2]
 
         out = np.zeros((n_pop, 1), dtype=config.dtype_double)

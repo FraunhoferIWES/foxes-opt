@@ -1,8 +1,8 @@
+import foxes.variables as FV
 import numpy as np
+from foxes.config import config
 
 from foxes_opt.core.farm_opt_problem import FarmOptProblem
-from foxes.config import config
-import foxes.variables as FV
 
 
 class FarmLayoutOptProblem(FarmOptProblem):

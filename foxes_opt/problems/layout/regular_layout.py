@@ -1,13 +1,14 @@
-import numpy as np
 from copy import deepcopy
 from typing import Any
 
-from foxes_opt.core import FarmVarsProblem, FarmOptProblem
-from foxes.models.turbine_models import Calculator
-from foxes.core import Algorithm, MData, FData
-from foxes.config import config
-import foxes.variables as FV
 import foxes.constants as FC
+import foxes.variables as FV
+import numpy as np
+from foxes.config import config
+from foxes.core import Algorithm, FData, MData
+from foxes.models.turbine_models import Calculator
+
+from foxes_opt.core import FarmOptProblem, FarmVarsProblem
 
 
 def _calc_func(

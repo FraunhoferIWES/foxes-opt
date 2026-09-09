@@ -1,11 +1,11 @@
 from typing import Any
 
+import foxes.constants as FC
+import foxes.variables as FV
 import numpy as np
 
 from foxes_opt.core.farm_constraint import FarmConstraint
 from foxes_opt.core.farm_opt_problem import FarmOptProblem
-import foxes.variables as FV
-import foxes.constants as FC
 
 
 class MinDistConstraint(FarmConstraint):

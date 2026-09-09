@@ -1,10 +1,10 @@
 from typing import Any
 
+import foxes.constants as FC
 import numpy as np
 
 from foxes_opt.core.farm_objective import FarmObjective
 from foxes_opt.core.farm_opt_problem import FarmOptProblem
-import foxes.constants as FC
 
 
 class MaxNTurbines(FarmObjective):

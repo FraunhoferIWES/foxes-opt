@@ -1,12 +1,13 @@
-import numpy as np
 import argparse
+
+import foxes
 import matplotlib.pyplot as plt
+import numpy as np
 from iwopy import LocalFD
 from iwopy.optimizers import GG
 
-import foxes
-from foxes_opt.problems.layout import RegularLayoutOptProblem
 from foxes_opt.objectives import MaxFarmPower
+from foxes_opt.problems.layout import RegularLayoutOptProblem
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -102,10 +103,10 @@ if __name__ == "__main__":
         "layout_opt",
         algo,
         min_spacing=args.min_dist,
-        initial_values=dict(
-            offset_x=0.5,
-            offset_y=0.5,
-        ),
+        initial_values={
+            "offset_x": 0.5,
+            "offset_y": 0.5,
+        },
     )
     problem.add_objective(MaxFarmPower(problem))
     gproblem = LocalFD(problem, deltas=0.1, fd_order=args.fd_order)
@@ -113,20 +114,20 @@ if __name__ == "__main__":
 
     solver = GG(
         gproblem,
-        step_min=dict(
-            spacing_x=1,
-            spacing_y=1,
-            offset_x=0.01,
-            offset_y=0.01,
-            angle=0.1,
-        ),
-        step_max=dict(
-            spacing_x=100,
-            spacing_y=100,
-            offset_x=0.2,
-            offset_y=0.2,
-            angle=5.0,
-        ),
+        step_min={
+            "spacing_x": 1,
+            "spacing_y": 1,
+            "offset_x": 0.01,
+            "offset_y": 0.01,
+            "angle": 0.1,
+        },
+        step_max={
+            "spacing_x": 100,
+            "spacing_y": 100,
+            "offset_x": 0.2,
+            "offset_y": 0.2,
+            "angle": 5.0,
+        },
         f_tol=1e-8,
         step_div_factor=2,
         vectorized=not args.no_pop,
@@ -174,7 +175,7 @@ if __name__ == "__main__":
     p_min = np.array([-1100.0, -1100.0])
     p_max = np.array([1100.0, 2000.0])
     fig = o.get_mean_fig_xy(plot_data, fig=fig, ax=axs[1])
-    dpars = dict(alpha=0.6, zorder=10, p_min=p_min, p_max=p_max)
+    dpars = {"alpha": 0.6, "zorder": 10, "p_min": p_min, "p_max": p_max}
     farm.boundary.add_to_figure(axs[1], fill_mode="outside_white", pars_distance=dpars)
 
     plt.show()

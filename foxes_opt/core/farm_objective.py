@@ -1,12 +1,12 @@
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
-from iwopy import Objective
 from foxes.core import WindFarm
-
-from foxes.utils import new_instance, all_subclasses
+from foxes.utils import all_subclasses, new_instance
+from iwopy import Objective
 
 if TYPE_CHECKING:
     from matplotlib.axes import Axes
+
     from .farm_opt_problem import FarmOptProblem
 
 

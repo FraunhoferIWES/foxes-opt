@@ -1,12 +1,11 @@
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
-import numpy as np
 import matplotlib.pyplot as plt
-from scipy.spatial.distance import cdist
-from iwopy import Problem
-
+import numpy as np
 from foxes.config import config
 from foxes.utils.geom2d import AreaGeometry
+from iwopy import Problem
+from scipy.spatial.distance import cdist
 
 if TYPE_CHECKING:
     from matplotlib.axes import Axes

@@ -1,14 +1,15 @@
-import numpy as np
 import argparse
-import matplotlib.pyplot as plt
-from iwopy import LocalFD
-from iwopy.optimizers import GG
 
 import foxes
 import foxes.variables as FV
-from foxes_opt.problems.layout import FarmLayoutOptProblem
+import matplotlib.pyplot as plt
+import numpy as np
+from iwopy import LocalFD
+from iwopy.optimizers import GG
+
 from foxes_opt.constraints import FarmBoundaryConstraint, MinDistConstraint
 from foxes_opt.objectives import MaxFarmPower
+from foxes_opt.problems.layout import FarmLayoutOptProblem
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -178,7 +179,7 @@ if __name__ == "__main__":
     foxes.output.FarmLayoutOutput(farm).get_figure(fig=fig, ax=axs[0])
 
     fig = o.get_mean_fig_xy(plot_data, fig=fig, ax=axs[1])
-    dpars = dict(alpha=0.6, zorder=10, p_min=p_min, p_max=p_max)
+    dpars = {"alpha": 0.6, "zorder": 10, "p_min": p_min, "p_max": p_max}
     farm.boundary.add_to_figure(axs[1], fill_mode="outside_white", pars_distance=dpars)
 
     plt.show()

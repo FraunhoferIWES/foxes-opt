@@ -1,8 +1,8 @@
 from typing import Any
 
-from xarray import Dataset
-from iwopy.core import SingleObjOptResults, MultiObjOptResults
 from foxes.utils import write_nc
+from iwopy.core import MultiObjOptResults, SingleObjOptResults
+from xarray import Dataset
 
 from .opt_output import OptOutput
 
@@ -57,12 +57,12 @@ class SingleObjResultsWriter(OptOutput):
         ds = Dataset(
             coords=crds,
             data_vars=dvars,
-            attrs=dict(
-                problem=self.results.pname,
-                success=int(self.results.success),
-                objective=self.results.onames[0],
-                obj_value=self.results.objs,
-            ),
+            attrs={
+                "problem": self.results.pname,
+                "success": int(self.results.success),
+                "objective": self.results.onames[0],
+                "obj_value": self.results.objs,
+            },
         )
 
         return ds
@@ -139,10 +139,10 @@ class MultiObjResultsWriter(OptOutput):
         ds = Dataset(
             coords=crds,
             data_vars=dvars,
-            attrs=dict(
-                problem=self.results.pname,
-                success=int(self.results.success),
-            ),
+            attrs={
+                "problem": self.results.pname,
+                "success": int(self.results.success),
+            },
         )
 
         return ds

@@ -1,8 +1,8 @@
 from typing import Any
 
-from iwopy.interfaces.pymoo import DefaultCallbackTemplate
-from foxes.output import FarmLayoutOutput
 from foxes.config import get_output_path
+from foxes.output import FarmLayoutOutput
+from iwopy.interfaces.pymoo import DefaultCallbackTemplate
 
 from foxes_opt.core import FarmOptProblem
 
