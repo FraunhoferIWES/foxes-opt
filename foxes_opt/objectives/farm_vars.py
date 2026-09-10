@@ -148,9 +148,17 @@ class FarmVarObjective(FarmObjective):
                     )
                 if len(odims) > 1 and odims[:2] == (FC.STATE, FC.TURBINE):
                     data = np.einsum(f"st...,{wx}->t...", data, weights)
+                    if wdims == (FC.STATE,):
+                        data /= weights.sum().to_numpy()
+                    else:
+                        data /= weights.sum(dim=FC.STATE).to_numpy()
                     data = xr.DataArray(data, dims=odims[1:])
                 elif len(odims) > 2 and odims[:3] == (FC.POP, FC.STATE, FC.TURBINE):
                     data = np.einsum(f"pst...,{wx}->pt...", data, weights)
+                    weight_sum = weights.sum(dim=FC.STATE).to_numpy()
+                    if wdims == (FC.POP, FC.STATE):
+                        weight_sum = weight_sum[:, None]
+                    data /= weight_sum
                     data = xr.DataArray(data, dims=(FC.POP,) + odims[2:])
                 else:
                     raise NotImplementedError(
@@ -341,6 +349,34 @@ class MaxFarmPower(FarmVarObjective):
             contract_turbines="sum",
             minimize=False,
             scale=scale,
+            **kwargs,
+        )
+
+
+class MaxFarmREWS(FarmVarObjective):
+    """
+    Maximize the mean farm rotor-effective wind speed.
+
+    Parameters
+    ----------
+    problem
+        The underlying optimization problem.
+    name
+        The name of the objective function.
+    kwargs
+        Additional parameters for ``FarmVarObjective``.
+    """
+
+    def __init__(
+        self, problem: FarmOptProblem, name: str = "maximize_REWS", **kwargs: Any
+    ) -> None:
+        super().__init__(
+            problem,
+            name,
+            variable=FV.REWS,
+            contract_states="weights",
+            contract_turbines="mean_no_weights",
+            minimize=False,
             **kwargs,
         )
 
