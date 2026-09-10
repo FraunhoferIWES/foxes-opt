@@ -90,7 +90,16 @@ class LayoutOptimizerStage(PipelineStage):
         self.flow_states = flow_states
 
     def initialize(self, pipeline: Pipeline, verbosity: int = 0) -> None:
-        """Initialize and validate the stage against its layout pipeline."""
+        """
+        Initialize and validate the stage against its layout pipeline.
+
+        Parameters
+        ----------
+        pipeline
+            The pipeline hosting this optimization stage.
+        verbosity
+            Verbosity level used during initialization.
+        """
         super().initialize(pipeline, verbosity=verbosity)
         self._pipeline = pipeline
         self._flow_states = (
@@ -182,7 +191,27 @@ class LayoutOptimizerStage(PipelineStage):
         sel_turbines: list[int] | None = None,
         verbosity: int = 1,
     ) -> tuple[Any, np.ndarray]:
-        """Optimize selected layout coordinates and return solver results."""
+        """
+        Optimize selected layout coordinates and return solver results.
+
+        Parameters
+        ----------
+        layout_xy
+            Current turbine coordinates.
+        states
+            Optional states used for the optimization. If ``None``, the stage
+            flow states are used.
+        sel_turbines
+            Turbine indices to optimize. If ``None``, all turbines are
+            considered.
+        verbosity
+            Verbosity level passed to the algorithm and optimizer setup.
+
+        Returns
+        -------
+        tuple[Any, np.ndarray]
+            The iwopy optimizer results and the candidate layout coordinates.
+        """
         algo: Algorithm = self._pipeline.get_algo(
             layout_xy=layout_xy,
             states=self._flow_states if states is None else states,
@@ -220,7 +249,28 @@ class LayoutOptimizerStage(PipelineStage):
         verbosity: int = 1,
         **kwargs: Any,
     ) -> tuple[bool, np.ndarray]:
-        """Run the configured optimizer from the previous layout."""
+        """
+        Run the configured optimizer from the previous layout.
+
+        Parameters
+        ----------
+        prev_stage
+            Previous pipeline stage, unused by this implementation.
+        prev_results
+            Results from the previous stage, used to read the current layout.
+        layout_plot_pars
+            Optional plotting parameters, unused here.
+        verbosity
+            Verbosity level for the optimization run.
+        kwargs
+            Additional keyword arguments, unused by this stage.
+
+        Returns
+        -------
+        tuple[bool, np.ndarray]
+            ``True`` and the optimized layout when the optimizer succeeds;
+            otherwise the original layout together with ``False``.
+        """
         del prev_stage, layout_plot_pars, kwargs
         layout_xy = self._pipeline.read_layout(prev_results).copy()
         results, candidate = self._run_layout_optimizer(layout_xy, verbosity=verbosity)

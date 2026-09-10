@@ -93,7 +93,16 @@ class RandomSubsetStage(LayoutOptimizerStage):
         self.write_step_results = write_step_results
 
     def initialize(self, pipeline: Pipeline, verbosity: int = 0) -> None:
-        """Initialize and validate random subset settings."""
+        """
+        Initialize and validate random subset settings.
+
+        Parameters
+        ----------
+        pipeline
+            The pipeline hosting this random-subset stage.
+        verbosity
+            Verbosity level used during initialization.
+        """
         super().initialize(pipeline, verbosity=verbosity)
         if self.n_subset_turbines is not None and not (
             0 < self.n_subset_turbines <= pipeline.n_turbines
@@ -118,7 +127,20 @@ class RandomSubsetStage(LayoutOptimizerStage):
     def _sample_subsets(
         self, rng: np.random.Generator
     ) -> tuple[np.ndarray | None, np.ndarray | None]:
-        """Draw one turbine subset and one state subset, when configured."""
+        """
+        Draw one turbine subset and one state subset, when configured.
+
+        Parameters
+        ----------
+        rng
+            Random number generator used to sample the subset indices.
+
+        Returns
+        -------
+        tuple[np.ndarray | None, np.ndarray | None]
+            The sampled turbine indices and state indices, or ``None`` for the
+            full set.
+        """
         if self.n_subset_turbines is None:
             turbine_indices = None
         else:
@@ -138,7 +160,14 @@ class RandomSubsetStage(LayoutOptimizerStage):
         return turbine_indices, state_indices
 
     def _ensure_state_count(self, layout_xy: np.ndarray) -> None:
-        """Initialize lazy states once to determine their full size."""
+        """
+        Initialize lazy states once to determine their full size.
+
+        Parameters
+        ----------
+        layout_xy
+            Current turbine layout used to construct the algorithm if needed.
+        """
         if self._n_flow_states:
             return
         algo = self._pipeline.get_algo(
@@ -167,7 +196,28 @@ class RandomSubsetStage(LayoutOptimizerStage):
         state_indices: np.ndarray | None,
         verbosity: int,
     ) -> tuple[bool, np.ndarray]:
-        """Run the selected optimizer for one sampled layout problem."""
+        """
+        Run the selected optimizer for one sampled layout problem.
+
+        Parameters
+        ----------
+        layout_xy
+            Current turbine layout.
+        turbine_indices
+            Indices of the turbines to optimize in this step, or ``None`` for
+            all turbines.
+        state_indices
+            Indices of the states to optimize in this step, or ``None`` for all
+            states.
+        verbosity
+            Verbosity level for the optimization run.
+
+        Returns
+        -------
+        tuple[bool, np.ndarray]
+            ``True`` together with the accepted candidate layout when the
+            optimization succeeds; otherwise ``False`` and the previous layout.
+        """
         results, candidate = self._run_layout_optimizer(
             layout_xy,
             states=(
@@ -188,7 +238,20 @@ class RandomSubsetStage(LayoutOptimizerStage):
         layout_plot_pars: dict[str, Any] | None,
         verbosity: int,
     ) -> None:
-        """Write full-state outputs for an accepted optimization step."""
+        """
+        Write full-state outputs for an accepted optimization step.
+
+        Parameters
+        ----------
+        layout_xy
+            Optimized turbine layout to export.
+        step
+            Zero-based step index used in the output table and file names.
+        layout_plot_pars
+            Optional plotting configuration overrides.
+        verbosity
+            Verbosity level used when running the full-state evaluation.
+        """
         pipeline = self._pipeline
         algo, farm_results = pipeline.run_foxes(
             layout_xy, force=True, verbosity=max(verbosity - 1, 0)
@@ -217,7 +280,29 @@ class RandomSubsetStage(LayoutOptimizerStage):
         verbosity: int = 1,
         **kwargs: Any,
     ) -> tuple[bool, np.ndarray]:
-        """Run all random-subset optimizer steps."""
+        """
+        Run all random-subset optimizer steps.
+
+        Parameters
+        ----------
+        prev_stage
+            Previous pipeline stage, unused by this implementation.
+        prev_results
+            Results from the previous stage, used to read the current layout.
+        layout_plot_pars
+            Optional plot configuration forwarded to full-state outputs.
+        verbosity
+            Verbosity level used during subset optimization.
+        kwargs
+            Additional keyword arguments, unused by this stage.
+
+        Returns
+        -------
+        tuple[bool, np.ndarray]
+            ``True`` and the final layout after all accepted steps, or ``False``
+            with a fallback layout if the operation did not produce a valid
+            result.
+        """
         del prev_stage, kwargs
         layout_xy = self._pipeline.read_layout(prev_results).copy()
         self._ensure_state_count(layout_xy)

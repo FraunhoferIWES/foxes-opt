@@ -383,13 +383,13 @@ class LayoutPipeline(Pipeline):
                         turbine_models=self.turbine_models,
                         index=i,
                     ),
-                    verbosity=verbosity,
+                    verbosity=verbosity - 3,
                 )
 
         pars = self.algo_pars.copy()
         if kwargs is not None:
             pars.update(kwargs)
-        pars.setdefault("verbosity", verbosity)
+        pars.setdefault("verbosity", verbosity - 1)
         algo = Algorithm.new(
             farm=farm,
             states=states if states is not None else self.states,
