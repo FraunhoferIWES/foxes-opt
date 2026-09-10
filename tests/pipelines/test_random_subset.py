@@ -71,8 +71,8 @@ class _OptimizerStage(LayoutOptimizerStage):
 
 def _stage(tmp_path, accepted=(True, False, True), **kwargs):
     pars = dict(
-        n_turbines=2,
-        n_states=3,
+        n_subset_turbines=2,
+        n_subset_states=3,
         n_steps=3,
         optimizer_type="test",
         seed=42,
@@ -106,6 +106,19 @@ def test_stage_repeats_seeded_sampling_and_rejects_without_mutation(tmp_path):
     expected_before_rejected[first_calls[0][1]] += 1
     np.testing.assert_allclose(first_calls[1][0], expected_before_rejected)
     np.testing.assert_allclose(first_calls[2][0], expected_before_rejected)
+
+
+def test_stage_disables_turbine_and_state_subsets_with_none(tmp_path):
+    stage = _stage(
+        tmp_path,
+        n_subset_turbines=None,
+        n_subset_states=None,
+    )
+
+    turbine_indices, state_indices = stage._sample_subsets(np.random.default_rng(42))
+
+    assert turbine_indices is None
+    assert state_indices is None
 
 
 def test_stage_writes_only_accepted_steps_when_enabled(tmp_path):
@@ -204,8 +217,8 @@ def test_stage_runs_vectorized_gg_with_lazy_state_subset(tmp_path):
         fixed_vars={FV.RHO: 1.225, FV.TI: 0.04},
     )
     stage = RandomSubsetStage(
-        n_turbines=1,
-        n_states=2,
+        n_subset_turbines=1,
+        n_subset_states=2,
         n_steps=1,
         optimizer_type="GG",
         optimizer_pars={

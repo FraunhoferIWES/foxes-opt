@@ -25,8 +25,8 @@ class RandomSubsetStage(LayoutOptimizerStage):
 
     def __init__(
         self,
-        n_turbines: int,
-        n_states: int,
+        n_subset_turbines: int | None,
+        n_subset_states: int | None,
         n_steps: int,
         optimizer_type: str,
         optimizer_pars: dict[str, Any] | None = None,
@@ -43,10 +43,12 @@ class RandomSubsetStage(LayoutOptimizerStage):
         """
         Parameters
         ----------
-        n_turbines
-            Number of movable turbines in each optimization step.
-        n_states
-            Number of active states in each optimization step.
+        n_subset_turbines
+            Number of movable turbines in each optimization step, or ``None``
+            to optimize all turbines.
+        n_subset_states
+            Number of active states in each optimization step, or ``None`` to
+            use all states.
         n_steps
             Number of successive random-subset optimizations.
         optimizer_type
@@ -84,8 +86,8 @@ class RandomSubsetStage(LayoutOptimizerStage):
             name=name,
             **kwargs,
         )
-        self.n_turbines = n_turbines
-        self.n_states = n_states
+        self.n_subset_turbines = n_subset_turbines
+        self.n_subset_states = n_subset_states
         self.n_steps = n_steps
         self.seed = seed
         self.write_step_results = write_step_results
@@ -93,30 +95,46 @@ class RandomSubsetStage(LayoutOptimizerStage):
     def initialize(self, pipeline: Pipeline, verbosity: int = 0) -> None:
         """Initialize and validate random subset settings."""
         super().initialize(pipeline, verbosity=verbosity)
-        if not 0 < self.n_turbines <= pipeline.n_turbines:
+        if self.n_subset_turbines is not None and not (
+            0 < self.n_subset_turbines <= pipeline.n_turbines
+        ):
             raise ValueError(
-                f"{self.name}: n_turbines must be in [1, {pipeline.n_turbines}], got {self.n_turbines}"
+                f"{self.name}: n_subset_turbines must be in [1, {pipeline.n_turbines}], got {self.n_subset_turbines}"
             )
         self._n_flow_states = self._flow_states.size()
-        if self.n_states <= 0:
-            raise ValueError(f"{self.name}: n_states must be positive")
-        if self._n_flow_states and self.n_states > self._n_flow_states:
+        if self.n_subset_states is not None and self.n_subset_states <= 0:
+            raise ValueError(f"{self.name}: n_subset_states must be positive")
+        if (
+            self.n_subset_states is not None
+            and self._n_flow_states
+            and self.n_subset_states > self._n_flow_states
+        ):
             raise ValueError(
-                f"{self.name}: n_states must be in [1, {self._n_flow_states}], got {self.n_states}"
+                f"{self.name}: n_subset_states must be in [1, {self._n_flow_states}], got {self.n_subset_states}"
             )
         if self.n_steps <= 0:
             raise ValueError(f"{self.name}: n_steps must be positive")
 
     def _sample_subsets(
         self, rng: np.random.Generator
-    ) -> tuple[np.ndarray, np.ndarray]:
-        """Draw one turbine subset and one state subset."""
-        turbine_indices = rng.choice(
-            self._pipeline.n_turbines, size=self.n_turbines, replace=False
-        )
-        state_indices = rng.choice(
-            self._n_flow_states, size=self.n_states, replace=False
-        )
+    ) -> tuple[np.ndarray | None, np.ndarray | None]:
+        """Draw one turbine subset and one state subset, when configured."""
+        if self.n_subset_turbines is None:
+            turbine_indices = None
+        else:
+            turbine_indices = rng.choice(
+                self._pipeline.n_turbines,
+                size=self.n_subset_turbines,
+                replace=False,
+            )
+        if self.n_subset_states is None:
+            state_indices = None
+        else:
+            state_indices = rng.choice(
+                self._n_flow_states,
+                size=self.n_subset_states,
+                replace=False,
+            )
         return turbine_indices, state_indices
 
     def _ensure_state_count(self, layout_xy: np.ndarray) -> None:
@@ -134,23 +152,30 @@ class RandomSubsetStage(LayoutOptimizerStage):
             self._n_flow_states = algo.n_states
         finally:
             algo.finalize()
-        if self.n_states > self._n_flow_states:
+        if (
+            self.n_subset_states is not None
+            and self.n_subset_states > self._n_flow_states
+        ):
             raise ValueError(
-                f"{self.name}: n_states must be in [1, {self._n_flow_states}], got {self.n_states}"
+                f"{self.name}: n_subset_states must be in [1, {self._n_flow_states}], got {self.n_subset_states}"
             )
 
     def _optimize_step(
         self,
         layout_xy: np.ndarray,
-        turbine_indices: np.ndarray,
-        state_indices: np.ndarray,
+        turbine_indices: np.ndarray | None,
+        state_indices: np.ndarray | None,
         verbosity: int,
     ) -> tuple[bool, np.ndarray]:
         """Run the selected optimizer for one sampled layout problem."""
         results, candidate = self._run_layout_optimizer(
             layout_xy,
-            states=SubsetStates(self._flow_states, state_indices),
-            sel_turbines=turbine_indices.tolist(),
+            states=(
+                self._flow_states
+                if state_indices is None
+                else SubsetStates(self._flow_states, state_indices)
+            ),
+            sel_turbines=None if turbine_indices is None else turbine_indices.tolist(),
             verbosity=verbosity,
         )
         accepted = bool(results.success) and np.all(np.isfinite(results.vars_float))
@@ -205,8 +230,8 @@ class RandomSubsetStage(LayoutOptimizerStage):
                 if verbosity > 0:
                     print(
                         f"{self.name}: Step {step + 1}/{self.n_steps}, "
-                        f"turbines {turbine_indices.tolist()}, "
-                        f"states {state_indices.tolist()}"
+                        f"turbines {'all' if turbine_indices is None else turbine_indices.tolist()}, "
+                        f"states {'all' if state_indices is None else state_indices.tolist()}"
                     )
                 accepted, candidate = self._optimize_step(
                     layout_xy,
