@@ -30,7 +30,7 @@ class DiscreteLocalMoveOptProblem(FarmOptProblem):
             The spacing of points in meters.
         kwargs
             Additional keyword arguments passed to the base class initializer.
-        
+
         """
         super().__init__(*args, **kwargs)
         self.radius = radius
@@ -47,12 +47,16 @@ class DiscreteLocalMoveOptProblem(FarmOptProblem):
 
         """
         if not self.initialized:
-            self._layout0 = np.zeros((self.n_sel_turbines, 2), dtype=config.dtype_double)
+            self._layout0 = np.zeros(
+                (self.n_sel_turbines, 2), dtype=config.dtype_double
+            )
             for i, ti in enumerate(self.sel_turbines):
                 self._layout0[i] = self.algo.farm.turbines[ti].xy
 
             assert self.spacing > 0, f"{self.name}: spacing must be positive"
-            assert self.radius >= 2 * self.spacing, f"{self.name}: radius must be at least twice the spacing"
+            assert self.radius >= 2 * self.spacing, (
+                f"{self.name}: radius must be at least twice the spacing"
+            )
 
             dx = np.arange(0.0, self.radius + self.spacing, self.spacing)
             dx = np.concatenate([np.flip(-dx[1:]), dx], axis=0)
@@ -60,14 +64,22 @@ class DiscreteLocalMoveOptProblem(FarmOptProblem):
             self._delta_pts[:, :, 0] = dx[:, None]
             self._delta_pts[:, :, 1] = dx[None, :]
             self._delta_pts = self._delta_pts.reshape(-1, 2)
-            self._delta_pts = self._delta_pts[np.linalg.norm(self._delta_pts, axis=1) <= self.radius]
+            self._delta_pts = self._delta_pts[
+                np.linalg.norm(self._delta_pts, axis=1) <= self.radius
+            ]
             self._N = len(self._delta_pts)
-            self._i0 = np.argwhere(np.linalg.norm(self._delta_pts, axis=1) == 0.0).flatten()
-            assert self._i0.size == 1, f"{self.name}: There should be exactly one zero delta point"
+            self._i0 = np.argwhere(
+                np.linalg.norm(self._delta_pts, axis=1) == 0.0
+            ).flatten()
+            assert self._i0.size == 1, (
+                f"{self.name}: There should be exactly one zero delta point"
+            )
             self._i0 = self._i0[0]
             if verbosity > 0:
-                print(f"{self.name}: Generated {self._N} local move points within radius {self.radius}. Min {self._delta_pts.min(axis=0)}, max {self._delta_pts.max(axis=0)}")
-            
+                print(
+                    f"{self.name}: Generated {self._N} local move points within radius {self.radius}. Min {self._delta_pts.min(axis=0)}, max {self._delta_pts.max(axis=0)}"
+                )
+
             super().initialize(verbosity=verbosity)
 
     def var_names_int(self) -> list[str]:
@@ -124,7 +136,7 @@ class DiscreteLocalMoveOptProblem(FarmOptProblem):
 
         """
         return np.full(self.n_sel_turbines, self._N - 1, dtype=config.dtype_int)
-        
+
     def update_problem_individual(
         self, vars_int: np.ndarray, vars_float: np.ndarray
     ) -> None:

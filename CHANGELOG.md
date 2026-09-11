@@ -126,5 +126,8 @@
 - Adding `LayoutOptimizerStage` for optimizer-driven refinement of layouts from previous pipeline stages
 - Adding `RandomSubsetStage` for successive layout optimizations over random turbine and state subsets
 - Weighted state contractions now normalize by the selected weight sum
+- `LayoutOptimizerStage` now supports user-selected optimization problem types
+- `RandomSubsetStage` forwards layout optimizer configuration through its base
+  stage
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.8.1](https://github.com/FraunhoferIWES/foxes/commits/v0.8.1)

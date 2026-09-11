@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 import numpy as np
 from foxes.core import SubsetStates, run_with_engine
@@ -8,9 +8,6 @@ from iwopy import Pipeline
 from iwopy.core import PipelineStage
 
 from .layout_optimizer import LayoutOptimizerStage
-
-if TYPE_CHECKING:
-    from foxes.core import States
 
 
 class RandomSubsetStage(LayoutOptimizerStage):
@@ -28,14 +25,8 @@ class RandomSubsetStage(LayoutOptimizerStage):
         n_subset_turbines: int | None,
         n_subset_states: int | None,
         n_steps: int,
-        optimizer_type: str,
-        optimizer_pars: dict[str, Any] | None = None,
-        problem_wrapper_type: str | None = None,
-        problem_wrapper_pars: dict[str, Any] | None = None,
-        min_dist: float = 2.5,
-        min_dist_unit: str = "D",
+        *args: Any,
         seed: int | None = None,
-        flow_states: States | None = None,
         write_step_results: bool = False,
         name: str = "random_subset",
         **kwargs: Any,
@@ -51,41 +42,20 @@ class RandomSubsetStage(LayoutOptimizerStage):
             use all states.
         n_steps
             Number of successive random-subset optimizations.
-        optimizer_type
-            The iwopy optimizer type.
-        optimizer_pars
-            Parameters for the selected optimizer.
-        problem_wrapper_type
-            Optional iwopy problem wrapper type, such as ``"LocalFD"``.
-        problem_wrapper_pars
-            Parameters for the optional problem wrapper.
-        min_dist
-            Minimum turbine distance.
-        min_dist_unit
-            Unit of the minimum distance, either ``"m"`` or ``"D"``.
+        args
+            Positional arguments forwarded to ``LayoutOptimizerStage``.
         seed
             Random seed. The generator is reset for every stage run.
-        flow_states
-            States from which active subsets are sampled, or ``None`` for the
-            pipeline states.
         write_step_results
             Write full-state pipeline outputs after every accepted step.
         name
             Stage name.
         kwargs
-            Additional parameters for ``LayoutOptimizerStage``.
+            Keyword arguments forwarded to ``LayoutOptimizerStage``.
         """
-        super().__init__(
-            optimizer_type=optimizer_type,
-            optimizer_pars=optimizer_pars,
-            problem_wrapper_type=problem_wrapper_type,
-            problem_wrapper_pars=problem_wrapper_pars,
-            min_dist=min_dist,
-            min_dist_unit=min_dist_unit,
-            flow_states=flow_states,
-            name=name,
-            **kwargs,
-        )
+        base_kwargs = kwargs.copy()
+        base_kwargs["name"] = name
+        super().__init__(*args, **base_kwargs)
         self.n_subset_turbines = n_subset_turbines
         self.n_subset_states = n_subset_states
         self.n_steps = n_steps

@@ -121,6 +121,19 @@ def test_stage_disables_turbine_and_state_subsets_with_none(tmp_path):
     assert state_indices is None
 
 
+def test_random_subset_stage_accepts_selected_problem_type(tmp_path):
+    stage = RandomSubsetStage(
+        n_subset_turbines=2,
+        n_subset_states=3,
+        n_steps=1,
+        optimizer_type="test",
+        problem_type="CustomProblem",
+    )
+    stage.initialize(_Pipeline(stage, tmp_path))
+
+    assert stage.problem_type == "CustomProblem"
+
+
 def test_stage_writes_only_accepted_steps_when_enabled(tmp_path):
     stage = _stage(tmp_path, write_step_results=True)
 
@@ -207,6 +220,71 @@ def test_layout_optimizer_stage_installs_default_functions(monkeypatch, tmp_path
         ("constraint", ("boundary", problem)),
         ("constraint", ("min_dist", problem, 2.5, "D")),
     ]
+
+
+def test_layout_optimizer_stage_uses_selected_problem_type(monkeypatch, tmp_path):
+    stage = LayoutOptimizerStage(
+        optimizer_type="test",
+        problem_type="CustomProblem",
+        problem_pars={"custom": 3},
+    )
+    pipeline = _Pipeline(stage, tmp_path)
+    stage.initialize(pipeline)
+    factory_calls = []
+
+    class _Algo:
+        initialized = False
+        running = False
+
+    class _Problem:
+        sel_turbines = [0]
+
+        def initialize(self, verbosity):
+            pass
+
+    class _Results:
+        success = True
+        vars_float = np.array([3.0, 4.0])
+
+    class _Optimizer:
+        def initialize(self, verbosity):
+            pass
+
+        def solve(self, verbosity):
+            return _Results()
+
+        def finalize(self, results, verbosity):
+            pass
+
+    def new_problem(cls, problem_type, **kwargs):
+        factory_calls.append((problem_type, kwargs))
+        return _Problem()
+
+    algo = _Algo()
+    monkeypatch.setattr(
+        layout_optimizer.FarmOptProblem,
+        "new",
+        classmethod(new_problem),
+    )
+    monkeypatch.setattr(pipeline, "get_algo", lambda **kwargs: algo, raising=False)
+    monkeypatch.setattr(stage, "_add_functions", lambda problem: None)
+    monkeypatch.setattr(stage, "_prepare_problem", lambda problem: problem)
+    monkeypatch.setattr(stage, "_create_optimizer", lambda problem: _Optimizer())
+
+    _, candidate = stage._run_layout_optimizer(np.zeros((5, 2)), verbosity=0)
+
+    assert factory_calls == [
+        (
+            "CustomProblem",
+            {
+                "name": "layout_optimizer_problem",
+                "algo": algo,
+                "sel_turbines": None,
+                "custom": 3,
+            },
+        )
+    ]
+    np.testing.assert_allclose(candidate[0], [3.0, 4.0])
 
 
 def test_stage_runs_vectorized_gg_with_lazy_state_subset(tmp_path):

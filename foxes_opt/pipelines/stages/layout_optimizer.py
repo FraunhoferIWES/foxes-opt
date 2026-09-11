@@ -9,9 +9,8 @@ from iwopy.utils import new_instance
 from iwopy.wrappers import ProblemWrapper
 
 from foxes_opt.constraints import FarmBoundaryConstraint, MinDistConstraint
-from foxes_opt.core import FarmConstraint, FarmObjective
+from foxes_opt.core import FarmConstraint, FarmObjective, FarmOptProblem
 from foxes_opt.objectives import MaxFarmREWS
-from foxes_opt.problems.layout import FarmLayoutOptProblem
 
 if TYPE_CHECKING:
     from foxes.core import Algorithm, States
@@ -30,6 +29,7 @@ class LayoutOptimizerStage(PipelineStage):
         self,
         optimizer_type: str,
         optimizer_pars: dict[str, Any] | None = None,
+        problem_type: str = "FarmLayoutOptProblem",
         objectives: list[dict[str, Any]] | None = None,
         constraints: list[dict[str, Any]] | None = None,
         problem_pars: dict[str, Any] | None = None,
@@ -48,6 +48,9 @@ class LayoutOptimizerStage(PipelineStage):
             The iwopy optimizer type passed to ``Optimizer.new``.
         optimizer_pars
             Additional parameters for the selected optimizer.
+        problem_type
+            The ``FarmOptProblem`` subclass name passed to
+            ``FarmOptProblem.new``.
         objectives
             Objective factory parameters. Every entry requires
             ``objective_type``.
@@ -55,7 +58,7 @@ class LayoutOptimizerStage(PipelineStage):
             Constraint factory parameters. Every entry requires
             ``constraint_type``.
         problem_pars
-            Additional parameters for ``FarmLayoutOptProblem``.
+            Additional parameters for the selected optimization problem.
         problem_wrapper_type
             Optional iwopy problem wrapper type, for example ``"LocalFD"``.
         problem_wrapper_pars
@@ -74,6 +77,7 @@ class LayoutOptimizerStage(PipelineStage):
         super().__init__(name=name, **kwargs)
         self.optimizer_type = optimizer_type
         self.optimizer_pars = {} if optimizer_pars is None else optimizer_pars.copy()
+        self.problem_type = problem_type
         self.objectives = (
             None if objectives is None else [pars.copy() for pars in objectives]
         )
@@ -111,6 +115,8 @@ class LayoutOptimizerStage(PipelineStage):
             raise ValueError(f"{self.name}: A farm boundary is required")
         if not self.optimizer_type:
             raise ValueError(f"{self.name}: Missing optimizer_type")
+        if not self.problem_type:
+            raise ValueError(f"{self.name}: Missing problem_type")
         if self.min_dist <= 0:
             raise ValueError(f"{self.name}: min_dist must be positive")
         if self.min_dist_unit not in ("m", "D"):
@@ -142,7 +148,7 @@ class LayoutOptimizerStage(PipelineStage):
                     f"{self.name}: Every constraint requires constraint_type"
                 )
 
-    def _add_functions(self, problem: FarmLayoutOptProblem) -> None:
+    def _add_functions(self, problem: FarmOptProblem) -> None:
         """Add the configured objectives and constraints to a problem."""
         if self.objectives is None:
             problem.add_objective(
@@ -165,7 +171,7 @@ class LayoutOptimizerStage(PipelineStage):
         for pars in self.constraints or []:
             problem.add_constraint(FarmConstraint.new(problem=problem, **pars))
 
-    def _prepare_problem(self, problem: FarmLayoutOptProblem) -> Problem:
+    def _prepare_problem(self, problem: FarmOptProblem) -> Problem:
         """Return the initialized problem supplied to the optimizer."""
         if self.problem_wrapper_type is None:
             return problem
@@ -219,9 +225,10 @@ class LayoutOptimizerStage(PipelineStage):
             force=False,
             verbosity=0,
         )
-        problem = FarmLayoutOptProblem(
-            f"{self.name}_problem",
-            algo,
+        problem = FarmOptProblem.new(
+            problem_type=self.problem_type,
+            name=f"{self.name}_problem",
+            algo=algo,
             sel_turbines=sel_turbines,
             **self.problem_pars,
         )
