@@ -21,6 +21,7 @@ class MinDistConstraint(FarmConstraint):
         min_dist_unit: str = "m",
         name: str = "dist",
         sel_turbines: list[int] | None = None,
+        infer_vars: bool = False,
         **kwargs: Any,
     ) -> None:
         """
@@ -36,6 +37,8 @@ class MinDistConstraint(FarmConstraint):
             The name of the constraint
         sel_turbines
             The selected turbines
+        infer_vars
+            Whether to infer the float variables automatically
         kwargs
             Additional parameters for `iwopy.Constraint`
 
@@ -47,8 +50,13 @@ class MinDistConstraint(FarmConstraint):
         vrs = []
         for ti in selt:
             vrs += [problem.tvar(FV.X, ti), problem.tvar(FV.Y, ti)]
+        vnames_float: list[str] | None = vrs
+        if infer_vars:
+            vnames_float = None
 
-        super().__init__(problem, name, sel_turbines, vnames_float=vrs, **kwargs)
+        super().__init__(
+            problem, name, sel_turbines, vnames_float=vnames_float, **kwargs
+        )
 
     def initialize(self, verbosity: int = 0) -> None:
         """

@@ -22,6 +22,7 @@ class AreaGeometryConstraint(FarmConstraint):
         sel_turbines: list[int] | None = None,
         disc_inside: bool = False,
         D: float | None = None,
+        infer_vars: bool = False,
         **kwargs: Any,
     ) -> None:
         """
@@ -39,12 +40,15 @@ class AreaGeometryConstraint(FarmConstraint):
             Ensure full rotor disc inside boundary
         D
             Use this radius for rotor disc inside condition
+        infer_vars
+            Whether to infer the float variables automatically
         kwargs
             Additional parameters for `iwopy.Constraint`
 
         """
         self.geometry = geometry
         self.disc_inside = disc_inside
+        self.infer_vars = infer_vars
         self.D = D
 
         selt = problem.sel_turbines if sel_turbines is None else sel_turbines
@@ -53,9 +57,17 @@ class AreaGeometryConstraint(FarmConstraint):
         for ti in selt:
             vrs += [problem.tvar(FV.X, ti), problem.tvar(FV.Y, ti)]
             cns.append(f"{name}_{ti:04d}")
+        vnames_float: list[str] | None = vrs
+        if infer_vars:
+            vnames_float = None
 
         super().__init__(
-            problem, name, sel_turbines, vnames_float=vrs, cnames=cns, **kwargs
+            problem,
+            name,
+            sel_turbines,
+            vnames_float=vnames_float,
+            cnames=cns,
+            **kwargs,
         )
 
     def n_components(self) -> int:
@@ -120,7 +132,16 @@ class AreaGeometryConstraint(FarmConstraint):
         s: slice | np.ndarray[Any, np.dtype[np.int_]] = np.s_[:]
         if components is not None and len(components) < self.n_components():
             s = np.asarray(components, dtype=int)
-        xy = vars_float.reshape(self.n_components(), 2)[s]
+        if self.infer_vars:
+            xy = np.stack(
+                [
+                    problem_results[FV.X][0, self.sel_turbines][s],
+                    problem_results[FV.Y][0, self.sel_turbines][s],
+                ],
+                axis=-1,
+            )
+        else:
+            xy = vars_float.reshape(self.n_components(), 2)[s]
 
         dists = self.geometry.points_distance(xy)
         dists[self.geometry.points_inside(xy)] *= -1
@@ -167,7 +188,16 @@ class AreaGeometryConstraint(FarmConstraint):
         if components is not None and len(components) < self.n_components():
             n_cmpnts = len(components)
             s = np.asarray(components, dtype=int)
-        xy = vars_float[:, s].reshape(n_pop * n_cmpnts, 2)
+        if self.infer_vars:
+            xy = np.stack(
+                [
+                    problem_results[FV.X][:, self.sel_turbines][:, s],
+                    problem_results[FV.Y][:, self.sel_turbines][:, s],
+                ],
+                axis=-1,
+            ).reshape(n_pop * n_cmpnts, 2)
+        else:
+            xy = vars_float[:, s].reshape(n_pop * n_cmpnts, 2)
 
         dists = self.geometry.points_distance(xy)
         dists[self.geometry.points_inside(xy)] *= -1

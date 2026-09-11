@@ -103,10 +103,14 @@ if __name__ == "__main__":
 
     problem = FarmLayoutOptProblem("layout_opt", algo)
     problem.add_objective(MaxFarmPower(problem))
-    problem.add_constraint(FarmBoundaryConstraint(problem, disc_inside=True))
+    problem.add_constraint(
+        FarmBoundaryConstraint(problem, disc_inside=True, infer_vars=True)
+    )
     if args.min_dist is not None:
         problem.add_constraint(
-            MinDistConstraint(problem, min_dist=args.min_dist, min_dist_unit="D")
+            MinDistConstraint(
+                problem, min_dist=args.min_dist, min_dist_unit="D", infer_vars=True
+            )
         )
     problem.initialize()
 
