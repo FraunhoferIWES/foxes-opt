@@ -10,7 +10,7 @@ from iwopy.wrappers import ProblemWrapper
 
 from foxes_opt.constraints import FarmBoundaryConstraint
 from foxes_opt.core import FarmConstraint, FarmObjective, FarmOptProblem
-from foxes_opt.objectives import MaxFarmREWS
+from foxes_opt.objectives import MaxFarmPower
 
 if TYPE_CHECKING:
     from foxes.core import Algorithm, States
@@ -197,13 +197,16 @@ class LayoutOptimizerStage(PipelineStage):
         """
         if self.objectives is None:
             problem.add_objective(
-                MaxFarmREWS(
+                MaxFarmPower(
                     problem,
                     sel_turbines=list(range(problem.farm.n_turbines)),
                 )
             )
         for pars in self.objectives or []:
-            problem.add_objective(FarmObjective.new(problem=problem, **pars))
+            objective_pars = pars.copy()
+            if objective_pars["objective_type"] == "MaxFarmPower":
+                objective_pars["sel_turbines"] = list(range(problem.farm.n_turbines))
+            problem.add_objective(FarmObjective.new(problem=problem, **objective_pars))
 
     def _add_main_constraints(self, problem: FarmOptProblem) -> None:
         """

@@ -112,9 +112,11 @@ class LayoutPipeline(Pipeline):
                         "success",
                         "n_turbines",
                         FV.CAP,
-                        FV.EFF,
+                        FV.AMB_REWS,
+                        FV.REWS,
                         FV.AMB_YLD,
                         FV.YLD,
+                        FV.EFF,
                     ]
                 )
                 self.__table.set_index("index", inplace=True)
@@ -160,11 +162,16 @@ class LayoutPipeline(Pipeline):
             o = FarmResultsEval(farm_results, algo)
             Y0 = o.calc_farm_yield(annual=True, ambient=True)
             Y = o.calc_farm_yield(annual=True, ambient=False)
+            means = o.calc_farm_mean([FV.AMB_REWS, FV.REWS])
+            rews0 = means[FV.AMB_REWS]
+            rews = means[FV.REWS]
             eff = o.calc_farm_efficiency()
             cap = o.calc_farm_capacity()
         else:
             Y0 = np.nan
             Y = np.nan
+            rews0 = np.nan
+            rews = np.nan
             eff = np.nan
             cap = np.nan
 
@@ -179,9 +186,11 @@ class LayoutPipeline(Pipeline):
                 "success": [success],
                 "n_turbines": [farm_results.sizes[FC.TURBINE]],
                 FV.CAP: [cap],
-                FV.EFF: [eff],
+                FV.AMB_REWS: [rews0],
+                FV.REWS: [rews],
                 FV.AMB_YLD: [Y0],
                 FV.YLD: [Y],
+                FV.EFF: [eff],
             },
         ).set_index("index")
 

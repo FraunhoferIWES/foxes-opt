@@ -195,8 +195,8 @@ def test_layout_optimizer_stage_installs_default_functions(monkeypatch, tmp_path
 
     monkeypatch.setattr(
         layout_optimizer,
-        "MaxFarmREWS",
-        lambda problem, sel_turbines: ("max_rews", problem, sel_turbines),
+        "MaxFarmPower",
+        lambda problem, sel_turbines: ("max_power", problem, sel_turbines),
     )
     monkeypatch.setattr(
         layout_optimizer,
@@ -219,9 +219,42 @@ def test_layout_optimizer_stage_installs_default_functions(monkeypatch, tmp_path
     stage._add_functions(problem)
 
     assert calls == [
-        ("objective", ("max_rews", problem, [0, 1, 2, 3, 4])),
+        ("objective", ("max_power", problem, [0, 1, 2, 3, 4])),
         ("constraint", ("boundary", problem)),
         ("constraint", ("min_dist", problem, 2.5, "D")),
+    ]
+
+
+def test_layout_optimizer_stage_uses_all_turbines_for_configured_power_objective(
+    monkeypatch,
+):
+    stage = LayoutOptimizerStage(
+        optimizer_type="test",
+        objectives=[{"objective_type": "MaxFarmPower", "sel_turbines": [1]}],
+    )
+    calls = []
+
+    class _Problem:
+        farm = type("Farm", (), {"n_turbines": 3})()
+
+        def add_objective(self, objective):
+            calls.append(objective)
+
+    monkeypatch.setattr(
+        layout_optimizer.FarmObjective,
+        "new",
+        lambda **kwargs: kwargs,
+    )
+
+    problem = _Problem()
+    stage._add_objectives(problem)
+
+    assert calls == [
+        {
+            "problem": problem,
+            "objective_type": "MaxFarmPower",
+            "sel_turbines": [0, 1, 2],
+        }
     ]
 
 
@@ -239,7 +272,7 @@ def test_layout_optimizer_stage_skips_min_dist_when_none(monkeypatch, tmp_path):
         def add_constraint(self, constraint):
             calls.append(("constraint", constraint))
 
-    monkeypatch.setattr(layout_optimizer, "MaxFarmREWS", lambda *args, **kwargs: None)
+    monkeypatch.setattr(layout_optimizer, "MaxFarmPower", lambda *args, **kwargs: None)
     monkeypatch.setattr(
         layout_optimizer, "FarmBoundaryConstraint", lambda problem: None
     )
@@ -449,7 +482,7 @@ def test_layout_optimizer_stage_boundary_repair_reduces_main_selection(
     monkeypatch.setattr(
         layout_optimizer, "FarmBoundaryConstraint", lambda problem: None
     )
-    monkeypatch.setattr(layout_optimizer, "MaxFarmREWS", lambda *args, **kwargs: None)
+    monkeypatch.setattr(layout_optimizer, "MaxFarmPower", lambda *args, **kwargs: None)
     monkeypatch.setattr(layout_optimizer.FarmConstraint, "new", fake_new)
     monkeypatch.setattr(pipeline, "get_algo", lambda **kwargs: _Algo(), raising=False)
     monkeypatch.setattr(
@@ -634,7 +667,7 @@ def test_layout_optimizer_stage_boundary_repair_failure_returns_original(
     monkeypatch.setattr(
         layout_optimizer, "FarmBoundaryConstraint", lambda problem: None
     )
-    monkeypatch.setattr(layout_optimizer, "MaxFarmREWS", lambda *args, **kwargs: None)
+    monkeypatch.setattr(layout_optimizer, "MaxFarmPower", lambda *args, **kwargs: None)
     monkeypatch.setattr(
         layout_optimizer.FarmConstraint, "new", lambda *args, **kwargs: None
     )
