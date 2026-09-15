@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
@@ -37,6 +38,9 @@ class LayoutOptimizerStage(PipelineStage):
         min_dist: float | list[float] | None = 2.5,
         min_dist_unit: str = "D",
         min_dist_constraint_type: str | None = "MinDistConstraint",
+        boundary_repair: bool = False,
+        boundary_repair_optimizer_type: str | None = None,
+        boundary_repair_optimizer_pars: dict[str, Any] | None = None,
         flow_states: States | None = None,
         name: str = "layout_optimizer",
         **kwargs: Any,
@@ -70,6 +74,15 @@ class LayoutOptimizerStage(PipelineStage):
         min_dist_constraint_type
             Constraint type used for the default minimum-distance constraint,
             or ``None``/``"None"`` to skip it.
+        boundary_repair
+            If ``True``, first optimize turbines that violate the farm boundary,
+            then exclude them from the main optimization.
+        boundary_repair_optimizer_type
+            Optimizer type for the boundary repair run. If ``None``, use
+            ``optimizer_type``.
+        boundary_repair_optimizer_pars
+            Optimizer parameters for the boundary repair run. These parameters
+            override ``optimizer_pars`` for the repair run only.
         flow_states
             States used for optimization, or ``None`` for pipeline states.
         name
@@ -95,6 +108,13 @@ class LayoutOptimizerStage(PipelineStage):
         self.__min_dist: float | list[float] | None = min_dist
         self.min_dist_unit = min_dist_unit
         self.min_dist_constraint_type = min_dist_constraint_type
+        self.boundary_repair = boundary_repair
+        self.boundary_repair_optimizer_type = boundary_repair_optimizer_type
+        self.boundary_repair_optimizer_pars = (
+            None
+            if boundary_repair_optimizer_pars is None
+            else boundary_repair_optimizer_pars.copy()
+        )
         self.flow_states = flow_states
 
     @property
@@ -123,6 +143,12 @@ class LayoutOptimizerStage(PipelineStage):
             raise ValueError(f"{self.name}: A farm boundary is required")
         if not self.optimizer_type:
             raise ValueError(f"{self.name}: Missing optimizer_type")
+        if self.boundary_repair_optimizer_type is not None and not (
+            self.boundary_repair_optimizer_type
+        ):
+            raise ValueError(
+                f"{self.name}: boundary_repair_optimizer_type must not be empty"
+            )
         if not self.problem_type:
             raise ValueError(f"{self.name}: Missing problem_type")
         if self.min_dist_unit not in ("m", "D"):
@@ -130,6 +156,12 @@ class LayoutOptimizerStage(PipelineStage):
         if {"problem"}.intersection(self.optimizer_pars):
             raise ValueError(
                 f"{self.name}: optimizer_pars contains reserved parameter 'problem'"
+            )
+        if self.boundary_repair_optimizer_pars is not None and {"problem"}.intersection(
+            self.boundary_repair_optimizer_pars
+        ):
+            raise ValueError(
+                f"{self.name}: boundary_repair_optimizer_pars contains reserved parameter 'problem'"
             )
         if {"name", "algo", "sel_turbines"}.intersection(self.problem_pars):
             raise ValueError(
@@ -154,8 +186,15 @@ class LayoutOptimizerStage(PipelineStage):
                     f"{self.name}: Every constraint requires constraint_type"
                 )
 
-    def _add_functions(self, problem: FarmOptProblem) -> None:
-        """Add the configured objectives and constraints to a problem."""
+    def _add_objectives(self, problem: FarmOptProblem) -> None:
+        """
+        Add the configured objectives to a problem.
+
+        Parameters
+        ----------
+        problem
+            The optimization problem
+        """
         if self.objectives is None:
             problem.add_objective(
                 MaxFarmREWS(
@@ -165,9 +204,22 @@ class LayoutOptimizerStage(PipelineStage):
             )
         for pars in self.objectives or []:
             problem.add_objective(FarmObjective.new(problem=problem, **pars))
+
+    def _add_main_constraints(self, problem: FarmOptProblem) -> None:
+        """
+        Add the configured main optimization constraints to a problem.
+
+        Parameters
+        ----------
+        problem
+            The optimization problem
+        """
         if self.constraints is None:
             problem.add_constraint(FarmBoundaryConstraint(problem))
-        if self.min_dist_constraint_type not in (None, "None"):
+        if self.min_dist is not None and self.min_dist_constraint_type not in (
+            None,
+            "None",
+        ):
             problem.add_constraint(
                 FarmConstraint.new(
                     self.min_dist_constraint_type,
@@ -178,6 +230,165 @@ class LayoutOptimizerStage(PipelineStage):
             )
         for pars in self.constraints or []:
             problem.add_constraint(FarmConstraint.new(problem=problem, **pars))
+
+    def _add_functions(self, problem: FarmOptProblem) -> None:
+        """
+        Add the configured objectives and constraints to a problem.
+
+        Parameters
+        ----------
+        problem
+            The optimization problem
+        """
+        self._add_objectives(problem)
+        self._add_main_constraints(problem)
+
+    def _add_boundary_repair_functions(self, problem: FarmOptProblem) -> None:
+        """
+        Add objectives and repair-only constraints to a problem.
+
+        Parameters
+        ----------
+        problem
+            The optimization problem
+        """
+        self._add_objectives(problem)
+        problem.add_constraint(FarmBoundaryConstraint(problem))
+        if self.min_dist is not None and self.min_dist_constraint_type not in (
+            None,
+            "None",
+        ):
+            problem.add_constraint(
+                FarmConstraint.new(
+                    self.min_dist_constraint_type,
+                    problem=problem,
+                    min_dist=self.min_dist,
+                    min_dist_unit=self.min_dist_unit,
+                    check_only_selected=True,
+                )
+            )
+
+    def _active_turbines(
+        self, layout_xy: np.ndarray, sel_turbines: list[int] | None
+    ) -> list[int]:
+        """
+        Return the active turbine list for an optimization call.
+
+        Parameters
+        ----------
+        layout_xy
+            The turbine coordinates
+        sel_turbines
+            The selected turbines, or ``None`` for all turbines
+
+        Returns
+        -------
+        turbines
+            The active turbine indices
+        """
+        return (
+            list(range(len(layout_xy))) if sel_turbines is None else sel_turbines.copy()
+        )
+
+    def _boundary_repair_thresholds(
+        self,
+        layout_xy: np.ndarray,
+        states: States | None,
+        sel_turbines: list[int],
+        verbosity: int,
+    ) -> np.ndarray:
+        """
+        Calculate the boundary repair thresholds for selected turbines.
+
+        Parameters
+        ----------
+        layout_xy
+            The turbine coordinates
+        states
+            Optional states used for the optimization
+        sel_turbines
+            The selected turbines
+        verbosity
+            Verbosity level used for temporary algorithm setup
+
+        Returns
+        -------
+        thresholds
+            The repair thresholds in metres
+        """
+        min_dist: float | list[float]
+        if self.min_dist is None:
+            min_dist = 1.0
+            min_dist_unit = "D"
+        else:
+            min_dist = self.min_dist
+            min_dist_unit = self.min_dist_unit
+
+        threshold = np.asarray(min_dist, dtype=float)
+        if threshold.size == 1:
+            threshold = np.full(len(sel_turbines), threshold.item())
+        elif threshold.size != len(sel_turbines):
+            raise ValueError(
+                f"{self.name}: Boundary repair threshold has length {threshold.size}, expected 1 or {len(sel_turbines)}"
+            )
+
+        if min_dist_unit == "m":
+            return threshold
+
+        algo: Algorithm = self._pipeline.get_algo(
+            layout_xy=layout_xy,
+            states=self._flow_states if states is None else states,
+            initialize=True,
+            force=False,
+            verbosity=max(verbosity - 2, 0),
+        )
+        try:
+            diameters = algo.farm.get_rotor_diameters(algo)
+            return threshold * np.asarray(diameters, dtype=float)[sel_turbines]
+        finally:
+            if algo.initialized and not algo.running:
+                algo.finalize()
+
+    def _boundary_repair_turbines(
+        self,
+        layout_xy: np.ndarray,
+        states: States | None,
+        sel_turbines: list[int],
+        verbosity: int,
+    ) -> list[int]:
+        """
+        Return active turbines requiring boundary repair.
+
+        Parameters
+        ----------
+        layout_xy
+            The turbine coordinates
+        states
+            Optional states used for the optimization
+        sel_turbines
+            The selected turbines
+        verbosity
+            Verbosity level used for temporary algorithm setup
+
+        Returns
+        -------
+        turbines
+            The turbine indices that violate or are close to the farm boundary
+        """
+        xy = layout_xy[sel_turbines]
+        boundary = self._pipeline.farm_boundary
+        dists = boundary.points_distance(xy)
+        inside = boundary.points_inside(xy)
+        signed_dists = dists.copy()
+        signed_dists[inside] *= -1
+        thresholds = self._boundary_repair_thresholds(
+            layout_xy,
+            states,
+            sel_turbines,
+            verbosity,
+        )
+        repair = (signed_dists > 0) | (dists < thresholds)
+        return np.asarray(sel_turbines, dtype=int)[repair].tolist()
 
     def _prepare_problem(self, problem: FarmOptProblem) -> Problem:
         """Return the initialized problem supplied to the optimizer."""
@@ -190,13 +401,125 @@ class LayoutOptimizerStage(PipelineStage):
             **self.problem_wrapper_pars,
         )
 
-    def _create_optimizer(self, problem: Problem) -> Optimizer:
-        """Create the configured iwopy optimizer."""
+    def _create_optimizer(
+        self,
+        problem: Problem,
+        optimizer_type: str | None = None,
+        optimizer_pars: dict[str, Any] | None = None,
+    ) -> Optimizer:
+        """
+        Create the configured iwopy optimizer.
+
+        Parameters
+        ----------
+        problem
+            The problem supplied to the optimizer
+        optimizer_type
+            Optional optimizer type override
+        optimizer_pars
+            Optional optimizer parameter overrides
+
+        Returns
+        -------
+        optimizer
+            The configured optimizer
+        """
+        pars = self.optimizer_pars.copy()
+        if optimizer_pars is not None:
+            pars.update(optimizer_pars)
         return Optimizer.new(
             problem=problem,
-            optimizer_type=self.optimizer_type,
-            **self.optimizer_pars,
+            optimizer_type=self.optimizer_type
+            if optimizer_type is None
+            else optimizer_type,
+            **pars,
         )
+
+    def _solve_layout_problem(
+        self,
+        layout_xy: np.ndarray,
+        states: States | None,
+        sel_turbines: list[int] | None,
+        add_functions: Callable[[FarmOptProblem], None],
+        problem_name: str,
+        optimizer_type: str | None,
+        optimizer_pars: dict[str, Any] | None,
+        verbosity: int,
+    ) -> tuple[Any, np.ndarray]:
+        """
+        Create, solve, and finalize one layout optimization problem.
+
+        Parameters
+        ----------
+        layout_xy
+            Current turbine coordinates
+        states
+            Optional states used for the optimization
+        sel_turbines
+            Turbine indices to optimize, or ``None`` for all turbines
+        add_functions
+            Function that adds objectives and constraints to the problem
+        problem_name
+            The optimization problem name
+        optimizer_type
+            Optional optimizer type override
+        optimizer_pars
+            Optional optimizer parameter overrides
+        verbosity
+            Verbosity level passed to the algorithm and optimizer setup
+
+        Returns
+        -------
+        results, candidate
+            The iwopy optimizer results and the candidate layout coordinates
+        """
+        algo: Algorithm = self._pipeline.get_algo(
+            layout_xy=layout_xy,
+            states=self._flow_states if states is None else states,
+            initialize=False,
+            force=False,
+            verbosity=0,
+        )
+        problem = FarmOptProblem.new(
+            problem_type=self.problem_type,
+            name=problem_name,
+            algo=algo,
+            sel_turbines=sel_turbines,
+            **self.problem_pars,
+        )
+        add_functions(problem)
+        optimizer_problem = self._prepare_problem(problem)
+        optimizer_problem.initialize(verbosity=max(verbosity - 1, 0))
+        optimizer = self._create_optimizer(
+            optimizer_problem,
+            optimizer_type,
+            optimizer_pars,
+        )
+        optimizer.initialize(verbosity=max(verbosity - 2, 0))
+        if verbosity > 1:
+            optimizer.print_info()
+        try:
+            results = optimizer.solve(verbosity=max(verbosity - 1, 0))
+            optimizer.finalize(results, verbosity=max(verbosity - 1, 0))
+            candidate = layout_xy.copy()
+            selected = problem.sel_turbines
+            if not results.success:
+                return results, candidate
+            if getattr(problem, "n_vars_int", 0):
+                if results.vars_int is None:
+                    return results, candidate
+                problem.update_problem_individual(results.vars_int, results.vars_float)
+                candidate[selected] = np.array(
+                    [algo.farm.turbines[ti].xy for ti in selected]
+                )
+            else:
+                if results.vars_float is None:
+                    return results, candidate
+                candidate[selected] = results.vars_float.reshape(-1, 2)
+            return results, candidate
+        finally:
+            if algo.initialized and not algo.running:
+                algo.finalize()
 
     def _run_layout_optimizer(
         self,
@@ -223,52 +546,50 @@ class LayoutOptimizerStage(PipelineStage):
 
         Returns
         -------
-        tuple[Any, np.ndarray]
+        results, candidate
             The iwopy optimizer results and the candidate layout coordinates.
         """
-        algo: Algorithm = self._pipeline.get_algo(
-            layout_xy=layout_xy,
-            states=self._flow_states if states is None else states,
-            initialize=False,
-            force=False,
-            verbosity=0,
-        )
-        problem = FarmOptProblem.new(
-            problem_type=self.problem_type,
-            name=f"{self.name}_problem",
-            algo=algo,
-            sel_turbines=sel_turbines,
-            **self.problem_pars,
-        )
-        self._add_functions(problem)
-        optimizer_problem = self._prepare_problem(problem)
-        optimizer_problem.initialize(verbosity=max(verbosity - 1, 0))
-        optimizer = self._create_optimizer(optimizer_problem)
-        optimizer.initialize(verbosity=max(verbosity - 2, 0))
-        if verbosity > 1:
-            optimizer.print_info()
-        try:
-            results = optimizer.solve(verbosity=max(verbosity - 1, 0))
-            optimizer.finalize(results, verbosity=max(verbosity - 1, 0))
-            candidate = layout_xy.copy()
-            selected = problem.sel_turbines
-            if not results.success:
-                return results, candidate
-            if getattr(problem, "n_vars_int", 0):
-                if results.vars_int is None:
-                    return results, candidate
-                problem.update_problem_individual(results.vars_int, results.vars_float)
-                candidate[selected] = np.array(
-                    [algo.farm.turbines[ti].xy for ti in selected]
+        active_turbines = self._active_turbines(layout_xy, sel_turbines)
+        if self.boundary_repair:
+            repair_turbines = self._boundary_repair_turbines(
+                layout_xy,
+                states,
+                active_turbines,
+                verbosity,
+            )
+            if repair_turbines:
+                repair_results, repaired_layout = self._solve_layout_problem(
+                    layout_xy,
+                    states,
+                    repair_turbines,
+                    self._add_boundary_repair_functions,
+                    f"{self.name}_boundary_repair_problem",
+                    self.boundary_repair_optimizer_type,
+                    self.boundary_repair_optimizer_pars,
+                    verbosity,
                 )
-            else:
-                if results.vars_float is None:
-                    return results, candidate
-                candidate[selected] = results.vars_float.reshape(-1, 2)
-            return results, candidate
-        finally:
-            if algo.initialized and not algo.running:
-                algo.finalize()
+                if not repair_results.success or not np.all(
+                    np.isfinite(repaired_layout)
+                ):
+                    return repair_results, layout_xy.copy()
+                layout_xy = repaired_layout
+                remaining_turbines = [
+                    ti for ti in active_turbines if ti not in repair_turbines
+                ]
+                if not remaining_turbines:
+                    return repair_results, layout_xy
+                sel_turbines = remaining_turbines
+
+        return self._solve_layout_problem(
+            layout_xy,
+            states,
+            sel_turbines,
+            self._add_functions,
+            f"{self.name}_problem",
+            None,
+            None,
+            verbosity,
+        )
 
     def run(
         self,
@@ -296,7 +617,7 @@ class LayoutOptimizerStage(PipelineStage):
 
         Returns
         -------
-        tuple[bool, np.ndarray]
+        success, layout_xy
             ``True`` and the optimized layout when the optimizer succeeds;
             otherwise the original layout together with ``False``.
         """

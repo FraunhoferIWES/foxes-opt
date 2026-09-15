@@ -4,6 +4,7 @@ import foxes
 import foxes.variables as FV
 import numpy as np
 import foxes_opt.pipelines.stages.layout_optimizer as layout_optimizer
+from foxes_opt.constraints import MinDistConstraint
 
 from foxes_opt.pipelines import LayoutPipeline
 from foxes_opt.pipelines.stages import LayoutOptimizerStage, RandomSubsetStage
@@ -224,6 +225,73 @@ def test_layout_optimizer_stage_installs_default_functions(monkeypatch, tmp_path
     ]
 
 
+def test_layout_optimizer_stage_skips_min_dist_when_none(monkeypatch, tmp_path):
+    stage = LayoutOptimizerStage(optimizer_type="test", min_dist=None)
+    stage.initialize(_Pipeline(stage, tmp_path))
+    calls = []
+
+    class _Problem:
+        farm = type("Farm", (), {"n_turbines": 5})()
+
+        def add_objective(self, objective):
+            calls.append(("objective", objective))
+
+        def add_constraint(self, constraint):
+            calls.append(("constraint", constraint))
+
+    monkeypatch.setattr(layout_optimizer, "MaxFarmREWS", lambda *args, **kwargs: None)
+    monkeypatch.setattr(
+        layout_optimizer, "FarmBoundaryConstraint", lambda problem: None
+    )
+    monkeypatch.setattr(
+        layout_optimizer.FarmConstraint,
+        "new",
+        lambda *args, **kwargs: calls.append(("unexpected", args, kwargs)),
+    )
+
+    stage._add_functions(_Problem())
+
+    assert [call[0] for call in calls] == ["objective", "constraint"]
+
+
+def test_min_dist_constraint_can_check_only_selected_pairs():
+    class _Problem:
+        sel_turbines = [0, 2]
+        farm = type("Farm", (), {"n_turbines": 4})()
+
+        def tvar(self, var, ti):
+            return f"{var}_{ti}"
+
+        def var_names_int(self):
+            return []
+
+        def var_names_float(self):
+            return [
+                self.tvar(FV.X, 0),
+                self.tvar(FV.Y, 0),
+                self.tvar(FV.X, 2),
+                self.tvar(FV.Y, 2),
+            ]
+
+    default_constraint = MinDistConstraint(_Problem(), min_dist=1.0)
+    default_constraint.initialize(verbosity=0)
+    selected_only_constraint = MinDistConstraint(
+        _Problem(),
+        min_dist=1.0,
+        check_only_selected=True,
+    )
+    selected_only_constraint.initialize(verbosity=0)
+
+    assert default_constraint._i2t.tolist() == [
+        [0, 1],
+        [0, 2],
+        [0, 3],
+        [2, 1],
+        [2, 3],
+    ]
+    assert selected_only_constraint._i2t.tolist() == [[0, 2]]
+
+
 def test_layout_optimizer_stage_uses_selected_problem_type(monkeypatch, tmp_path):
     stage = LayoutOptimizerStage(
         optimizer_type="test",
@@ -271,7 +339,11 @@ def test_layout_optimizer_stage_uses_selected_problem_type(monkeypatch, tmp_path
     monkeypatch.setattr(pipeline, "get_algo", lambda **kwargs: algo, raising=False)
     monkeypatch.setattr(stage, "_add_functions", lambda problem: None)
     monkeypatch.setattr(stage, "_prepare_problem", lambda problem: problem)
-    monkeypatch.setattr(stage, "_create_optimizer", lambda problem: _Optimizer())
+    monkeypatch.setattr(
+        stage,
+        "_create_optimizer",
+        lambda problem, optimizer_type=None, optimizer_pars=None: _Optimizer(),
+    )
 
     _, candidate = stage._run_layout_optimizer(np.zeros((5, 2)), verbosity=0)
 
@@ -287,6 +359,297 @@ def test_layout_optimizer_stage_uses_selected_problem_type(monkeypatch, tmp_path
         )
     ]
     np.testing.assert_allclose(candidate[0], [3.0, 4.0])
+
+
+def test_layout_optimizer_stage_boundary_repair_reduces_main_selection(
+    monkeypatch, tmp_path
+):
+    stage = LayoutOptimizerStage(
+        optimizer_type="test",
+        optimizer_pars={"main": True},
+        boundary_repair=True,
+        boundary_repair_optimizer_type="repair_test",
+        boundary_repair_optimizer_pars={"repair": True},
+        min_dist=0.25,
+        min_dist_unit="m",
+    )
+
+    class _Boundary:
+        def points_distance(self, xy):
+            return np.abs(np.abs(xy[:, 0]) - 1.0)
+
+        def points_inside(self, xy):
+            return np.abs(xy[:, 0]) < 1.0
+
+    class _PipelineWithBoundary(_Pipeline):
+        def __init__(self, stage, base_dir):
+            super().__init__(stage, base_dir)
+            self.farm_boundary = _Boundary()
+
+    class _Algo:
+        initialized = False
+        running = False
+
+    class _Problem:
+        n_vars_int = 0
+        farm = type("Farm", (), {"n_turbines": 3})()
+
+        def __init__(self, sel_turbines):
+            self.sel_turbines = sel_turbines
+
+        def add_objective(self, objective):
+            pass
+
+        def add_constraint(self, constraint):
+            pass
+
+        def initialize(self, verbosity):
+            pass
+
+    class _Optimizer:
+        def __init__(self, problem):
+            self.problem = problem
+
+        def initialize(self, verbosity):
+            pass
+
+        def solve(self, verbosity):
+            values = {
+                (1, 2): np.array([0.5, 0.0, 0.6, 0.0]),
+                (0,): np.array([10.0, 0.0]),
+            }[tuple(self.problem.sel_turbines)]
+            return type(
+                "Results",
+                (),
+                {"success": True, "vars_int": None, "vars_float": values},
+            )()
+
+        def finalize(self, results, verbosity):
+            pass
+
+    pipeline = _PipelineWithBoundary(stage, tmp_path)
+    stage.initialize(pipeline)
+    factory_calls = []
+    constraint_calls = []
+    optimizer_calls = []
+
+    def new_problem(cls, problem_type, **kwargs):
+        factory_calls.append((problem_type, kwargs.copy()))
+        return _Problem(kwargs["sel_turbines"])
+
+    def fake_new(constraint_type, *args, **kwargs):
+        constraint_calls.append((constraint_type, kwargs.copy()))
+        return (constraint_type, kwargs)
+
+    monkeypatch.setattr(
+        layout_optimizer.FarmOptProblem,
+        "new",
+        classmethod(new_problem),
+    )
+    monkeypatch.setattr(
+        layout_optimizer, "FarmBoundaryConstraint", lambda problem: None
+    )
+    monkeypatch.setattr(layout_optimizer, "MaxFarmREWS", lambda *args, **kwargs: None)
+    monkeypatch.setattr(layout_optimizer.FarmConstraint, "new", fake_new)
+    monkeypatch.setattr(pipeline, "get_algo", lambda **kwargs: _Algo(), raising=False)
+    monkeypatch.setattr(
+        stage,
+        "_create_optimizer",
+        lambda problem, optimizer_type=None, optimizer_pars=None: (
+            optimizer_calls.append((optimizer_type, optimizer_pars)),
+            _Optimizer(problem),
+        )[1],
+    )
+
+    layout = np.array([[0.0, 0.0], [2.0, 0.0], [0.9, 0.0]])
+    results, candidate = stage._run_layout_optimizer(layout, verbosity=0)
+
+    assert results.success
+    assert [call[1]["sel_turbines"] for call in factory_calls] == [[1, 2], [0]]
+    assert factory_calls[0][1]["name"] == "layout_optimizer_boundary_repair_problem"
+    assert factory_calls[1][1]["name"] == "layout_optimizer_problem"
+    assert constraint_calls[0][1]["check_only_selected"]
+    assert optimizer_calls == [("repair_test", {"repair": True}), (None, None)]
+    np.testing.assert_allclose(candidate, [[10.0, 0.0], [0.5, 0.0], [0.6, 0.0]])
+
+
+def test_layout_optimizer_stage_merges_boundary_repair_optimizer_settings(monkeypatch):
+    stage = LayoutOptimizerStage(
+        optimizer_type="test",
+        optimizer_pars={"common": "main", "main": True},
+        boundary_repair_optimizer_type="repair_test",
+        boundary_repair_optimizer_pars={"common": "repair", "repair": True},
+    )
+    problem = object()
+    calls = []
+
+    def fake_new(*args, **kwargs):
+        calls.append((args, kwargs))
+        return "optimizer"
+
+    monkeypatch.setattr(layout_optimizer.Optimizer, "new", fake_new)
+
+    optimizer = stage._create_optimizer(
+        problem,
+        stage.boundary_repair_optimizer_type,
+        stage.boundary_repair_optimizer_pars,
+    )
+
+    assert optimizer == "optimizer"
+    assert calls == [
+        (
+            (),
+            {
+                "problem": problem,
+                "optimizer_type": "repair_test",
+                "common": "repair",
+                "main": True,
+                "repair": True,
+            },
+        )
+    ]
+
+
+def test_layout_optimizer_stage_boundary_repair_uses_one_d_without_min_dist(
+    monkeypatch, tmp_path
+):
+    stage = LayoutOptimizerStage(
+        optimizer_type="test",
+        boundary_repair=True,
+        min_dist=None,
+    )
+
+    class _Boundary:
+        def points_distance(self, xy):
+            return np.array([99.0, 199.0, 301.0])
+
+        def points_inside(self, xy):
+            return np.ones(len(xy), dtype=bool)
+
+    class _PipelineWithBoundary(_Pipeline):
+        def __init__(self, stage, base_dir):
+            super().__init__(stage, base_dir)
+            self.farm_boundary = _Boundary()
+
+    class _Farm:
+        def get_rotor_diameters(self, algo):
+            return np.array([100.0, 200.0, 300.0])
+
+    class _Algo:
+        initialized = True
+        running = False
+        farm = _Farm()
+
+        def finalize(self):
+            pass
+
+    pipeline = _PipelineWithBoundary(stage, tmp_path)
+    stage.initialize(pipeline)
+    monkeypatch.setattr(pipeline, "get_algo", lambda **kwargs: _Algo(), raising=False)
+
+    turbines = stage._boundary_repair_turbines(
+        np.zeros((3, 2)),
+        states=None,
+        sel_turbines=[0, 1, 2],
+        verbosity=0,
+    )
+
+    assert turbines == [0, 1]
+
+
+def test_layout_optimizer_stage_boundary_repair_failure_returns_original(
+    monkeypatch, tmp_path
+):
+    stage = LayoutOptimizerStage(
+        optimizer_type="test",
+        boundary_repair=True,
+        min_dist=0.25,
+        min_dist_unit="m",
+    )
+
+    class _Boundary:
+        def points_distance(self, xy):
+            return np.maximum(np.abs(xy[:, 0]) - 1.0, 0.0)
+
+        def points_inside(self, xy):
+            return np.abs(xy[:, 0]) < 1.0
+
+    class _PipelineWithBoundary(_Pipeline):
+        def __init__(self, stage, base_dir):
+            super().__init__(stage, base_dir)
+            self.farm_boundary = _Boundary()
+
+    class _Algo:
+        initialized = False
+        running = False
+
+    class _Problem:
+        n_vars_int = 0
+        farm = type("Farm", (), {"n_turbines": 3})()
+
+        def __init__(self, sel_turbines):
+            self.sel_turbines = sel_turbines
+
+        def add_objective(self, objective):
+            pass
+
+        def add_constraint(self, constraint):
+            pass
+
+        def initialize(self, verbosity):
+            pass
+
+    class _Optimizer:
+        def __init__(self, problem):
+            self.problem = problem
+
+        def initialize(self, verbosity):
+            pass
+
+        def solve(self, verbosity):
+            return type(
+                "Results",
+                (),
+                {
+                    "success": False,
+                    "vars_int": None,
+                    "vars_float": np.array([0.5, 0.0]),
+                },
+            )()
+
+        def finalize(self, results, verbosity):
+            pass
+
+    pipeline = _PipelineWithBoundary(stage, tmp_path)
+    stage.initialize(pipeline)
+
+    def new_problem(cls, problem_type, **kwargs):
+        return _Problem(kwargs["sel_turbines"])
+
+    monkeypatch.setattr(
+        layout_optimizer.FarmOptProblem,
+        "new",
+        classmethod(new_problem),
+    )
+    monkeypatch.setattr(
+        layout_optimizer, "FarmBoundaryConstraint", lambda problem: None
+    )
+    monkeypatch.setattr(layout_optimizer, "MaxFarmREWS", lambda *args, **kwargs: None)
+    monkeypatch.setattr(
+        layout_optimizer.FarmConstraint, "new", lambda *args, **kwargs: None
+    )
+    monkeypatch.setattr(pipeline, "get_algo", lambda **kwargs: _Algo(), raising=False)
+    monkeypatch.setattr(
+        stage,
+        "_create_optimizer",
+        lambda problem, optimizer_type=None, optimizer_pars=None: _Optimizer(problem),
+    )
+
+    layout = np.array([[0.0, 0.0], [2.0, 0.0], [0.2, 0.0]])
+    results, candidate = stage._run_layout_optimizer(layout, verbosity=0)
+
+    assert not results.success
+    np.testing.assert_allclose(candidate, layout)
 
 
 def test_stage_runs_vectorized_gg_with_lazy_state_subset(tmp_path):

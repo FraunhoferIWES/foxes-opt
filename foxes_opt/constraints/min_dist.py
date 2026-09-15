@@ -22,6 +22,7 @@ class MinDistConstraint(FarmConstraint):
         name: str = "dist",
         sel_turbines: list[int] | None = None,
         infer_vars: bool = True,
+        check_only_selected: bool = False,
         **kwargs: Any,
     ) -> None:
         """
@@ -39,12 +40,15 @@ class MinDistConstraint(FarmConstraint):
             The selected turbines
         infer_vars
             Whether to infer the float variables automatically
+        check_only_selected
+            Whether to check distances only among selected turbines
         kwargs
             Additional parameters for `iwopy.Constraint`
 
         """
         self.min_dist: float = min_dist
         self.min_dist_unit: str = min_dist_unit
+        self.check_only_selected = check_only_selected
 
         selt = problem.sel_turbines if sel_turbines is None else sel_turbines
         vrs = []
@@ -75,7 +79,8 @@ class MinDistConstraint(FarmConstraint):
         )  # (ti, tj) --> i
         i = 0
         for ti in self.sel_turbines:
-            for tj in range(N):
+            other_turbines = self.sel_turbines if self.check_only_selected else range(N)
+            for tj in other_turbines:
                 if ti != tj and self._t2i[ti, tj] < 0:
                     i2t.append([ti, tj])
                     self._t2i[ti, tj] = i
@@ -276,6 +281,7 @@ class MinDistLocalConstraint(MinDistConstraint):
         name: str = "dist",
         sel_turbines: list[int] | None = None,
         infer_vars: bool = True,
+        check_only_selected: bool = False,
         max_move: float | None = None,
         **kwargs: Any,
     ) -> None:
@@ -294,6 +300,8 @@ class MinDistLocalConstraint(MinDistConstraint):
             The selected turbines
         infer_vars
             Whether to infer the float variables automatically
+        check_only_selected
+            Whether to check distances only among selected turbines
         max_move
             The maximal local displacement per selected turbine. If None,
             infer from problem.radius or problem.square_length.
@@ -310,6 +318,7 @@ class MinDistLocalConstraint(MinDistConstraint):
             name,
             sel_turbines,
             infer_vars,
+            check_only_selected,
             **kwargs,
         )
 
@@ -356,7 +365,8 @@ class MinDistLocalConstraint(MinDistConstraint):
         )  # (ti, tj) --> i
         i = 0
         for ti in self.sel_turbines:
-            for tj in range(N):
+            other_turbines = self.sel_turbines if self.check_only_selected else range(N)
+            for tj in other_turbines:
                 if ti != tj and self._t2i[ti, tj] < 0:
                     dist0 = np.linalg.norm(xy0[ti] - xy0[tj])
                     if dist0 <= mind[ti, tj] + move[ti] + move[tj]:
