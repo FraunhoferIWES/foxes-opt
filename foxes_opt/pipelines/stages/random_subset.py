@@ -4,8 +4,7 @@ from typing import Any
 
 import numpy as np
 from foxes.core import SubsetStates, run_with_engine
-from iwopy import Pipeline
-from iwopy.core import PipelineStage
+from iwopy.core import Pipeline, PipelineStage
 
 from .layout_optimizer import LayoutOptimizerStage
 
@@ -28,6 +27,7 @@ class RandomSubsetStage(LayoutOptimizerStage):
         *args: Any,
         seed: int | None = None,
         write_step_results: bool = False,
+        min_dist: float | list[float] | None = 2.5,
         name: str = "random_subset",
         **kwargs: Any,
     ) -> None:
@@ -48,6 +48,9 @@ class RandomSubsetStage(LayoutOptimizerStage):
             Random seed. The generator is reset for every stage run.
         write_step_results
             Write full-state pipeline outputs after every accepted step.
+        min_dist
+            The minimal distance, or a list of minimal distances for each step.
+            If smaller than n_steps, the last value is repeated for the remaining steps.
         name
             Stage name.
         kwargs
@@ -61,6 +64,16 @@ class RandomSubsetStage(LayoutOptimizerStage):
         self.n_steps = n_steps
         self.seed = seed
         self.write_step_results = write_step_results
+        self.__min_dist: float | list[float] | None = min_dist
+        self._step = 0
+
+    @property
+    def min_dist(self) -> float | list[float] | None:
+        if isinstance(self.__min_dist, list):
+            if self._step < len(self.__min_dist):
+                return self.__min_dist[self._step]
+            return self.__min_dist[-1]
+        return self.__min_dist
 
     def initialize(self, pipeline: Pipeline, verbosity: int = 0) -> None:
         """
@@ -198,7 +211,11 @@ class RandomSubsetStage(LayoutOptimizerStage):
             sel_turbines=None if turbine_indices is None else turbine_indices.tolist(),
             verbosity=verbosity,
         )
-        accepted = bool(results.success) and np.all(np.isfinite(results.vars_float))
+        accepted = (
+            bool(results.success)
+            and np.all(np.isfinite(results.vars_int))
+            and np.all(np.isfinite(results.vars_float))
+        )
         return accepted, candidate if accepted else layout_xy
 
     def _write_step(
@@ -276,11 +293,16 @@ class RandomSubsetStage(LayoutOptimizerStage):
         del prev_stage, kwargs
         layout_xy = self._pipeline.read_layout(prev_results).copy()
         self._ensure_state_count(layout_xy)
+        self._step = 0
         rng = np.random.default_rng(self.seed)
 
+        stage_success = True
+
         def _run_steps() -> None:
+            nonlocal stage_success
             nonlocal layout_xy
             for step in range(self.n_steps):
+                self._step = step
                 turbine_indices, state_indices = self._sample_subsets(rng)
                 if verbosity > 0:
                     print(
@@ -303,11 +325,22 @@ class RandomSubsetStage(LayoutOptimizerStage):
                             layout_plot_pars,
                             verbosity,
                         )
-                elif verbosity > 0:
-                    print(f"{self.name}: Step {step + 1} did not improve the layout")
+                else:
+                    stage_success = False
+                    if verbosity > 0:
+                        print(
+                            f"{self.name}: Step {step + 1} did not improve the layout"
+                        )
+                    return
 
         run_with_engine(_run_steps)
-        success = layout_xy.shape == (self._pipeline.n_turbines, 2) and np.all(
-            np.isfinite(layout_xy)
+        success = (
+            stage_success
+            and layout_xy.shape
+            == (
+                self._pipeline.n_turbines,
+                2,
+            )
+            and np.all(np.isfinite(layout_xy))
         )
         return bool(success), layout_xy

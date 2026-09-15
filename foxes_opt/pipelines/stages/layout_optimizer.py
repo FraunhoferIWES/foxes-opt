@@ -3,12 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
-from iwopy import Pipeline
-from iwopy.core import Optimizer, PipelineStage, Problem
+from iwopy.core import Optimizer, Pipeline, PipelineStage, Problem
 from iwopy.utils import new_instance
 from iwopy.wrappers import ProblemWrapper
 
-from foxes_opt.constraints import FarmBoundaryConstraint, MinDistConstraint
+from foxes_opt.constraints import FarmBoundaryConstraint
 from foxes_opt.core import FarmConstraint, FarmObjective, FarmOptProblem
 from foxes_opt.objectives import MaxFarmREWS
 
@@ -35,8 +34,9 @@ class LayoutOptimizerStage(PipelineStage):
         problem_pars: dict[str, Any] | None = None,
         problem_wrapper_type: str | None = None,
         problem_wrapper_pars: dict[str, Any] | None = None,
-        min_dist: float = 2.5,
+        min_dist: float | list[float] | None = 2.5,
         min_dist_unit: str = "D",
+        min_dist_constraint_type: str | None = "MinDistConstraint",
         flow_states: States | None = None,
         name: str = "layout_optimizer",
         **kwargs: Any,
@@ -67,6 +67,9 @@ class LayoutOptimizerStage(PipelineStage):
             Minimum distance used by the default turbine-distance constraint.
         min_dist_unit
             Unit of the default minimum distance, either ``"m"`` or ``"D"``.
+        min_dist_constraint_type
+            Constraint type used for the default minimum-distance constraint,
+            or ``None``/``"None"`` to skip it.
         flow_states
             States used for optimization, or ``None`` for pipeline states.
         name
@@ -89,9 +92,14 @@ class LayoutOptimizerStage(PipelineStage):
         self.problem_wrapper_pars = (
             {} if problem_wrapper_pars is None else problem_wrapper_pars.copy()
         )
-        self.min_dist = min_dist
+        self.__min_dist: float | list[float] | None = min_dist
         self.min_dist_unit = min_dist_unit
+        self.min_dist_constraint_type = min_dist_constraint_type
         self.flow_states = flow_states
+
+    @property
+    def min_dist(self) -> float | list[float] | None:
+        return self.__min_dist
 
     def initialize(self, pipeline: Pipeline, verbosity: int = 0) -> None:
         """
@@ -117,8 +125,6 @@ class LayoutOptimizerStage(PipelineStage):
             raise ValueError(f"{self.name}: Missing optimizer_type")
         if not self.problem_type:
             raise ValueError(f"{self.name}: Missing problem_type")
-        if self.min_dist <= 0:
-            raise ValueError(f"{self.name}: min_dist must be positive")
         if self.min_dist_unit not in ("m", "D"):
             raise ValueError(f"{self.name}: min_dist_unit must be either 'm' or 'D'")
         if {"problem"}.intersection(self.optimizer_pars):
@@ -161,9 +167,11 @@ class LayoutOptimizerStage(PipelineStage):
             problem.add_objective(FarmObjective.new(problem=problem, **pars))
         if self.constraints is None:
             problem.add_constraint(FarmBoundaryConstraint(problem))
+        if self.min_dist_constraint_type not in (None, "None"):
             problem.add_constraint(
-                MinDistConstraint(
-                    problem,
+                FarmConstraint.new(
+                    self.min_dist_constraint_type,
+                    problem=problem,
                     min_dist=self.min_dist,
                     min_dist_unit=self.min_dist_unit,
                 )
@@ -234,15 +242,29 @@ class LayoutOptimizerStage(PipelineStage):
         )
         self._add_functions(problem)
         optimizer_problem = self._prepare_problem(problem)
-        optimizer_problem.initialize(verbosity=max(verbosity - 2, 0))
+        optimizer_problem.initialize(verbosity=max(verbosity - 1, 0))
         optimizer = self._create_optimizer(optimizer_problem)
         optimizer.initialize(verbosity=max(verbosity - 2, 0))
+        if verbosity > 1:
+            optimizer.print_info()
         try:
             results = optimizer.solve(verbosity=max(verbosity - 1, 0))
             optimizer.finalize(results, verbosity=max(verbosity - 1, 0))
             candidate = layout_xy.copy()
             selected = problem.sel_turbines
-            candidate[selected] = results.vars_float.reshape(-1, 2)
+            if not results.success:
+                return results, candidate
+            if getattr(problem, "n_vars_int", 0):
+                if results.vars_int is None:
+                    return results, candidate
+                problem.update_problem_individual(results.vars_int, results.vars_float)
+                candidate[selected] = np.array(
+                    [algo.farm.turbines[ti].xy for ti in selected]
+                )
+            else:
+                if results.vars_float is None:
+                    return results, candidate
+                candidate[selected] = results.vars_float.reshape(-1, 2)
             return results, candidate
         finally:
             if algo.initialized and not algo.running:

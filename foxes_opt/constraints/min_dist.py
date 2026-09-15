@@ -21,7 +21,7 @@ class MinDistConstraint(FarmConstraint):
         min_dist_unit: str = "m",
         name: str = "dist",
         sel_turbines: list[int] | None = None,
-        infer_vars: bool = False,
+        infer_vars: bool = True,
         **kwargs: Any,
     ) -> None:
         """
@@ -259,3 +259,113 @@ class MinDistConstraint(FarmConstraint):
             mind = self.min_dist * np.maximum(Da, Db)
 
         return mind - d
+
+
+class MinDistLocalConstraint(MinDistConstraint):
+    """
+    Turbines must keep at least a minimal spatial distance,
+    checking only pairs that can violate the distance in a local
+    move problem.
+    """
+
+    def __init__(
+        self,
+        problem: FarmOptProblem,
+        min_dist: float,
+        min_dist_unit: str = "m",
+        name: str = "dist",
+        sel_turbines: list[int] | None = None,
+        infer_vars: bool = True,
+        max_move: float | None = None,
+        **kwargs: Any,
+    ) -> None:
+        """
+        Parameters
+        ----------
+        problem
+            The underlying local move optimization problem
+        min_dist
+            The minimal distance
+        min_dist_unit
+            The minimal distance unit, either m or D
+        name
+            The name of the constraint
+        sel_turbines
+            The selected turbines
+        infer_vars
+            Whether to infer the float variables automatically
+        max_move
+            The maximal local displacement per selected turbine. If None,
+            infer from problem.radius or problem.square_length.
+        kwargs
+            Additional parameters for `iwopy.Constraint`
+
+        """
+        self.max_move = max_move
+
+        super().__init__(
+            problem,
+            min_dist,
+            min_dist_unit,
+            name,
+            sel_turbines,
+            infer_vars,
+            **kwargs,
+        )
+
+    def initialize(self, verbosity: int = 0) -> None:
+        """
+        Initialize the constaint.
+
+        Parameters
+        ----------
+        verbosity
+            The verbosity level, 0 = silent
+
+        """
+        if self.max_move is None:
+            if hasattr(self.problem, "radius"):
+                max_move = self.problem.radius
+            elif hasattr(self.problem, "square_length"):
+                max_move = np.sqrt(2) * self.problem.square_length / 2
+            else:
+                raise ValueError(
+                    f"Constraint '{self.name}': Failed to infer local movement limit"
+                )
+        else:
+            max_move = self.max_move
+
+        N = self.farm.n_turbines
+        xy0 = np.asarray([t.xy for t in self.farm.turbines], dtype=float)
+        move = np.zeros(N, dtype=float)
+        move[self.problem.sel_turbines] = max_move
+
+        if self.min_dist_unit == "m":
+            mind = np.full((N, N), self.min_dist, dtype=float)
+        elif self.min_dist_unit == "D":
+            D = self.farm.get_rotor_diameters(self.problem.algo)
+            mind = self.min_dist * np.maximum(D[:, None], D[None, :])
+        else:
+            raise ValueError(
+                f"Constraint '{self.name}': Unknown min_dist_unit '{self.min_dist_unit}'"
+            )
+
+        i2t: list[list[int]] = []  # i --> (ti, tj)
+        self._t2i: np.ndarray[tuple[int, int], np.dtype[np.int_]] = np.full(
+            [N, N], -1
+        )  # (ti, tj) --> i
+        i = 0
+        for ti in self.sel_turbines:
+            for tj in range(N):
+                if ti != tj and self._t2i[ti, tj] < 0:
+                    dist0 = np.linalg.norm(xy0[ti] - xy0[tj])
+                    if dist0 <= mind[ti, tj] + move[ti] + move[tj]:
+                        i2t.append([ti, tj])
+                        self._t2i[ti, tj] = i
+                        self._t2i[tj, ti] = i
+                        i += 1
+        self._i2t: np.ndarray[tuple[int, int], np.dtype[np.int_]] = np.asarray(
+            i2t, dtype=int
+        ).reshape((-1, 2))
+        self._cnames: list[str] = [f"{self.name}_{ti}_{tj}" for ti, tj in self._i2t]
+        FarmConstraint.initialize(self, verbosity)

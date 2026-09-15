@@ -7,8 +7,7 @@ from foxes.core import Algorithm
 from foxes.input.states import SingleStateField
 from foxes.utils import wd2uv
 from foxes.utils.geom2d import ClosedPolygon
-from iwopy import Pipeline
-from iwopy.core import PipelineStage
+from iwopy.core import Pipeline, PipelineStage
 from scipy.interpolate import RegularGridInterpolator
 from scipy.spatial.distance import cdist
 from tqdm.autonotebook import tqdm

@@ -7,8 +7,7 @@ import foxes.variables as FV
 import numpy as np
 from foxes import Turbine, WindFarm, config
 from foxes.core import run_with_engine
-from iwopy import Pipeline
-from iwopy.core import PipelineStage
+from iwopy.core import Pipeline, PipelineStage
 from tqdm.autonotebook import tqdm
 
 if TYPE_CHECKING:

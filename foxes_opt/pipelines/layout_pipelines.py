@@ -1,16 +1,17 @@
-from pathlib import Path
-from typing import Any
-
-import foxes.constants as FC
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from pathlib import Path
+from typing import Any
+from xarray import Dataset
+import matplotlib.pyplot as plt
+
 from foxes import ModelBook, Turbine, WindFarm
 from foxes.core import Algorithm, States, run_with_engine
 from foxes.output import FarmLayoutOutput, FarmResultsEval, FlowPlots2D
 from foxes.utils.geom2d import AreaGeometry
-from iwopy import Pipeline, PipelineStage
-from xarray import Dataset
+from iwopy.core import Pipeline, PipelineStage
+import foxes.variables as FV
+import foxes.constants as FC
 
 
 class LayoutPipeline(Pipeline):
@@ -110,9 +111,10 @@ class LayoutPipeline(Pipeline):
                         "stage",
                         "success",
                         "n_turbines",
-                        "capacity",
-                        "efficiency",
-                        "yield",
+                        FV.CAP,
+                        FV.EFF,
+                        FV.AMB_YLD,
+                        FV.YLD,
                     ]
                 )
                 self.__table.set_index("index", inplace=True)
@@ -156,10 +158,12 @@ class LayoutPipeline(Pipeline):
         """
         if success:
             o = FarmResultsEval(farm_results, algo)
-            Y = o.calc_farm_yield(annual=True)
+            Y0 = o.calc_farm_yield(annual=True, ambient=True)
+            Y = o.calc_farm_yield(annual=True, ambient=False)
             eff = o.calc_farm_efficiency()
             cap = o.calc_farm_capacity()
         else:
+            Y0 = np.nan
             Y = np.nan
             eff = np.nan
             cap = np.nan
@@ -174,9 +178,10 @@ class LayoutPipeline(Pipeline):
                 "stage": [stage],
                 "success": [success],
                 "n_turbines": [farm_results.sizes[FC.TURBINE]],
-                "capacity": [cap],
-                "efficiency": [eff],
-                "yield": [Y],
+                FV.CAP: [cap],
+                FV.EFF: [eff],
+                FV.AMB_YLD: [Y0],
+                FV.YLD: [Y],
             },
         ).set_index("index")
 
@@ -254,8 +259,8 @@ class LayoutPipeline(Pipeline):
             )
             stage = self.table.loc[table_index, "stage"]
             N = self.table.loc[table_index, "n_turbines"]
-            Y = self.table.loc[table_index, "yield"]
-            eff = self.table.loc[table_index, "efficiency"]
+            Y = self.table.loc[table_index, FV.YLD]
+            eff = self.table.loc[table_index, FV.EFF]
             title = f"Layout {table_index}, {stage}: {N} turbines, yield = {Y:.2f} GWh, eff = {100 * eff:.1f} %"
 
         print(f"{self.name}: Creating layout plot {plot_path}")

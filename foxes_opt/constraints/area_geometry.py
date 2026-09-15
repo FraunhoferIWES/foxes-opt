@@ -22,7 +22,7 @@ class AreaGeometryConstraint(FarmConstraint):
         sel_turbines: list[int] | None = None,
         disc_inside: bool = False,
         D: float | None = None,
-        infer_vars: bool = False,
+        infer_vars: bool = True,
         **kwargs: Any,
     ) -> None:
         """
@@ -135,11 +135,16 @@ class AreaGeometryConstraint(FarmConstraint):
         if self.infer_vars:
             xy = np.stack(
                 [
-                    problem_results[FV.X][0, self.sel_turbines][s],
-                    problem_results[FV.Y][0, self.sel_turbines][s],
+                    problem_results[FV.X][:, self.sel_turbines][s],
+                    problem_results[FV.Y][:, self.sel_turbines][s],
                 ],
                 axis=-1,
             )
+            if not np.all(np.abs(np.min(xy, axis=0) - np.max(xy, axis=0)) < 1e-13):
+                raise ValueError(
+                    f"Constraint '{self.name}': Require state independet XY"
+                )
+            xy = xy[0]
         else:
             xy = vars_float.reshape(self.n_components(), 2)[s]
 

@@ -83,16 +83,17 @@ def _stage(tmp_path, accepted=(True, False, True), **kwargs):
     return stage
 
 
-def test_stage_repeats_seeded_sampling_and_rejects_without_mutation(tmp_path):
+def test_stage_stops_on_failed_step_without_mutation(tmp_path):
     stage = _stage(tmp_path)
     initial = np.zeros((5, 2))
 
     success, first = stage.run(prev_results=initial, verbosity=0)
     first_calls = stage.calls.copy()
-    success_again, second = stage.run(prev_results=initial, verbosity=0)
-    second_calls = stage.calls[3:]
+    stage_again = _stage(tmp_path)
+    success_again, second = stage_again.run(prev_results=initial, verbosity=0)
+    second_calls = stage_again.calls
 
-    assert success and success_again
+    assert not success and not success_again
     np.testing.assert_allclose(first, second)
     for (_, first_turbines, first_states), (_, second_turbines, second_states) in zip(
         first_calls, second_calls
@@ -105,7 +106,7 @@ def test_stage_repeats_seeded_sampling_and_rejects_without_mutation(tmp_path):
     expected_before_rejected = initial.copy()
     expected_before_rejected[first_calls[0][1]] += 1
     np.testing.assert_allclose(first_calls[1][0], expected_before_rejected)
-    np.testing.assert_allclose(first_calls[2][0], expected_before_rejected)
+    assert len(first_calls) == 2
 
 
 def test_stage_disables_turbine_and_state_subsets_with_none(tmp_path):
@@ -139,8 +140,8 @@ def test_stage_writes_only_accepted_steps_when_enabled(tmp_path):
 
     success, _ = stage.run(prev_results=np.zeros((5, 2)), verbosity=0)
 
-    assert success
-    assert [step for step, _ in stage.writes] == [0, 2]
+    assert not success
+    assert [step for step, _ in stage.writes] == [0]
 
 
 def test_stage_skips_intermediate_outputs_by_default(tmp_path):
@@ -148,7 +149,7 @@ def test_stage_skips_intermediate_outputs_by_default(tmp_path):
 
     success, _ = stage.run(prev_results=np.zeros((5, 2)), verbosity=0)
 
-    assert success
+    assert not success
     assert stage.writes == []
 
 
@@ -201,16 +202,17 @@ def test_layout_optimizer_stage_installs_default_functions(monkeypatch, tmp_path
         "FarmBoundaryConstraint",
         lambda problem: ("boundary", problem),
     )
-    monkeypatch.setattr(
-        layout_optimizer,
-        "MinDistConstraint",
-        lambda problem, min_dist, min_dist_unit: (
+
+    def fake_new(constraint_type, *args, **kwargs):
+        assert constraint_type == "MinDistConstraint"
+        return (
             "min_dist",
-            problem,
-            min_dist,
-            min_dist_unit,
-        ),
-    )
+            kwargs["problem"],
+            kwargs["min_dist"],
+            kwargs["min_dist_unit"],
+        )
+
+    monkeypatch.setattr(layout_optimizer.FarmConstraint, "new", fake_new)
 
     problem = _Problem()
     stage._add_functions(problem)
