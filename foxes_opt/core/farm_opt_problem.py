@@ -340,22 +340,25 @@ class FarmOptProblem(Problem):
         def _run_calc(algo: Algorithm) -> Any:
             """Helper function to run main foxes calculations"""
             farm_results = algo.calc_farm(**self.calc_farm_args)
-            farm_results["n_pop"] = len(vars_float)
-            farm_results["n_org_states"] = self._org_n_states
             algo.verbosity = 0
 
             if self.points is None:
-                return farm_results
+                point_results = None
             else:
-                n_pop = farm_results["n_pop"].values
+                n_pop = len(vars_float)
                 n_states, n_points = self.points.shape[:2]
                 pop_points = np.zeros(
-                    (n_states, n_pop, n_points, 3), dtype=config.dtype_double
+                    (n_pop, n_states, n_points, 3), dtype=config.dtype_double
                 )
-                pop_points[:] = self.points[:, None, :, :]
+                pop_points[:] = self.points[None, :, :, :]
                 pop_points = pop_points.reshape(n_states * n_pop, n_points, 3)
                 point_results = algo.calc_points(farm_results, pop_points)
-                return farm_results, point_results
+
+            farm_results["n_pop"] = len(vars_float)
+            farm_results["n_org_states"] = self._org_n_states
+            return (
+                farm_results if point_results is None else (farm_results, point_results)
+            )
 
         if has_engine():
             results = _run_calc(self.algo)

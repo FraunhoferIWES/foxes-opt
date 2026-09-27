@@ -165,7 +165,7 @@ class LocalMove(FarmOptProblem):
 
         r_theta = vars_float.reshape(n_pop, self.n_sel_turbines, 2)
         r_theta = np.broadcast_to(
-            r_theta[None, ...], (n_ostates, n_pop, self.n_sel_turbines, 2)
+            r_theta[:, None, ...], (n_pop, n_ostates, self.n_sel_turbines, 2)
         )
         r_theta = r_theta.reshape(n_states, self.n_sel_turbines, 2)
         for i, ti in enumerate(self.sel_turbines):
@@ -338,7 +338,9 @@ class LocalSquareMove(FarmOptProblem):
         n_states = n_pop * n_ostates
 
         xy = vars_float.reshape(n_pop, self.n_sel_turbines, 2)
-        xy = np.broadcast_to(xy[None, ...], (n_ostates, n_pop, self.n_sel_turbines, 2))
+        xy = np.broadcast_to(
+            xy[:, None, ...], (n_pop, n_ostates, self.n_sel_turbines, 2)
+        )
         xy = xy.reshape(n_states, self.n_sel_turbines, 2)
         for i, ti in enumerate(self.sel_turbines):
             t = self.algo.farm.turbines[ti]
@@ -525,7 +527,7 @@ class DiscreteLocalMove(FarmOptProblem):
         n_states = n_pop * n_ostates
 
         inds = np.broadcast_to(
-            vars_int[None, :, :], (n_ostates, n_pop, self.n_sel_turbines)
+            vars_int[:, None, :], (n_pop, n_ostates, self.n_sel_turbines)
         )
         inds = inds.reshape(n_states, self.n_sel_turbines)
 

@@ -126,6 +126,7 @@
 - Adding `LayoutOptimizerStage` for optimizer-driven refinement of layouts from previous pipeline stages
 - Adding `RandomSubsetStage` for successive layout optimizations over random turbine and state subsets
 - Weighted state contractions now normalize by the selected weight sum
+- Fixed multi-state population optimization for population-major *foxes* state ordering
 - `LayoutOptimizerStage` now supports user-selected optimization problem types
 - `RandomSubsetStage` forwards layout optimizer configuration through its base
   stage
