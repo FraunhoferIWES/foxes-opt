@@ -121,7 +121,7 @@ class FarmVarsProblem(FarmOptProblem):
         farm_vars
             The foxes farm variables. Key: var name,
             value
-            (n_states, n_pop, n_sel_turbines)
+            (n_pop, n_states, n_sel_turbines)
 
         """
 

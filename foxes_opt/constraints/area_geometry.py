@@ -188,6 +188,7 @@ class AreaGeometryConstraint(FarmConstraint):
 
         """
         n_pop = len(vars_float)
+        n_states = problem_results["n_org_states"].values
         n_cmpnts = self.n_components()
         s: slice | np.ndarray[Any, np.dtype[np.int_]] = np.s_[:]
         if components is not None and len(components) < self.n_components():
@@ -200,7 +201,12 @@ class AreaGeometryConstraint(FarmConstraint):
                     problem_results[FV.Y][:, self.sel_turbines][:, s],
                 ],
                 axis=-1,
-            ).reshape(n_pop * n_cmpnts, 2)
+            ).reshape(n_pop, n_states, n_cmpnts, 2)
+            if not np.all(np.abs(np.min(xy, axis=1) - np.max(xy, axis=1)) < 1e-13):
+                raise ValueError(
+                    f"Constraint '{self.name}': Require state independet XY"
+                )
+            xy = xy[:, 0].reshape(n_pop * n_cmpnts, 2)
         else:
             xy = vars_float[:, s].reshape(n_pop * n_cmpnts, 2)
 
@@ -210,9 +216,13 @@ class AreaGeometryConstraint(FarmConstraint):
 
         if self.disc_inside:
             if self.D is None:
-                dists += (
-                    problem_results[FV.D].to_numpy()[None, 0, self.sel_turbines][s] / 2
-                )
+                D = problem_results[FV.D].to_numpy().reshape(n_pop, n_states, -1)
+                D = D[:, :, self.sel_turbines][:, :, s]
+                if not np.all(np.abs(np.min(D, axis=1) - np.max(D, axis=1)) < 1e-13):
+                    raise ValueError(
+                        f"Constraint '{self.name}': Require state independet D"
+                    )
+                dists += D[:, 0] / 2
             else:
                 dists += self.D / 2
 
