@@ -118,28 +118,35 @@
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.8.0](https://github.com/FraunhoferIWES/foxes/commits/v0.8.0)
 
-## v0.8.1
+## v0.9.0
 
-- Added an optimizer-independent layout callback and pymoo/SLSQP wind-rose
-  examples with optional intermediate CSV and configurable image snapshots,
-  objective titles, and a legend with red highlighting for constraint violations
-- Added a pygmo-IPOPT wind-rose example without callbacks, since pygmo exposes
-  neither exact live IPOPT iterations nor their decision vectors
-- Added a pygmo-IPOPT single-state layout example with native IPOPT iteration
-  reporting and configurable, layout-scale finite differences
-- Fixed the pygmo-IPOPT example progress output to report native IPOPT iterations
-  separately from objective function evaluations
-- Compatibility with *foxes* v1.9.3
-- Enforced minimum versions *foxes* v1.9.3 and *iwopy* v0.5.0 required by the
-  callback and layout plotting APIs
-- Adding type annotations and stricter code checks across the package
-- Adding persistent stage result tracking and layout plot and CSV output to `LayoutPipeline`
-- Adding `LayoutOptimizerStage` for optimizer-driven refinement of layouts from previous pipeline stages
-- Adding `RandomSubsetStage` for successive layout optimizations over random turbine and state subsets
-- Weighted state contractions now normalize by the selected weight sum
-- Fixed multi-state population optimization for population-major *foxes* state ordering
-- `LayoutOptimizerStage` now supports user-selected optimization problem types
-- `RandomSubsetStage` forwards layout optimizer configuration through its base
-  stage
+- General:
+  - Expanded type annotations and tightened code checks across the package
+- Dependencies:
+  - Raised the minimum supported versions to *foxes* v1.9.6 and *iwopy* v0.5.0,
+    and aligned overlapping dependency floors with both projects
+- Callbacks:
+  - Added an optimizer-independent layout callback with optional intermediate
+    CSV output, configurable image snapshots and objective titles, and red
+    highlighting of constraint violations in the legend
+- Pipelines:
+  - `LayoutPipeline` now retains stage results and supports layout plot and CSV
+    output
+  - Added `LayoutOptimizerStage` for optimizer-driven refinement of layouts from
+    previous stages, with user-selectable optimization problem types
+  - Added `RandomSubsetStage` for successive layout optimizations over random
+    turbine and state subsets, forwarding layout optimizer configuration through
+    its base stage
+- Examples:
+  - Added pymoo and SLSQP wind-rose examples using the layout callback
+  - Added a pygmo-IPOPT wind-rose example without callbacks, since pygmo exposes
+    neither exact live IPOPT iterations nor their decision vectors
+  - Added a pygmo-IPOPT single-state layout example with configurable,
+    layout-scale finite differences; progress output reports native IPOPT
+    iterations separately from objective function evaluations
+- Bug fixes:
+  - Weighted state contractions now normalize by the selected weight sum
+  - Fixed multi-state population optimization for population-major *foxes* state
+    ordering
 
-**Full Changelog**: [https://github.com/FraunhoferIWES/foxes/commits/v0.8.1](https://github.com/FraunhoferIWES/foxes/commits/v0.8.1)
+**Full Changelog**: [https://github.com/FraunhoferIWES/foxes-opt/commits/v0.9.0](https://github.com/FraunhoferIWES/foxes-opt/commits/v0.9.0)
