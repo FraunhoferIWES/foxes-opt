@@ -54,6 +54,31 @@ pip install -e foxes-opt
 If you want to contribute your developments, please replace
 the above repository locations by your personal forks.
 
+## Wind Rose Layout Snapshots
+
+Pass `--write_layouts` to `examples/layout_wind_rose/run_pymoo.py` or
+`examples/layout_wind_rose/run_slsqp.py` to enable `WriteLayoutCallback`;
+intermediate output is disabled by default. The
+callback writes the best first-objective individual of each completed optimizer
+step to `examples/layout_wind_rose/results/`, regardless of the working directory.
+The examples disable CSV output and write one image per generation or accepted
+iteration.
+Use `--layout_image_type` to select its file type; the default is `jpg`.
+Each plot title shows the selected layout's first objective name and value.
+Turbines associated with violated constraints are red; valid turbines are orange,
+and each image includes an upper-left legend for these colors.
+The examples write these snapshots without per-file log messages.
+Early layouts may be infeasible; these are intermediate population snapshots,
+not final results.
+The callback options `write_csv` and `write_image` independently disable either
+format; both default to `True`. The callback accepts both iteration and
+evaluation events, so it can be used with all callback-enabled iwopy optimizers.
+The SLSQP and IPOPT examples use `LocalFD` for finite-difference gradients.
+The IPOPT example runs through pygmo and does not offer callbacks because pygmo
+exposes neither exact live IPOPT iterations nor their decision vectors.
+Running the example again overwrites matching generation numbers.
+The existing `results/` rule in `.gitignore` excludes these generated files.
+
 ## Citation
 
 Please cite the JOSS paper [FOXES: Farm Optimization and eXtended yield

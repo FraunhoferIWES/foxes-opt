@@ -5,7 +5,8 @@ import foxes
 import foxes.variables as FV
 import matplotlib.pyplot as plt
 import numpy as np
-from iwopy.interfaces.pymoo import Optimizer_pymoo
+from iwopy import LocalFD
+from iwopy.optimizers import SLSQP
 
 from foxes_opt.callbacks import WriteLayoutCallback
 from foxes_opt.constraints import FarmBoundaryConstraint, MinDistConstraint
@@ -49,13 +50,18 @@ if __name__ == "__main__":
         default=None,
     )
     parser.add_argument(
-        "-A", "--opt_algo", help="The pymoo algorithm name", default="GA"
+        "-O",
+        "--fd_order",
+        help="Finite difference derivative order",
+        type=int,
+        default=1,
     )
     parser.add_argument(
-        "-P", "--n_pop", help="The population size", type=int, default=50
-    )
-    parser.add_argument(
-        "-G", "--n_gen", help="The nmber of generations", type=int, default=100
+        "-I",
+        "--maxiter",
+        help="Maximum number of SLSQP iterations",
+        type=int,
+        default=100,
     )
     parser.add_argument(
         "-nop", "--no_pop", help="Switch off vectorization", action="store_true"
@@ -63,7 +69,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-wl",
         "--write_layouts",
-        help="Write each generation's best layout to an image",
+        help="Write each iteration's layout to an image",
         action="store_true",
         default=False,
     )
@@ -146,25 +152,13 @@ if __name__ == "__main__":
         problem.add_constraint(
             MinDistConstraint(problem, min_dist=args.min_dist, min_dist_unit="D")
         )
+    problem = LocalFD(problem, deltas=0.1, fd_order=args.fd_order)
     problem.initialize()
 
-    solver = Optimizer_pymoo(
+    solver = SLSQP(
         problem,
-        problem_pars={
-            "vectorize": not args.no_pop,
-        },
-        algo_pars={
-            "type": args.opt_algo,
-            "pop_size": args.n_pop,
-            "seed": None,
-        },
-        setup_pars={},
-        term_pars={
-            "type": "default",
-            "n_max_gen": args.n_gen,
-            "ftol": 1e-6,
-            "xtol": 1e-6,
-        },
+        scipy_pars={"options": {"maxiter": args.maxiter}},
+        vectorized=not args.no_pop,
     )
     solver.initialize()
     solver.print_info()

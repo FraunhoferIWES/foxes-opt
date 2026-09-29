@@ -1,13 +1,13 @@
 import argparse
-from pathlib import Path
+import gc
 
 import foxes
 import foxes.variables as FV
 import matplotlib.pyplot as plt
 import numpy as np
-from iwopy.interfaces.pymoo import Optimizer_pymoo
+from iwopy import LocalFD
+from iwopy.interfaces.pygmo import Optimizer_pygmo
 
-from foxes_opt.callbacks import WriteLayoutCallback
 from foxes_opt.constraints import FarmBoundaryConstraint, MinDistConstraint
 from foxes_opt.objectives import MaxFarmPower
 from foxes_opt.problems.layout import FarmLayoutOptProblem
@@ -49,29 +49,27 @@ if __name__ == "__main__":
         default=None,
     )
     parser.add_argument(
-        "-A", "--opt_algo", help="The pymoo algorithm name", default="GA"
+        "-O",
+        "--fd_order",
+        help="Finite difference derivative order",
+        type=int,
+        default=1,
     )
     parser.add_argument(
-        "-P", "--n_pop", help="The population size", type=int, default=50
+        "-I",
+        "--maxiter",
+        help="Maximum number of IPOPT iterations",
+        type=int,
+        default=100,
     )
     parser.add_argument(
-        "-G", "--n_gen", help="The nmber of generations", type=int, default=100
+        "--tol",
+        help="IPOPT convergence tolerance",
+        type=float,
+        default=1e-4,
     )
     parser.add_argument(
         "-nop", "--no_pop", help="Switch off vectorization", action="store_true"
-    )
-    parser.add_argument(
-        "-wl",
-        "--write_layouts",
-        help="Write each generation's best layout to an image",
-        action="store_true",
-        default=False,
-    )
-    parser.add_argument(
-        "-lit",
-        "--layout_image_type",
-        help="The layout image file type",
-        default="jpg",
     )
     parser.add_argument("-e", "--engine", help="The engine", default="process")
     parser.add_argument(
@@ -135,9 +133,10 @@ if __name__ == "__main__":
     )
 
     o = foxes.output.StatesRosePlotOutput(states, point=[0.0, 0.0, 100.0])
-    fig = o.get_figure(16, FV.AMB_WS, [0, 3.5, 6, 10, 15, 20])
+    ax = o.get_figure(16, FV.AMB_WS, [0, 3.5, 6, 10, 15, 20])
     plt.show()
-    plt.close()
+    plt.close(ax.get_figure())
+    del ax
 
     problem = FarmLayoutOptProblem("layout_opt", algo)
     problem.add_objective(MaxFarmPower(problem))
@@ -146,24 +145,17 @@ if __name__ == "__main__":
         problem.add_constraint(
             MinDistConstraint(problem, min_dist=args.min_dist, min_dist_unit="D")
         )
+    problem = LocalFD(problem, deltas=10.0, fd_order=args.fd_order)
     problem.initialize()
 
-    solver = Optimizer_pymoo(
+    solver = Optimizer_pygmo(
         problem,
-        problem_pars={
-            "vectorize": not args.no_pop,
-        },
+        problem_pars={"pop": not args.no_pop},
         algo_pars={
-            "type": args.opt_algo,
-            "pop_size": args.n_pop,
-            "seed": None,
-        },
-        setup_pars={},
-        term_pars={
-            "type": "default",
-            "n_max_gen": args.n_gen,
-            "ftol": 1e-6,
-            "xtol": 1e-6,
+            "type": "ipopt",
+            "max_iter": args.maxiter,
+            "print_level": 5,
+            "tol": args.tol,
         },
     )
     solver.initialize()
@@ -172,6 +164,8 @@ if __name__ == "__main__":
     ax = foxes.output.FarmLayoutOutput(farm).get_figure()
     plt.show()
     plt.close(ax.get_figure())
+    del ax
+    gc.collect()
 
     engine = foxes.Engine.new(
         engine_type=args.engine,
@@ -181,20 +175,8 @@ if __name__ == "__main__":
         verbosity=0,
     )
 
-    callbacks = None
-    if args.write_layouts:
-        callbacks = [
-            WriteLayoutCallback(
-                Path(__file__).resolve().parent / "results",
-                base_name="layout",
-                verbosity=0,
-                write_csv=False,
-                image_format=args.layout_image_type,
-            )
-        ]
-
     with engine:
-        results = solver.solve(callbacks=callbacks)
+        results = solver.solve(verbosity=0)
         solver.finalize(results)
 
         print()

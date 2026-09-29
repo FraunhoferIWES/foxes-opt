@@ -120,7 +120,18 @@
 
 ## v0.8.1
 
+- Added an optimizer-independent layout callback and pymoo/SLSQP wind-rose
+  examples with optional intermediate CSV and configurable image snapshots,
+  objective titles, and a legend with red highlighting for constraint violations
+- Added a pygmo-IPOPT wind-rose example without callbacks, since pygmo exposes
+  neither exact live IPOPT iterations nor their decision vectors
+- Added a pygmo-IPOPT single-state layout example with native IPOPT iteration
+  reporting and configurable, layout-scale finite differences
+- Fixed the pygmo-IPOPT example progress output to report native IPOPT iterations
+  separately from objective function evaluations
 - Compatibility with *foxes* v1.9.3
+- Enforced minimum versions *foxes* v1.9.3 and *iwopy* v0.5.0 required by the
+  callback and layout plotting APIs
 - Adding type annotations and stricter code checks across the package
 - Adding persistent stage result tracking and layout plot and CSV output to `LayoutPipeline`
 - Adding `LayoutOptimizerStage` for optimizer-driven refinement of layouts from previous pipeline stages
