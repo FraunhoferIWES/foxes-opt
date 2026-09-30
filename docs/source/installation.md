@@ -1,6 +1,7 @@
 # Installation
 
 There are multiple ways to install *foxes-opt*.
+The supported Python versions are 3.10 through 3.14.
 
 ## Installation as standard user
 

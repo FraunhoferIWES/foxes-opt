@@ -122,8 +122,9 @@
 
 - General:
   - Expanded type annotations and tightened code checks across the package
+  - Added support for Python 3.14
 - Dependencies:
-  - Raised the minimum supported versions to *foxes* v1.9.6 and *iwopy* v0.5.0,
+  - Raised the minimum supported versions to *foxes* v1.9.7 and *iwopy* v0.5.1,
     and aligned overlapping dependency floors with both projects
 - Callbacks:
   - Added an optimizer-independent layout callback with optional intermediate

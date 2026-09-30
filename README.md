@@ -20,6 +20,10 @@ PyPi reference: [https://pypi.org/project/foxes-opt/](https://pypi.org/project/f
 
 Anaconda reference: [https://anaconda.org/conda-forge/foxes-opt](https://anaconda.org/conda-forge/foxes-opt)
 
+## Requirements
+
+The supported Python versions are `Python 3.10`...`3.14`.
+
 ## Installation
 
 There are multiple ways to install *foxes-opt*.
