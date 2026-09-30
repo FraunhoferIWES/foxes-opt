@@ -4,7 +4,7 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
-from iwopy.core import Optimizer, Pipeline, PipelineStage, Problem
+from iwopy.core import Optimizer, OptimizerCallback, Pipeline, PipelineStage, Problem
 from iwopy.utils import new_instance
 from iwopy.wrappers import ProblemWrapper
 
@@ -42,6 +42,7 @@ class LayoutOptimizerStage(PipelineStage):
         boundary_repair_optimizer_type: str | None = None,
         boundary_repair_optimizer_pars: dict[str, Any] | None = None,
         flow_states: States | None = None,
+        callbacks: list[OptimizerCallback] | None = None,
         name: str = "layout_optimizer",
         **kwargs: Any,
     ) -> None:
@@ -85,6 +86,8 @@ class LayoutOptimizerStage(PipelineStage):
             override ``optimizer_pars`` for the repair run only.
         flow_states
             States used for optimization, or ``None`` for pipeline states.
+        callbacks
+            Ordered callbacks for intermediate optimizer states.
         name
             Stage name.
         kwargs
@@ -116,6 +119,7 @@ class LayoutOptimizerStage(PipelineStage):
             else boundary_repair_optimizer_pars.copy()
         )
         self.flow_states = flow_states
+        self.callbacks = None if callbacks is None else callbacks.copy()
 
     @property
     def min_dist(self) -> float | list[float] | None:
@@ -502,7 +506,10 @@ class LayoutOptimizerStage(PipelineStage):
         if verbosity > 1:
             optimizer.print_info()
         try:
-            results = optimizer.solve(verbosity=max(verbosity - 1, 0))
+            solve_pars: dict[str, Any] = {"verbosity": max(verbosity - 1, 0)}
+            if self.callbacks is not None:
+                solve_pars["callbacks"] = self.callbacks
+            results = optimizer.solve(**solve_pars)
             optimizer.finalize(results, verbosity=max(verbosity - 1, 0))
             candidate = layout_xy.copy()
             selected = problem.sel_turbines

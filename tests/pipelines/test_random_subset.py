@@ -325,15 +325,18 @@ def test_min_dist_constraint_can_check_only_selected_pairs():
     assert selected_only_constraint._i2t.tolist() == [[0, 2]]
 
 
-def test_layout_optimizer_stage_uses_selected_problem_type(monkeypatch, tmp_path):
+def test_layout_optimizer_stage_forwards_callbacks(monkeypatch, tmp_path):
+    callback = object()
     stage = LayoutOptimizerStage(
         optimizer_type="test",
         problem_type="CustomProblem",
         problem_pars={"custom": 3},
+        callbacks=[callback],
     )
     pipeline = _Pipeline(stage, tmp_path)
     stage.initialize(pipeline)
     factory_calls = []
+    solve_calls = []
 
     class _Algo:
         initialized = False
@@ -353,7 +356,8 @@ def test_layout_optimizer_stage_uses_selected_problem_type(monkeypatch, tmp_path
         def initialize(self, verbosity):
             pass
 
-        def solve(self, verbosity):
+        def solve(self, verbosity, callbacks):
+            solve_calls.append((verbosity, callbacks))
             return _Results()
 
         def finalize(self, results, verbosity):
@@ -391,6 +395,7 @@ def test_layout_optimizer_stage_uses_selected_problem_type(monkeypatch, tmp_path
             },
         )
     ]
+    assert solve_calls == [(0, [callback])]
     np.testing.assert_allclose(candidate[0], [3.0, 4.0])
 
 

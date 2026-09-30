@@ -275,7 +275,7 @@ def test_snapshot_files_and_isolation(snapshot):
             np.asarray(values[1]).reshape(2, 2),
         )
         assert set(layout["turbine_type"]) == {"test_type"}
-        image = plt.imread(basename.with_suffix(".jpg"))
+        image = plt.imread(callback.out_dir / "jpg" / basename.with_suffix(".jpg").name)
         assert image.size > 0 and np.ptp(image) > 0
     np.testing.assert_allclose(
         [turbine.xy for turbine in farm.turbines], [[10, 20], [30, 40]]
@@ -285,10 +285,10 @@ def test_snapshot_files_and_isolation(snapshot):
 
 def test_snapshot_plot_title_contains_selected_objective(tmp_path, monkeypatch):
     callback, _ = _snapshot(tmp_path, write_csv=False)
-    titles = []
+    plot_args = {}
 
     def capture_title(output, file_name, **kwargs):
-        titles.append(kwargs["title"])
+        plot_args.update(kwargs)
 
     monkeypatch.setattr(foxes.output.FarmLayoutOutput, "write_plot", capture_title)
     callback.notify(
@@ -298,7 +298,12 @@ def test_snapshot_plot_title_contains_selected_objective(tmp_path, monkeypatch):
         )
     )
 
-    assert titles == ["power: 2.5"]
+    assert plot_args["title"] == "power: 2.5"
+    assert plot_args["annotate"] == 0
+    assert plot_args["true_turbine_radii"] is True
+    assert plot_args["edgecolors"] == "black"
+    assert plot_args["linewidths"] == 0.4
+    assert plot_args["zorder"] == 5
 
 
 def test_snapshot_marks_constraint_turbines_red(tmp_path, monkeypatch):
@@ -332,7 +337,7 @@ def test_snapshot_supports_wrapped_problem(tmp_path):
     callback.notify(_data([[100.0, 200.0, 300.0, 400.0]]))
 
     assert (callback.out_dir / "layout_00001.csv").exists()
-    assert (callback.out_dir / "layout_00001.jpg").exists()
+    assert (callback.out_dir / "jpg" / "layout_00001.jpg").exists()
 
 
 @pytest.mark.parametrize(
@@ -349,14 +354,16 @@ def test_snapshot_output_formats_can_be_disabled(tmp_path, write_csv, write_imag
     basename = callback.out_dir / "layout_00001"
 
     assert basename.with_suffix(".csv").exists() is write_csv
-    assert basename.with_suffix(".jpg").exists() is write_image
+    assert (
+        callback.out_dir / "jpg" / basename.with_suffix(".jpg").name
+    ).exists() is write_image
 
 
 def test_snapshot_accepts_custom_image_format(tmp_path):
     callback, _ = _snapshot(tmp_path, write_csv=False, image_format=".png")
     callback.notify(_data([[100.0, 200.0, 300.0, 400.0]]))
 
-    assert (callback.out_dir / "layout_00001.png").exists()
+    assert (callback.out_dir / "png" / "layout_00001.png").exists()
 
 
 def test_snapshot_uses_evaluation_count(snapshot):
@@ -370,7 +377,7 @@ def test_snapshot_uses_evaluation_count(snapshot):
         )
     )
     assert (callback.out_dir / "layout_00007.csv").exists()
-    assert (callback.out_dir / "layout_00007.jpg").exists()
+    assert (callback.out_dir / "jpg" / "layout_00007.jpg").exists()
 
 
 def test_snapshot_skips_empty_population(snapshot):

@@ -129,12 +129,17 @@
 - Callbacks:
   - Added an optimizer-independent layout callback with optional intermediate
     CSV output, configurable image snapshots and objective titles, and red
-    highlighting of constraint violations in the legend
+    highlighting of constraint violations in the legend; image snapshots omit
+    turbine annotations, enable `FarmLayoutOutput`'s general true-radius option
+    with contrasting outlines, and live in a file-type subdirectory
+  - Added a CSV optimization-history callback that records objective values and
+    violated constraint-component counts for each iteration
 - Pipelines:
   - `LayoutPipeline` now retains stage results and supports layout plot and CSV
     output
   - Added `LayoutOptimizerStage` for optimizer-driven refinement of layouts from
-    previous stages, with user-selectable optimization problem types
+    previous stages, with user-selectable optimization problem types and
+    optimizer callbacks
   - Added `RandomSubsetStage` for successive layout optimizations over random
     turbine and state subsets, forwarding layout optimizer configuration through
     its base stage

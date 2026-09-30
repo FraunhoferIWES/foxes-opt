@@ -77,6 +77,16 @@ not final results.
 The callback options `write_csv` and `write_image` independently disable either
 format; both default to `True`. The callback accepts both iteration and
 evaluation events, so it can be used with all callback-enabled iwopy optimizers.
+CSV snapshots are written directly to the callback output directory. Images are
+written without turbine annotations in a child directory named for their file
+type, for example `jpg/`. `FarmLayoutOutput` independently provides opt-in
+physical-radius rendering through `true_turbine_radii`; snapshot images enable
+that general option and add contrasting outlines.
+Pipeline users can pass an ordered callback list through the
+`LayoutOptimizerStage` `callbacks` parameter.
+`WriteOptimizationHistoryCallback` writes the iteration number, selected
+objective value, and number of violated constraint components to a CSV file.
+It resets the file when a solve starts and persists each iteration immediately.
 The SLSQP and IPOPT examples use `LocalFD` for finite-difference gradients.
 The IPOPT example runs through pygmo and does not offer callbacks because pygmo
 exposes neither exact live IPOPT iterations nor their decision vectors.

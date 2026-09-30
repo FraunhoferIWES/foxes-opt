@@ -35,7 +35,8 @@ class WriteLayoutCallback(OptimizerCallback):
         Parameters
         ----------
         out_dir
-            The output directory where the layouts will be written.
+            The output directory for CSV layouts. Images are written to a
+            child directory named after their file format.
         base_name
             The base name for the layout files.
         n_step
@@ -87,6 +88,9 @@ class WriteLayoutCallback(OptimizerCallback):
             )
         self._problem = problem
         self._farm = deepcopy(self._problem.farm)
+        diameters = self._problem.farm.get_rotor_diameters(self._problem.algo)
+        for turbine, diameter in zip(self._farm.turbines, diameters, strict=True):
+            turbine.D = float(diameter)
         if self.write_csv or self.write_image:
             self.out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -161,7 +165,12 @@ class WriteLayoutCallback(OptimizerCallback):
                 algo=self._problem.algo,
             )
         if self.write_image:
-            image_path = basename.with_suffix(f".{self.image_format}")
+            image_path = (
+                self.out_dir
+                / self.image_format
+                / basename.with_suffix(f".{self.image_format}").name
+            )
+            image_path.parent.mkdir(parents=True, exist_ok=True)
             objective_name = self._problem.objs.component_names[0]
             objective_value = (
                 "unavailable"
@@ -175,8 +184,13 @@ class WriteLayoutCallback(OptimizerCallback):
             output.write_plot(
                 str(image_path),
                 figsize=self.figsize,
+                annotate=0,
+                true_turbine_radii=True,
                 title=f"{objective_name}: {objective_value}",
                 c=colors,
+                edgecolors="black",
+                linewidths=0.4,
+                zorder=5,
                 legend_labels={
                     "orange": "Valid turbine",
                     "red": "Constraint violation",
