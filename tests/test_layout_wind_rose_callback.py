@@ -301,7 +301,7 @@ def test_snapshot_plot_title_contains_selected_objective(tmp_path, monkeypatch):
     assert plot_args["title"] == "power: 2.5"
     assert plot_args["annotate"] == 0
     assert plot_args["true_turbine_radii"] is True
-    assert plot_args["edgecolors"] == "black"
+    np.testing.assert_array_equal(plot_args["edgecolors"], plot_args["c"])
     assert plot_args["linewidths"] == 0.4
     assert plot_args["zorder"] == 5
 
@@ -326,6 +326,7 @@ def test_snapshot_marks_constraint_turbines_red(tmp_path, monkeypatch):
     callback.notify(_data([[100.0, 200.0, 300.0, 400.0]], constraints=[[1.0]]))
 
     assert list(plot_args["c"]) == ["orange", "red"]
+    assert list(plot_args["edgecolors"]) == ["orange", "red"]
     assert plot_args["legend_labels"] == {
         "orange": "Valid turbine",
         "red": "Constraint violation",

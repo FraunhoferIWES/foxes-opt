@@ -131,7 +131,7 @@
     CSV output, configurable image snapshots and objective titles, and red
     highlighting of constraint violations in the legend; image snapshots omit
     turbine annotations, enable `FarmLayoutOutput`'s general true-radius option
-    with contrasting outlines, and live in a file-type subdirectory
+    with color-matched outlines, and live in a file-type subdirectory
   - Added a CSV optimization-history callback that records objective values and
     violated constraint-component counts for each iteration
 - Pipelines:
@@ -151,6 +151,8 @@
     layout-scale finite differences; progress output reports native IPOPT
     iterations separately from objective function evaluations
 - Bug fixes:
+  - Kept validity colors visible for small true-radius turbines in layout
+    snapshots by matching marker edges to their fill colors
   - Weighted state contractions now normalize by the selected weight sum
   - Fixed multi-state population optimization for population-major *foxes* state
     ordering

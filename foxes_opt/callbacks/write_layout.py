@@ -188,7 +188,7 @@ class WriteLayoutCallback(OptimizerCallback):
                 true_turbine_radii=True,
                 title=f"{objective_name}: {objective_value}",
                 c=colors,
-                edgecolors="black",
+                edgecolors=colors,
                 linewidths=0.4,
                 zorder=5,
                 legend_labels={
