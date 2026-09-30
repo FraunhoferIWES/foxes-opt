@@ -122,24 +122,18 @@
 
 - General:
   - Expanded type annotations and tightened code checks across the package
-  - Added support for Python 3.14
 - Dependencies:
-  - Raised the minimum supported versions to *foxes* v1.9.7 and *iwopy* v0.5.1,
+  - Raised the minimum supported versions to *foxes* v1.9.6 and *iwopy* v0.5.0,
     and aligned overlapping dependency floors with both projects
 - Callbacks:
   - Added an optimizer-independent layout callback with optional intermediate
     CSV output, configurable image snapshots and objective titles, and red
-    highlighting of constraint violations in the legend; image snapshots omit
-    turbine annotations, enable `FarmLayoutOutput`'s general true-radius option
-    with color-matched outlines, and live in a file-type subdirectory
-  - Added a CSV optimization-history callback that records objective values and
-    violated constraint-component counts for each iteration
+    highlighting of constraint violations in the legend
 - Pipelines:
   - `LayoutPipeline` now retains stage results and supports layout plot and CSV
     output
   - Added `LayoutOptimizerStage` for optimizer-driven refinement of layouts from
-    previous stages, with user-selectable optimization problem types and
-    optimizer callbacks
+    previous stages, with user-selectable optimization problem types
   - Added `RandomSubsetStage` for successive layout optimizations over random
     turbine and state subsets, forwarding layout optimizer configuration through
     its base stage
@@ -151,10 +145,27 @@
     layout-scale finite differences; progress output reports native IPOPT
     iterations separately from objective function evaluations
 - Bug fixes:
-  - Kept validity colors visible for small true-radius turbines in layout
-    snapshots by matching marker edges to their fill colors
   - Weighted state contractions now normalize by the selected weight sum
   - Fixed multi-state population optimization for population-major *foxes* state
     ordering
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes-opt/commits/v0.9.0](https://github.com/FraunhoferIWES/foxes-opt/commits/v0.9.0)
+
+## v0.9.1
+
+- General:
+  - Added support for Python 3.14
+- Callbacks:
+  - Layout image snapshots now omit turbine annotations, use true turbine radii
+    with color-matched outlines, and live in a file-type subdirectory
+  - Added a CSV optimization-history callback that records objective values and
+    violated constraint-component counts for each iteration
+- Pipelines:
+  - `LayoutOptimizerStage` now forwards callbacks to the optimizer
+- Constraints:
+  - `MinDistConstraint` now provides analytical position derivatives to *iwopy*
+- Bug fixes:
+  - Kept validity colors visible for small true-radius turbines in layout
+    snapshots by matching marker edges to their fill colors
+
+**Full Changelog**: [https://github.com/FraunhoferIWES/foxes-opt/compare/v0.9.0...v0.9.1](https://github.com/FraunhoferIWES/foxes-opt/compare/v0.9.0...v0.9.1)

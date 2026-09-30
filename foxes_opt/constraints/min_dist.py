@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from typing import Any
 
 import foxes.constants as FC
@@ -127,6 +128,75 @@ class MinDistConstraint(FarmConstraint):
                     j: int = turbs.index(t)
                     deps[i, j] = True
         return deps.reshape(self.n_components(), 2 * len(turbs))
+
+    def ana_deriv(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        var: int,
+        components: Sequence[int] | np.ndarray | None = None,
+    ) -> np.ndarray:
+        """
+        Calculate the analytical derivative for one float variable.
+
+        Parameters
+        ----------
+        vars_int
+            The integer variable values
+        vars_float
+            The float variable values
+        var
+            The float variable index
+        components
+            The selected components, or None for all
+
+        Returns
+        -------
+        deriv
+            The derivative values, shape: (n_sel_components,)
+
+        """
+        cidx = (
+            np.arange(self.n_components(), dtype=int)
+            if components is None
+            else np.asarray(components, dtype=int)
+        )
+        deriv = np.zeros(len(cidx), dtype=np.float64)
+
+        try:
+            vname, ti = self.problem.parse_tvar(self.var_names_float[var])
+        except (IndexError, ValueError):
+            return np.full(len(cidx), np.nan, dtype=np.float64)
+        if vname not in (FV.X, FV.Y):
+            return np.full(len(cidx), np.nan, dtype=np.float64)
+
+        pairs = self._i2t[cidx]
+        affected = np.any(pairs == ti, axis=1)
+        if not np.any(affected):
+            return deriv
+
+        xy = np.asarray(
+            [np.asarray(t.xy).reshape(-1, 2)[0] for t in self.farm.turbines],
+            dtype=np.float64,
+        )
+        for name, value in zip(self.var_names_float, vars_float):
+            try:
+                xyname, xyti = self.problem.parse_tvar(name)
+            except (IndexError, ValueError):
+                continue
+            if xyname in (FV.X, FV.Y):
+                xy[xyti, 0 if xyname == FV.X else 1] = value
+
+        apairs = pairs[affected]
+        delta = xy[apairs[:, 0]] - xy[apairs[:, 1]]
+        distance = np.linalg.norm(delta, axis=1)
+        coord = 0 if vname == FV.X else 1
+        values = np.full(len(distance), np.nan, dtype=np.float64)
+        nz = distance > 0.0
+        sign = np.where(apairs[:, 0] == ti, -1.0, 1.0)
+        values[nz] = sign[nz] * delta[nz, coord] / distance[nz]
+        deriv[affected] = values
+        return deriv
 
     def calc_individual(
         self,
