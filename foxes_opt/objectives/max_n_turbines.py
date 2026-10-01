@@ -5,9 +5,10 @@ import numpy as np
 
 from foxes_opt.core.farm_objective import FarmObjective
 from foxes_opt.core.farm_opt_problem import FarmOptProblem
+from foxes_opt.core.zero_derivatives import ZeroFloatDerivatives
 
 
-class MaxNTurbines(FarmObjective):
+class MaxNTurbines(ZeroFloatDerivatives, FarmObjective):
     """
     Maximizes the number of turrbines.
     """

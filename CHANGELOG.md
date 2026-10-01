@@ -164,6 +164,11 @@
   - `LayoutOptimizerStage` now forwards callbacks to the optimizer
 - Constraints:
   - `MinDistConstraint` now provides analytical position derivatives to *iwopy*
+  - Added analytical derivatives for area boundaries and geometrical layout
+    constraints, including composed and internally excluded geometries
+- Objectives:
+  - Added analytical derivatives for turbine-count and geometrical layout
+    objectives; FOXES-result objectives continue to require `iwopy.LocalFD`
 - Bug fixes:
   - Kept validity colors visible for small true-radius turbines in layout
     snapshots by matching marker edges to their fill colors

@@ -1,9 +1,11 @@
+from collections.abc import Sequence
 from typing import Any
 
 import foxes.variables as FV
 import numpy as np
 from foxes.utils.geom2d import AreaGeometry
 
+from foxes_opt.core.area_geometry_derivatives import signed_distance_derivatives
 from foxes_opt.core.farm_constraint import FarmConstraint
 from foxes_opt.core.farm_opt_problem import FarmOptProblem
 
@@ -99,6 +101,72 @@ class AreaGeometryConstraint(FarmConstraint):
         np.fill_diagonal(deps[:, :, 0], True)
         np.fill_diagonal(deps[:, :, 1], True)
         return deps.reshape(self.n_components(), self.n_components() * 2)
+
+    def ana_deriv(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        var: int,
+        components: Sequence[int] | np.ndarray | None = None,
+    ) -> np.ndarray:
+        """
+        Calculate the analytical derivative for one float variable.
+
+        Parameters
+        ----------
+        vars_int
+            The integer variable values
+        vars_float
+            The float variable values
+        var
+            The float variable index
+        components
+            The selected components, or None for all
+
+        Returns
+        -------
+        deriv
+            The derivative values, shape: (n_sel_components,)
+
+        """
+        cidx = (
+            np.arange(self.n_components(), dtype=int)
+            if components is None
+            else np.asarray(components, dtype=int)
+        )
+        deriv = np.zeros(len(cidx), dtype=np.float64)
+        try:
+            vname, ti = self.problem.parse_tvar(self.var_names_float[var])
+        except (IndexError, ValueError):
+            return np.full(len(cidx), np.nan, dtype=np.float64)
+        if vname not in (FV.X, FV.Y):
+            return np.full(len(cidx), np.nan, dtype=np.float64)
+
+        turbines = np.asarray(self.sel_turbines, dtype=int)[cidx]
+        affected = turbines == ti
+        if not np.any(affected):
+            return deriv
+
+        xy = np.asarray(
+            [np.asarray(self.farm.turbines[t].xy).reshape(-1, 2)[0] for t in turbines],
+            dtype=np.float64,
+        )
+        for name, value in zip(self.var_names_float, vars_float):
+            try:
+                xyname, xyti = self.problem.parse_tvar(name)
+            except (IndexError, ValueError):
+                continue
+            target = np.flatnonzero(turbines == xyti)
+            if xyname in (FV.X, FV.Y) and len(target):
+                xy[target, 0 if xyname == FV.X else 1] = value
+
+        coord = 0 if vname == FV.X else 1
+        point_derivatives = np.zeros_like(xy[affected])
+        point_derivatives[:, coord] = 1.0
+        deriv[affected] = signed_distance_derivatives(
+            self.geometry, xy[affected], point_derivatives
+        )
+        return deriv
 
     def calc_individual(
         self,

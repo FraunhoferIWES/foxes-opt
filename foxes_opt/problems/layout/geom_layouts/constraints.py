@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from typing import Any
 
 import numpy as np
@@ -5,8 +6,15 @@ from foxes.config import config
 from iwopy import Constraint, Problem
 from scipy.spatial.distance import cdist
 
+from foxes_opt.core.area_geometry_derivatives import signed_distance_derivatives
+from foxes_opt.core.zero_derivatives import ZeroFloatDerivatives
+from foxes_opt.problems.layout.geom_layouts.derivatives import (
+    layout_data,
+    maximin_distance_derivative,
+)
 
-class Valid(Constraint):
+
+class Valid(ZeroFloatDerivatives, Constraint):
     """
     Validity constraint for purely geometrical layouts problems.
 
@@ -162,6 +170,46 @@ class Boundary(Constraint):
 
         """
         return self.n_turbines
+
+    def ana_deriv(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        var: int,
+        components: Sequence[int] | np.ndarray | None = None,
+    ) -> np.ndarray:
+        """
+        Calculate the analytical derivative for one float variable.
+
+        Parameters
+        ----------
+        vars_int
+            The integer variable values
+        vars_float
+            The float variable values
+        var
+            The float variable index
+        components
+            The selected components, or None for all
+
+        Returns
+        -------
+        deriv
+            The derivative values, shape: (n_sel_components,)
+
+        """
+        cidx = (
+            np.arange(self.n_components(), dtype=int)
+            if components is None
+            else np.asarray(components, dtype=int)
+        )
+        data = layout_data(self.problem, vars_int, vars_float, var)
+        if data is None:
+            return np.full(len(cidx), np.nan, dtype=np.float64)
+        points, __, derivatives = data
+        return signed_distance_derivatives(
+            self.problem.boundary, points[cidx], derivatives[cidx]
+        )
 
     def calc_individual(
         self,
@@ -326,6 +374,57 @@ class MinDist(Constraint):
         """
         return len(self._i2t)
 
+    def ana_deriv(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        var: int,
+        components: Sequence[int] | np.ndarray | None = None,
+    ) -> np.ndarray:
+        """
+        Calculate the analytical derivative for one float variable.
+
+        Parameters
+        ----------
+        vars_int
+            The integer variable values
+        vars_float
+            The float variable values
+        var
+            The float variable index
+        components
+            The selected components, or None for all
+
+        Returns
+        -------
+        deriv
+            The derivative values, shape: (n_sel_components,)
+
+        """
+        cidx = (
+            np.arange(self.n_components(), dtype=int)
+            if components is None
+            else np.asarray(components, dtype=int)
+        )
+        data = layout_data(self.problem, vars_int, vars_float, var)
+        if data is None:
+            return np.full(len(cidx), np.nan, dtype=np.float64)
+        points, __, derivatives = data
+        pairs = self._i2t[cidx]
+        delta = points[pairs[:, 0]] - points[pairs[:, 1]]
+        delta_derivative = derivatives[pairs[:, 0]] - derivatives[pairs[:, 1]]
+        distance = np.linalg.norm(delta, axis=1)
+        out = np.zeros(len(cidx), dtype=np.float64)
+        moving = np.any(delta_derivative != 0.0, axis=1)
+        differentiable = distance > 0.0
+        active = moving & differentiable
+        out[active] = (
+            -np.einsum("pd,pd->p", delta[active], delta_derivative[active])
+            / distance[active]
+        )
+        out[moving & ~differentiable] = np.nan
+        return out
+
     def calc_individual(
         self,
         vars_int: np.ndarray,
@@ -400,7 +499,7 @@ class MinDist(Constraint):
         return self.min_dist - d
 
 
-class CMinN(Constraint):
+class CMinN(ZeroFloatDerivatives, Constraint):
     """
     Minimal number of turbines constraint for purely geometrical layouts problems.
 
@@ -511,7 +610,7 @@ class CMinN(Constraint):
         return self.N - np.sum(valid, axis=1)[:, None]
 
 
-class CMaxN(Constraint):
+class CMaxN(ZeroFloatDerivatives, Constraint):
     """
     Maximal number of turbines constraint for purely geometrical layouts problems.
 
@@ -620,7 +719,7 @@ class CMaxN(Constraint):
         return np.sum(valid, axis=1)[:, None] - self.N
 
 
-class CFixN(Constraint):
+class CFixN(ZeroFloatDerivatives, Constraint):
     """
     Fixed number of turbines constraint for purely geometrical layouts problems.
 
@@ -815,6 +914,43 @@ class CMinDensity(Constraint):
         # reduce to points within geometry:
         valid = geom.points_inside(self._probes)
         self._probes = self._probes[valid]
+
+    def ana_deriv(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        var: int,
+        components: Sequence[int] | np.ndarray | None = None,
+    ) -> np.ndarray:
+        """
+        Calculate the analytical derivative for one float variable.
+
+        Parameters
+        ----------
+        vars_int
+            The integer variable values
+        vars_float
+            The float variable values
+        var
+            The float variable index
+        components
+            The selected components, or None for all
+
+        Returns
+        -------
+        deriv
+            The derivative values, shape: (n_sel_components,)
+
+        """
+        n_components = self.n_components() if components is None else len(components)
+        if not n_components:
+            return np.empty(0, dtype=np.float64)
+        data = layout_data(self.problem, vars_int, vars_float, var)
+        if data is None:
+            return np.full(n_components, np.nan, dtype=np.float64)
+        points, valid, derivatives = data
+        value = maximin_distance_derivative(self._probes, points, valid, derivatives)
+        return np.full(n_components, value, dtype=np.float64)
 
     def calc_individual(
         self,

@@ -12,6 +12,12 @@ from foxes_opt.core.farm_opt_problem import FarmOptProblem
 class FarmVarObjective(FarmObjective):
     """
     Objectives based on farm variables.
+
+    Notes
+    -----
+    Farm-variable values are produced by FOXES model calculations, which do not
+    expose analytical sensitivities. Gradient-based optimizers therefore require
+    an `iwopy.LocalFD` wrapper for these objectives.
     """
 
     def __init__(

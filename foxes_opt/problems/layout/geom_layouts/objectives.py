@@ -1,10 +1,20 @@
+from collections.abc import Sequence
+
 import numpy as np
 from foxes.config import config
 from iwopy import Objective, Problem
 from scipy.spatial.distance import cdist
 
+from foxes_opt.core.zero_derivatives import ZeroFloatDerivatives
+from foxes_opt.problems.layout.geom_layouts.derivatives import (
+    extreme_derivative,
+    layout_data,
+    maximin_distance_derivative,
+    nearest_distance_derivatives,
+)
 
-class OMaxN(Objective):
+
+class OMaxN(ZeroFloatDerivatives, Objective):
     """
     Maximal number of turbines objective
     for purely geometrical layouts problems.
@@ -143,7 +153,7 @@ class OMinN(OMaxN):
         return [False]
 
 
-class OFixN(Objective):
+class OFixN(ZeroFloatDerivatives, Objective):
     """
     Fixed number of turbines objective
     for purely geometrical layouts problems.
@@ -314,6 +324,48 @@ class MaxGridSpacing(Objective):
         """
         return [True]
 
+    def ana_deriv(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        var: int,
+        components: Sequence[int] | np.ndarray | None = None,
+    ) -> np.ndarray:
+        """
+        Calculate the analytical derivative for one float variable.
+
+        Parameters
+        ----------
+        vars_int
+            The integer variable values
+        vars_float
+            The float variable values
+        var
+            The float variable index
+        components
+            The selected components, or None for all
+
+        Returns
+        -------
+        deriv
+            The derivative values, shape: (n_sel_components,)
+
+        """
+        n_components = self.n_components() if components is None else len(components)
+        if not n_components:
+            return np.empty(0, dtype=np.float64)
+        grid, grid_var = divmod(var, 5)
+        if grid_var not in (2, 3):
+            return np.zeros(n_components, dtype=np.float64)
+        spacing = vars_float.reshape(self.problem.n_grids, 5)[:, 2:4]
+        minimum = np.nanmin(spacing)
+        active = np.argwhere(np.isclose(spacing, minimum))
+        target = np.array([grid, grid_var - 2])
+        if not np.any(np.all(active == target, axis=1)):
+            return np.zeros(n_components, dtype=np.float64)
+        value = 1.0 if len(active) == 1 else np.nan
+        return np.full(n_components, value, dtype=np.float64)
+
     def calc_individual(
         self,
         vars_int: np.ndarray,
@@ -477,6 +529,43 @@ class MaxDensity(Objective):
         valid = geom.points_inside(self._probes)
         self._probes = self._probes[valid]
 
+    def ana_deriv(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        var: int,
+        components: Sequence[int] | np.ndarray | None = None,
+    ) -> np.ndarray:
+        """
+        Calculate the analytical derivative for one float variable.
+
+        Parameters
+        ----------
+        vars_int
+            The integer variable values
+        vars_float
+            The float variable values
+        var
+            The float variable index
+        components
+            The selected components, or None for all
+
+        Returns
+        -------
+        deriv
+            The derivative values, shape: (n_sel_components,)
+
+        """
+        n_components = self.n_components() if components is None else len(components)
+        if not n_components:
+            return np.empty(0, dtype=np.float64)
+        data = layout_data(self.problem, vars_int, vars_float, var)
+        if data is None:
+            return np.full(n_components, np.nan, dtype=np.float64)
+        points, valid, derivatives = data
+        value = maximin_distance_derivative(self._probes, points, valid, derivatives)
+        return np.full(n_components, value, dtype=np.float64)
+
     def calc_individual(
         self,
         vars_int: np.ndarray,
@@ -624,6 +713,56 @@ class MeMiMaDist(Objective):
 
         """
         return [True]
+
+    def ana_deriv(
+        self,
+        vars_int: np.ndarray,
+        vars_float: np.ndarray,
+        var: int,
+        components: Sequence[int] | np.ndarray | None = None,
+    ) -> np.ndarray:
+        """
+        Calculate the analytical derivative for one float variable.
+
+        Parameters
+        ----------
+        vars_int
+            The integer variable values
+        vars_float
+            The float variable values
+        var
+            The float variable index
+        components
+            The selected components, or None for all
+
+        Returns
+        -------
+        deriv
+            The derivative values, shape: (n_sel_components,)
+
+        """
+        n_components = self.n_components() if components is None else len(components)
+        if not n_components:
+            return np.empty(0, dtype=np.float64)
+        data = layout_data(self.problem, vars_int, vars_float, var)
+        if data is None:
+            return np.full(n_components, np.nan, dtype=np.float64)
+        points, __, point_derivatives = data
+        distances, derivatives = nearest_distance_derivatives(
+            points, point_derivatives, self.scale * len(points)
+        )
+        mean = np.mean(distances)
+        minimum = np.min(distances)
+        maximum = np.max(distances)
+        dmean = np.mean(derivatives)
+        dminimum = extreme_derivative(distances, derivatives, maximize=False)
+        dmaximum = extreme_derivative(distances, derivatives, maximize=True)
+        value = (
+            2 * self.c1 * mean * dmean
+            - 2 * self.c2 * (mean - minimum) * (dmean - dminimum)
+            - 2 * self.c3 * (mean - maximum) * (dmean - dmaximum)
+        )
+        return np.full(n_components, value, dtype=np.float64)
 
     def calc_individual(
         self,

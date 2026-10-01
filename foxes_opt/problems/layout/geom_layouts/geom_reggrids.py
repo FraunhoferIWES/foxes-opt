@@ -236,6 +236,66 @@ class GeomRegGrids(Problem):
         vals[:, 5:] = self._diag / 3
         return vals.reshape(self.n_grids * n)
 
+    def layout_derivative(
+        self, vars_int: np.ndarray, vars_float: np.ndarray, var: int
+    ) -> np.ndarray:
+        """
+        Calculate the layout derivative for one float variable.
+
+        Parameters
+        ----------
+        vars_int
+            The integer variable values
+        vars_float
+            The float variable values
+        var
+            The float variable index
+
+        Returns
+        -------
+        derivative
+            Point-coordinate derivatives, shape: (n_points, 2)
+
+        """
+        if var < 0 or var >= len(vars_float):
+            raise IndexError(f"Float variable index {var} out of range")
+
+        integers = vars_int.reshape(self.n_grids, 2)
+        floats = vars_float.reshape(self.n_grids, 5)
+        target_grid, target_var = divmod(var, 5)
+        n_points = self.n_max
+        assert n_points is not None
+        derivative = np.zeros((n_points, 2), dtype=config.dtype_double)
+        offset = 0
+        for grid in range(self.n_grids):
+            nx, ny = integers[grid]
+            count = int(nx * ny)
+            stop = min(offset + count, n_points)
+            if grid == target_grid and stop > offset:
+                dx, dy, alpha = floats[grid, 2:]
+                angle = np.deg2rad(alpha)
+                axis_x = np.array([np.cos(angle), np.sin(angle)])
+                axis_y = np.array([-np.sin(angle), np.cos(angle)])
+                ix, iy = np.meshgrid(np.arange(nx), np.arange(ny), indexing="ij")
+                if target_var == 0:
+                    values = np.broadcast_to([1.0, 0.0], (count, 2))
+                elif target_var == 1:
+                    values = np.broadcast_to([0.0, 1.0], (count, 2))
+                elif target_var == 2:
+                    values = ix.reshape(-1, 1) * axis_x
+                elif target_var == 3:
+                    values = iy.reshape(-1, 1) * axis_y
+                else:
+                    values = np.deg2rad(1.0) * (
+                        ix.reshape(-1, 1) * dx * axis_y
+                        - iy.reshape(-1, 1) * dy * axis_x
+                    )
+                derivative[offset:stop] = values[: stop - offset]
+            offset = stop
+            if offset >= n_points:
+                break
+        return derivative
+
     def apply_individual(
         self, vars_int: np.ndarray, vars_float: np.ndarray
     ) -> tuple[np.ndarray, np.ndarray]:

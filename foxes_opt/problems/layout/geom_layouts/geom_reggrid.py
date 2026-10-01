@@ -153,6 +153,77 @@ class GeomRegGrid(Problem):
         vals[4] = 90.0
         return vals
 
+    def layout_derivative(
+        self, vars_int: np.ndarray, vars_float: np.ndarray, var: int
+    ) -> np.ndarray:
+        """
+        Calculate the layout derivative for one float variable.
+
+        Parameters
+        ----------
+        vars_int
+            The integer variable values
+        vars_float
+            The float variable values
+        var
+            The float variable index
+
+        Returns
+        -------
+        derivative
+            Point-coordinate derivatives, shape: (n_turbines, 2)
+
+        """
+        if var < 0 or var >= len(vars_float):
+            raise IndexError(f"Float variable index {var} out of range")
+
+        sx, sy, dx, dy, alpha = vars_float
+        angle = np.deg2rad(alpha)
+        axis_x = np.array([np.cos(angle), np.sin(angle)])
+        axis_y = np.array([-np.sin(angle), np.cos(angle)])
+        indices = np.arange(self._nrow) - (self._nrow - 1) / 2
+        row = indices[:, None] + sx
+        column = indices[None, :] + sy
+        shape = (self._nrow, self._nrow, 2)
+        if var == 0:
+            derivative = np.broadcast_to(dx * axis_x, shape)
+        elif var == 1:
+            derivative = np.broadcast_to(dy * axis_y, shape)
+        elif var == 2:
+            derivative = row[:, :, None] * axis_x
+        elif var == 3:
+            derivative = column[:, :, None] * axis_y
+        else:
+            derivative = np.deg2rad(1.0) * (
+                row[:, :, None] * dx * axis_y - column[:, :, None] * dy * axis_x
+            )
+        derivative = np.broadcast_to(derivative, shape).reshape(-1, 2)
+
+        points, valid = self._all_grid_points(vars_float)
+        selected = np.flatnonzero(valid)
+        if len(selected) < self.n_turbines:
+            selected = np.append(
+                selected, np.flatnonzero(~valid)[: self.n_turbines - len(selected)]
+            )
+        return derivative[selected[: self.n_turbines]]
+
+    def _all_grid_points(self, vars_float: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        """Create all grid points and their boundary-validity flags."""
+        sx, sy, dx, dy, alpha = vars_float
+        angle = np.deg2rad(alpha)
+        axis_x = np.array([np.cos(angle), np.sin(angle)])
+        axis_y = np.array([-np.sin(angle), np.cos(angle)])
+        indices = np.arange(self._nrow) - (self._nrow - 1) / 2
+        points = (
+            self._pc[None, None, :]
+            + (indices[:, None, None] + sx) * dx * axis_x
+            + (indices[None, :, None] + sy) * dy * axis_y
+        ).reshape(-1, 2)
+        valid = self.boundary.points_inside(points)
+        if self.D is not None:
+            valid &= self.boundary.points_distance(points) >= self.D / 2
+        return points, valid
+
     def apply_individual(
         self, vars_int: np.ndarray, vars_float: np.ndarray
     ) -> tuple[np.ndarray, np.ndarray]:
@@ -173,33 +244,7 @@ class GeomRegGrid(Problem):
             to the problem
 
         """
-        sx, sy, dx, dy, alpha = vars_float
-
-        a = np.deg2rad(alpha)
-        nax: np.ndarray[tuple[int, ...], np.dtype[Any]] = np.stack(
-            [np.cos(a), np.sin(a)], axis=-1
-        )
-        nay: np.ndarray[tuple[int, ...], np.dtype[Any]] = np.stack(
-            [-np.sin(a), np.cos(a)], axis=-1
-        )
-
-        pts = (
-            self._pc[None, None, :]
-            + (np.arange(self._nrow)[:, None, None] - (self._nrow - 1) / 2 + sx)
-            * dx
-            * nax[None, None, :]
-            + (np.arange(self._nrow)[None, :, None] - (self._nrow - 1) / 2 + sy)
-            * dy
-            * nay[None, None, :]
-        )
-        pts = pts.reshape(self._nrow**2, 2)
-
-        if self.D is None:
-            valid = self.boundary.points_inside(pts)
-        else:
-            valid = self.boundary.points_inside(pts) & (
-                self.boundary.points_distance(pts) >= self.D / 2
-            )
+        pts, valid = self._all_grid_points(vars_float)
 
         nvl = np.sum(valid)
         if nvl >= self.n_turbines:
