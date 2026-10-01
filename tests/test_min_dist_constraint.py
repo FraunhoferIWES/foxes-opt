@@ -71,6 +71,13 @@ def test_analytical_derivatives_via_iwopy() -> None:
     np.testing.assert_allclose(selected, [[-0.8, 0.0], [0.0, 0.6]])
 
 
+def test_components_map_to_dependent_turbines() -> None:
+    _, constraint, _ = _setup([[0.0, 0.0], [3.0, 4.0], [0.0, 8.0]], [0, 1, 2])
+
+    assert constraint.component_turbines([2]) == {1, 2}
+    assert constraint.component_turbines([]) == set()
+
+
 def test_analytical_derivatives_with_fixed_turbines() -> None:
     problem, constraint, variables = _setup([[0.0, 0.0], [3.0, 4.0], [0.0, 8.0]], [0])
 

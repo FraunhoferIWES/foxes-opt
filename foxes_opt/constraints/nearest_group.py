@@ -177,6 +177,30 @@ class NearestGroupConstraint(FarmConstraint):
                 dependencies[:, variable] = True
         return dependencies
 
+    def component_turbines(
+        self, components: Sequence[int] | np.ndarray | None = None
+    ) -> set[int]:
+        """
+        Return turbines represented by constraint components.
+
+        Parameters
+        ----------
+        components
+            The selected component indices, or ``None`` for all components.
+
+        Returns
+        -------
+        turbines
+            The represented turbine indices.
+        """
+        component_indices = (
+            np.arange(self.n_components(), dtype=int)
+            if components is None
+            else np.asarray(components, dtype=int)
+        )
+        selected = np.asarray(self.sel_turbines, dtype=int)
+        return set(selected[component_indices].tolist())
+
     def _find_root(self, parents: np.ndarray, index: int) -> int:
         """Find a disjoint-set root and compress its path."""
         while parents[index] != index:

@@ -8,7 +8,7 @@ import foxes.variables as FV
 import numpy as np
 from iwopy.core import Optimizer, OptimizerCallback, OptimizerCallbackData
 
-from foxes_opt.core import FarmOptProblem
+from foxes_opt.core import FarmConstraint, FarmOptProblem
 
 
 class WriteLayoutCallback(OptimizerCallback):
@@ -144,15 +144,19 @@ class WriteLayoutCallback(OptimizerCallback):
         for constraint in self._problem.cons.functions:
             next_component = component + constraint.n_components()
             violated = np.flatnonzero(~valid[component:next_component])
-            dependencies = np.asarray(constraint.vardeps_float(), dtype=bool)
-            variable_names = np.asarray(constraint.var_names_float)
-            for variable_name in variable_names[np.any(dependencies[violated], axis=0)]:
-                try:
-                    variable, turbine_i = self._problem.parse_tvar(variable_name)
-                except (IndexError, ValueError):
-                    continue
-                if variable in (FV.X, FV.Y):
-                    invalid.add(turbine_i)
+            if isinstance(constraint, FarmConstraint):
+                invalid.update(constraint.component_turbines(violated))
+            else:
+                dependencies = np.asarray(constraint.vardeps_float(), dtype=bool)
+                variable_names = np.asarray(constraint.var_names_float)
+                dependent = np.any(dependencies[violated], axis=0)
+                for variable_name in variable_names[dependent]:
+                    try:
+                        variable, turbine_i = self._problem.parse_tvar(variable_name)
+                    except (IndexError, ValueError):
+                        continue
+                    if variable in (FV.X, FV.Y):
+                        invalid.add(turbine_i)
             component = next_component
         return invalid
 

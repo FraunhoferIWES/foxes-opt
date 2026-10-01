@@ -1,3 +1,5 @@
+from types import SimpleNamespace
+
 import numpy as np
 import pytest
 import xarray as xr
@@ -5,6 +7,7 @@ from foxes import constants as FC
 from foxes import variables as FV
 from iwopy import SimpleProblem
 
+from foxes_opt.callbacks import WriteLayoutCallback
 from foxes_opt.constraints import NearestGroupConstraint
 from foxes_opt.core import FarmConstraint
 
@@ -117,6 +120,39 @@ def test_chain_group_uses_connected_component_size() -> None:
 
     np.testing.assert_allclose(values, [-0.1, -0.1, -0.1, 6.9])
     np.testing.assert_allclose(selected, [6.9, -0.1])
+
+
+def test_layout_callback_marks_only_failed_group_turbine(tmp_path) -> None:
+    layout = np.array([[0.0, 0.0], [1.0, 0.0], [2.0, 0.0], [10.0, 0.0]])
+    problem, constraint, variables = _setup(
+        layout.tolist(), max_nearest_dist=1.1, min_nearest_group_size=3
+    )
+    problem.add_constraint(constraint)
+    problem.cons.initialize()
+    values = constraint.calc_individual(
+        np.array([], dtype=int), variables, _individual_results(layout)
+    )
+    callback = WriteLayoutCallback(
+        tmp_path, "layout", write_csv=False, write_image=False
+    )
+    callback._problem = problem
+    data = SimpleNamespace(cons=values[None, :])
+
+    assert callback._invalid_turbines(data, selected=0) == {3}
+
+
+def test_components_map_to_selected_turbines() -> None:
+    _, constraint, _ = _setup(
+        [[0.0, 0.0], [1.0, 0.0], [2.0, 0.0], [3.0, 0.0]],
+        max_nearest_dist=1.1,
+        min_nearest_group_size=3,
+        sel_turbines=[1, 3],
+    )
+
+    assert constraint.component_turbines([1, 0]) == {1, 3}
+    assert constraint.component_turbines([]) == set()
+    with pytest.raises(IndexError):
+        constraint.component_turbines([2])
 
 
 def test_group_can_include_fixed_turbines() -> None:

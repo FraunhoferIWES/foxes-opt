@@ -179,5 +179,7 @@
 - Bug fixes:
   - Kept validity colors visible for small true-radius turbines in layout
     snapshots by matching marker edges to their fill colors
+  - Fixed layout snapshots marking every turbine invalid when a nearest-group
+    constraint component is violated
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes-opt/compare/v0.9.0...v0.9.1](https://github.com/FraunhoferIWES/foxes-opt/compare/v0.9.0...v0.9.1)

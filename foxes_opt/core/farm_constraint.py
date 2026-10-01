@@ -1,5 +1,8 @@
+from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any
 
+import foxes.variables as FV
+import numpy as np
 from foxes.core import WindFarm
 from foxes.utils import all_subclasses, new_instance
 from iwopy import Constraint
@@ -82,6 +85,39 @@ class FarmConstraint(Constraint):
 
         """
         return len(self.sel_turbines)
+
+    def component_turbines(
+        self, components: Sequence[int] | np.ndarray | None = None
+    ) -> set[int]:
+        """
+        Return turbines associated with constraint components.
+
+        Parameters
+        ----------
+        components
+            The selected component indices, or ``None`` for all components.
+
+        Returns
+        -------
+        turbines
+            The associated turbine indices.
+        """
+        component_indices = (
+            np.arange(self.n_components(), dtype=int)
+            if components is None
+            else np.asarray(components, dtype=int)
+        )
+        dependencies = np.asarray(self.vardeps_float(), dtype=bool)[component_indices]
+        variable_names = np.asarray(self.var_names_float)
+        turbines: set[int] = set()
+        for variable_name in variable_names[np.any(dependencies, axis=0)]:
+            try:
+                variable, turbine = self.problem.parse_tvar(variable_name)
+            except (IndexError, ValueError):
+                continue
+            if variable in (FV.X, FV.Y):
+                turbines.add(turbine)
+        return turbines
 
     def add_to_layout_figure(self, ax: "Axes", **kwargs: Any) -> "Axes":
         """
