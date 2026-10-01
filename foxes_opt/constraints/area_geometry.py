@@ -5,7 +5,7 @@ import foxes.variables as FV
 import numpy as np
 from foxes.utils.geom2d import AreaGeometry
 
-from foxes_opt.core.area_geometry_derivatives import signed_distance_derivatives
+from foxes_opt.core.area_geometry_derivatives import signed_distance_gradients
 from foxes_opt.core.farm_constraint import FarmConstraint
 from foxes_opt.core.farm_opt_problem import FarmOptProblem
 
@@ -52,6 +52,9 @@ class AreaGeometryConstraint(FarmConstraint):
         self.disc_inside = disc_inside
         self.infer_vars = infer_vars
         self.D = D
+        self._xy_var_indices = np.empty((0, 2), dtype=int)
+        self._gradient_vars_float = np.empty(0, dtype=np.float64)
+        self._point_gradients = np.empty((0, 2), dtype=np.float64)
 
         selt = problem.sel_turbines if sel_turbines is None else sel_turbines
         vrs = []
@@ -71,6 +74,47 @@ class AreaGeometryConstraint(FarmConstraint):
             cnames=cns,
             **kwargs,
         )
+
+    def initialize(self, verbosity: int = 0) -> None:
+        """
+        Initialize the constraint.
+
+        Parameters
+        ----------
+        verbosity
+            The verbosity level, 0 = silent
+        """
+        super().initialize(verbosity)
+        self._xy_var_indices = np.full((self.farm.n_turbines, 2), -1, dtype=int)
+        for var_index, var_name in enumerate(self.var_names_float):
+            try:
+                coord_name, turbine = self.problem.parse_tvar(var_name)
+            except (IndexError, ValueError):
+                continue
+            if coord_name in (FV.X, FV.Y):
+                coord = 0 if coord_name == FV.X else 1
+                self._xy_var_indices[turbine, coord] = var_index
+        self._gradient_vars_float = np.empty(0, dtype=np.float64)
+        self._point_gradients = np.empty((0, 2), dtype=np.float64)
+
+    def _get_point_gradients(self, vars_float: np.ndarray) -> np.ndarray:
+        """Calculate and cache all selected turbines' distance gradients."""
+        if not np.array_equal(vars_float, self._gradient_vars_float):
+            turbines = np.asarray(self.sel_turbines, dtype=int)
+            points = np.asarray(
+                [
+                    np.asarray(self.farm.turbines[t].xy).reshape(-1, 2)[0]
+                    for t in turbines
+                ],
+                dtype=np.float64,
+            )
+            for coord in range(2):
+                var_indices = self._xy_var_indices[turbines, coord]
+                selected = var_indices >= 0
+                points[selected, coord] = vars_float[var_indices[selected]]
+            self._gradient_vars_float = vars_float.copy()
+            self._point_gradients = signed_distance_gradients(self.geometry, points)
+        return self._point_gradients
 
     def n_components(self) -> int:
         """
@@ -147,25 +191,9 @@ class AreaGeometryConstraint(FarmConstraint):
         if not np.any(affected):
             return deriv
 
-        xy = np.asarray(
-            [np.asarray(self.farm.turbines[t].xy).reshape(-1, 2)[0] for t in turbines],
-            dtype=np.float64,
-        )
-        for name, value in zip(self.var_names_float, vars_float):
-            try:
-                xyname, xyti = self.problem.parse_tvar(name)
-            except (IndexError, ValueError):
-                continue
-            target = np.flatnonzero(turbines == xyti)
-            if xyname in (FV.X, FV.Y) and len(target):
-                xy[target, 0 if xyname == FV.X else 1] = value
-
         coord = 0 if vname == FV.X else 1
-        point_derivatives = np.zeros_like(xy[affected])
-        point_derivatives[:, coord] = 1.0
-        deriv[affected] = signed_distance_derivatives(
-            self.geometry, xy[affected], point_derivatives
-        )
+        point_gradients = self._get_point_gradients(vars_float)
+        deriv[affected] = point_gradients[cidx[affected], coord]
         return deriv
 
     def calc_individual(

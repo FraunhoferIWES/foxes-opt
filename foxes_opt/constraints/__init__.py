@@ -6,3 +6,4 @@ from .area_geometry import AreaGeometryConstraint as AreaGeometryConstraint
 from .area_geometry import FarmBoundaryConstraint as FarmBoundaryConstraint
 from .min_dist import MinDistConstraint as MinDistConstraint
 from .min_dist import MinDistLocalConstraint as MinDistLocalConstraint
+from .nearest_group import NearestGroupConstraint as NearestGroupConstraint

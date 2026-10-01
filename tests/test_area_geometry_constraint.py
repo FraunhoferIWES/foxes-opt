@@ -3,6 +3,7 @@ import pytest
 from foxes.utils.geom2d import AreaGeometry, Circle, ClosedPolygon, HalfPlane
 from iwopy import SimpleProblem
 
+import foxes_opt.constraints.area_geometry as area_geometry_module
 from foxes_opt.constraints import AreaGeometryConstraint
 
 
@@ -109,6 +110,35 @@ def test_analytical_derivatives_via_iwopy() -> None:
         vars=["Y_0001", "X_0000"],
     )
     np.testing.assert_allclose(selected, [[5.0 / 13.0, 0.0], [0.0, 0.6]])
+
+
+def test_analytical_derivatives_do_not_rescan_variables(monkeypatch) -> None:
+    problem, constraint = _setup([[3.0, 4.0], [12.0, 5.0]])
+    variables = problem.initial_values_float()
+    parse_calls = 0
+    gradient_calls = 0
+    parse_tvar = problem.parse_tvar
+    signed_distance_gradients = area_geometry_module.signed_distance_gradients
+
+    def count_parse_calls(var: str) -> tuple[str, int]:
+        nonlocal parse_calls
+        parse_calls += 1
+        return parse_tvar(var)
+
+    def count_gradient_calls(geometry: AreaGeometry, points: np.ndarray) -> np.ndarray:
+        nonlocal gradient_calls
+        gradient_calls += 1
+        return signed_distance_gradients(geometry, points)
+
+    monkeypatch.setattr(problem, "parse_tvar", count_parse_calls)
+    monkeypatch.setattr(
+        area_geometry_module, "signed_distance_gradients", count_gradient_calls
+    )
+
+    problem.get_gradients(np.array([], dtype=int), variables, func=constraint)
+
+    assert parse_calls == len(variables)
+    assert gradient_calls == 1
 
 
 @pytest.mark.parametrize(

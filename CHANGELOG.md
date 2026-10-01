@@ -157,15 +157,22 @@
   - Added support for Python 3.14
 - Callbacks:
   - Layout image snapshots now omit turbine annotations, use true turbine radii
-    with color-matched outlines, and live in a file-type subdirectory
+    with color-matched outlines, use configurable validity colors that default
+    to high-contrast blue and red, and live in a file-type subdirectory
   - Added a CSV optimization-history callback that records objective values and
     violated constraint-component counts for each iteration
 - Pipelines:
   - `LayoutOptimizerStage` now forwards callbacks to the optimizer
 - Constraints:
+  - Added `NearestGroupConstraint`, enforcing nearest-distance and minimum
+    connected-group-size limits with piecewise analytical position derivatives
   - `MinDistConstraint` now provides analytical position derivatives to *iwopy*
+  - Vectorized `MinDistConstraint` variable-dependency mask construction for
+    faster analytical Jacobians on large farms
   - Added analytical derivatives for area boundaries and geometrical layout
     constraints, including composed and internally excluded geometries
+  - Cached bulk signed-distance gradients when assembling area-geometry
+    Jacobians
 - Objectives:
   - Added analytical derivatives for turbine-count and geometrical layout
     objectives; FOXES-result objectives continue to require `iwopy.LocalFD`

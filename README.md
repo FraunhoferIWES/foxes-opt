@@ -69,8 +69,10 @@ The examples disable CSV output and write one image per generation or accepted
 iteration.
 Use `--layout_image_type` to select its file type; the default is `jpg`.
 Each plot title shows the selected layout's first objective name and value.
-Turbines associated with violated constraints are red; valid turbines are orange,
+Turbines associated with violated constraints are red; valid turbines are blue,
 and each image includes an upper-left legend for these colors.
+Set `valid_color` and `invalid_color` on `WriteLayoutCallback` to replace those
+defaults with named Matplotlib colors or hex color strings.
 The examples write these snapshots without per-file log messages.
 Early layouts may be infeasible; these are intermediate population snapshots,
 not final results.

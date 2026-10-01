@@ -325,11 +325,35 @@ def test_snapshot_marks_constraint_turbines_red(tmp_path, monkeypatch):
     monkeypatch.setattr(foxes.output.FarmLayoutOutput, "write_plot", capture_colors)
     callback.notify(_data([[100.0, 200.0, 300.0, 400.0]], constraints=[[1.0]]))
 
-    assert list(plot_args["c"]) == ["orange", "red"]
-    assert list(plot_args["edgecolors"]) == ["orange", "red"]
+    assert list(plot_args["c"]) == ["tab:blue", "red"]
+    assert list(plot_args["edgecolors"]) == ["tab:blue", "red"]
     assert plot_args["legend_labels"] == {
-        "orange": "Valid turbine",
+        "tab:blue": "Valid turbine",
         "red": "Constraint violation",
+    }
+
+
+def test_snapshot_accepts_custom_validity_colors(tmp_path, monkeypatch):
+    callback, _ = _snapshot(
+        tmp_path,
+        write_csv=False,
+        valid_color="#00aa44",
+        invalid_color="#cc00cc",
+    )
+    monkeypatch.setattr(callback, "_invalid_turbines", lambda data, selected: {1})
+    plot_args = {}
+
+    def capture_colors(output, file_name, **kwargs):
+        plot_args.update(kwargs)
+
+    monkeypatch.setattr(foxes.output.FarmLayoutOutput, "write_plot", capture_colors)
+    callback.notify(_data([[100.0, 200.0, 300.0, 400.0]]))
+
+    assert list(plot_args["c"]) == ["#00aa44", "#cc00cc"]
+    assert list(plot_args["edgecolors"]) == ["#00aa44", "#cc00cc"]
+    assert plot_args["legend_labels"] == {
+        "#00aa44": "Valid turbine",
+        "#cc00cc": "Constraint violation",
     }
 
 

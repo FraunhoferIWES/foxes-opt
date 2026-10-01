@@ -30,6 +30,8 @@ class WriteLayoutCallback(OptimizerCallback):
         write_csv: bool = True,
         write_image: bool = True,
         image_format: str = "jpg",
+        valid_color: str = "tab:blue",
+        invalid_color: str = "red",
     ) -> None:
         """
         Parameters
@@ -51,6 +53,11 @@ class WriteLayoutCallback(OptimizerCallback):
             Whether to write layout plot files.
         image_format
             The image file extension used for layout plots.
+        valid_color
+            The Matplotlib color for valid turbines.
+        invalid_color
+            The Matplotlib color for turbines associated with violated
+            constraints.
         """
         super().__init__()
         if n_step < 1:
@@ -66,6 +73,8 @@ class WriteLayoutCallback(OptimizerCallback):
         self.write_csv = write_csv
         self.write_image = write_image
         self.image_format = image_format
+        self.valid_color = valid_color
+        self.invalid_color = invalid_color
         self._problem: FarmOptProblem | None = None
         self._farm: foxes.WindFarm | None = None
 
@@ -179,8 +188,8 @@ class WriteLayoutCallback(OptimizerCallback):
             )
             if self.verbosity > 0:
                 print(f"Writing layout to {image_path}")
-            colors = np.full(self._farm.n_turbines, "orange", dtype=object)
-            colors[list(invalid_turbines)] = "red"
+            colors = np.full(self._farm.n_turbines, self.valid_color, dtype=object)
+            colors[list(invalid_turbines)] = self.invalid_color
             output.write_plot(
                 str(image_path),
                 figsize=self.figsize,
@@ -192,8 +201,8 @@ class WriteLayoutCallback(OptimizerCallback):
                 linewidths=0.4,
                 zorder=5,
                 legend_labels={
-                    "orange": "Valid turbine",
-                    "red": "Constraint violation",
+                    self.valid_color: "Valid turbine",
+                    self.invalid_color: "Constraint violation",
                 },
             )
 

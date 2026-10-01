@@ -118,16 +118,19 @@ class MinDistConstraint(FarmConstraint):
             variables, shape
 
         """
-        turbs = list(self.problem.sel_turbines)
-        deps: np.ndarray[tuple[int, int, int], np.dtype[Any]] = np.zeros(
-            (self.n_components(), len(turbs), 2), dtype=bool
-        )
-        for i, titj in enumerate(self._i2t):
-            for t in titj:
-                if t in turbs:
-                    j: int = turbs.index(t)
-                    deps[i, j] = True
-        return deps.reshape(self.n_components(), 2 * len(turbs))
+        turbines = np.asarray(self.problem.sel_turbines, dtype=int)
+        deps = np.zeros((self.n_components(), 2 * len(turbines)), dtype=bool)
+        turbine_to_var = np.full(self.farm.n_turbines, -1, dtype=int)
+        turbine_to_var[turbines] = np.arange(len(turbines))
+
+        for pair_column in range(2):
+            var_indices = turbine_to_var[self._i2t[:, pair_column]]
+            rows = np.flatnonzero(var_indices >= 0)
+            columns = 2 * var_indices[rows]
+            deps[rows, columns] = True
+            deps[rows, columns + 1] = True
+
+        return deps
 
     def ana_deriv(
         self,

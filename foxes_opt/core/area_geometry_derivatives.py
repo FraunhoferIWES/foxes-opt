@@ -90,24 +90,27 @@ def signed_distance_derivatives(
     moving = np.any(point_derivatives != 0.0, axis=1)
     if not np.any(moving):
         return out
+    gradients = signed_distance_gradients(geometry, points[moving])
+    out[moving] = np.einsum("pd,pd->p", gradients, point_derivatives[moving])
+    return out
+
+
+def signed_distance_gradients(
+    geometry: AreaGeometry,
+    points: np.ndarray,
+) -> np.ndarray:
+    """Calculate signed point-to-boundary distance gradients."""
+    out = np.full((len(points), 2), np.nan, dtype=np.float64)
     try:
-        result = geometry.points_distance(points[moving], return_nearest=True)
+        result = geometry.points_distance(points, return_nearest=True)
         distances, nearest = cast(tuple[np.ndarray, np.ndarray], result)
     except (FloatingPointError, ValueError):
-        out[moving] = np.nan
         return out
-    delta = points[moving] - nearest
+    delta = points - nearest
     distance = np.linalg.norm(delta, axis=1)
-    values = np.full(len(distance), np.nan, dtype=np.float64)
-    differentiable = (distance > 0.0) & _unique_nearest(
-        geometry, points[moving], distances
-    )
-    sign = np.where(geometry.points_inside(points[moving]), -1.0, 1.0)
-    normals = sign[differentiable, None] * (
+    differentiable = (distance > 0.0) & _unique_nearest(geometry, points, distances)
+    sign = np.where(geometry.points_inside(points), -1.0, 1.0)
+    out[differentiable] = sign[differentiable, None] * (
         delta[differentiable] / distance[differentiable, None]
     )
-    values[differentiable] = np.einsum(
-        "pd,pd->p", normals, point_derivatives[moving][differentiable]
-    )
-    out[moving] = values
     return out
