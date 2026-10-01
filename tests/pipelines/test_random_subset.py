@@ -3,6 +3,7 @@ from pathlib import Path
 import foxes
 import foxes.variables as FV
 import numpy as np
+import pytest
 import foxes_opt.pipelines.stages.layout_optimizer as layout_optimizer
 from foxes_opt.constraints import MinDistConstraint
 
@@ -327,14 +328,18 @@ def test_min_dist_constraint_can_check_only_selected_pairs():
 
 def test_layout_optimizer_stage_forwards_callbacks(monkeypatch, tmp_path):
     callback = object()
+    algo_pars = {"rotor_model": "centre_binned"}
     stage = LayoutOptimizerStage(
         optimizer_type="test",
         problem_type="CustomProblem",
         problem_pars={"custom": 3},
+        algo_pars=algo_pars,
         callbacks=[callback],
     )
+    algo_pars["rotor_model"] = "changed_after_construction"
     pipeline = _Pipeline(stage, tmp_path)
     stage.initialize(pipeline)
+    algo_calls = []
     factory_calls = []
     solve_calls = []
 
@@ -368,12 +373,17 @@ def test_layout_optimizer_stage_forwards_callbacks(monkeypatch, tmp_path):
         return _Problem()
 
     algo = _Algo()
+
+    def get_algo(**kwargs):
+        algo_calls.append(kwargs)
+        return algo
+
     monkeypatch.setattr(
         layout_optimizer.FarmOptProblem,
         "new",
         classmethod(new_problem),
     )
-    monkeypatch.setattr(pipeline, "get_algo", lambda **kwargs: algo, raising=False)
+    monkeypatch.setattr(pipeline, "get_algo", get_algo, raising=False)
     monkeypatch.setattr(stage, "_add_functions", lambda problem: None)
     monkeypatch.setattr(stage, "_prepare_problem", lambda problem: problem)
     monkeypatch.setattr(
@@ -384,6 +394,8 @@ def test_layout_optimizer_stage_forwards_callbacks(monkeypatch, tmp_path):
 
     _, candidate = stage._run_layout_optimizer(np.zeros((5, 2)), verbosity=0)
 
+    assert len(algo_calls) == 1
+    assert algo_calls[0]["rotor_model"] == "centre_binned"
     assert factory_calls == [
         (
             "CustomProblem",
@@ -397,6 +409,16 @@ def test_layout_optimizer_stage_forwards_callbacks(monkeypatch, tmp_path):
     ]
     assert solve_calls == [(0, [callback])]
     np.testing.assert_allclose(candidate[0], [3.0, 4.0])
+
+
+def test_layout_optimizer_stage_rejects_reserved_algo_pars(tmp_path):
+    stage = LayoutOptimizerStage(
+        optimizer_type="test",
+        algo_pars={"states": object()},
+    )
+
+    with pytest.raises(ValueError, match="reserved algorithm parameters.*states"):
+        stage.initialize(_Pipeline(stage, tmp_path))
 
 
 def test_layout_optimizer_stage_boundary_repair_reduces_main_selection(
@@ -555,6 +577,7 @@ def test_layout_optimizer_stage_boundary_repair_uses_one_d_without_min_dist(
         optimizer_type="test",
         boundary_repair=True,
         min_dist=None,
+        algo_pars={"rotor_model": "centre_binned"},
     )
 
     class _Boundary:
@@ -583,7 +606,13 @@ def test_layout_optimizer_stage_boundary_repair_uses_one_d_without_min_dist(
 
     pipeline = _PipelineWithBoundary(stage, tmp_path)
     stage.initialize(pipeline)
-    monkeypatch.setattr(pipeline, "get_algo", lambda **kwargs: _Algo(), raising=False)
+    algo_calls = []
+
+    def get_algo(**kwargs):
+        algo_calls.append(kwargs)
+        return _Algo()
+
+    monkeypatch.setattr(pipeline, "get_algo", get_algo, raising=False)
 
     turbines = stage._boundary_repair_turbines(
         np.zeros((3, 2)),
@@ -593,6 +622,8 @@ def test_layout_optimizer_stage_boundary_repair_uses_one_d_without_min_dist(
     )
 
     assert turbines == [0, 1]
+    assert len(algo_calls) == 1
+    assert algo_calls[0]["rotor_model"] == "centre_binned"
 
 
 def test_layout_optimizer_stage_boundary_repair_failure_returns_original(

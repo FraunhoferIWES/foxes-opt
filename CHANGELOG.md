@@ -163,6 +163,8 @@
     violated constraint-component counts for each iteration
 - Pipelines:
   - `LayoutOptimizerStage` now forwards callbacks to the optimizer
+  - `LayoutOptimizerStage` now accepts stage-local FOXES algorithm parameter
+    overrides through `algo_pars`
 - Constraints:
   - Added `NearestGroupConstraint`, enforcing nearest-distance and minimum
     connected-group-size limits with piecewise analytical position derivatives

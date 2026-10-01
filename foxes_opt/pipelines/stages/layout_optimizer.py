@@ -42,6 +42,7 @@ class LayoutOptimizerStage(PipelineStage):
         boundary_repair_optimizer_type: str | None = None,
         boundary_repair_optimizer_pars: dict[str, Any] | None = None,
         flow_states: States | None = None,
+        algo_pars: dict[str, Any] | None = None,
         callbacks: list[OptimizerCallback] | None = None,
         name: str = "layout_optimizer",
         **kwargs: Any,
@@ -86,6 +87,8 @@ class LayoutOptimizerStage(PipelineStage):
             override ``optimizer_pars`` for the repair run only.
         flow_states
             States used for optimization, or ``None`` for pipeline states.
+        algo_pars
+            FOXES algorithm parameter overrides used only by this stage.
         callbacks
             Ordered callbacks for intermediate optimizer states.
         name
@@ -119,6 +122,7 @@ class LayoutOptimizerStage(PipelineStage):
             else boundary_repair_optimizer_pars.copy()
         )
         self.flow_states = flow_states
+        self.algo_pars = {} if algo_pars is None else algo_pars.copy()
         self.callbacks = None if callbacks is None else callbacks.copy()
 
     @property
@@ -143,6 +147,19 @@ class LayoutOptimizerStage(PipelineStage):
         )
         if self._flow_states is None:
             raise ValueError(f"{self.name}: Missing flow states")
+        reserved_algo_pars = {
+            "farm",
+            "layout_xy",
+            "states",
+            "initialize",
+            "force",
+            "verbosity",
+        }.intersection(self.algo_pars)
+        if reserved_algo_pars:
+            raise ValueError(
+                f"{self.name}: algo_pars contains reserved algorithm parameters: "
+                f"{sorted(reserved_algo_pars)}"
+            )
         if pipeline.farm_boundary is None:
             raise ValueError(f"{self.name}: A farm boundary is required")
         if not self.optimizer_type:
@@ -348,6 +365,7 @@ class LayoutOptimizerStage(PipelineStage):
             initialize=True,
             force=False,
             verbosity=max(verbosity - 2, 0),
+            **self.algo_pars,
         )
         try:
             diameters = algo.farm.get_rotor_diameters(algo)
@@ -486,6 +504,7 @@ class LayoutOptimizerStage(PipelineStage):
             initialize=False,
             force=False,
             verbosity=0,
+            **self.algo_pars,
         )
         problem = FarmOptProblem.new(
             problem_type=self.problem_type,
