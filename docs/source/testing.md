@@ -1,13 +1,13 @@
 # Testing
 
-For testing, please clone the repository and install the required dependencies:
-```console
-git clone https://github.com/FraunhoferIWES/foxes-opt.git
-cd foxes-opt
-pip install -e .[test]
-```
+Use the developer-owned environment described in the
+[installation guide](installation.md#installation-as-developer) and
+[development guide](../development.md#developer-owned-environment-setup). Do
+not install or synchronize dependencies as part of a test run. If the
+environment is missing or stale, ask the developer to re-sync it.
 
-The tests are then run by
+Run the tests from the repository root with mandatory `--no-sync`:
+
 ```console
-pytest tests
+uv run --no-sync pytest tests
 ```

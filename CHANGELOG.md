@@ -155,6 +155,10 @@
 
 - General:
   - Added support for Python 3.14
+  - Added coding-agent policies, including developer-owned uv setup and
+    mandatory `uv run --no-sync`, plus FOXES Optimization-specific architecture,
+    naming, development, docstring, ADR, data-classification, and visual-design
+    guidance
 - Callbacks:
   - Layout image snapshots now omit turbine annotations, use true turbine radii
     with color-matched outlines, use configurable validity colors that default

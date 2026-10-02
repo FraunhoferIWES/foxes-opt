@@ -7,7 +7,7 @@ This example runs a pymoo-based layout optimization with heterogeneous ambient s
 The repository already contains five deterministic NetCDF input files in `data/`. To regenerate them, run:
 
 ```console
-uv run python generate_data.py
+uv run --no-sync python generate_data.py
 ```
 
 ## Check options
@@ -15,7 +15,7 @@ uv run python generate_data.py
 Inspect the command line options with:
 
 ```console
-uv run python run_pymoo.py -h
+uv run --no-sync python run_pymoo.py -h
 ```
 
 ## Run the optimization
@@ -23,17 +23,17 @@ uv run python run_pymoo.py -h
 Run the example with the default five-file pattern:
 
 ```console
-uv run python run_pymoo.py
+uv run --no-sync python run_pymoo.py
 ```
 
 Run it without figures, for quicker smoke testing:
 
 ```console
-uv run python run_pymoo.py --nofig -P 12 -G 3 -nt 6
+uv run --no-sync python run_pymoo.py --nofig -P 12 -G 3 -nt 6
 ```
 
 Population vectorization is disabled by default in this example because `FieldData` states are evaluated reliably through pymoo's individual-evaluation path. You can still opt in explicitly:
 
 ```console
-uv run python run_pymoo.py --vectorize
+uv run --no-sync python run_pymoo.py --vectorize
 ```

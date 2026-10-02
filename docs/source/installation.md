@@ -19,16 +19,17 @@ conda install foxes-opt -c conda-forge
 
 ## Installation as developer
 
-As a developer, first clone both repositories,
-and then install via pip using the `-e` flag:
+The developer creates and maintains the uv environment from the `foxes-opt`
+repository root. The default setup uses editable FOXES and iwopy checkouts:
 
 ```console
-git clone https://github.com/FraunhoferIWES/foxes.git
-pip install -e foxes
-
-git clone https://github.com/FraunhoferIWES/foxes-opt.git
-pip install -e foxes-opt
+uv sync --extra dev --extra test --upgrade
+uv pip uninstall foxes iwopy
+uv pip install -e <path to foxes>[test,dev,mpi,shp] --upgrade
+uv pip install -e <path to iwopy>[opt] --upgrade
 ```
 
-If you want to contribute your developments, please replace
-the above repository locations by your personal forks.
+During development, run project commands with `uv run --no-sync` so uv does not
+replace those editable installs. Coding agents and other contributors do not
+change the environment; if it needs repair, they ask the developer to re-sync
+it. See the [development guide](../development.md) for the complete workflow.
