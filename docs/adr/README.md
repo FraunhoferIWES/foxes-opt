@@ -13,6 +13,7 @@ all of them.
 | ADR | Status | Decision |
 |---|---|---|
 | [0001](0001-forward-only-development.md) | Accepted | Development is forward-only by default; the developer owns uv environment setup, routine commands use `--no-sync`, and changes close with tests, pre-commit, current docstrings, changelog, and documentation. |
+| [0002](0002-corporate-design.md) | Accepted | Apply Fraunhofer corporate design to FOXES Optimization plots, callback snapshots, documentation, notebooks, and brand assets. |
 
 ## When To Add An ADR
 

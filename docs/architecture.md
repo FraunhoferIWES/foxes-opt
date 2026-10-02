@@ -276,11 +276,10 @@ forward-only by default under
 	remain in annotations.
 - Ruff formatting/linting and mypy run through pre-commit. Pytest is the test
 	runner; Sphinx with AutoAPI, numpydoc, and MyST-NB builds the documentation.
-- The repository has no browser UI and no design-token adapter. Its visual
-	surface consists of matplotlib plots, callback snapshots, documentation, and
-	notebooks. Visual changes first follow the policy in
-	[AGENTS.md](../AGENTS.md#ui-design-policy) and the applicable corporate chart
-	guidance.
+- FOXES Optimization follows the Fraunhofer corporate design. The repository
+	has no browser UI and no design-token adapter; corporate requirements apply to
+	matplotlib plots, callback snapshots, examples, notebooks, documentation, and
+	brand assets. See [ADR-0002](adr/0002-corporate-design.md).
 
 ## ADR Triggers
 

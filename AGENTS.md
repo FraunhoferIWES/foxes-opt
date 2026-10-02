@@ -15,8 +15,6 @@ applicable project-local instruction explicitly and justifiably overrides them.
 5. Use `docs/docstrings.md` for public Python documentation contracts.
 6. Use `docs/development.md` for setup, navigation, test selection, and quality
 	 gates.
-4. Project instantiations may add focused local instructions for established
-	 product requirements. Do not copy or modify these general rules to do so.
 
 ## Working Protocol
 

@@ -159,6 +159,7 @@
     mandatory `uv run --no-sync`, plus FOXES Optimization-specific architecture,
     naming, development, docstring, ADR, data-classification, and visual-design
     guidance
+  - Recorded Fraunhofer corporate design for FOXES Optimization visual surfaces
 - Callbacks:
   - Layout image snapshots now omit turbine annotations, use true turbine radii
     with color-matched outlines, use configurable validity colors that default
