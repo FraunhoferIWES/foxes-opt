@@ -159,12 +159,16 @@
   - Layout image snapshots now omit turbine annotations, use true turbine radii
     with color-matched outlines, use configurable validity colors that default
     to high-contrast blue and red, and live in a file-type subdirectory
+  - Layout callbacks now write the initial layout as step zero by default, with
+    an option to disable the initial snapshot
   - Added a CSV optimization-history callback that records objective values and
     violated constraint-component counts for each iteration
 - Pipelines:
   - `LayoutOptimizerStage` now forwards callbacks to the optimizer
   - `LayoutOptimizerStage` now accepts stage-local FOXES algorithm parameter
     overrides through `algo_pars`
+  - Layout plots now match callback snapshots with true turbine radii,
+    high-contrast colors, matched outlines, and validity legends
 - Constraints:
   - Added `NearestGroupConstraint`, enforcing nearest-distance and minimum
     connected-group-size limits with piecewise analytical position derivatives

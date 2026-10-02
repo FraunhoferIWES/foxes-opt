@@ -14,6 +14,8 @@ from foxes_opt.core import FarmConstraint, FarmOptProblem
 class WriteLayoutCallback(OptimizerCallback):
     """Write intermediate optimization layouts to CSV and image files.
 
+    By default, the initial layout is written as step zero before optimizer
+    iterations begin. This can be disabled with ``write_initial=False``.
     For population snapshots, the member with the best finite first objective
     is written. Iteration-based optimizers use their iteration number in file
     names; evaluation-based optimizers use their cumulative evaluation count.
@@ -32,6 +34,7 @@ class WriteLayoutCallback(OptimizerCallback):
         image_format: str = "jpg",
         valid_color: str = "tab:blue",
         invalid_color: str = "red",
+        write_initial: bool = True,
     ) -> None:
         """
         Parameters
@@ -58,6 +61,8 @@ class WriteLayoutCallback(OptimizerCallback):
         invalid_color
             The Matplotlib color for turbines associated with violated
             constraints.
+        write_initial
+            Whether to write the initial layout as step zero.
         """
         super().__init__()
         if n_step < 1:
@@ -75,6 +80,7 @@ class WriteLayoutCallback(OptimizerCallback):
         self.image_format = image_format
         self.valid_color = valid_color
         self.invalid_color = invalid_color
+        self.write_initial = write_initial
         self._problem: FarmOptProblem | None = None
         self._farm: foxes.WindFarm | None = None
 
@@ -102,6 +108,8 @@ class WriteLayoutCallback(OptimizerCallback):
             turbine.D = float(diameter)
         if self.write_csv or self.write_image:
             self.out_dir.mkdir(parents=True, exist_ok=True)
+            if self.write_initial:
+                self._write_layout(0, None, set())
 
     def _best_index(self, data: OptimizerCallbackData) -> int:
         if len(data.vars_float) == 1:

@@ -235,6 +235,20 @@ def snapshot(tmp_path):
     return _snapshot(tmp_path)
 
 
+def test_initial_snapshot_written_by_default(tmp_path):
+    callback, _ = _snapshot(tmp_path, write_image=False)
+
+    layout = pd.read_csv(callback.out_dir / "layout_00000.csv")
+    np.testing.assert_allclose(layout[["x", "y"]], [[10.0, 20.0], [30.0, 40.0]])
+    assert set(layout["turbine_type"]) == {"test_type"}
+
+
+def test_initial_snapshot_can_be_disabled(tmp_path):
+    callback, _ = _snapshot(tmp_path, write_initial=False)
+
+    assert not list(callback.out_dir.iterdir())
+
+
 def _data(
     values,
     iteration=1,
@@ -407,19 +421,21 @@ def test_snapshot_uses_evaluation_count(snapshot):
 
 def test_snapshot_skips_empty_population(snapshot):
     callback, _ = snapshot
+    existing = set(callback.out_dir.rglob("*"))
     callback.notify(_data([]))
-    assert not list(callback.out_dir.iterdir())
+    assert set(callback.out_dir.rglob("*")) == existing
 
 
 def test_snapshot_requires_generation(snapshot):
     callback, _ = snapshot
+    existing = set(callback.out_dir.rglob("*"))
     with pytest.raises(ValueError, match="iteration or evaluation count"):
         callback.notify(_data([[1, 2, 3, 4]], iteration=None))
-    assert not list(callback.out_dir.iterdir())
+    assert set(callback.out_dir.rglob("*")) == existing
 
 
-def test_snapshot_propagates_output_errors(snapshot):
-    callback, _ = snapshot
+def test_snapshot_propagates_output_errors(tmp_path):
+    callback, _ = _snapshot(tmp_path, write_initial=False)
     callback.out_dir.rmdir()
     callback.out_dir.write_text("not a directory")
     with pytest.raises(OSError):

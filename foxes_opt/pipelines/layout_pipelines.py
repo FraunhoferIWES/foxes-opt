@@ -238,6 +238,9 @@ class LayoutPipeline(Pipeline):
             The turbine annotation level
         final
             Whether this is the final layout plot
+        kwargs
+            Additional farm layout plot parameters. These override the default
+            turbine style shared with the layout callback.
 
         """
         farm = algo.farm
@@ -274,13 +277,26 @@ class LayoutPipeline(Pipeline):
 
         print(f"{self.name}: Creating layout plot {plot_path}")
 
-        o = FarmLayoutOutput(farm, farm_results=farm_results)
+        o = FarmLayoutOutput(farm, farm_results=farm_results, algo=algo)
+        colors = np.full(farm.n_turbines, "tab:blue", dtype=object)
+        plot_pars = {
+            "annotate": annotate,
+            "true_turbine_radii": True,
+            "c": colors,
+            "edgecolors": colors,
+            "linewidths": 0.4,
+            "zorder": 5,
+            "legend_labels": {
+                "tab:blue": "Valid turbine",
+                "red": "Constraint violation",
+            },
+        }
+        plot_pars.update(kwargs)
         o.get_figure(
             fig=fig,
             ax=ax,
-            annotate=annotate,
             title=None if show_flow else title,
-            **kwargs,
+            **plot_pars,
         )
 
         if show_flow:
