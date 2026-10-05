@@ -173,3 +173,45 @@ def test_run_passes_restart_layout_to_selected_stage(tmp_path, monkeypatch):
     np.testing.assert_allclose(calls[0]["initial_results"], layout)
     np.testing.assert_allclose(results[0], layout)
     assert results[1] is None
+
+
+def test_run_passes_initial_layout_to_first_stage(tmp_path, monkeypatch):
+    layout = np.array([[1.0, 2.0], [3.0, 4.0]])
+    pipeline = LayoutPipeline(tmp_path, {}, 2, [], None)
+    calls = []
+
+    def run_pipeline(self, **kwargs):
+        calls.append(kwargs)
+        return True, kwargs["initial_results"]
+
+    monkeypatch.setattr(
+        "foxes_opt.pipelines.layout_pipelines.Pipeline.run",
+        run_pipeline,
+    )
+
+    success, results = pipeline.run(initial_layout=layout, verbosity=0)
+
+    assert success
+    np.testing.assert_allclose(calls[0]["initial_results"], layout)
+    np.testing.assert_allclose(results[0], layout)
+    assert results[1] is None
+
+
+def test_run_rejects_conflicting_initial_layouts(tmp_path):
+    pipeline = LayoutPipeline(tmp_path, {}, 2, [], None)
+    layout = np.array([[1.0, 2.0], [3.0, 4.0]])
+
+    with pytest.raises(ValueError, match="mutually exclusive"):
+        pipeline.run(
+            initial_layout=layout,
+            restart_layout_index=0,
+            verbosity=0,
+        )
+
+
+def test_run_rejects_non_finite_initial_layout(tmp_path):
+    pipeline = LayoutPipeline(tmp_path, {}, 2, [], None)
+    layout = np.array([[1.0, 2.0], [3.0, np.nan]])
+
+    with pytest.raises(ValueError, match="non-finite"):
+        pipeline.run(initial_layout=layout, verbosity=0)

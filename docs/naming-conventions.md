@@ -216,6 +216,8 @@ consumers.
 - Use `prev_results` for a stage's incoming result and `results` for its returned
 	payload. Keep the `(success, results)` pair distinct from optimizer
 	`opt_results`.
+- Use `initial_layout` for a caller-supplied coordinate array that starts a
+	fresh pipeline run.
 - Use `restart_layout_index` for a persisted layout's numeric file suffix and
 	`restart_layout_dir` for its containing directory. Zero padding is a file
 	format detail, not part of the index value.

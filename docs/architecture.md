@@ -169,6 +169,11 @@ finalizes, and returns the incoming layout when it cannot produce a valid
 replacement. The completed layout pipeline returns `(success, results)`, where
 successful layout results are converted to `(algo, farm_results)`.
 
+A fresh pipeline run may supply finite turbine coordinates through
+`initial_layout`; the first selected stage receives that array directly. This
+does not imply persisted-run continuation, callback offsets, history append
+mode, or preservation of the existing pipeline table.
+
 A restart selects a persisted `layout_<index>.csv` by numeric suffix, validates
 its turbine order and coordinate array, and supplies it as the initial result
 for the first selected stage. Restart directories resolve below the pipeline

@@ -174,6 +174,8 @@
   - `LayoutOptimizerStage` now forwards callbacks to the optimizer
   - `LayoutOptimizerStage` now accepts stage-local FOXES algorithm parameter
     overrides through `algo_pars`
+  - `LayoutPipeline` accepts a finite initial coordinate array for starting a
+    fresh first stage without a preceding layout-generation stage
   - `LayoutPipeline` can restart a selected stage from a validated persisted
     layout index without resetting earlier pipeline results
   - Automatic minimum-distance constraints accept their own parameter mapping,

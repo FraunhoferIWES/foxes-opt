@@ -2,6 +2,19 @@ foxes_opt.pipelines
 ===================
 Pipelines for combining multiple wind farm optimizations.
 
+Starting from an initial layout
+-------------------------------
+
+``LayoutPipeline.run`` can pass a finite coordinate array directly to the first
+selected stage of a fresh pipeline run:
+
+.. code-block:: python
+
+    success, results = pipeline.run(initial_layout=layout_xy)
+
+The array must have shape ``(n_turbines, 2)``. This starts a new run and does
+not continue callback numbering or optimization history.
+
 Restarting a layout stage
 -------------------------
 

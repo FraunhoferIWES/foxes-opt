@@ -576,6 +576,7 @@ class LayoutPipeline(Pipeline):
         self,
         start_stage: int = 0,
         end_stage: int | None = None,
+        initial_layout: np.ndarray | None = None,
         restart_layout_index: int | None = None,
         restart_layout_dir: str | Path = "layouts",
         finalize: bool = True,
@@ -583,12 +584,12 @@ class LayoutPipeline(Pipeline):
         layout_plot_pars_final: dict[str, Any] | None = None,
         verbosity: int = 1,
     ) -> tuple[bool, tuple[Any, Any]]:
-        """Run selected layout stages, optionally from a persisted layout.
+        """Run selected layout stages from an optional initial layout.
 
-        A restart layout is loaded before stage execution and supplied as the
-        first selected stage's ``prev_results``. Successful layout coordinates
-        are evaluated with FOXES and written to the pipeline table and final
-        layout outputs.
+        A supplied or persisted layout is validated before stage execution and
+        passed to the first selected stage as ``prev_results``. Successful
+        layout coordinates are evaluated with FOXES and written to the pipeline
+        table and final layout outputs.
 
         Parameters
         ----------
@@ -596,9 +597,13 @@ class LayoutPipeline(Pipeline):
             Index of the first stage to run.
         end_stage
             Exclusive end index, or ``None`` to run through the final stage.
+        initial_layout
+            Initial turbine x/y coordinates with shape ``(n_turbines, 2)``, or
+            ``None`` to use normal stage propagation. Mutually exclusive with
+            ``restart_layout_index``.
         restart_layout_index
             Persisted layout index supplied to the first selected stage, or
-            ``None`` to use normal stage propagation.
+            ``None`` to use ``initial_layout`` or normal stage propagation.
         restart_layout_dir
             Directory containing persisted layouts. Relative paths are
             resolved below ``base_dir``.
@@ -624,16 +629,26 @@ class LayoutPipeline(Pipeline):
         TypeError
             If ``restart_layout_index`` is not an integer.
         ValueError
-            If the restart layout or its index is invalid.
+            If both initial-layout options are supplied, or if either layout or
+            the restart index is invalid.
         FileNotFoundError
             If the requested restart layout does not exist.
 
         """
-        initial_results = (
-            None
-            if restart_layout_index is None
-            else self.read_layout_index(restart_layout_index, restart_layout_dir)
-        )
+        if initial_layout is not None and restart_layout_index is not None:
+            raise ValueError(
+                "initial_layout and restart_layout_index are mutually exclusive"
+            )
+        if initial_layout is not None:
+            initial_results = self.read_layout(initial_layout)
+            if not np.all(np.isfinite(initial_results)):
+                raise ValueError("Initial layout contains non-finite coordinates")
+        elif restart_layout_index is not None:
+            initial_results = self.read_layout_index(
+                restart_layout_index, restart_layout_dir
+            )
+        else:
+            initial_results = None
         success, results = super().run(
             start_stage=start_stage,
             end_stage=end_stage,
