@@ -63,6 +63,55 @@ def test_history_preserves_iteration_when_values_are_unavailable(tmp_path):
     ]
 
 
+def test_history_appends_with_restart_offset(tmp_path):
+    file_path = tmp_path / "history.csv"
+    optimizer = SimpleNamespace(problem=_Problem())
+    initial = WriteOptimizationHistoryCallback(file_path)
+    initial.initialize(optimizer)
+    initial.notify(_data(188, [1.0], [[-1.0]]))
+    restarted = WriteOptimizationHistoryCallback(
+        file_path,
+        iteration_offset=188,
+        append=True,
+    )
+    restarted.initialize(optimizer)
+
+    restarted.notify(_data(1, [2.0], [[-1.0]]))
+
+    assert [row["iteration"] for row in _rows(file_path)] == ["188", "189"]
+
+
+@pytest.mark.parametrize("iteration_offset", [True, 1.5])
+def test_history_rejects_non_integer_iteration_offset(tmp_path, iteration_offset):
+    with pytest.raises(TypeError, match="iteration_offset must be an integer"):
+        WriteOptimizationHistoryCallback(
+            tmp_path / "history.csv",
+            iteration_offset=iteration_offset,
+        )
+
+
+def test_history_rejects_negative_iteration_offset(tmp_path):
+    with pytest.raises(ValueError, match="iteration_offset must be non-negative"):
+        WriteOptimizationHistoryCallback(
+            tmp_path / "history.csv",
+            iteration_offset=-1,
+        )
+
+
+def test_history_rejects_non_boolean_append(tmp_path):
+    with pytest.raises(TypeError, match="append must be a boolean"):
+        WriteOptimizationHistoryCallback(tmp_path / "history.csv", append=1)
+
+
+def test_history_rejects_malformed_append_header(tmp_path):
+    file_path = tmp_path / "history.csv"
+    file_path.write_text("wrong,header\n", encoding="utf-8")
+    callback = WriteOptimizationHistoryCallback(file_path, append=True)
+
+    with pytest.raises(ValueError, match="Unexpected optimization history header"):
+        callback.initialize(SimpleNamespace(problem=_Problem()))
+
+
 def test_history_rejects_unknown_objective(tmp_path):
     callback = WriteOptimizationHistoryCallback(tmp_path / "history.csv", objective=1)
 

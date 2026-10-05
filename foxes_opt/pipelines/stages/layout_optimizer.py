@@ -38,6 +38,7 @@ class LayoutOptimizerStage(PipelineStage):
         min_dist: float | list[float] | None = 2.5,
         min_dist_unit: str = "D",
         min_dist_constraint_type: str | None = "MinDistConstraint",
+        min_dist_constraint_pars: dict[str, Any] | None = None,
         boundary_repair: bool = False,
         boundary_repair_optimizer_type: str | None = None,
         boundary_repair_optimizer_pars: dict[str, Any] | None = None,
@@ -47,7 +48,8 @@ class LayoutOptimizerStage(PipelineStage):
         name: str = "layout_optimizer",
         **kwargs: Any,
     ) -> None:
-        """
+        """Initialize the layout optimization stage.
+
         Parameters
         ----------
         optimizer_type
@@ -76,6 +78,11 @@ class LayoutOptimizerStage(PipelineStage):
         min_dist_constraint_type
             Constraint type used for the default minimum-distance constraint,
             or ``None``/``"None"`` to skip it.
+        min_dist_constraint_pars
+            Additional parameters for the default minimum-distance constraint,
+            such as its family-specific feasibility tolerance. The stage owns
+            ``problem``, ``min_dist``, ``min_dist_unit``, and
+            ``check_only_selected`` and rejects them here.
         boundary_repair
             If ``True``, first optimize turbines that violate the farm boundary,
             then exclude them from the main optimization.
@@ -114,6 +121,9 @@ class LayoutOptimizerStage(PipelineStage):
         self.__min_dist: float | list[float] | None = min_dist
         self.min_dist_unit = min_dist_unit
         self.min_dist_constraint_type = min_dist_constraint_type
+        self.min_dist_constraint_pars = (
+            {} if min_dist_constraint_pars is None else min_dist_constraint_pars.copy()
+        )
         self.boundary_repair = boundary_repair
         self.boundary_repair_optimizer_type = boundary_repair_optimizer_type
         self.boundary_repair_optimizer_pars = (
@@ -127,6 +137,14 @@ class LayoutOptimizerStage(PipelineStage):
 
     @property
     def min_dist(self) -> float | list[float] | None:
+        """The default minimum turbine distance.
+
+        Returns
+        -------
+        min_dist
+            Scalar or per-turbine minimum distance, or ``None`` when the
+            automatic minimum-distance constraint is disabled.
+        """
         return self.__min_dist
 
     def initialize(self, pipeline: Pipeline, verbosity: int = 0) -> None:
@@ -139,6 +157,13 @@ class LayoutOptimizerStage(PipelineStage):
             The pipeline hosting this optimization stage.
         verbosity
             Verbosity level used during initialization.
+
+        Raises
+        ------
+        ValueError
+            If required pipeline data or factory types are missing, units are
+            invalid, or stage-owned constructor parameters are supplied through
+            a pass-through parameter mapping.
         """
         super().initialize(pipeline, verbosity=verbosity)
         self._pipeline = pipeline
@@ -174,6 +199,17 @@ class LayoutOptimizerStage(PipelineStage):
             raise ValueError(f"{self.name}: Missing problem_type")
         if self.min_dist_unit not in ("m", "D"):
             raise ValueError(f"{self.name}: min_dist_unit must be either 'm' or 'D'")
+        reserved_min_dist_pars = {
+            "problem",
+            "min_dist",
+            "min_dist_unit",
+            "check_only_selected",
+        }.intersection(self.min_dist_constraint_pars)
+        if reserved_min_dist_pars:
+            raise ValueError(
+                f"{self.name}: min_dist_constraint_pars contains reserved parameters: "
+                f"{sorted(reserved_min_dist_pars)}"
+            )
         if {"problem"}.intersection(self.optimizer_pars):
             raise ValueError(
                 f"{self.name}: optimizer_pars contains reserved parameter 'problem'"
@@ -250,6 +286,7 @@ class LayoutOptimizerStage(PipelineStage):
                     problem=problem,
                     min_dist=self.min_dist,
                     min_dist_unit=self.min_dist_unit,
+                    **self.min_dist_constraint_pars,
                 )
             )
         for pars in self.constraints or []:
@@ -289,6 +326,7 @@ class LayoutOptimizerStage(PipelineStage):
                     min_dist=self.min_dist,
                     min_dist_unit=self.min_dist_unit,
                     check_only_selected=True,
+                    **self.min_dist_constraint_pars,
                 )
             )
 

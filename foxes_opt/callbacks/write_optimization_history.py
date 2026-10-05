@@ -12,17 +12,40 @@ class WriteOptimizationHistoryCallback(OptimizerCallback):
 
     Population states report the individual with the best finite configured
     objective. Iterations without cached values retain their row with empty
-    objective and constraint fields.
+    objective and constraint fields. By default initialization replaces an
+    existing file. Append mode preserves rows only when the existing CSV header
+    matches this callback's schema.
     """
 
-    def __init__(self, file_path: str | Path, objective: int = 0) -> None:
-        """
+    def __init__(
+        self,
+        file_path: str | Path,
+        objective: int = 0,
+        iteration_offset: int = 0,
+        append: bool = False,
+    ) -> None:
+        """Initialize the optimization history callback.
+
         Parameters
         ----------
         file_path
             Path of the CSV history file.
         objective
             Objective component used to select and report an individual.
+        iteration_offset
+            Non-negative offset added to reported iteration numbers.
+        append
+            Whether to preserve and append to a non-empty existing history
+            file. Missing and empty files receive a new header.
+
+        Raises
+        ------
+        TypeError
+            If ``iteration_offset`` is not an integer or ``append`` is not a
+            boolean.
+        ValueError
+            If ``objective`` is not a non-negative integer or
+            ``iteration_offset`` is negative.
         """
         super().__init__()
         if (
@@ -31,12 +54,35 @@ class WriteOptimizationHistoryCallback(OptimizerCallback):
             or objective < 0
         ):
             raise ValueError("objective must be a non-negative integer")
+        if isinstance(iteration_offset, bool) or not isinstance(iteration_offset, int):
+            raise TypeError("iteration_offset must be an integer")
+        if iteration_offset < 0:
+            raise ValueError("iteration_offset must be non-negative")
+        if not isinstance(append, bool):
+            raise TypeError("append must be a boolean")
         self.file_path = Path(file_path)
         self.objective = objective
+        self.iteration_offset = iteration_offset
+        self.append = append
         self._problem: Problem | None = None
 
     def initialize(self, optimizer: Optimizer) -> None:
-        """Initialize the callback and reset the history file."""
+        """Prepare the history file for optimizer notifications.
+
+        Parameters
+        ----------
+        optimizer
+            Optimizer whose problem defines objective direction and constraint
+            feasibility.
+
+        Raises
+        ------
+        IndexError
+            If the selected objective component does not exist.
+        ValueError
+            If append mode encounters a non-empty file with another CSV
+            header.
+        """
         super().initialize(optimizer)
         self._problem = optimizer.problem
         if self.objective >= self._problem.n_objectives:
@@ -45,10 +91,17 @@ class WriteOptimizationHistoryCallback(OptimizerCallback):
                 f"[0, {self._problem.n_objectives})"
             )
         self.file_path.parent.mkdir(parents=True, exist_ok=True)
-        with self.file_path.open("w", encoding="utf-8", newline="") as stream:
-            csv.writer(stream).writerow(
-                ["iteration", "objective", "n_violated_constraints"]
-            )
+        header = ["iteration", "objective", "n_violated_constraints"]
+        if self.append and self.file_path.exists() and self.file_path.stat().st_size:
+            with self.file_path.open(encoding="utf-8", newline="") as stream:
+                existing_header = next(csv.reader(stream), None)
+            if existing_header != header:
+                raise ValueError(
+                    f"Unexpected optimization history header in {self.file_path}"
+                )
+        else:
+            with self.file_path.open("w", encoding="utf-8", newline="") as stream:
+                csv.writer(stream).writerow(header)
 
     def _best_index(self, data: OptimizerCallbackData) -> int | None:
         if data.objs is None:
@@ -68,7 +121,21 @@ class WriteOptimizationHistoryCallback(OptimizerCallback):
         return int(finite[select(objective_values[finite])])
 
     def notify(self, data: OptimizerCallbackData) -> None:
-        """Append the current objective and violation count to the CSV file."""
+        """Append the current objective and violation count to the CSV file.
+
+        Parameters
+        ----------
+        data
+            Normalized optimizer callback snapshot for one iteration.
+
+        Raises
+        ------
+        ValueError
+            If the snapshot has no iteration number or lacks the configured
+            objective component.
+        RuntimeError
+            If the callback has not been initialized.
+        """
         if data.iteration is None:
             raise ValueError("Optimization history output requires an iteration number")
         if self._problem is None:
@@ -85,5 +152,9 @@ class WriteOptimizationHistoryCallback(OptimizerCallback):
 
         with self.file_path.open("a", encoding="utf-8", newline="") as stream:
             csv.writer(stream).writerow(
-                [data.iteration, objective_value, n_violated_constraints]
+                [
+                    self.iteration_offset + data.iteration,
+                    objective_value,
+                    n_violated_constraints,
+                ]
             )

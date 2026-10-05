@@ -13,6 +13,8 @@ from iwopy.core import Pipeline, PipelineStage
 import foxes.variables as FV
 import foxes.constants as FC
 
+from ._layout_io import read_layout_index as _read_layout_index
+
 
 class LayoutPipeline(Pipeline):
     """
@@ -525,46 +527,117 @@ class LayoutPipeline(Pipeline):
                 f"Invalid results format for reading layout coordinates, got {type(layout_xy)}."
             )
 
+    def read_layout_index(
+        self,
+        layout_index: int,
+        layout_dir: str | Path = "layouts",
+    ) -> np.ndarray:
+        """Read a persisted pipeline layout by its numeric file suffix.
+
+        Files are matched as ``layout_<index>.csv`` by numeric suffix, so zero
+        padding does not affect the match. The CSV must contain finite ``x``
+        and ``y`` columns and may contain an ``index`` column equal to
+        ``0, ..., n_turbines - 1``.
+
+        Parameters
+        ----------
+        layout_index
+            Non-negative numeric suffix of the layout file.
+        layout_dir
+            Existing layout directory. Relative paths are resolved below the
+            pipeline ``base_dir``; absolute paths are used unchanged.
+
+        Returns
+        -------
+        layout_xy
+            Turbine x/y coordinates in metres with shape
+            ``(n_turbines, 2)``.
+
+        Raises
+        ------
+        TypeError
+            If ``layout_index`` is not an integer.
+        ValueError
+            If the index is negative, multiple files have the requested
+            numeric suffix, or the CSV coordinates, columns, turbine indices,
+            or shape are invalid.
+        FileNotFoundError
+            If no matching layout file exists.
+        """
+        return _read_layout_index(
+            self.base_dir,
+            self.name,
+            self.n_turbines,
+            layout_index,
+            layout_dir,
+        )
+
     def run(
         self,
         start_stage: int = 0,
         end_stage: int | None = None,
+        restart_layout_index: int | None = None,
+        restart_layout_dir: str | Path = "layouts",
         finalize: bool = True,
         layout_plot_pars: dict[str, Any] | None = None,
         layout_plot_pars_final: dict[str, Any] | None = None,
         verbosity: int = 1,
     ) -> tuple[bool, tuple[Any, Any]]:
-        """
-        Run the pipeline.
+        """Run selected layout stages, optionally from a persisted layout.
+
+        A restart layout is loaded before stage execution and supplied as the
+        first selected stage's ``prev_results``. Successful layout coordinates
+        are evaluated with FOXES and written to the pipeline table and final
+        layout outputs.
 
         Parameters
         ----------
         start_stage
-            The stage index to start from
+            Index of the first stage to run.
         end_stage
-            The stage index to end at, default None (run all stages)
+            Exclusive end index, or ``None`` to run through the final stage.
+        restart_layout_index
+            Persisted layout index supplied to the first selected stage, or
+            ``None`` to use normal stage propagation.
+        restart_layout_dir
+            Directory containing persisted layouts. Relative paths are
+            resolved below ``base_dir``.
         finalize
-            Whether to finalize the pipeline after running, default True
+            Whether to finalize the pipeline after stage execution.
         layout_plot_pars
-            Additional parameters for the layout plot, default None
+            Additional parameters for intermediate and final layout plots.
         layout_plot_pars_final
-            Additional parameters for the final layout plot, default None
+            Parameters that override ``layout_plot_pars`` for the final plot.
         verbosity
-            The verbosity level, 0 = silent
+            Verbosity level, where zero is silent.
 
         Returns
         -------
         success
-            Whether all stages were successful
+            Whether all selected stages succeeded.
         results
-            The results of the pipeline, containing the algorithm and farm
-            results when successful, otherwise the layout coordinates and no
-            farm result.
+            FOXES algorithm and farm results when the resulting layout can be
+            evaluated; otherwise the propagated stage results and ``None``.
+
+        Raises
+        ------
+        TypeError
+            If ``restart_layout_index`` is not an integer.
+        ValueError
+            If the restart layout or its index is invalid.
+        FileNotFoundError
+            If the requested restart layout does not exist.
 
         """
+        initial_results = (
+            None
+            if restart_layout_index is None
+            else self.read_layout_index(restart_layout_index, restart_layout_dir)
+        )
         success, results = super().run(
             start_stage=start_stage,
             end_stage=end_stage,
+            initial_results=initial_results,
             finalize=finalize,
             layout_plot_pars=layout_plot_pars,
             verbosity=verbosity,

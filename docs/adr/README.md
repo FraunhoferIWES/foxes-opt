@@ -14,6 +14,7 @@ all of them.
 |---|---|---|
 | [0001](0001-forward-only-development.md) | Accepted | Development is forward-only by default; the developer owns uv environment setup, routine commands use `--no-sync`, and changes close with tests, pre-commit, current docstrings, changelog, and documentation. |
 | [0002](0002-corporate-design.md) | Accepted | Apply Fraunhofer corporate design to FOXES Optimization plots, callback snapshots, documentation, notebooks, and brand assets. |
+| [0003](0003-restartable-layout-optimization.md) | Accepted | Restart selected layout stages from validated snapshots with per-family constraint parameters and continued callback output numbering. |
 
 ## When To Add An ADR
 

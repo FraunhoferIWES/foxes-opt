@@ -226,6 +226,45 @@ def test_layout_optimizer_stage_installs_default_functions(monkeypatch, tmp_path
     ]
 
 
+def test_layout_optimizer_stage_uses_per_family_constraint_tolerances(monkeypatch):
+    stage = LayoutOptimizerStage(
+        optimizer_type="test",
+        constraints=[{"constraint_type": "FarmBoundaryConstraint", "tol": 0.5}],
+        min_dist_constraint_pars={"tol": 0.01},
+    )
+    calls = []
+
+    class _Problem:
+        def add_constraint(self, constraint):
+            calls.append(constraint)
+
+    monkeypatch.setattr(
+        layout_optimizer.FarmConstraint,
+        "new",
+        lambda constraint_type, **kwargs: {
+            "constraint_type": constraint_type,
+            **kwargs,
+        },
+    )
+
+    stage._add_main_constraints(_Problem())
+
+    assert calls[0]["constraint_type"] == "MinDistConstraint"
+    assert calls[0]["tol"] == 0.01
+    assert calls[1]["constraint_type"] == "FarmBoundaryConstraint"
+    assert calls[1]["tol"] == 0.5
+
+
+def test_layout_optimizer_stage_rejects_reserved_min_dist_parameters(tmp_path):
+    stage = LayoutOptimizerStage(
+        optimizer_type="test",
+        min_dist_constraint_pars={"min_dist": 0.5},
+    )
+
+    with pytest.raises(ValueError, match="reserved parameters.*min_dist"):
+        stage.initialize(_Pipeline(stage, tmp_path))
+
+
 def test_layout_optimizer_stage_uses_all_turbines_for_configured_power_objective(
     monkeypatch,
 ):

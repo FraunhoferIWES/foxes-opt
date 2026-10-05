@@ -249,6 +249,30 @@ def test_initial_snapshot_can_be_disabled(tmp_path):
     assert not list(callback.out_dir.iterdir())
 
 
+def test_snapshot_step_offset_avoids_restart_collisions(tmp_path):
+    callback, _ = _snapshot(
+        tmp_path,
+        write_initial=False,
+        step_offset=188,
+    )
+
+    callback.notify(_data([[100.0, 200.0, 300.0, 400.0]], iteration=1))
+
+    assert not (callback.out_dir / "layout_00001.csv").exists()
+    assert (callback.out_dir / "layout_00189.csv").exists()
+
+
+@pytest.mark.parametrize("step_offset", [True, 1.5])
+def test_snapshot_rejects_non_integer_step_offset(tmp_path, step_offset):
+    with pytest.raises(TypeError, match="step_offset must be an integer"):
+        WriteLayoutCallback(tmp_path, "layout", step_offset=step_offset)
+
+
+def test_snapshot_rejects_negative_step_offset(tmp_path):
+    with pytest.raises(ValueError, match="step_offset must be non-negative"):
+        WriteLayoutCallback(tmp_path, "layout", step_offset=-1)
+
+
 def _data(
     values,
     iteration=1,

@@ -31,6 +31,19 @@ list replaces the default boundary entry, so include that entry explicitly:
         },
     ]
 
+Constraint families own their tolerances independently. For example, combine a
+boundary tolerance with separate automatic minimum-distance parameters:
+
+.. code-block:: python
+
+    stage = LayoutOptimizerStage(
+        optimizer_type="SLSQP",
+        constraints=[
+            {"constraint_type": "FarmBoundaryConstraint", "tol": 0.5},
+        ],
+        min_dist_constraint_pars={"tol": 0.01},
+    )
+
 .. toctree::
     :maxdepth: 2
 

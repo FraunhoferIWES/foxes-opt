@@ -19,6 +19,9 @@ class WriteLayoutCallback(OptimizerCallback):
     For population snapshots, the member with the best finite first objective
     is written. Iteration-based optimizers use their iteration number in file
     names; evaluation-based optimizers use their cumulative evaluation count.
+    ``step_offset`` is added to that count so a restarted run can continue an
+    existing sequence. A snapshot overwrites files with the same resulting
+    path; callers continuing a sequence must choose a collision-free offset.
 
     """
 
@@ -35,8 +38,10 @@ class WriteLayoutCallback(OptimizerCallback):
         valid_color: str = "tab:blue",
         invalid_color: str = "red",
         write_initial: bool = True,
+        step_offset: int = 0,
     ) -> None:
-        """
+        """Initialize the layout snapshot callback.
+
         Parameters
         ----------
         out_dir
@@ -63,10 +68,25 @@ class WriteLayoutCallback(OptimizerCallback):
             constraints.
         write_initial
             Whether to write the initial layout as step zero.
+        step_offset
+            Non-negative offset added to snapshot iteration or evaluation
+            numbers, including the optional initial snapshot.
+
+        Raises
+        ------
+        TypeError
+            If ``step_offset`` is not an integer.
+        ValueError
+            If ``n_step`` is less than one, ``step_offset`` is negative, or
+            ``image_format`` is not a file extension.
         """
         super().__init__()
         if n_step < 1:
             raise ValueError("n_step must be at least 1")
+        if isinstance(step_offset, bool) or not isinstance(step_offset, int):
+            raise TypeError("step_offset must be an integer")
+        if step_offset < 0:
+            raise ValueError("step_offset must be non-negative")
         image_format = image_format.removeprefix(".").lower()
         if not image_format or not image_format.isalnum():
             raise ValueError("image_format must be a file extension")
@@ -81,6 +101,7 @@ class WriteLayoutCallback(OptimizerCallback):
         self.valid_color = valid_color
         self.invalid_color = invalid_color
         self.write_initial = write_initial
+        self.step_offset = step_offset
         self._problem: FarmOptProblem | None = None
         self._farm: foxes.WindFarm | None = None
 
@@ -109,7 +130,7 @@ class WriteLayoutCallback(OptimizerCallback):
         if self.write_csv or self.write_image:
             self.out_dir.mkdir(parents=True, exist_ok=True)
             if self.write_initial:
-                self._write_layout(0, None, set())
+                self._write_layout(self.step_offset, None, set())
 
     def _best_index(self, data: OptimizerCallbackData) -> int:
         if len(data.vars_float) == 1:
@@ -242,4 +263,4 @@ class WriteLayoutCallback(OptimizerCallback):
         if data.objs is not None and data.objs.shape[1]:
             objective = float(data.objs[selected, 0])
         invalid_turbines = self._invalid_turbines(data, selected)
-        self._write_layout(step, objective, invalid_turbines)
+        self._write_layout(self.step_offset + step, objective, invalid_turbines)

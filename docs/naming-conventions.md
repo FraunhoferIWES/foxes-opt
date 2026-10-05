@@ -185,6 +185,9 @@ consumers.
 - A constraint component has a name, lower/upper bound, tolerance, and stable
 	position in the returned vector. Preserve the same order in values,
 	derivatives, diagnostics, and result output.
+- Constraint objects own tolerance. Use `min_dist_constraint_pars` for the
+	automatic minimum-distance family and each explicit `constraints` entry for
+	that family's settings; do not use one optimizer-wide tolerance name.
 - Geometry names distinguish an `AreaGeometry` boundary from `layout_xy`, a
 	regular-grid parameterization, and a FOXES `WindFarm`.
 - `valid` means all relevant component bounds pass at the declared tolerance;
@@ -213,9 +216,13 @@ consumers.
 - Use `prev_results` for a stage's incoming result and `results` for its returned
 	payload. Keep the `(success, results)` pair distinct from optimizer
 	`opt_results`.
+- Use `restart_layout_index` for a persisted layout's numeric file suffix and
+	`restart_layout_dir` for its containing directory. Zero padding is a file
+	format detail, not part of the index value.
 - Callback classes describe their side effect, for example writing a layout or
 	optimization history. Parameters distinguish iteration/step indices from
-	objective evaluation counts.
+	objective evaluation counts. Use `step_offset` for layout snapshots and
+	`iteration_offset` for optimization-history rows.
 - Result datasets and tables use objective and constraint component names from
 	the owning iwopy functions. Do not regenerate friendlier labels in a writer.
 - Plotting parameters use `color` for one colour and `colors` or role-specific

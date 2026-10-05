@@ -153,6 +153,12 @@ finite-difference wrapper such as `iwopy.LocalFD` when a gradient-based
 optimizer needs derivatives. Do not advertise analytical derivatives where the
 simulation path does not provide them.
 
+Each constraint object owns its feasibility tolerance. Pipeline-created
+constraint families receive independent constructor mappings: explicit
+boundary entries use their `constraints` mapping, while the automatic
+minimum-distance family uses `min_dist_constraint_pars`. Do not collapse
+physically distinct families into one optimizer-wide tolerance.
+
 ### Pipelines And Callbacks
 
 `LayoutPipeline` owns ordered stage execution. A stage receives the previous
@@ -163,9 +169,20 @@ finalizes, and returns the incoming layout when it cannot produce a valid
 replacement. The completed layout pipeline returns `(success, results)`, where
 successful layout results are converted to `(algo, farm_results)`.
 
+A restart selects a persisted `layout_<index>.csv` by numeric suffix, validates
+its turbine order and coordinate array, and supplies it as the initial result
+for the first selected stage. Restart directories resolve below the pipeline
+base directory unless absolute. Ambiguous suffixes fail rather than choosing a
+file by lexical order.
+
 Callbacks run from iwopy optimizer events and may write layouts, figures, or
 history. They must use explicit paths, remain deterministic for a given event
-sequence, and avoid owning the optimizer lifecycle.
+sequence, and avoid owning the optimizer lifecycle. Snapshot and history
+offsets continue numbering after a restart. History append mode requires the
+existing CSV schema; ordinary initialization replaces existing history.
+
+See [ADR-0003](adr/0003-restartable-layout-optimization.md) for the coordinated
+restart and output-continuation contract.
 
 ## Extension Points
 

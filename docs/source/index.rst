@@ -8,6 +8,10 @@ Welcome to *foxes-opt*
     Extended layout pipelines with retained stage results, `LayoutOptimizerStage`,
     and `RandomSubsetStage`
 
+.. versionadded:: 0.9.1
+    Restart selected layout stages from persisted snapshots while continuing
+    layout and optimization-history output numbering.
+
 The package *foxes-opt* provides optimization functionality for the
 *Farm Optimization and eXtended yield Evaluation Software* `foxes <https://github.com/FraunhoferIWES/foxes>`_
 and is based on the optimization interface `iwopy <https://github.com/FraunhoferIWES/iwopy>`_.
