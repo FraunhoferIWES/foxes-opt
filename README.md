@@ -72,6 +72,8 @@ Use `--layout_image_type` to select its file type; the default is `jpg`.
 Each plot title shows the selected layout's first objective name and value.
 Turbines associated with violated constraints are red; valid turbines are blue,
 and each image includes an upper-left legend for these colors.
+The step-zero snapshot evaluates the initial layout before writing it, so its
+objective title and validity colors follow the same rules as later snapshots.
 Set `valid_color` and `invalid_color` on `WriteLayoutCallback` to replace those
 defaults with named Matplotlib colors or hex color strings.
 The examples write these snapshots without per-file log messages.

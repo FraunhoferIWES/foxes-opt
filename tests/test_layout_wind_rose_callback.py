@@ -211,7 +211,15 @@ def test_ipopt_releases_figures_before_process_engine():
     assert collect_call.lineno < engine_assignment.lineno
 
 
-def _snapshot(tmp_path, wrapped=False, **kwargs):
+def _snapshot(
+    tmp_path,
+    wrapped=False,
+    initial_variables_float=(10.0, 20.0, 30.0, 40.0),
+    initial_objectives=None,
+    initial_constraints=None,
+    constraints=None,
+    **kwargs,
+):
     farm = foxes.WindFarm()
     farm.add_turbine(foxes.Turbine([10.0, 20.0], turbine_models=[], D=100, H=90))
     farm.add_turbine(foxes.Turbine([30.0, 40.0], turbine_models=[], D=100, H=90))
@@ -219,13 +227,32 @@ def _snapshot(tmp_path, wrapped=False, **kwargs):
     problem._sel_turbines = None
     problem._maximize = np.array([True])
     problem.objs = SimpleNamespace(component_names=["power"])
+    problem.cons = SimpleNamespace(functions=constraints or [])
+    problem.initial_values_int = lambda: np.empty(0, dtype=int)
+    problem.initial_values_float = lambda: (
+        None
+        if initial_variables_float is None
+        else np.asarray(initial_variables_float, dtype=float)
+    )
+    problem.evaluate_individual = lambda vars_int, vars_float: (
+        np.asarray(initial_objectives or [1.0], dtype=float),
+        np.asarray(initial_constraints or [], dtype=float),
+    )
+    problem.check_constraints_individual = lambda values: values <= 0.0
     turbine_types = [SimpleNamespace(name="test_type") for _ in farm.turbines]
     problem.algo = SimpleNamespace(
         farm=farm,
         farm_controller=SimpleNamespace(turbine_types=turbine_types),
     )
     callback = WriteLayoutCallback(tmp_path / "results", "layout", **kwargs)
-    optimizer_problem = SimpleNamespace(base_problem=problem) if wrapped else problem
+    optimizer_problem = problem
+    if wrapped:
+        optimizer_problem = SimpleNamespace(
+            base_problem=problem,
+            initial_values_int=problem.initial_values_int,
+            initial_values_float=problem.initial_values_float,
+            evaluate_individual=problem.evaluate_individual,
+        )
     callback.initialize(SimpleNamespace(problem=optimizer_problem))
     return callback, farm
 
@@ -243,10 +270,43 @@ def test_initial_snapshot_written_by_default(tmp_path):
     assert set(layout["turbine_type"]) == {"test_type"}
 
 
+def test_initial_snapshot_evaluates_constraint_validity(tmp_path, monkeypatch):
+    constraint = SimpleNamespace(
+        n_components=lambda: 1,
+        var_names_float=["X_0000", "Y_0000", "X_0001", "Y_0001"],
+        vardeps_float=lambda: np.array([[False, False, True, True]]),
+    )
+    plot_args = {}
+
+    def capture_plot(output, file_name, **kwargs):
+        plot_args.update(kwargs)
+
+    monkeypatch.setattr(foxes.output.FarmLayoutOutput, "write_plot", capture_plot)
+    _snapshot(
+        tmp_path,
+        write_csv=False,
+        initial_objectives=[1.5],
+        initial_constraints=[1.0],
+        constraints=[constraint],
+    )
+
+    assert plot_args["title"] == "power: 1.5"
+    assert list(plot_args["c"]) == ["tab:blue", "red"]
+
+
 def test_initial_snapshot_can_be_disabled(tmp_path):
-    callback, _ = _snapshot(tmp_path, write_initial=False)
+    callback, _ = _snapshot(
+        tmp_path,
+        write_initial=False,
+        initial_variables_float=None,
+    )
 
     assert not list(callback.out_dir.iterdir())
+
+
+def test_initial_snapshot_requires_initial_float_variables(tmp_path):
+    with pytest.raises(ValueError, match="require initial float variables"):
+        _snapshot(tmp_path, initial_variables_float=None)
 
 
 def test_snapshot_step_offset_avoids_restart_collisions(tmp_path):

@@ -15,7 +15,9 @@ class WriteLayoutCallback(OptimizerCallback):
     """Write intermediate optimization layouts to CSV and image files.
 
     By default, the initial layout is written as step zero before optimizer
-    iterations begin. This can be disabled with ``write_initial=False``.
+    iterations begin. Its objective and constraints are evaluated so the title
+    and turbine validity colors represent the initial layout. This can be
+    disabled with ``write_initial=False``.
     For population snapshots, the member with the best finite first objective
     is written. Iteration-based optimizers use their iteration number in file
     names; evaluation-based optimizers use their cumulative evaluation count.
@@ -67,7 +69,7 @@ class WriteLayoutCallback(OptimizerCallback):
             The Matplotlib color for turbines associated with violated
             constraints.
         write_initial
-            Whether to write the initial layout as step zero.
+            Whether to evaluate and write the initial layout as step zero.
         step_offset
             Non-negative offset added to snapshot iteration or evaluation
             numbers, including the optional initial snapshot.
@@ -130,7 +132,29 @@ class WriteLayoutCallback(OptimizerCallback):
         if self.write_csv or self.write_image:
             self.out_dir.mkdir(parents=True, exist_ok=True)
             if self.write_initial:
-                self._write_layout(self.step_offset, None, set())
+                self._write_initial_layout(optimizer)
+
+    def _write_initial_layout(self, optimizer: Optimizer) -> None:
+        variables_float = optimizer.problem.initial_values_float()
+        if variables_float is None:
+            raise ValueError("Layout snapshots require initial float variables")
+        variables_int = np.asarray(
+            optimizer.problem.initial_values_int(), dtype=np.int32
+        )
+        variables_float = np.asarray(variables_float, dtype=np.float64)
+        objectives, constraints = optimizer.problem.evaluate_individual(
+            variables_int, variables_float
+        )
+        self.notify(
+            OptimizerCallbackData(
+                event="iteration",
+                iteration=0,
+                vars_int=variables_int,
+                vars_float=variables_float,
+                objs=objectives,
+                cons=constraints,
+            )
+        )
 
     def _best_index(self, data: OptimizerCallbackData) -> int:
         if len(data.vars_float) == 1:

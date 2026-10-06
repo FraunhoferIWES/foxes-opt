@@ -190,7 +190,10 @@ Callbacks run from iwopy optimizer events and may write layouts, figures, or
 history. They must use explicit paths, remain deterministic for a given event
 sequence, and avoid owning the optimizer lifecycle. Snapshot and history
 offsets continue numbering after a restart. History append mode requires the
-existing CSV schema; ordinary initialization replaces existing history.
+existing CSV schema; ordinary initialization replaces existing history. When
+enabled, the step-zero layout snapshot evaluates the optimizer problem's
+initial variables during callback initialization so objective and constraint
+validity output is accurate before the first optimizer event.
 
 See [ADR-0003](adr/0003-restartable-layout-optimization.md) for the coordinated
 restart and output-continuation contract.

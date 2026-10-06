@@ -2,6 +2,11 @@ foxes_opt.callbacks
 ===================
 Contains optimizer-independent callbacks for wind farm optimization.
 
+The step-zero layout snapshot evaluates the optimizer's initial variables so
+its objective title and constraint-validity colors are available before the
+first optimizer iteration. Set ``write_initial=False`` to skip this evaluation
+and snapshot.
+
 Continuing restart output
 -------------------------
 
