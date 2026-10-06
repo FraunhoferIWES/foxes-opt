@@ -129,14 +129,14 @@ class LocalMove(FarmOptProblem):
             The float variable values, shape: (n_vars_float,)
 
         """
-        super().update_problem_individual(vars_int, vars_float)
-
         r_theta = vars_float.reshape(self.n_sel_turbines, 2)
         for i, ti in enumerate(self.sel_turbines):
             t = self.algo.farm.turbines[ti]
             t.xy = self._layout0[i] + r_theta[i, 0] * np.array(
                 [np.cos(r_theta[i, 1]), np.sin(r_theta[i, 1])]
             )
+
+        super().update_problem_individual(vars_int, vars_float)
 
     def update_problem_population(
         self, vars_int: np.ndarray, vars_float: np.ndarray
@@ -156,8 +156,6 @@ class LocalMove(FarmOptProblem):
             The float variable values, shape: (n_pop, n_vars_float,)
 
         """
-        super().update_problem_population(vars_int, vars_float)
-
         n_pop: int = len(vars_float)
         n_ostates = self._org_n_states
         assert n_ostates is not None
@@ -173,6 +171,8 @@ class LocalMove(FarmOptProblem):
             t.xy = self._layout0[None, i, :] + r_theta[:, i, 0, None] * np.stack(
                 [np.cos(r_theta[:, i, 1]), np.sin(r_theta[:, i, 1])], axis=-1
             )
+
+        super().update_problem_population(vars_int, vars_float)
 
 
 class LocalSquareMove(FarmOptProblem):
@@ -248,10 +248,7 @@ class LocalSquareMove(FarmOptProblem):
             Initial float values, shape: (n_vars_float,)
 
         """
-        xy = np.zeros((self.n_sel_turbines, 2), dtype=config.dtype_double)
-        for i, ti in enumerate(self.sel_turbines):
-            xy[i] = self.algo.farm.turbines[ti].xy
-        return xy.reshape(self.n_sel_turbines * 2)
+        return self._layout0.reshape(self.n_sel_turbines * 2).copy()
 
     def min_values_float(self) -> np.ndarray:
         """
@@ -266,8 +263,8 @@ class LocalSquareMove(FarmOptProblem):
 
         """
         xy = np.zeros((self.n_sel_turbines, 2), dtype=config.dtype_double)
-        for i, ti in enumerate(self.sel_turbines):
-            xy[i] = self.algo.farm.turbines[ti].xy - self.square_length / 2
+        for i in range(self.n_sel_turbines):
+            xy[i] = self._layout0[i] - self.square_length / 2
         return xy.reshape(self.n_sel_turbines * 2)
 
     def max_values_float(self) -> np.ndarray:
@@ -283,8 +280,8 @@ class LocalSquareMove(FarmOptProblem):
 
         """
         xy = np.zeros((self.n_sel_turbines, 2), dtype=config.dtype_double)
-        for i, ti in enumerate(self.sel_turbines):
-            xy[i] = self.algo.farm.turbines[ti].xy + self.square_length / 2
+        for i in range(self.n_sel_turbines):
+            xy[i] = self._layout0[i] + self.square_length / 2
         return xy.reshape(self.n_sel_turbines * 2)
 
     def update_problem_individual(
@@ -305,12 +302,12 @@ class LocalSquareMove(FarmOptProblem):
             The float variable values, shape: (n_vars_float,)
 
         """
-        super().update_problem_individual(vars_int, vars_float)
-
         xy = vars_float.reshape(self.n_sel_turbines, 2)
         for i, ti in enumerate(self.sel_turbines):
             t = self.algo.farm.turbines[ti]
             t.xy = xy[i]
+
+        super().update_problem_individual(vars_int, vars_float)
 
     def update_problem_population(
         self, vars_int: np.ndarray, vars_float: np.ndarray
@@ -330,8 +327,6 @@ class LocalSquareMove(FarmOptProblem):
             The float variable values, shape: (n_pop, n_vars_float,)
 
         """
-        super().update_problem_population(vars_int, vars_float)
-
         n_pop: int = len(vars_float)
         n_ostates = self._org_n_states
         assert n_ostates is not None
@@ -345,6 +340,8 @@ class LocalSquareMove(FarmOptProblem):
         for i, ti in enumerate(self.sel_turbines):
             t = self.algo.farm.turbines[ti]
             t.xy = xy[:, i, :]
+
+        super().update_problem_population(vars_int, vars_float)
 
 
 class DiscreteLocalMove(FarmOptProblem):
@@ -496,10 +493,11 @@ class DiscreteLocalMove(FarmOptProblem):
             The float variable values, shape: (n_vars_float,)
 
         """
-        super().update_problem_individual(vars_int, vars_float)
         for i, ti in enumerate(self.sel_turbines):
             t = self.algo.farm.turbines[ti]
             t.xy = self._layout0[i, :] + self._delta_pts[vars_int[i], :]
+
+        super().update_problem_individual(vars_int, vars_float)
 
     def update_problem_population(
         self, vars_int: np.ndarray, vars_float: np.ndarray
@@ -519,8 +517,6 @@ class DiscreteLocalMove(FarmOptProblem):
             The float variable values, shape: (n_pop, n_vars_float,)
 
         """
-        super().update_problem_population(vars_int, vars_float)
-
         n_pop: int = len(vars_int)
         n_ostates = self._org_n_states
         assert n_ostates is not None
@@ -560,3 +556,5 @@ class DiscreteLocalMove(FarmOptProblem):
         plt.savefig(f'candidate_positions.png')
         plt.close('all')
         """
+
+        super().update_problem_population(vars_int, vars_float)

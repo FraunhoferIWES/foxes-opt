@@ -95,12 +95,12 @@ class FarmLayoutOptProblem(FarmOptProblem):
             The float variable values, shape: (n_vars_float,)
 
         """
-        super().update_problem_individual(vars_int, vars_float)
-
         xy = vars_float.reshape(self.n_sel_turbines, 2)
         for i, ti in enumerate(self.sel_turbines):
             t = self.algo.farm.turbines[ti]
             t.xy = xy[i]
+
+        super().update_problem_individual(vars_int, vars_float)
 
     def update_problem_population(
         self, vars_int: np.ndarray, vars_float: np.ndarray
@@ -120,8 +120,6 @@ class FarmLayoutOptProblem(FarmOptProblem):
             The float variable values, shape: (n_pop, n_vars_float,)
 
         """
-        super().update_problem_population(vars_int, vars_float)
-
         n_pop: int = len(vars_float)
         n_ostates = self._org_n_states
         assert n_ostates is not None
@@ -138,3 +136,5 @@ class FarmLayoutOptProblem(FarmOptProblem):
         for i, ti in enumerate(self.sel_turbines):
             t = self.algo.farm.turbines[ti]
             t.xy = sxy[:, i]
+
+        super().update_problem_population(vars_int, vars_float)

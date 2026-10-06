@@ -213,6 +213,8 @@ class FarmVarObjective(FarmObjective):
         weights = problem_results[FV.WEIGHT]
         if self.n_sel_turbines < self.farm.n_turbines:
             data = data[:, self.sel_turbines]
+            if weights.dims == (FC.STATE, FC.TURBINE):
+                weights = weights[:, self.sel_turbines]
         data = self._contract(data, weights) / self.scale
 
         return np.array([data], dtype=np.float64)
@@ -275,7 +277,9 @@ class FarmVarObjective(FarmObjective):
         weights = xr.DataArray(weights, dims=wdims)
 
         if self.n_sel_turbines < self.farm.n_turbines:
-            data = data[:, self.sel_turbines]
+            data = data[:, :, self.sel_turbines]
+            if weights.dims == (FC.POP, FC.STATE, FC.TURBINE):
+                weights = weights[:, :, self.sel_turbines]
 
         return self._contract(data / self.scale, weights).to_numpy()[:, None]
 

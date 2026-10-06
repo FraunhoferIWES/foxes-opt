@@ -200,5 +200,11 @@
     snapshots by matching marker edges to their fill colors
   - Fixed layout snapshots marking every turbine invalid when a nearest-group
     constraint component is violated
+  - Layout candidates now update turbine coordinates before FOXES state
+    initialization, while final individual layouts restore scalar positions
+  - Partial-turbine population objectives now select the turbine axis and the
+    matching turbine-dependent weights
+  - Local-square layout bounds remain anchored to the initial layout during
+    vectorized population evaluations
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes-opt/compare/v0.9.0...v0.9.1](https://github.com/FraunhoferIWES/foxes-opt/compare/v0.9.0...v0.9.1)

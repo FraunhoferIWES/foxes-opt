@@ -57,7 +57,7 @@ def test_reset_states_keeps_population_loaded_data():
     assert "StatesTable_weight" in ld["data_vars"]
 
 
-def test_farm_layout_population_uses_population_major_order():
+def test_farm_layout_population_uses_population_major_order(monkeypatch):
     farm = foxes.WindFarm(boundary=foxes.utils.geom2d.Circle([0.0, 0.0], 1000.0))
     foxes.input.farm_layout.add_row(
         farm=farm,
@@ -87,6 +87,15 @@ def test_farm_layout_population_uses_population_major_order():
     problem.add_constraint(FarmBoundaryConstraint(problem))
     problem.initialize()
 
+    reset_positions = []
+    reset_states = problem._reset_states
+
+    def _capture_reset_positions(states):
+        reset_positions.append([t.xy.copy() for t in farm.turbines])
+        reset_states(states)
+
+    monkeypatch.setattr(problem, "_reset_states", _capture_reset_positions)
+
     n_pop = 2
     vars_float = np.array(
         [
@@ -107,6 +116,16 @@ def test_farm_layout_population_uses_population_major_order():
     assert np.allclose(xy1[:n_states0], [20.0, 2.0])
     assert np.allclose(xy0[n_states0 : 2 * n_states0], [100.0, 11.0])
     assert np.allclose(xy1[n_states0 : 2 * n_states0], [200.0, 22.0])
+    assert np.array_equal(reset_positions[-1][0], xy0)
+    assert np.array_equal(reset_positions[-1][1], xy1)
+
+    problem.update_problem_individual(vars_int[0], vars_float[1])
+
+    assert not isinstance(algo.states, PopulationStates)
+    np.testing.assert_array_equal(farm.turbines[0].xy, [100.0, 11.0])
+    np.testing.assert_array_equal(farm.turbines[1].xy, [200.0, 22.0])
+    assert farm.turbines[0].xy.shape == (2,)
+    assert farm.turbines[1].xy.shape == (2,)
 
 
 class _DummyModel:

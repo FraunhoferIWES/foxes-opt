@@ -137,6 +137,12 @@ states for one candidate precede the states for the next candidate. Preserve
 `n_pop` and the original state count when reshaping results; a numerically
 correct array in state-major order is invalid.
 
+Layout candidates and final champion layouts are state-independent. Direct and
+local layout problems temporarily expand each population member's turbine
+positions over its original states, install those coordinates before FOXES
+state initialization, and restore scalar `(2,)` turbine positions when applying
+an individual or finalizing a champion.
+
 Use FOXES `FC` constants for structural dimensions and `FV` constants for
 physical variables. Do not duplicate their string values in optimization code.
 
