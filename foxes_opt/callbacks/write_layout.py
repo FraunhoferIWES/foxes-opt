@@ -138,9 +138,11 @@ class WriteLayoutCallback(OptimizerCallback):
         variables_float = optimizer.problem.initial_values_float()
         if variables_float is None:
             raise ValueError("Layout snapshots require initial float variables")
-        variables_int = np.asarray(
-            optimizer.problem.initial_values_int(), dtype=np.int32
-        )
+        variables_int = np.empty(0, dtype=np.int32)
+        if optimizer.problem.n_vars_int:
+            variables_int = np.asarray(
+                optimizer.problem.initial_values_int(), dtype=np.int32
+            ).reshape(-1)
         variables_float = np.asarray(variables_float, dtype=np.float64)
         objectives, constraints = optimizer.problem.evaluate_individual(
             variables_int, variables_float

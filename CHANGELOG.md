@@ -197,7 +197,8 @@
     objectives; FOXES-result objectives continue to require `iwopy.LocalFD`
 - Bug fixes:
   - Initial layout snapshots now evaluate objectives and constraints before
-    plotting, so step-zero titles and turbine validity colors are accurate
+    plotting, so step-zero titles and turbine validity colors are accurate,
+    including for problems without integer variables
   - Kept validity colors visible for small true-radius turbines in layout
     snapshots by matching marker edges to their fill colors
   - Fixed layout snapshots marking every turbine invalid when a nearest-group

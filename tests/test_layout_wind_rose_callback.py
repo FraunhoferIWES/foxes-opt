@@ -214,6 +214,7 @@ def test_ipopt_releases_figures_before_process_engine():
 def _snapshot(
     tmp_path,
     wrapped=False,
+    initial_variables_int=0,
     initial_variables_float=(10.0, 20.0, 30.0, 40.0),
     initial_objectives=None,
     initial_constraints=None,
@@ -228,16 +229,21 @@ def _snapshot(
     problem._maximize = np.array([True])
     problem.objs = SimpleNamespace(component_names=["power"])
     problem.cons = SimpleNamespace(functions=constraints or [])
-    problem.initial_values_int = lambda: np.empty(0, dtype=int)
+    problem.initial_values_int = lambda: initial_variables_int
     problem.initial_values_float = lambda: (
         None
         if initial_variables_float is None
         else np.asarray(initial_variables_float, dtype=float)
     )
-    problem.evaluate_individual = lambda vars_int, vars_float: (
-        np.asarray(initial_objectives or [1.0], dtype=float),
-        np.asarray(initial_constraints or [], dtype=float),
-    )
+
+    def evaluate_individual(vars_int, vars_float):
+        assert vars_int.shape == (0,)
+        return (
+            np.asarray(initial_objectives or [1.0], dtype=float),
+            np.asarray(initial_constraints or [], dtype=float),
+        )
+
+    problem.evaluate_individual = evaluate_individual
     problem.check_constraints_individual = lambda values: values <= 0.0
     turbine_types = [SimpleNamespace(name="test_type") for _ in farm.turbines]
     problem.algo = SimpleNamespace(
@@ -249,6 +255,7 @@ def _snapshot(
     if wrapped:
         optimizer_problem = SimpleNamespace(
             base_problem=problem,
+            n_vars_int=problem.n_vars_int,
             initial_values_int=problem.initial_values_int,
             initial_values_float=problem.initial_values_float,
             evaluate_individual=problem.evaluate_individual,
