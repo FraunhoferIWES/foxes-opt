@@ -194,6 +194,11 @@ existing CSV schema; ordinary initialization replaces existing history. When
 enabled, the step-zero layout snapshot evaluates the optimizer problem's
 initial variables during callback initialization so objective and constraint
 validity output is accurate before the first optimizer event.
+Optimization history independently accepts `write_initial=False`; enabling it
+evaluates the initial integer and float variables and writes their selected
+objective and constraint-violation count at `iteration_offset`. The CSV schema
+is unchanged. Disable initial history output when appending a restart whose
+starting row already exists.
 
 See [ADR-0003](adr/0003-restartable-layout-optimization.md) for the coordinated
 restart and output-continuation contract.

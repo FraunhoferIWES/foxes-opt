@@ -15,6 +15,8 @@ class WriteOptimizationHistoryCallback(OptimizerCallback):
     objective and constraint fields. By default initialization replaces an
     existing file. Append mode preserves rows only when the existing CSV header
     matches this callback's schema.
+    Enable ``write_initial`` to evaluate the starting variables and record
+    their objective and constraint-violation count before optimizer iterations.
     """
 
     def __init__(
@@ -23,6 +25,7 @@ class WriteOptimizationHistoryCallback(OptimizerCallback):
         objective: int = 0,
         iteration_offset: int = 0,
         append: bool = False,
+        write_initial: bool = False,
     ) -> None:
         """Initialize the optimization history callback.
 
@@ -37,12 +40,17 @@ class WriteOptimizationHistoryCallback(OptimizerCallback):
         append
             Whether to preserve and append to a non-empty existing history
             file. Missing and empty files receive a new header.
+        write_initial
+            Evaluate the initial variables during initialization and write their
+            objective and constraint-violation count at ``iteration_offset``.
+            Leave disabled when appending a restart whose starting row already
+            exists.
 
         Raises
         ------
         TypeError
-            If ``iteration_offset`` is not an integer or ``append`` is not a
-            boolean.
+            If ``iteration_offset`` is not an integer or ``append`` or
+            ``write_initial`` is not a boolean.
         ValueError
             If ``objective`` is not a non-negative integer or
             ``iteration_offset`` is negative.
@@ -60,14 +68,17 @@ class WriteOptimizationHistoryCallback(OptimizerCallback):
             raise ValueError("iteration_offset must be non-negative")
         if not isinstance(append, bool):
             raise TypeError("append must be a boolean")
+        if not isinstance(write_initial, bool):
+            raise TypeError("write_initial must be a boolean")
         self.file_path = Path(file_path)
         self.objective = objective
         self.iteration_offset = iteration_offset
         self.append = append
+        self.write_initial = write_initial
         self._problem: Problem | None = None
 
     def initialize(self, optimizer: Optimizer) -> None:
-        """Prepare the history file for optimizer notifications.
+        """Prepare the history file and optionally record the starting values.
 
         Parameters
         ----------
@@ -81,7 +92,8 @@ class WriteOptimizationHistoryCallback(OptimizerCallback):
             If the selected objective component does not exist.
         ValueError
             If append mode encounters a non-empty file with another CSV
-            header.
+            header, or initial output is enabled and required initial variables
+            are undefined.
         """
         super().initialize(optimizer)
         self._problem = optimizer.problem
@@ -102,6 +114,38 @@ class WriteOptimizationHistoryCallback(OptimizerCallback):
         else:
             with self.file_path.open("w", encoding="utf-8", newline="") as stream:
                 csv.writer(stream).writerow(header)
+        if self.write_initial:
+            self._write_initial_iteration()
+
+    def _write_initial_iteration(self) -> None:
+        """Evaluate initial optimization variables and append their history row."""
+        if self._problem is None:
+            raise RuntimeError("Optimization history callback has not been initialized")
+        variables_int = np.empty(0, dtype=np.int32)
+        if self._problem.n_vars_int:
+            initial_int = self._problem.initial_values_int()
+            if initial_int is None:
+                raise ValueError("Initial integer variables are undefined")
+            variables_int = np.asarray(initial_int)
+        variables_float = np.empty(0, dtype=np.float64)
+        if self._problem.n_vars_float:
+            initial_float = self._problem.initial_values_float()
+            if initial_float is None:
+                raise ValueError("Initial float variables are undefined")
+            variables_float = np.asarray(initial_float, dtype=np.float64)
+        objectives, constraints = self._problem.evaluate_individual(
+            variables_int, variables_float
+        )
+        self.notify(
+            OptimizerCallbackData(
+                event="iteration",
+                iteration=0,
+                vars_int=variables_int,
+                vars_float=variables_float,
+                objs=objectives,
+                cons=constraints,
+            )
+        )
 
     def _best_index(self, data: OptimizerCallbackData) -> int | None:
         if data.objs is None:

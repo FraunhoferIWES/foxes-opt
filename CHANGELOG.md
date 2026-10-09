@@ -168,6 +168,9 @@
     an option to disable the initial snapshot
   - Added a CSV optimization-history callback that records objective values and
     violated constraint-component counts for each iteration
+  - History callbacks accept `write_initial=False`; enabling it evaluates the
+    starting variables and records an iteration-zero objective and violated
+    constraint-component count before the optimizer's first iteration
   - Added restart offsets for layout snapshots and optimization-history rows,
     plus validated append mode for preserving an existing history CSV
 - Pipelines:

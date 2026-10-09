@@ -225,6 +225,9 @@ consumers.
 	optimization history. Parameters distinguish iteration/step indices from
 	objective evaluation counts. Use `step_offset` for layout snapshots and
 	`iteration_offset` for optimization-history rows.
+- Use `write_initial` for output of the starting variables before the first
+	optimizer notification. Snapshot and history offsets apply to this initial
+	output as well as subsequent iterations.
 - Result datasets and tables use objective and constraint component names from
 	the owning iwopy functions. Do not regenerate friendlier labels in a writer.
 - Plotting parameters use `color` for one colour and `colors` or role-specific

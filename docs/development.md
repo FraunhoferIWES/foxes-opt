@@ -226,6 +226,10 @@ whole-image comparisons unless exact rendering is the behavior under test. For
 plots, assert meaningful artists, coordinates, labels, limits, colors, or
 returned objects.
 
+`tests/test_optimization_history_callback.py` covers opt-in initial rows,
+integer and float initial variables, selected objectives, undefined-value
+errors, and unchanged defaults and restart append behavior.
+
 ## Examples And Notebooks
 
 Examples and notebooks are public workflows, not scratch space. Keep their
