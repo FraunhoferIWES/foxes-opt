@@ -121,7 +121,7 @@ if __name__ == "__main__":
         vectorize=not args.no_pop,
         pop_size=args.n_pop,
         termination="default",
-        n_max_gen=args.n_gen,
+        max_iterations=args.n_gen,
         ftol=1e-6,
         xtol=1e-6,
     )

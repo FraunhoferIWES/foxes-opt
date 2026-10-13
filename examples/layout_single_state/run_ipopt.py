@@ -143,7 +143,7 @@ if __name__ == "__main__":
         optimizer="ipopt",
         problem=problem,
         vectorize=not args.no_pop,
-        max_iter=args.maxiter,
+        max_iterations=args.maxiter,
         print_level=5,
         tol=args.tol,
     )

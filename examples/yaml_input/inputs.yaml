@@ -54,8 +54,8 @@ optimization:
     vectorize: True
     pop_size: 100
     seed: 42
-    termination: n_gen
-    n_max_gen: 100
+    termination: iterations
+    max_iterations: 100
 
 # -------
 # outputs

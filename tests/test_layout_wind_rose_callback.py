@@ -107,8 +107,8 @@ def test_ipopt_example_uses_pygmo_ipopt(example):
     keywords = {keyword.arg: keyword.value for keyword in calls[0].keywords}
     assert ast.literal_eval(keywords["family"]) == "pygmo"
     assert ast.literal_eval(keywords["optimizer"]) == "ipopt"
-    assert isinstance(keywords["max_iter"], ast.Attribute)
-    assert keywords["max_iter"].attr == "maxiter"
+    assert isinstance(keywords["max_iterations"], ast.Attribute)
+    assert keywords["max_iterations"].attr == "maxiter"
     assert ast.literal_eval(keywords["print_level"]) == 5
     assert isinstance(keywords["tol"], ast.Attribute)
     assert keywords["tol"].attr == "tol"

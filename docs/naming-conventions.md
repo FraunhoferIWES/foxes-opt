@@ -213,6 +213,13 @@ consumers.
 - Examples and notebooks import `create_optimizer` from `iwopy` and supply
 	explicit `family`, `optimizer`, and `problem` keywords; do not directly
 	construct backend adapter classes.
+- Use `max_iterations` and `max_evaluations` for supported iwopy limits, not
+	backend aliases. Iterations/generations and objective calls/candidates are
+	distinct units, with native convergence settings retained. `pop_size` is an
+	absolute algorithmic population, `batch_size` is pending Nevergrad/Optuna
+	work, and `population_multiplier` is SciPy DE's per-free-dimension setting.
+	Existing CLI `--n_gen` / `--maxiter` names map to canonical factory controls.
+	See [ADR-0006](adr/0006-shared-optimizer-controls.md).
 - `boundary_repair_optimizer_family` overrides the backend for repair;
 	`boundary_repair_optimizer_pars` overrides the algorithm and options. FOXES
 	`algo_pars` retains its separate simulation meaning.

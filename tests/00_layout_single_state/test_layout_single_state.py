@@ -43,7 +43,7 @@ def test():
         pop_size=100,
         seed=42,
         termination="default",
-        n_max_gen=100,
+        max_iterations=100,
         ftol=1e-6,
         xtol=1e-6,
     )

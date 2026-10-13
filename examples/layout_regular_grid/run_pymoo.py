@@ -110,8 +110,8 @@ if __name__ == "__main__":
         problem=problem,
         vectorize=not args.no_pop,
         pop_size=args.n_pop,
-        termination="n_gen",
-        n_max_gen=args.n_gen,
+        termination="iterations",
+        max_iterations=args.n_gen,
     )
     solver.initialize()
     solver.print_info()

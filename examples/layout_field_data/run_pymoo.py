@@ -117,7 +117,7 @@ def build_solver(problem, opt_algo, n_pop, n_gen, vectorize=False, seed=13):
         pop_size=n_pop,
         seed=seed,
         termination="default",
-        n_max_gen=n_gen,
+        max_iterations=n_gen,
         ftol=1e-6,
         xtol=1e-6,
     )

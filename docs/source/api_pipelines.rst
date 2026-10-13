@@ -45,7 +45,7 @@ independent feasibility tolerances:
 
     stage = LayoutOptimizerStage(
         optimizer_family="iwopy",
-        optimizer_pars={"optimizer": "SLSQP", "maxiter": 100},
+        optimizer_pars={"optimizer": "SLSQP", "max_iterations": 100},
         constraints=[
             {"constraint_type": "FarmBoundaryConstraint", "tol": 0.5},
         ],
@@ -63,10 +63,17 @@ Optimizer selection
 ``optimizer_family`` selects the iwopy factory backend. ``optimizer_pars``
 requires an ``optimizer`` algorithm name and otherwise contains explicit iwopy
 controls and flat native options. For example, use ``optimizer_family="scipy"``
-with ``optimizer_pars={"optimizer": "trust-constr", "maxiter": 100}`` for sparse
+with ``optimizer_pars={"optimizer": "trust-constr", "max_iterations": 100}`` for sparse
 native constraint Jacobians. ``boundary_repair_optimizer_family`` optionally
 selects another backend for repair; ``boundary_repair_optimizer_pars`` overrides
 the main algorithm selector and options for that run.
+
+Use iwopy's ``max_iterations`` and ``max_evaluations`` only where the selected
+adapter supports their units. SLSQP and IPOPT support iteration limits, not
+portable evaluation caps. pymoo supports both but checks evaluation caps at
+generation boundaries. ``pop_size`` is algorithmic population size, not a
+pending ask/evaluate batch. See the `iwopy parameter and termination tables
+<https://fraunhoferiwes.github.io/iwopy/api_core.html#optimizer-parameters>`_.
 
 .. toctree::
     :maxdepth: 2

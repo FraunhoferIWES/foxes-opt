@@ -158,7 +158,7 @@ if __name__ == "__main__":
         family="iwopy",
         optimizer="SLSQP",
         problem=problem,
-        maxiter=args.maxiter,
+        max_iterations=args.maxiter,
         vectorize=not args.no_pop,
     )
     solver.initialize()

@@ -212,6 +212,14 @@ finalization, or callback ownership.
 All maintained examples and notebooks construct optimizers through
 `iwopy.create_optimizer()` instead of importing concrete backend adapters.
 
+Run limits use iwopy's canonical `max_iterations` and `max_evaluations`, with
+the selected backend's documented counters and supported units. pymoo pure-limit
+selectors are `iterations` and `evaluations`; native convergence controls stay
+backend-specific. Population sizes are not pending-work batch sizes. Python,
+YAML, pipeline mappings, and notebooks share this contract without aliases;
+example CLI flags keep their existing names and map explicitly to factory
+controls. See [ADR-0006](adr/0006-shared-optimizer-controls.md).
+
 A restart selects a persisted `layout_<index>.csv` by numeric suffix, validates
 its turbine order and coordinate array, and supplies it as the initial result
 for the first selected stage. Restart directories resolve below the pipeline
@@ -346,6 +354,9 @@ forward-only by default under
 - iwopy >=1.0.0 supplies CSR Jacobians and backend/algorithm optimizer factories.
 	Maintained callers use the current APIs without compatibility aliases. See
 	[ADR-0005](adr/0005-current-iwopy-contracts.md).
+- Optimizer limits use iwopy's canonical controls and native units, with
+	population and pending-batch sizes kept distinct. See
+	[ADR-0006](adr/0006-shared-optimizer-controls.md).
 - Existing layout-stage construction/lifecycle methods and cohesive pipeline
 	or callback test modules exceed the usual size guidelines. Their existing
 	ownership is retained during this integration change to avoid unrelated

@@ -49,15 +49,15 @@ def _read_optimizer(monkeypatch, parameters):
 @pytest.mark.parametrize(
     "parameters",
     [
-        {"family": "iwopy", "optimizer": "SLSQP", "maxiter": 100},
-        {"family": "scipy", "optimizer": "trust-constr", "maxiter": 100},
+        {"family": "iwopy", "optimizer": "SLSQP", "max_iterations": 100},
+        {"family": "scipy", "optimizer": "trust-constr", "max_iterations": 100},
         {
             "family": "pymoo",
             "optimizer": "GA",
             "pop_size": 4,
             "seed": 1,
-            "termination": "n_gen",
-            "n_max_gen": 2,
+            "termination": "iterations",
+            "max_iterations": 2,
         },
     ],
 )
@@ -83,6 +83,16 @@ def test_yaml_constructs_and_runs_current_optimizer_contract(monkeypatch, parame
             {"family": "iwopy", "optimizer": "SLSQP", "scipy_pars": {}},
             TypeError,
             "scipy_pars",
+        ),
+        (
+            {"family": "iwopy", "optimizer": "SLSQP", "maxiter": 10},
+            TypeError,
+            "maxiter",
+        ),
+        (
+            {"family": "iwopy", "optimizer": "SLSQP", "max_evaluations": 10},
+            ValueError,
+            "max_evaluations is not supported",
         ),
     ],
 )
@@ -123,13 +133,20 @@ _ROOT = Path(__file__).parents[1]
 _WORKFLOWS = sorted(_ROOT.glob("examples/**/*.py")) + sorted(
     _ROOT.glob("notebooks/*.ipynb")
 )
-_GROUPED_PARAMETERS = {
+_REMOVED_PARAMETERS = {
     "algo_pars",
     "problem_pars",
     "setup_pars",
     "term_pars",
     "scipy_pars",
     "vectorized",
+    "maxiter",
+    "max_iter",
+    "gen",
+    "n_max_gen",
+    "n_max_evals",
+    "budget",
+    "popsize",
 }
 
 
@@ -154,7 +171,7 @@ def _factory_calls(source):
         if name == "create_optimizer":
             keywords = {keyword.arg for keyword in node.keywords}
             assert {"family", "optimizer", "problem"} <= keywords
-            assert not _GROUPED_PARAMETERS & keywords
+            assert not _REMOVED_PARAMETERS & keywords
             calls.append(node)
     return calls
 

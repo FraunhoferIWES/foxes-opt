@@ -161,6 +161,9 @@
   - Switched every example and notebook to `iwopy.create_optimizer`, explicit
     optimizer controls, and flat native options; retained scalar-gradient terms
   - Recorded sparse native boundaries and corrected spacing-selection ownership
+  - Migrated Python, YAML, pipeline documentation, and notebooks to iwopy's
+    shared `max_iterations` / `max_evaluations` controls and pymoo pure-limit
+    selectors, preserving native convergence and distinct population/batch units
 - General:
   - Added support for Python 3.14
   - Added coding-agent policies, including developer-owned uv setup and

@@ -124,7 +124,7 @@ def test_full_spacing_jacobian_reaches_native_solver(family, method, monkeypatch
         raise AssertionError("Current solvers must retain all spacing components")
 
     monkeypatch.setattr(constraint, "active_components", reject_automatic_selection)
-    optimizer = create_optimizer(family, method, problem, maxiter=100)
+    optimizer = create_optimizer(family, method, problem, max_iterations=100)
     optimizer.initialize(verbosity=0)
     results = optimizer.solve(verbosity=0)
     assert results.success

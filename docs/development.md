@@ -67,6 +67,11 @@ parameters. Updating this dependency floor does not authorize environment setup.
 Maintained examples and notebooks import `iwopy.create_optimizer` rather than
 backend optimizer classes. Configuration tests enforce factory-only construction
 and explicit backend, algorithm, and problem selection in those workflows.
+Use canonical `max_iterations` and `max_evaluations` where supported; keep
+native convergence controls and population/batch units distinct. Source guards
+reject superseded limit keywords in maintained factory calls, and YAML tests
+cover unsupported limits. See
+[ADR-0006](adr/0006-shared-optimizer-controls.md).
 
 The dependency sets in `pyproject.toml` are optional extras, not uv dependency
 groups. Install them with `--extra`; `--dev` does not select the `dev` extra.
