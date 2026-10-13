@@ -110,13 +110,13 @@ if __name__ == "__main__":
         problem.add_constraint(
             MinDistConstraint(problem, min_dist=args.min_dist, min_dist_unit="D")
         )
-    gproblem = LocalFD(problem, deltas=0.1, fd_order=args.fd_order)
+    gproblem = LocalFD(problem, deltas=10.0, fd_order=args.fd_order)
     gproblem.initialize()
 
     solver = GG(
         gproblem,
-        step_max=100.0,
-        step_min=1.0,
+        step_max=10.0,
+        step_min=0.1,
         step_div_factor=2.0,
         f_tol=1e-4,
         vectorized=not args.no_pop,
