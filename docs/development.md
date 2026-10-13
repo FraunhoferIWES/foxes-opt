@@ -201,6 +201,14 @@ Assert the number, names, order, bounds, and values of function components.
 Selection tests must prove that a requested component subset remains in the
 requested order.
 
+Bound-certified spacing tests cover distant and approaching pairs, fixed
+turbines, unequal rotor diameters, unbounded coordinates, state-dependent
+positions, unsupported parameterizations, and refreshed local regions. Preserve
+full pair metadata and values;
+selection alone must not change component counts or feasibility semantics.
+Exercise reduced Jacobians through iwopy SLSQP with an enforced movement box,
+not a current-distance cutoff or changing in-solve constraint dimensions.
+
 For analytical derivatives:
 
 - compare with centered finite differences at differentiable points;

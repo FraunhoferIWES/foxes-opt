@@ -2,6 +2,23 @@ foxes_opt.constraints
 =====================
 Constraints for wind farm optimization problems.
 
+Guarded Minimum-Distance Pairs
+-----------------------------
+
+``MinDistConstraint.active_components`` selects pairs that can approach the
+nominal spacing limit anywhere within enforced X/Y coordinate bounds. For
+``min_dist_unit="D"``, the required distance uses the larger diameter in each
+pair. Fixed turbines keep their coordinates. Unbounded coordinates and variable
+diameters are conservative; state-dependent coordinates and unsupported variable
+parameterizations retain all pairs.
+
+Enable this through iwopy ``SLSQP(reduce_constraints=True, move_limit=...)``.
+The positive movement limit bounds each coordinate from its initial value over
+the entire solve. Selection reduces constraint/Jacobian rows, not registered
+pair identities or full value and feasibility evaluation. Start another solve
+to move the guarded region; iwopy refreshes the selection before solving.
+Without useful movement bounds, a safe selection may retain all pairs.
+
 Nearest connected groups
 ------------------------
 

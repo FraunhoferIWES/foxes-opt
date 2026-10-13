@@ -106,6 +106,78 @@ class MinDistConstraint(FarmConstraint):
         """
         return len(self._i2t)
 
+    def active_components(
+        self, vars_float: np.ndarray, lower: np.ndarray, upper: np.ndarray
+    ) -> np.ndarray:
+        """Select pairs that can approach the spacing limit within bounds.
+
+        Parameters
+        ----------
+        vars_float
+            Initial values in this constraint's float-variable order.
+        lower, upper
+            Enforced coordinate bounds in the same order, in metres.
+            Unselected turbine positions remain fixed.
+
+        Returns
+        -------
+        components
+            Stable pair-component indices whose coordinate boxes can
+            approach the nominal minimum distance. Omitted pairs are
+            separated throughout the box. Component metadata, full
+            values and feasibility checks remain unchanged. Unbounded
+            coordinates are handled conservatively. Unsupported variable
+            parameterizations, variable diameters and state-dependent
+            coordinates retain all pairs.
+
+        Raises
+        ------
+        ValueError
+            If the minimum-distance unit is neither m nor D.
+        """
+        coordinates = [
+            np.asarray(turbine.xy, dtype=np.float64) for turbine in self.farm.turbines
+        ]
+        if any(
+            coordinate.shape != (2,) or not np.all(np.isfinite(coordinate))
+            for coordinate in coordinates
+        ):
+            return np.arange(self.n_components(), dtype=int)
+        positions = np.asarray(coordinates)
+        point_lower, point_upper = positions.copy(), positions.copy()
+        for variable_index, name in enumerate(self.var_names_float):
+            try:
+                coordinate, turbine_index = self.problem.parse_tvar(name)
+            except ValueError:
+                return np.arange(self.n_components(), dtype=int)
+            if coordinate not in (FV.X, FV.Y):
+                return np.arange(self.n_components(), dtype=int)
+            axis = 0 if coordinate == FV.X else 1
+            point_lower[turbine_index, axis] = lower[variable_index]
+            point_upper[turbine_index, axis] = upper[variable_index]
+        pairs = self._i2t
+        gap = np.maximum(
+            np.maximum(
+                point_lower[pairs[:, 0]] - point_upper[pairs[:, 1]],
+                point_lower[pairs[:, 1]] - point_upper[pairs[:, 0]],
+            ),
+            0.0,
+        )
+        separation = np.hypot(gap[:, 0], gap[:, 1])
+        if self.min_dist_unit == "m":
+            required = np.full(len(pairs), self.min_dist)
+        elif self.min_dist_unit == "D":
+            diameters = self.farm.get_rotor_diameters(self.problem.algo)
+            required = self.min_dist * np.maximum(
+                diameters[pairs[:, 0]], diameters[pairs[:, 1]]
+            )
+        else:
+            raise ValueError(
+                f"Constraint '{self.name}': Unknown min_dist_unit '{self.min_dist_unit}'"
+            )
+        reserve = 32.0 * np.finfo(np.float64).eps * np.maximum(required, 1.0)
+        return np.flatnonzero(separation <= required + reserve)
+
     def vardeps_float(self) -> np.ndarray[tuple[int, int], np.dtype[Any]]:
         """
         Gets the dependencies of all components

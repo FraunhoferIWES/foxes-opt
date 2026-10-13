@@ -165,6 +165,18 @@ boundary entries use their `constraints` mapping, while the automatic
 minimum-distance family uses `min_dist_constraint_pars`. Do not collapse
 physically distinct families into one optimizer-wide tolerance.
 
+`MinDistConstraint.active_components()` certifies nearby pairs from enforced
+X/Y coordinate boxes. A pair is omitted only if the minimum possible box
+separation exceeds its nominal required distance, with a numerical reserve.
+Unselected turbines remain fixed; D-unit spacing uses the larger pair diameter.
+Unbounded coordinates, variable diameters, and state-dependent positions are
+handled conservatively. Unsupported variable parameterizations retain all pairs
+rather than assuming their positions are fixed. Selection never changes pair
+indices, component count,
+full values, or feasibility checks. iwopy SLSQP owns enforced movement boxes and
+fixed-per-solve reduced Jacobians. See
+[ADR-0004](adr/0004-bound-certified-spacing-components.md).
+
 ### Pipelines And Callbacks
 
 `LayoutPipeline` owns ordered stage execution. A stage receives the previous
@@ -307,6 +319,9 @@ forward-only by default under
 	ask the developer to re-sync rather than changing dependencies during a task.
 - Production Python under `foxes_opt/` is type checked. Tests, examples,
 	notebooks, and docs are not currently part of the mypy target.
+- Spacing reduction uses constraint-owned bound certificates, while iwopy owns
+	enforced solve-local boxes and full acceptance checks. See
+	[ADR-0004](adr/0004-bound-certified-spacing-components.md).
 - Public Python APIs follow [docstring conventions](docstrings.md): NumPy-style
 	docstrings expose optimization, scientific, and runtime contracts while types
 	remain in annotations.

@@ -185,6 +185,10 @@ consumers.
 - A constraint component has a name, lower/upper bound, tolerance, and stable
 	position in the returned vector. Preserve the same order in values,
 	derivatives, diagnostics, and result output.
+- `active_components` selects stable local pair-component indices certified by
+	enforced coordinate bounds. It does not rename or remove registered pairs.
+	iwopy's `move_limit` is a whole-solve displacement box, not a per-iteration
+	step or a change to physical minimum spacing.
 - Constraint objects own tolerance. Use `min_dist_constraint_pars` for the
 	automatic minimum-distance family and each explicit `constraints` entry for
 	that family's settings; do not use one optimizer-wide tolerance name.

@@ -186,6 +186,8 @@
   - Layout plots now match callback snapshots with true turbine radii,
     high-contrast colors, matched outlines, and validity legends
 - Constraints:
+  - Added bound-certified nearby-pair selection to `MinDistConstraint` for
+    guarded iwopy SLSQP solves, preserving full component identities and checks
   - Added `NearestGroupConstraint`, enforcing nearest-distance and minimum
     connected-group-size limits with piecewise analytical position derivatives
   - `MinDistConstraint` now provides analytical position derivatives to *iwopy*
