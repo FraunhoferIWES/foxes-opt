@@ -76,9 +76,9 @@ def _assert_matches_finite_difference(
     problem, constraint = _setup(points, geometry=geometry, infer_vars=False, **kwargs)
     variables = problem.initial_values_float()
     variables_int = np.array([], dtype=int)
-    analytical = problem.get_gradients(variables_int, variables, func=constraint)
+    analytical = problem.get_jacobian(variables_int, variables, func=constraint)
     epsilon = 1e-6
-    numerical = np.zeros_like(analytical)
+    numerical = np.zeros(analytical.shape)
     for var in range(len(variables)):
         plus = variables.copy()
         minus = variables.copy()
@@ -87,29 +87,27 @@ def _assert_matches_finite_difference(
         plus_values = constraint.calc_individual(variables_int, plus, None)
         minus_values = constraint.calc_individual(variables_int, minus, None)
         numerical[:, var] = (plus_values - minus_values) / (2 * epsilon)
-    np.testing.assert_allclose(analytical, numerical, rtol=1e-6, atol=1e-7)
+    np.testing.assert_allclose(analytical.toarray(), numerical, rtol=1e-6, atol=1e-7)
 
 
 def test_analytical_derivatives_via_iwopy() -> None:
     problem, constraint = _setup([[3.0, 4.0], [12.0, 5.0]])
     variables = problem.initial_values_float()
 
-    gradients = problem.get_gradients(
-        np.array([], dtype=int), variables, func=constraint
-    )
+    jacobian = problem.get_jacobian(np.array([], dtype=int), variables, func=constraint)
     np.testing.assert_allclose(
-        gradients,
+        jacobian.toarray(),
         [[0.6, 0.8, 0.0, 0.0], [0.0, 0.0, 12.0 / 13.0, 5.0 / 13.0]],
     )
 
-    selected = problem.get_gradients(
+    selected = problem.get_jacobian(
         np.array([], dtype=int),
         variables,
         func=constraint,
         components=[1, 0],
         vars=["Y_0001", "X_0000"],
     )
-    np.testing.assert_allclose(selected, [[5.0 / 13.0, 0.0], [0.0, 0.6]])
+    np.testing.assert_allclose(selected.toarray(), [[5.0 / 13.0, 0.0], [0.0, 0.6]])
 
 
 def test_analytical_derivatives_do_not_rescan_variables(monkeypatch) -> None:
@@ -135,7 +133,7 @@ def test_analytical_derivatives_do_not_rescan_variables(monkeypatch) -> None:
         area_geometry_module, "signed_distance_gradients", count_gradient_calls
     )
 
-    problem.get_gradients(np.array([], dtype=int), variables, func=constraint)
+    problem.get_jacobian(np.array([], dtype=int), variables, func=constraint)
 
     assert parse_calls == len(variables)
     assert gradient_calls == 1
@@ -259,7 +257,7 @@ def test_analytical_derivatives_fail_at_nondifferentiable_points(
     problem, constraint = _setup([point])
 
     with pytest.raises(ValueError, match="Failed to calculate derivatives"):
-        problem.get_gradients(
+        problem.get_jacobian(
             np.array([], dtype=int), problem.initial_values_float(), func=constraint
         )
 
@@ -293,6 +291,6 @@ def test_composed_geometry_derivatives_fail_at_nondifferentiable_points(
     problem, constraint = _setup([point], geometry=geometry)
 
     with pytest.raises(ValueError, match="Failed to calculate derivatives"):
-        problem.get_gradients(
+        problem.get_jacobian(
             np.array([], dtype=int), problem.initial_values_float(), func=constraint
         )

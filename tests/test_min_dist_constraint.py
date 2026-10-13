@@ -1,6 +1,10 @@
+import foxes.constants as FC
+import foxes.variables as FV
 import numpy as np
 import pytest
-from iwopy import SimpleProblem
+import xarray as xr
+from iwopy import SimpleObjective, SimpleProblem, create_optimizer
+from scipy.sparse import isspmatrix_csr
 
 from foxes_opt.constraints import MinDistConstraint
 
@@ -53,9 +57,7 @@ def test_analytical_derivatives_via_iwopy() -> None:
         [[0.0, 0.0], [3.0, 4.0], [0.0, 8.0]], [0, 1, 2]
     )
 
-    gradients = problem.get_gradients(
-        np.array([], dtype=int), variables, func=constraint
-    )
+    jacobian = problem.get_jacobian(np.array([], dtype=int), variables, func=constraint)
     expected = np.array(
         [
             [0.6, 0.8, -0.6, -0.8, 0.0, 0.0],
@@ -63,16 +65,18 @@ def test_analytical_derivatives_via_iwopy() -> None:
             [0.0, 0.0, -0.6, 0.8, 0.6, -0.8],
         ]
     )
-    np.testing.assert_allclose(gradients, expected)
+    assert isspmatrix_csr(jacobian)
+    assert jacobian.nnz == np.count_nonzero(expected)
+    np.testing.assert_allclose(jacobian.toarray(), expected)
 
-    selected = problem.get_gradients(
+    selected = problem.get_jacobian(
         np.array([], dtype=int),
         variables,
         func=constraint,
         components=[2, 0],
         vars=["Y_0002", "X_0000"],
     )
-    np.testing.assert_allclose(selected, [[-0.8, 0.0], [0.0, 0.6]])
+    np.testing.assert_allclose(selected.toarray(), [[-0.8, 0.0], [0.0, 0.6]])
 
 
 def test_components_map_to_dependent_turbines() -> None:
@@ -82,14 +86,64 @@ def test_components_map_to_dependent_turbines() -> None:
     assert constraint.component_turbines([]) == set()
 
 
+class _PositionObjective(SimpleObjective):
+    def f(self, x, y):
+        return (x - 0.5) ** 2 + (y - 0.5) ** 2
+
+    def g(self, var, x, y, components):
+        return 2 * ((x, y)[var] - 0.5)
+
+
+class _EvaluatedLayoutProblem(_LayoutProblem):
+    def apply_individual(self, vars_int, vars_float):
+        layout = np.array([turbine.xy for turbine in self.farm.turbines])
+        layout[self.sel_turbines] = vars_float.reshape(-1, 2)
+        dimensions = (FC.STATE, FC.TURBINE)
+        return xr.Dataset(
+            {
+                FV.X: (dimensions, layout[None, :, 0]),
+                FV.Y: (dimensions, layout[None, :, 1]),
+                FV.D: (dimensions, np.ones((1, self.farm.n_turbines))),
+            }
+        )
+
+
+@pytest.mark.parametrize(
+    ("family", "method"), [("iwopy", "SLSQP"), ("scipy", "trust-constr")]
+)
+def test_full_spacing_jacobian_reaches_native_solver(family, method, monkeypatch):
+    problem = _EvaluatedLayoutProblem(
+        np.array([[0.0, 0.0], [3.0, 4.0], [10.0, 10.0]]), [0]
+    )
+    constraint = MinDistConstraint(problem, min_dist=2.0)
+    problem.add_objective(_PositionObjective(problem))
+    problem.add_constraint(constraint)
+    problem.initialize(verbosity=0)
+
+    def reject_automatic_selection(*args, **kwargs):
+        raise AssertionError("Current solvers must retain all spacing components")
+
+    monkeypatch.setattr(constraint, "active_components", reject_automatic_selection)
+    optimizer = create_optimizer(family, method, problem, maxiter=100)
+    optimizer.initialize(verbosity=0)
+    results = optimizer.solve(verbosity=0)
+    assert results.success
+    assert np.all(results.cons <= constraint.tol)
+    native_constraint = optimizer._constraints_scipy[0]
+    native_jacobian = native_constraint["jac"](
+        results.vars_float, *native_constraint["args"]
+    )
+    assert native_jacobian.shape == (constraint.n_components(), problem.n_vars_float)
+    assert isspmatrix_csr(native_jacobian) == (method == "trust-constr")
+    optimizer.finalize(results, verbosity=0)
+
+
 def test_analytical_derivatives_with_fixed_turbines() -> None:
     problem, constraint, variables = _setup([[0.0, 0.0], [3.0, 4.0], [0.0, 8.0]], [0])
 
-    gradients = problem.get_gradients(
-        np.array([], dtype=int), variables, func=constraint
-    )
+    jacobian = problem.get_jacobian(np.array([], dtype=int), variables, func=constraint)
 
-    np.testing.assert_allclose(gradients, [[0.6, 0.8], [0.0, 1.0]])
+    np.testing.assert_allclose(jacobian.toarray(), [[0.6, 0.8], [0.0, 1.0]])
 
 
 def test_analytical_derivatives_with_integer_farm_coordinates() -> None:
@@ -99,19 +153,17 @@ def test_analytical_derivatives_with_integer_farm_coordinates() -> None:
     constraint.initialize()
     variables = np.array([0.5, 0.0])
 
-    gradients = problem.get_gradients(
-        np.array([], dtype=int), variables, func=constraint
-    )
+    jacobian = problem.get_jacobian(np.array([], dtype=int), variables, func=constraint)
 
     distance = np.hypot(2.5, 4.0)
-    np.testing.assert_allclose(gradients, [[2.5 / distance, 4.0 / distance]])
+    np.testing.assert_allclose(jacobian.toarray(), [[2.5 / distance, 4.0 / distance]])
 
 
 def test_analytical_derivatives_fail_at_zero_distance() -> None:
     problem, constraint, variables = _setup([[0.0, 0.0], [0.0, 0.0]], [0, 1])
 
     with pytest.raises(ValueError, match="Failed to calculate derivatives"):
-        problem.get_gradients(np.array([], dtype=int), variables, func=constraint)
+        problem.get_jacobian(np.array([], dtype=int), variables, func=constraint)
 
 
 def test_active_pairs_use_guarded_boxes_without_changing_components():

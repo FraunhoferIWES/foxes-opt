@@ -99,10 +99,10 @@ otherwise.
 | `states` | `foxes.core.States` | May be wrapped by `PopulationStates` during vectorized evaluation |
 | `mbook` | `foxes.models.ModelBook` | FOXES model registry |
 | `problem` | `iwopy.Problem` or a derived `foxes_opt` problem | Use the narrowest derived type required by the API |
-| `optimizer` | `iwopy.Optimizer` | Initialized against a problem before solving |
+| `optimizer` | `iwopy.core.Optimizer` | Initialized against a problem before solving |
 | `objective` | `iwopy.Objective` or `FarmObjective` | May expose one or several components |
 | `constraint` | `iwopy.Constraint` or `FarmConstraint` | Bounds and component order are part of the contract |
-| `callback` | `iwopy.OptimizerCallback` | Runs at optimizer-defined events |
+| `callback` | `iwopy.core.OptimizerCallback` | Runs at optimizer-defined events |
 | `boundary` | `foxes.utils.geom2d.AreaGeometry` | Geometry used by area/layout constraints |
 | `farm_results` | `xarray.Dataset` | FOXES simulation result |
 | `problem_results` | Problem-specific payload, often `Any` at generic function boundaries | For `FarmOptProblem`, farm results or farm/point results |
@@ -143,10 +143,12 @@ Use `var_names_int` and `var_names_float` for ordered public variable names and
 spelling. Preserve population-major ordering when a population is flattened
 into FOXES states: candidate first, original state second.
 
-Use `_min` and `_max` for variable or component bounds, `_tol` for feasibility
-tolerance, and `_gradients` or `_derivatives` according to the owning iwopy
-method. Do not call a constraint Jacobian a layout gradient when its first axis
-is actually the component axis.
+Use `_min` and `_max` for variable or component bounds and `_tol` for feasibility
+tolerance. Use singular `jacobian` for a component-by-variable CSR matrix and
+`get_jacobian`/`calc_jacobian` for iwopy matrix APIs. Reserve `gradient` for the
+derivative vector of a scalar function; `signed_distance_gradients` returns
+one such vector per point. Keep native PyGMO `gradient` protocol names at that
+integration boundary. Do not call a constraint Jacobian a layout gradient.
 
 ## FOXES Dimensions And Variables
 
@@ -187,8 +189,8 @@ consumers.
 	derivatives, diagnostics, and result output.
 - `active_components` selects stable local pair-component indices certified by
 	enforced coordinate bounds. It does not rename or remove registered pairs.
-	iwopy's `move_limit` is a whole-solve displacement box, not a per-iteration
-	step or a change to physical minimum spacing.
+	Its caller must enforce those bounds; current iwopy SLSQP does not perform
+	automatic pair selection.
 - Constraint objects own tolerance. Use `min_dist_constraint_pars` for the
 	automatic minimum-distance family and each explicit `constraints` entry for
 	that family's settings; do not use one optimizer-wide tolerance name.
@@ -201,9 +203,19 @@ consumers.
 
 - YAML keys use the owning Python constructor parameter name unless the input
 	adapter explicitly documents a mapping.
-- Problem, objective, constraint, optimizer, and output class names resolved
+- Problem, objective, constraint, and output class names resolved
 	from YAML are public identifiers. Check configuration examples and tests before
 	renaming one.
+- Optimizers use iwopy `create_optimizer(family, optimizer, problem, **kwargs)`.
+	YAML uses `family` and `optimizer`; stages use `optimizer_family` and put the
+	algorithm's `optimizer` selector in `optimizer_pars`. Other entries are
+	explicit iwopy controls and flat native options, not grouped parameter maps.
+- Examples and notebooks import `create_optimizer` from `iwopy` and supply
+	explicit `family`, `optimizer`, and `problem` keywords; do not directly
+	construct backend adapter classes.
+- `boundary_repair_optimizer_family` overrides the backend for repair;
+	`boundary_repair_optimizer_pars` overrides the algorithm and options. FOXES
+	`algo_pars` retains its separate simulation meaning.
 - Keep class resolution and validation in `foxes_opt.input`. Reusable solving or
 	output logic belongs below the CLI parser.
 - The public console script is `foxes_opt_yaml`; Python modules and callable

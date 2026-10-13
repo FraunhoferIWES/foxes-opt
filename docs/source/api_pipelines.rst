@@ -44,7 +44,8 @@ independent feasibility tolerances:
 .. code-block:: python
 
     stage = LayoutOptimizerStage(
-        optimizer_type="SLSQP",
+        optimizer_family="iwopy",
+        optimizer_pars={"optimizer": "SLSQP", "maxiter": 100},
         constraints=[
             {"constraint_type": "FarmBoundaryConstraint", "tol": 0.5},
         ],
@@ -55,6 +56,17 @@ independent feasibility tolerances:
 
 The constraint objects own these tolerances; the optimizer derives its solver
 bounds from the registered constraints.
+
+Optimizer selection
+------------------
+
+``optimizer_family`` selects the iwopy factory backend. ``optimizer_pars``
+requires an ``optimizer`` algorithm name and otherwise contains explicit iwopy
+controls and flat native options. For example, use ``optimizer_family="scipy"``
+with ``optimizer_pars={"optimizer": "trust-constr", "maxiter": 100}`` for sparse
+native constraint Jacobians. ``boundary_repair_optimizer_family`` optionally
+selects another backend for repair; ``boundary_repair_optimizer_pars`` overrides
+the main algorithm selector and options for that run.
 
 .. toctree::
     :maxdepth: 2

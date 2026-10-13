@@ -153,6 +153,14 @@
 
 ## v0.9.1
 
+- Dependencies and iwopy integration:
+  - Require *iwopy* >=1.0.0 and consume CSR `get_jacobian`/`calc_jacobian`
+    matrices throughout derivative tests and maintained workflows
+  - YAML uses `family`/`optimizer`; layout stages use `optimizer_family` and
+    flat optimizer parameters, including boundary-repair overrides
+  - Switched every example and notebook to `iwopy.create_optimizer`, explicit
+    optimizer controls, and flat native options; retained scalar-gradient terms
+  - Recorded sparse native boundaries and corrected spacing-selection ownership
 - General:
   - Added support for Python 3.14
   - Added coding-agent policies, including developer-owned uv setup and
@@ -186,8 +194,9 @@
   - Layout plots now match callback snapshots with true turbine radii,
     high-contrast colors, matched outlines, and validity legends
 - Constraints:
-  - Added bound-certified nearby-pair selection to `MinDistConstraint` for
-    guarded iwopy SLSQP solves, preserving full component identities and checks
+  - Added bound-certified nearby-pair selection to `MinDistConstraint`,
+    preserving full component identities and checks; callers enforce selection
+    bounds, while current iwopy SLSQP evaluates all registered pairs
   - Added `NearestGroupConstraint`, enforcing nearest-distance and minimum
     connected-group-size limits with piecewise analytical position derivatives
   - `MinDistConstraint` now provides analytical position derivatives to *iwopy*

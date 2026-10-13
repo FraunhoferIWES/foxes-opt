@@ -5,7 +5,7 @@ import foxes
 import foxes.variables as FV
 import matplotlib.pyplot as plt
 import numpy as np
-from iwopy.interfaces.pymoo import Optimizer_pymoo
+from iwopy import create_optimizer
 
 from foxes_opt.constraints import FarmBoundaryConstraint, MinDistConstraint
 from foxes_opt.objectives import MaxFarmPower
@@ -109,12 +109,17 @@ def build_problem(
 
 def build_solver(problem, opt_algo, n_pop, n_gen, vectorize=False, seed=13):
     """Create the pymoo optimizer for the example problem."""
-    solver = Optimizer_pymoo(
-        problem,
-        problem_pars={"vectorize": vectorize},
-        algo_pars={"type": opt_algo, "pop_size": n_pop, "seed": seed},
-        setup_pars={},
-        term_pars={"type": "default", "n_max_gen": n_gen, "ftol": 1e-6, "xtol": 1e-6},
+    solver = create_optimizer(
+        family="pymoo",
+        optimizer=opt_algo,
+        problem=problem,
+        vectorize=vectorize,
+        pop_size=n_pop,
+        seed=seed,
+        termination="default",
+        n_max_gen=n_gen,
+        ftol=1e-6,
+        xtol=1e-6,
     )
     solver.initialize()
     return solver

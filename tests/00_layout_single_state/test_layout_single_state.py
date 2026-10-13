@@ -1,7 +1,7 @@
 import foxes
 import foxes.variables as FV
 import numpy as np
-from iwopy.interfaces.pymoo import Optimizer_pymoo
+from iwopy import create_optimizer
 
 from foxes_opt.constraints import FarmBoundaryConstraint, MinDistConstraint
 from foxes_opt.objectives import MaxFarmPower
@@ -35,23 +35,17 @@ def test():
     problem.add_constraint(MinDistConstraint(problem, min_dist=3, min_dist_unit="D"))
     problem.initialize()
 
-    solver = Optimizer_pymoo(
-        problem,
-        problem_pars={
-            "vectorize": True,
-        },
-        algo_pars={
-            "type": "GA",
-            "pop_size": 100,
-            "seed": 42,
-        },
-        setup_pars={},
-        term_pars={
-            "type": "default",
-            "n_max_gen": 100,
-            "ftol": 1e-6,
-            "xtol": 1e-6,
-        },
+    solver = create_optimizer(
+        family="pymoo",
+        optimizer="GA",
+        problem=problem,
+        vectorize=True,
+        pop_size=100,
+        seed=42,
+        termination="default",
+        n_max_gen=100,
+        ftol=1e-6,
+        xtol=1e-6,
     )
     solver.initialize()
     solver.print_info()

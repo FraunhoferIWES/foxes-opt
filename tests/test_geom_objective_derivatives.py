@@ -56,13 +56,15 @@ def test_geometry_objective_derivatives_via_iwopy() -> None:
     ]
     for objective in objectives:
         objective.initialize(verbosity=0)
-        analytical = problem.get_gradients(
+        analytical = problem.get_jacobian(
             variables_int, variables_float, func=objective
         )
         numerical = _finite_difference(
             problem, objective, variables_int, variables_float
         )
-        np.testing.assert_allclose(analytical, numerical, rtol=2e-5, atol=2e-6)
+        np.testing.assert_allclose(
+            analytical.toarray(), numerical, rtol=2e-5, atol=2e-6
+        )
 
 
 def test_max_grid_spacing_derivative_fails_at_tie() -> None:
@@ -72,4 +74,4 @@ def test_max_grid_spacing_derivative_fails_at_tie() -> None:
     variables_float[2] = variables_float[7]
 
     with pytest.raises(ValueError, match="Failed to calculate derivatives"):
-        problem.get_gradients(variables_int, variables_float, func=objective)
+        problem.get_jacobian(variables_int, variables_float, func=objective)

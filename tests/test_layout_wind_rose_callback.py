@@ -100,24 +100,20 @@ def test_ipopt_example_uses_pygmo_ipopt(example):
         for node in ast.walk(tree)
         if isinstance(node, ast.Call)
         and isinstance(node.func, ast.Name)
-        and node.func.id == "Optimizer_pygmo"
+        and node.func.id == "create_optimizer"
     ]
 
     assert len(calls) == 1
     keywords = {keyword.arg: keyword.value for keyword in calls[0].keywords}
-    algo_pars = {
-        ast.literal_eval(key): value
-        for key, value in zip(
-            keywords["algo_pars"].keys,
-            keywords["algo_pars"].values,
-        )
-    }
-    assert ast.literal_eval(algo_pars["type"]) == "ipopt"
-    assert isinstance(algo_pars["max_iter"], ast.Attribute)
-    assert algo_pars["max_iter"].attr == "maxiter"
-    assert ast.literal_eval(algo_pars["print_level"]) == 5
-    assert isinstance(algo_pars["tol"], ast.Attribute)
-    assert algo_pars["tol"].attr == "tol"
+    assert ast.literal_eval(keywords["family"]) == "pygmo"
+    assert ast.literal_eval(keywords["optimizer"]) == "ipopt"
+    assert isinstance(keywords["max_iter"], ast.Attribute)
+    assert keywords["max_iter"].attr == "maxiter"
+    assert ast.literal_eval(keywords["print_level"]) == 5
+    assert isinstance(keywords["tol"], ast.Attribute)
+    assert keywords["tol"].attr == "tol"
+    assert "problem_pars" not in keywords
+    assert "algo_pars" not in keywords
     assert "setup_pars" not in keywords
 
 

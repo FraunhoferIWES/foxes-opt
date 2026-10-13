@@ -5,8 +5,7 @@ import foxes
 import foxes.variables as FV
 import matplotlib.pyplot as plt
 import numpy as np
-from iwopy import LocalFD
-from iwopy.interfaces.pygmo import Optimizer_pygmo
+from iwopy import LocalFD, create_optimizer
 
 from foxes_opt.constraints import FarmBoundaryConstraint, MinDistConstraint
 from foxes_opt.objectives import MaxFarmPower
@@ -148,15 +147,14 @@ if __name__ == "__main__":
     problem = LocalFD(problem, deltas=10.0, fd_order=args.fd_order)
     problem.initialize()
 
-    solver = Optimizer_pygmo(
-        problem,
-        problem_pars={"pop": not args.no_pop},
-        algo_pars={
-            "type": "ipopt",
-            "max_iter": args.maxiter,
-            "print_level": 5,
-            "tol": args.tol,
-        },
+    solver = create_optimizer(
+        family="pygmo",
+        optimizer="ipopt",
+        problem=problem,
+        vectorize=not args.no_pop,
+        max_iter=args.maxiter,
+        print_level=5,
+        tol=args.tol,
     )
     solver.initialize()
     solver.print_info()

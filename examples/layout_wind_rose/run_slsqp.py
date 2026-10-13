@@ -5,8 +5,7 @@ import foxes
 import foxes.variables as FV
 import matplotlib.pyplot as plt
 import numpy as np
-from iwopy import LocalFD
-from iwopy.optimizers import SLSQP
+from iwopy import LocalFD, create_optimizer
 
 from foxes_opt.callbacks import WriteLayoutCallback
 from foxes_opt.constraints import FarmBoundaryConstraint, MinDistConstraint
@@ -155,10 +154,12 @@ if __name__ == "__main__":
     problem = LocalFD(problem, deltas=0.1, fd_order=args.fd_order)
     problem.initialize()
 
-    solver = SLSQP(
-        problem,
-        scipy_pars={"options": {"maxiter": args.maxiter}},
-        vectorized=not args.no_pop,
+    solver = create_optimizer(
+        family="iwopy",
+        optimizer="SLSQP",
+        problem=problem,
+        maxiter=args.maxiter,
+        vectorize=not args.no_pop,
     )
     solver.initialize()
     solver.print_info()

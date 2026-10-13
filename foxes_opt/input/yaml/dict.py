@@ -3,7 +3,7 @@ from typing import Any
 from foxes.input.yaml import read_dict as foxes_read_dict
 from foxes.input.yaml import run_outputs as foxes_run_output
 from foxes.utils import Dict
-from iwopy import LocalFD
+from iwopy import LocalFD, create_optimizer
 from iwopy.core import Optimizer
 
 from foxes_opt.core import FarmConstraint, FarmObjective, FarmOptProblem
@@ -16,7 +16,10 @@ def read_dict(
     **kwargs: Any,
 ) -> tuple[Any, Any, Optimizer]:
     """
-    Read dictionary input into foxes objects
+    Construct FOXES objects and an initialized iwopy optimizer.
+
+    The optimizer mapping requires ``family`` and ``optimizer`` selectors,
+    followed by explicit iwopy controls and flat native algorithm options.
 
     Parameters
     ----------
@@ -92,7 +95,7 @@ def read_dict(
     # create solver:
     _print("Creating optimizer")
     sdict = jdict.get_item("optimizer")
-    optimizer = Optimizer.new(problem=problem, **sdict)
+    optimizer = create_optimizer(problem=problem, **sdict)
     optimizer.initialize()
 
     return algo, engine, optimizer

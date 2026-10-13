@@ -49,14 +49,13 @@ optimization:
     # constraints can be added here similarly
 
   optimizer:
-    optimizer_type: Optimizer_pymoo
-    problem_pars:
-      vectorize: True
-    algo_pars:
-      type: GA
-      pop_size: 100
-      seed: 42
-    term_pars: [n_gen, 100]
+    family: pymoo
+    optimizer: GA
+    vectorize: True
+    pop_size: 100
+    seed: 42
+    termination: n_gen
+    n_max_gen: 100
 
 # -------
 # outputs

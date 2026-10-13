@@ -92,7 +92,12 @@ Pipeline users can pass an ordered callback list through the
 `WriteOptimizationHistoryCallback` writes the iteration number, selected
 objective value, and number of violated constraint components to a CSV file.
 It resets the file when a solve starts and persists each iteration immediately.
-The SLSQP and IPOPT examples use `LocalFD` for finite-difference gradients.
+The SLSQP and IPOPT examples use `LocalFD` for finite-difference Jacobians.
+FOXES Optimization requires iwopy >=1.0.0, whose `get_jacobian()` and
+`calc_jacobian()` return SciPy CSR matrices. YAML selects optimizers with
+`family` and `optimizer`; pipeline stages use `optimizer_family` and put the
+algorithm selector and flat options in `optimizer_pars`.
+All examples and notebooks construct optimizers with `iwopy.create_optimizer`.
 The IPOPT example runs through pygmo and does not offer callbacks because pygmo
 exposes neither exact live IPOPT iterations nor their decision vectors.
 Running the example again overwrites matching generation numbers.

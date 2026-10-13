@@ -46,10 +46,10 @@ def test_geometry_constraint_derivatives_via_iwopy() -> None:
     ]
     for function in functions:
         function.initialize(verbosity=0)
-        analytical = problem.get_gradients(
-            variables_int, variables_float, func=function
-        )
+        analytical = problem.get_jacobian(variables_int, variables_float, func=function)
         numerical = _finite_difference(
             problem, function, variables_int, variables_float
         )
-        np.testing.assert_allclose(analytical, numerical, rtol=2e-5, atol=2e-6)
+        np.testing.assert_allclose(
+            analytical.toarray(), numerical, rtol=2e-5, atol=2e-6
+        )

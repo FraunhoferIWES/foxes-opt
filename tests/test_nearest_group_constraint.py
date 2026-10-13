@@ -237,9 +237,7 @@ def test_analytical_derivatives_via_iwopy() -> None:
         layout, max_nearest_dist=7.0, min_nearest_group_size=3
     )
 
-    gradients = problem.get_gradients(
-        np.array([], dtype=int), variables, func=constraint
-    )
+    jacobian = problem.get_jacobian(np.array([], dtype=int), variables, func=constraint)
 
     distance = np.sqrt(45.0)
     expected_row = [
@@ -250,7 +248,7 @@ def test_analytical_derivatives_via_iwopy() -> None:
         -3.0 / distance,
         6.0 / distance,
     ]
-    np.testing.assert_allclose(gradients, np.tile(expected_row, (3, 1)))
+    np.testing.assert_allclose(jacobian.toarray(), np.tile(expected_row, (3, 1)))
 
 
 def test_analytical_derivatives_fail_at_zero_distance() -> None:
@@ -261,7 +259,7 @@ def test_analytical_derivatives_fail_at_zero_distance() -> None:
     )
 
     with pytest.raises(ValueError, match="Failed to calculate derivatives"):
-        problem.get_gradients(np.array([], dtype=int), variables, func=constraint)
+        problem.get_jacobian(np.array([], dtype=int), variables, func=constraint)
 
 
 def test_non_xy_layout_variables_fall_back_to_numerical_derivatives() -> None:

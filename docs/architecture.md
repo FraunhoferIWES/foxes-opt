@@ -159,6 +159,15 @@ finite-difference wrapper such as `iwopy.LocalFD` when a gradient-based
 optimizer needs derivatives. Do not advertise analytical derivatives where the
 simulation path does not provide them.
 
+iwopy 1.0.0 or newer owns sparse assembly through `calc_jacobian()` and
+`get_jacobian()`, returning SciPy CSR matrices. Rows are selected scalar
+components and columns are selected floating variables, in requested order.
+FOXES Optimization supplies dependency masks and per-variable analytical
+derivative vectors, not dense Jacobian buffers. Scalar distance gradients remain
+vectors. IPOPT and SciPy `trust-constr` preserve native sparse constraints;
+SLSQP still requires dense native rows. Dependency masks and simulation or
+finite-difference populations remain separate memory costs.
+
 Each constraint object owns its feasibility tolerance. Pipeline-created
 constraint families receive independent constructor mappings: explicit
 boundary entries use their `constraints` mapping, while the automatic
@@ -172,10 +181,11 @@ Unselected turbines remain fixed; D-unit spacing uses the larger pair diameter.
 Unbounded coordinates, variable diameters, and state-dependent positions are
 handled conservatively. Unsupported variable parameterizations retain all pairs
 rather than assuming their positions are fixed. Selection never changes pair
-indices, component count,
-full values, or feasibility checks. iwopy SLSQP owns enforced movement boxes and
-fixed-per-solve reduced Jacobians. See
-[ADR-0004](adr/0004-bound-certified-spacing-components.md).
+indices, component count, full values, or feasibility checks. A caller using the
+selection must enforce its coordinate boxes throughout the solve. Current
+iwopy SLSQP evaluates the full constraint set without automatic pair selection.
+See [ADR-0005](adr/0005-current-iwopy-contracts.md), which supersedes the SLSQP
+integration assumption of [ADR-0004](adr/0004-bound-certified-spacing-components.md).
 
 ### Pipelines And Callbacks
 
@@ -191,6 +201,16 @@ A fresh pipeline run may supply finite turbine coordinates through
 `initial_layout`; the first selected stage receives that array directly. This
 does not imply persisted-run continuation, callback offsets, history append
 mode, or preservation of the existing pipeline table.
+
+YAML optimizer mappings use `family` and `optimizer` selectors with flat
+parameters passed to `iwopy.create_optimizer()`. Pipeline stages use
+`optimizer_family` and an `optimizer_pars` mapping containing `optimizer` and
+flat parameters. Boundary repair optionally overrides the family and mapping.
+FOXES `algo_pars` remain simulation settings; they are not iwopy optimizer
+parameter groups. Construction does not change initialization, solve,
+finalization, or callback ownership.
+All maintained examples and notebooks construct optimizers through
+`iwopy.create_optimizer()` instead of importing concrete backend adapters.
 
 A restart selects a persisted `layout_<index>.csv` by numeric suffix, validates
 its turbine order and coordinate array, and supplies it as the initial result
@@ -320,8 +340,16 @@ forward-only by default under
 - Production Python under `foxes_opt/` is type checked. Tests, examples,
 	notebooks, and docs are not currently part of the mypy target.
 - Spacing reduction uses constraint-owned bound certificates, while iwopy owns
-	enforced solve-local boxes and full acceptance checks. See
-	[ADR-0004](adr/0004-bound-certified-spacing-components.md).
+	full acceptance checks; callers own enforcement of selection bounds. Current
+	SLSQP uses all spacing components. See
+	[ADR-0005](adr/0005-current-iwopy-contracts.md).
+- iwopy >=1.0.0 supplies CSR Jacobians and backend/algorithm optimizer factories.
+	Maintained callers use the current APIs without compatibility aliases. See
+	[ADR-0005](adr/0005-current-iwopy-contracts.md).
+- Existing layout-stage construction/lifecycle methods and cohesive pipeline
+	or callback test modules exceed the usual size guidelines. Their existing
+	ownership is retained during this integration change to avoid unrelated
+	lifecycle refactoring or test redistribution.
 - Public Python APIs follow [docstring conventions](docstrings.md): NumPy-style
 	docstrings expose optimization, scientific, and runtime contracts while types
 	remain in annotations.

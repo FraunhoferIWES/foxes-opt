@@ -4,8 +4,7 @@ import gc
 import foxes
 import matplotlib.pyplot as plt
 import numpy as np
-from iwopy import LocalFD
-from iwopy.interfaces.pygmo import Optimizer_pygmo
+from iwopy import LocalFD, create_optimizer
 
 from foxes_opt.constraints import FarmBoundaryConstraint, MinDistConstraint
 from foxes_opt.objectives import MaxFarmPower
@@ -72,7 +71,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-np",
         "--no-pop",
-        help="Disable population-based finite-difference gradients",
+        help="Disable population-based finite-difference Jacobians",
         action="store_true",
     )
     parser.add_argument(
@@ -139,15 +138,14 @@ if __name__ == "__main__":
     problem = LocalFD(problem, deltas=args.fd_delta, fd_order=args.fd_order)
     problem.initialize()
 
-    solver = Optimizer_pygmo(
-        problem,
-        problem_pars={"pop": not args.no_pop},
-        algo_pars={
-            "type": "ipopt",
-            "max_iter": args.maxiter,
-            "print_level": 5,
-            "tol": args.tol,
-        },
+    solver = create_optimizer(
+        family="pygmo",
+        optimizer="ipopt",
+        problem=problem,
+        vectorize=not args.no_pop,
+        max_iter=args.maxiter,
+        print_level=5,
+        tol=args.tol,
     )
     solver.initialize()
     solver.print_info()
@@ -173,7 +171,7 @@ if __name__ == "__main__":
 
         print()
         print(results)
-        print(f"Population-based gradients: {not args.no_pop}")
+        print(f"Population-based Jacobians: {not args.no_pop}")
 
         if not args.no_fig:
             output = foxes.output.FlowPlots2D(algo, results.problem_results)

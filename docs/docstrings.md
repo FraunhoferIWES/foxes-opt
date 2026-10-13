@@ -302,8 +302,10 @@ For `ana_deriv()`, document:
 	fallback signal, or an exception at a non-differentiable point; and
 - any cache or mutation visible across repeated calls.
 
-For a complete gradient/Jacobian API, state the component and variable axes
-explicitly. Never rely on the word "gradient" to communicate array orientation.
+For a Jacobian API, state the selected component rows, floating-variable columns,
+their order, and the SciPy CSR return format. Reserve "gradient" for a scalar
+function's derivative vector. iwopy owns `get_jacobian()` and `calc_jacobian()`;
+function `ana_deriv()` callbacks return one column's selected derivatives.
 
 Analytical derivative claims require tests against finite differences at
 differentiable points. A piecewise derivative docstring identifies the branch

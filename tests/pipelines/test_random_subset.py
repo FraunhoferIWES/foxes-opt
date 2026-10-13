@@ -58,7 +58,7 @@ class _TestStage(RandomSubsetStage):
 
 class _OptimizerStage(LayoutOptimizerStage):
     def __init__(self, result_success, **kwargs):
-        super().__init__(optimizer_type="test", **kwargs)
+        super().__init__(optimizer_family="test", **kwargs)
         self.result_success = result_success
         self.start_layout = None
 
@@ -76,7 +76,7 @@ def _stage(tmp_path, accepted=(True, False, True), **kwargs):
         n_subset_turbines=2,
         n_subset_states=3,
         n_steps=3,
-        optimizer_type="test",
+        optimizer_family="test",
         seed=42,
     )
     pars.update(kwargs)
@@ -129,7 +129,7 @@ def test_random_subset_stage_accepts_selected_problem_type(tmp_path):
         n_subset_turbines=2,
         n_subset_states=3,
         n_steps=1,
-        optimizer_type="test",
+        optimizer_family="test",
         problem_type="CustomProblem",
     )
     stage.initialize(_Pipeline(stage, tmp_path))
@@ -181,7 +181,7 @@ def test_layout_optimizer_stage_keeps_previous_layout_on_failure(tmp_path):
 
 
 def test_layout_optimizer_stage_installs_default_functions(monkeypatch, tmp_path):
-    stage = LayoutOptimizerStage(optimizer_type="test")
+    stage = LayoutOptimizerStage(optimizer_family="test")
     stage.initialize(_Pipeline(stage, tmp_path))
     calls = []
 
@@ -228,7 +228,7 @@ def test_layout_optimizer_stage_installs_default_functions(monkeypatch, tmp_path
 
 def test_layout_optimizer_stage_uses_per_family_constraint_tolerances(monkeypatch):
     stage = LayoutOptimizerStage(
-        optimizer_type="test",
+        optimizer_family="test",
         constraints=[{"constraint_type": "FarmBoundaryConstraint", "tol": 0.5}],
         min_dist_constraint_pars={"tol": 0.01},
     )
@@ -257,7 +257,7 @@ def test_layout_optimizer_stage_uses_per_family_constraint_tolerances(monkeypatc
 
 def test_layout_optimizer_stage_rejects_reserved_min_dist_parameters(tmp_path):
     stage = LayoutOptimizerStage(
-        optimizer_type="test",
+        optimizer_family="test",
         min_dist_constraint_pars={"min_dist": 0.5},
     )
 
@@ -269,7 +269,7 @@ def test_layout_optimizer_stage_uses_all_turbines_for_configured_power_objective
     monkeypatch,
 ):
     stage = LayoutOptimizerStage(
-        optimizer_type="test",
+        optimizer_family="test",
         objectives=[{"objective_type": "MaxFarmPower", "sel_turbines": [1]}],
     )
     calls = []
@@ -299,7 +299,7 @@ def test_layout_optimizer_stage_uses_all_turbines_for_configured_power_objective
 
 
 def test_layout_optimizer_stage_skips_min_dist_when_none(monkeypatch, tmp_path):
-    stage = LayoutOptimizerStage(optimizer_type="test", min_dist=None)
+    stage = LayoutOptimizerStage(optimizer_family="test", min_dist=None)
     stage.initialize(_Pipeline(stage, tmp_path))
     calls = []
 
@@ -369,7 +369,7 @@ def test_layout_optimizer_stage_forwards_callbacks(monkeypatch, tmp_path):
     callback = object()
     algo_pars = {"rotor_model": "centre_binned"}
     stage = LayoutOptimizerStage(
-        optimizer_type="test",
+        optimizer_family="test",
         problem_type="CustomProblem",
         problem_pars={"custom": 3},
         algo_pars=algo_pars,
@@ -428,7 +428,7 @@ def test_layout_optimizer_stage_forwards_callbacks(monkeypatch, tmp_path):
     monkeypatch.setattr(
         stage,
         "_create_optimizer",
-        lambda problem, optimizer_type=None, optimizer_pars=None: _Optimizer(),
+        lambda problem, optimizer_family=None, optimizer_pars=None: _Optimizer(),
     )
 
     _, candidate = stage._run_layout_optimizer(np.zeros((5, 2)), verbosity=0)
@@ -452,7 +452,7 @@ def test_layout_optimizer_stage_forwards_callbacks(monkeypatch, tmp_path):
 
 def test_layout_optimizer_stage_rejects_reserved_algo_pars(tmp_path):
     stage = LayoutOptimizerStage(
-        optimizer_type="test",
+        optimizer_family="test",
         algo_pars={"states": object()},
     )
 
@@ -464,10 +464,10 @@ def test_layout_optimizer_stage_boundary_repair_reduces_main_selection(
     monkeypatch, tmp_path
 ):
     stage = LayoutOptimizerStage(
-        optimizer_type="test",
+        optimizer_family="test",
         optimizer_pars={"main": True},
         boundary_repair=True,
-        boundary_repair_optimizer_type="repair_test",
+        boundary_repair_optimizer_family="repair_test",
         boundary_repair_optimizer_pars={"repair": True},
         min_dist=0.25,
         min_dist_unit="m",
@@ -554,8 +554,8 @@ def test_layout_optimizer_stage_boundary_repair_reduces_main_selection(
     monkeypatch.setattr(
         stage,
         "_create_optimizer",
-        lambda problem, optimizer_type=None, optimizer_pars=None: (
-            optimizer_calls.append((optimizer_type, optimizer_pars)),
+        lambda problem, optimizer_family=None, optimizer_pars=None: (
+            optimizer_calls.append((optimizer_family, optimizer_pars)),
             _Optimizer(problem),
         )[1],
     )
@@ -574,9 +574,9 @@ def test_layout_optimizer_stage_boundary_repair_reduces_main_selection(
 
 def test_layout_optimizer_stage_merges_boundary_repair_optimizer_settings(monkeypatch):
     stage = LayoutOptimizerStage(
-        optimizer_type="test",
+        optimizer_family="test",
         optimizer_pars={"common": "main", "main": True},
-        boundary_repair_optimizer_type="repair_test",
+        boundary_repair_optimizer_family="repair_test",
         boundary_repair_optimizer_pars={"common": "repair", "repair": True},
     )
     problem = object()
@@ -586,11 +586,11 @@ def test_layout_optimizer_stage_merges_boundary_repair_optimizer_settings(monkey
         calls.append((args, kwargs))
         return "optimizer"
 
-    monkeypatch.setattr(layout_optimizer.Optimizer, "new", fake_new)
+    monkeypatch.setattr(layout_optimizer, "create_optimizer", fake_new)
 
     optimizer = stage._create_optimizer(
         problem,
-        stage.boundary_repair_optimizer_type,
+        stage.boundary_repair_optimizer_family,
         stage.boundary_repair_optimizer_pars,
     )
 
@@ -600,7 +600,7 @@ def test_layout_optimizer_stage_merges_boundary_repair_optimizer_settings(monkey
             (),
             {
                 "problem": problem,
-                "optimizer_type": "repair_test",
+                "family": "repair_test",
                 "common": "repair",
                 "main": True,
                 "repair": True,
@@ -613,7 +613,7 @@ def test_layout_optimizer_stage_boundary_repair_uses_one_d_without_min_dist(
     monkeypatch, tmp_path
 ):
     stage = LayoutOptimizerStage(
-        optimizer_type="test",
+        optimizer_family="test",
         boundary_repair=True,
         min_dist=None,
         algo_pars={"rotor_model": "centre_binned"},
@@ -669,7 +669,7 @@ def test_layout_optimizer_stage_boundary_repair_failure_returns_original(
     monkeypatch, tmp_path
 ):
     stage = LayoutOptimizerStage(
-        optimizer_type="test",
+        optimizer_family="test",
         boundary_repair=True,
         min_dist=0.25,
         min_dist_unit="m",
@@ -750,7 +750,7 @@ def test_layout_optimizer_stage_boundary_repair_failure_returns_original(
     monkeypatch.setattr(
         stage,
         "_create_optimizer",
-        lambda problem, optimizer_type=None, optimizer_pars=None: _Optimizer(problem),
+        lambda problem, optimizer_family=None, optimizer_pars=None: _Optimizer(problem),
     )
 
     layout = np.array([[0.0, 0.0], [2.0, 0.0], [0.2, 0.0]])
@@ -771,13 +771,14 @@ def test_stage_runs_vectorized_gg_with_lazy_state_subset(tmp_path):
         n_subset_turbines=1,
         n_subset_states=2,
         n_steps=1,
-        optimizer_type="GG",
+        optimizer_family="iwopy",
         optimizer_pars={
+            "optimizer": "GG",
             "step_max": 20.0,
             "step_min": 10.0,
             "n_max_steps": 2,
             "max_iterations": 0,
-            "vectorized": True,
+            "vectorize": True,
         },
         problem_wrapper_type="LocalFD",
         problem_wrapper_pars={"deltas": 0.1, "fd_order": 1},

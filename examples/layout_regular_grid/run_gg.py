@@ -3,8 +3,7 @@ import argparse
 import foxes
 import matplotlib.pyplot as plt
 import numpy as np
-from iwopy import LocalFD
-from iwopy.optimizers import GG
+from iwopy import LocalFD, create_optimizer
 
 from foxes_opt.objectives import MaxFarmPower
 from foxes_opt.problems.layout import RegularLayoutOptProblem
@@ -112,8 +111,10 @@ if __name__ == "__main__":
     gproblem = LocalFD(problem, deltas=0.1, fd_order=args.fd_order)
     gproblem.initialize()
 
-    solver = GG(
-        gproblem,
+    solver = create_optimizer(
+        family="iwopy",
+        optimizer="GG",
+        problem=gproblem,
         step_min={
             "spacing_x": 1,
             "spacing_y": 1,
@@ -130,7 +131,7 @@ if __name__ == "__main__":
         },
         f_tol=1e-8,
         step_div_factor=2,
-        vectorized=not args.no_pop,
+        vectorize=not args.no_pop,
     )
 
     solver.initialize()

@@ -45,14 +45,16 @@ def test_piecewise_constant_derivatives_via_iwopy(
     function.initialize()
     variables = problem.initial_values_float()
 
-    gradients = problem.get_gradients(np.array([], dtype=int), variables, func=function)
+    jacobian = problem.get_jacobian(np.array([], dtype=int), variables, func=function)
 
-    np.testing.assert_array_equal(gradients, np.zeros((n_components, 2)))
-    selected = problem.get_gradients(
+    assert jacobian.nnz == 0
+    np.testing.assert_array_equal(jacobian.toarray(), np.zeros((n_components, 2)))
+    selected = problem.get_jacobian(
         np.array([], dtype=int),
         variables,
         func=function,
         components=[n_components - 1],
         vars=["y"],
     )
-    np.testing.assert_array_equal(selected, [[0.0]])
+    assert selected.nnz == 0
+    np.testing.assert_array_equal(selected.toarray(), [[0.0]])

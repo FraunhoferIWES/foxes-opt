@@ -12,12 +12,17 @@ pair. Fixed turbines keep their coordinates. Unbounded coordinates and variable
 diameters are conservative; state-dependent coordinates and unsupported variable
 parameterizations retain all pairs.
 
-Enable this through iwopy ``SLSQP(reduce_constraints=True, move_limit=...)``.
-The positive movement limit bounds each coordinate from its initial value over
-the entire solve. Selection reduces constraint/Jacobian rows, not registered
-pair identities or full value and feasibility evaluation. Start another solve
-to move the guarded region; iwopy refreshes the selection before solving.
-Without useful movement bounds, a safe selection may retain all pairs.
+The caller of ``active_components`` must enforce the supplied coordinate bounds
+over the entire solve before using its selection. Without useful movement
+bounds, a safe selection may retain all pairs. Current iwopy SLSQP evaluates all
+registered spacing components and does not invoke this selection hook.
+
+iwopy ``Problem.get_jacobian`` returns a SciPy CSR matrix whose rows are selected
+function components and whose columns are selected floating variables, both in
+requested order. Analytical spacing and geometry derivatives feed this sparse
+assembly directly. SLSQP converts the requested rows to dense native arrays;
+SciPy ``trust-constr`` and PyGMO IPOPT retain sparse constraint derivatives at
+their native boundary.
 
 Nearest connected groups
 ------------------------
@@ -54,7 +59,8 @@ boundary tolerance with separate automatic minimum-distance parameters:
 .. code-block:: python
 
     stage = LayoutOptimizerStage(
-        optimizer_type="SLSQP",
+        optimizer_family="iwopy",
+        optimizer_pars={"optimizer": "SLSQP"},
         constraints=[
             {"constraint_type": "FarmBoundaryConstraint", "tol": 0.5},
         ],

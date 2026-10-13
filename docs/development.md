@@ -60,6 +60,14 @@ development. The editable FOXES and iwopy installs are intentional; mandatory
 dependency resolution. CI owns its isolated environment separately and may
 synchronize it in workflow jobs.
 
+The runtime requires iwopy >=1.0.0. Its matrix derivative APIs are
+`get_jacobian()` and `calc_jacobian()`, returning SciPy CSR matrices; optimizer
+factories use backend `family` and algorithm `optimizer` selectors with flat
+parameters. Updating this dependency floor does not authorize environment setup.
+Maintained examples and notebooks import `iwopy.create_optimizer` rather than
+backend optimizer classes. Configuration tests enforce factory-only construction
+and explicit backend, algorithm, and problem selection in those workflows.
+
 The dependency sets in `pyproject.toml` are optional extras, not uv dependency
 groups. Install them with `--extra`; `--dev` does not select the `dev` extra.
 
@@ -206,21 +214,25 @@ turbines, unequal rotor diameters, unbounded coordinates, state-dependent
 positions, unsupported parameterizations, and refreshed local regions. Preserve
 full pair metadata and values;
 selection alone must not change component counts or feasibility semantics.
-Exercise reduced Jacobians through iwopy SLSQP with an enforced movement box,
-not a current-distance cutoff or changing in-solve constraint dimensions.
+Current iwopy SLSQP evaluates all registered components. A caller using the
+selection hook must enforce its coordinate boxes for the entire solve, not use
+a current-distance cutoff or change in-solve constraint dimensions.
 
 For analytical derivatives:
 
 - compare with centered finite differences at differentiable points;
 - cover fixed or unrelated variables through the dependency mask;
 - verify selected components and variable order;
+- assert CSR type and nonzero counts, including empty structural-zero storage;
 - cover a non-differentiable or zero-distance error when the mathematics has
 	one; and
 - verify the documented numerical fallback signal, including `NaN`, where the
 	iwopy contract uses it.
 
 A derivative unit test does not replace an optimizer integration test when the
-change affects iwopy's gradient assembly or backend behavior.
+change affects iwopy's Jacobian assembly or backend behavior. Cover native dense
+SLSQP rows and sparse `trust-constr` rows. Only small numerical expectations in
+tests should call `toarray()`.
 
 ### Pipelines, Callbacks, And Files
 

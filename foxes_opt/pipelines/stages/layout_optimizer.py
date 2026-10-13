@@ -4,6 +4,7 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
+from iwopy import create_optimizer
 from iwopy.core import Optimizer, OptimizerCallback, Pipeline, PipelineStage, Problem
 from iwopy.utils import new_instance
 from iwopy.wrappers import ProblemWrapper
@@ -22,12 +23,12 @@ class LayoutOptimizerStage(PipelineStage):
 
     Objectives, constraints, and the optimizer are configured through iwopy's
     runtime factories. Subclasses can specialize problem preparation, for
-    example by adding a gradient wrapper or selecting turbines and states.
+    example by adding a finite-difference wrapper or selecting turbines and states.
     """
 
     def __init__(
         self,
-        optimizer_type: str,
+        optimizer_family: str,
         optimizer_pars: dict[str, Any] | None = None,
         problem_type: str = "FarmLayoutOptProblem",
         objectives: list[dict[str, Any]] | None = None,
@@ -40,7 +41,7 @@ class LayoutOptimizerStage(PipelineStage):
         min_dist_constraint_type: str | None = "MinDistConstraint",
         min_dist_constraint_pars: dict[str, Any] | None = None,
         boundary_repair: bool = False,
-        boundary_repair_optimizer_type: str | None = None,
+        boundary_repair_optimizer_family: str | None = None,
         boundary_repair_optimizer_pars: dict[str, Any] | None = None,
         flow_states: States | None = None,
         algo_pars: dict[str, Any] | None = None,
@@ -52,10 +53,12 @@ class LayoutOptimizerStage(PipelineStage):
 
         Parameters
         ----------
-        optimizer_type
-            The iwopy optimizer type passed to ``Optimizer.new``.
+        optimizer_family
+            The backend family passed to ``iwopy.create_optimizer``, such as
+            ``"iwopy"``, ``"scipy"``, ``"pymoo"``, or ``"pygmo"``.
         optimizer_pars
-            Additional parameters for the selected optimizer.
+            Factory parameters requiring an ``optimizer`` algorithm selector,
+            plus explicit iwopy controls and flat native algorithm options.
         problem_type
             The ``FarmOptProblem`` subclass name passed to
             ``FarmOptProblem.new``.
@@ -86,9 +89,9 @@ class LayoutOptimizerStage(PipelineStage):
         boundary_repair
             If ``True``, first optimize turbines that violate the farm boundary,
             then exclude them from the main optimization.
-        boundary_repair_optimizer_type
-            Optimizer type for the boundary repair run. If ``None``, use
-            ``optimizer_type``.
+        boundary_repair_optimizer_family
+            Backend family for the boundary repair run. If ``None``, use
+            ``optimizer_family``.
         boundary_repair_optimizer_pars
             Optimizer parameters for the boundary repair run. These parameters
             override ``optimizer_pars`` for the repair run only.
@@ -104,7 +107,7 @@ class LayoutOptimizerStage(PipelineStage):
             Additional parameters for ``PipelineStage``.
         """
         super().__init__(name=name, **kwargs)
-        self.optimizer_type = optimizer_type
+        self.optimizer_family = optimizer_family
         self.optimizer_pars = {} if optimizer_pars is None else optimizer_pars.copy()
         self.problem_type = problem_type
         self.objectives = (
@@ -125,7 +128,7 @@ class LayoutOptimizerStage(PipelineStage):
             {} if min_dist_constraint_pars is None else min_dist_constraint_pars.copy()
         )
         self.boundary_repair = boundary_repair
-        self.boundary_repair_optimizer_type = boundary_repair_optimizer_type
+        self.boundary_repair_optimizer_family = boundary_repair_optimizer_family
         self.boundary_repair_optimizer_pars = (
             None
             if boundary_repair_optimizer_pars is None
@@ -187,13 +190,13 @@ class LayoutOptimizerStage(PipelineStage):
             )
         if pipeline.farm_boundary is None:
             raise ValueError(f"{self.name}: A farm boundary is required")
-        if not self.optimizer_type:
-            raise ValueError(f"{self.name}: Missing optimizer_type")
-        if self.boundary_repair_optimizer_type is not None and not (
-            self.boundary_repair_optimizer_type
+        if not self.optimizer_family:
+            raise ValueError(f"{self.name}: Missing optimizer_family")
+        if self.boundary_repair_optimizer_family is not None and not (
+            self.boundary_repair_optimizer_family
         ):
             raise ValueError(
-                f"{self.name}: boundary_repair_optimizer_type must not be empty"
+                f"{self.name}: boundary_repair_optimizer_family must not be empty"
             )
         if not self.problem_type:
             raise ValueError(f"{self.name}: Missing problem_type")
@@ -210,15 +213,16 @@ class LayoutOptimizerStage(PipelineStage):
                 f"{self.name}: min_dist_constraint_pars contains reserved parameters: "
                 f"{sorted(reserved_min_dist_pars)}"
             )
-        if {"problem"}.intersection(self.optimizer_pars):
+        if {"problem", "family"}.intersection(self.optimizer_pars):
             raise ValueError(
-                f"{self.name}: optimizer_pars contains reserved parameter 'problem'"
+                f"{self.name}: optimizer_pars contains reserved parameter 'problem' or 'family'"
             )
-        if self.boundary_repair_optimizer_pars is not None and {"problem"}.intersection(
-            self.boundary_repair_optimizer_pars
-        ):
+        if self.boundary_repair_optimizer_pars is not None and {
+            "problem",
+            "family",
+        }.intersection(self.boundary_repair_optimizer_pars):
             raise ValueError(
-                f"{self.name}: boundary_repair_optimizer_pars contains reserved parameter 'problem'"
+                f"{self.name}: boundary_repair_optimizer_pars contains reserved parameter 'problem' or 'family'"
             )
         if {"name", "algo", "sel_turbines"}.intersection(self.problem_pars):
             raise ValueError(
@@ -467,7 +471,7 @@ class LayoutOptimizerStage(PipelineStage):
     def _create_optimizer(
         self,
         problem: Problem,
-        optimizer_type: str | None = None,
+        optimizer_family: str | None = None,
         optimizer_pars: dict[str, Any] | None = None,
     ) -> Optimizer:
         """
@@ -477,10 +481,10 @@ class LayoutOptimizerStage(PipelineStage):
         ----------
         problem
             The problem supplied to the optimizer
-        optimizer_type
-            Optional optimizer type override
+        optimizer_family
+            Optional backend family override.
         optimizer_pars
-            Optional optimizer parameter overrides
+            Optional algorithm selector and flat parameter overrides.
 
         Returns
         -------
@@ -490,11 +494,11 @@ class LayoutOptimizerStage(PipelineStage):
         pars = self.optimizer_pars.copy()
         if optimizer_pars is not None:
             pars.update(optimizer_pars)
-        return Optimizer.new(
+        return create_optimizer(
             problem=problem,
-            optimizer_type=self.optimizer_type
-            if optimizer_type is None
-            else optimizer_type,
+            family=self.optimizer_family
+            if optimizer_family is None
+            else optimizer_family,
             **pars,
         )
 
@@ -505,7 +509,7 @@ class LayoutOptimizerStage(PipelineStage):
         sel_turbines: list[int] | None,
         add_functions: Callable[[FarmOptProblem], None],
         problem_name: str,
-        optimizer_type: str | None,
+        optimizer_family: str | None,
         optimizer_pars: dict[str, Any] | None,
         verbosity: int,
     ) -> tuple[Any, np.ndarray]:
@@ -524,8 +528,8 @@ class LayoutOptimizerStage(PipelineStage):
             Function that adds objectives and constraints to the problem
         problem_name
             The optimization problem name
-        optimizer_type
-            Optional optimizer type override
+        optimizer_family
+            Optional backend family override.
         optimizer_pars
             Optional optimizer parameter overrides
         verbosity
@@ -556,7 +560,7 @@ class LayoutOptimizerStage(PipelineStage):
         optimizer_problem.initialize(verbosity=max(verbosity - 1, 0))
         optimizer = self._create_optimizer(
             optimizer_problem,
-            optimizer_type,
+            optimizer_family,
             optimizer_pars,
         )
         optimizer.initialize(verbosity=max(verbosity - 2, 0))
@@ -631,7 +635,7 @@ class LayoutOptimizerStage(PipelineStage):
                     repair_turbines,
                     self._add_boundary_repair_functions,
                     f"{self.name}_boundary_repair_problem",
-                    self.boundary_repair_optimizer_type,
+                    self.boundary_repair_optimizer_family,
                     self.boundary_repair_optimizer_pars,
                     verbosity,
                 )

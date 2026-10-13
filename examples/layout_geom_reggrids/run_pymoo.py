@@ -3,7 +3,7 @@ import argparse
 import foxes
 import matplotlib.pyplot as plt
 import numpy as np
-from iwopy.interfaces.pymoo import Optimizer_pymoo
+from iwopy import create_optimizer
 
 import foxes_opt.problems.layout.geom_layouts as grg
 
@@ -76,18 +76,14 @@ if __name__ == "__main__":
     plt.show()
     plt.close(fig)
 
-    solver = Optimizer_pymoo(
-        problem,
-        problem_pars={
-            "vectorize": not args.no_pop,
-        },
-        algo_pars={
-            "type": args.opt_algo,
-            "pop_size": args.n_pop,
-            "seed": None,
-        },
-        setup_pars={},
-        term_pars=("n_gen", args.n_gen),
+    solver = create_optimizer(
+        family="pymoo",
+        optimizer=args.opt_algo,
+        problem=problem,
+        vectorize=not args.no_pop,
+        pop_size=args.n_pop,
+        termination="n_gen",
+        n_max_gen=args.n_gen,
     )
     solver.initialize()
     solver.print_info()
