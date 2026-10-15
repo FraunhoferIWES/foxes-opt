@@ -1,28 +1,32 @@
-# foxes-opt
+# Welcome to FOXES Optimization
 
-The package *foxes-opt* provides optimization functionality for the
-*Farm Optimization and eXtended yield Evaluation Software* [foxes](https://github.com/FraunhoferIWES/foxes)
-and is based on the optimization interface [iwopy](https://github.com/FraunhoferIWES/iwopy).
+## Overview
 
-All three open-source Python packages *foxes*, *foxes-opt* and *iwopy* are provided and maintained by Fraunhofer IWES.
+*FOXES Optimization* is a modular Python package for wind-farm optimization by
+Fraunhofer IWES. Typical applications include:
 
-The calculation is fully vectorized and its fast performance is owed to [dask](https://www.dask.org/). Also the parallelization on local or remote clusters is enabled via `dask`. The wind farm
-optimization capabilities invoke the [iwopy](https://github.com/FraunhoferIWES/iwopy) package which
-as well supports vectorization.
+- Wind-farm layout optimization,
+- Wake steering through turbine yaw optimization,
+- Constrained optimization of turbine positions and farm geometries,
+- Multi-stage layout optimization pipelines.
 
-`foxes` is build upon many years of experience with wake model code development at IWES, starting with the C++ based in-house code _flapFOAM_ (2011-2019) and the Python based direct predecessor _flappy_ (2019-2022).
+FOXES Optimization combines wind-farm and wake modelling from
+[FOXES](https://github.com/FraunhoferIWES/foxes) with the shared optimizer
+interface provided by [iwopy](https://github.com/FraunhoferIWES/iwopy). It
+supports vectorized population evaluation and uses FOXES execution engines for
+local or distributed calculations.
 
-Documentation: [https://fraunhoferiwes.github.io/foxes-opt/](https://fraunhoferiwes.github.io/foxes-opt/)
-
-Source code: [https://github.com/FraunhoferIWES/foxes-opt](https://github.com/FraunhoferIWES/foxes-opt)
-
-PyPi reference: [https://pypi.org/project/foxes-opt/](https://pypi.org/project/foxes-opt/)
-
-Anaconda reference: [https://anaconda.org/conda-forge/foxes-opt](https://anaconda.org/conda-forge/foxes-opt)
+| Resource | Link |
+| :--- | :--- |
+| Documentation | [https://fraunhoferiwes.github.io/foxes-opt](https://fraunhoferiwes.github.io/foxes-opt) |
+| Source code | [https://github.com/FraunhoferIWES/foxes-opt](https://github.com/FraunhoferIWES/foxes-opt) |
+| PyPI | [https://pypi.org/project/foxes-opt/](https://pypi.org/project/foxes-opt/) |
+| conda-forge | [https://anaconda.org/conda-forge/foxes-opt](https://anaconda.org/conda-forge/foxes-opt) |
+| License | [MIT](https://github.com/FraunhoferIWES/foxes-opt/blob/main/LICENSE) |
 
 ## Requirements
 
-The supported Python versions are `Python 3.10`...`3.14`.
+Requires Python 3.10 through 3.14.
 
 ## Installation
 
@@ -57,25 +61,15 @@ uv pip install -e <path to iwopy>[opt] --upgrade
 During development, run project commands with `uv run --no-sync` so uv does not
 replace those editable installs. Coding agents and other contributors do not
 change the environment; if it needs repair, they ask the developer to re-sync
-it. See `docs/development.md` for the complete workflow.
-
-## Wind Rose Layout Snapshots
-
-Pass `--write_layouts` to `examples/layout_wind_rose/run_pymoo.py` or
-`examples/layout_wind_rose/run_slsqp.py` to enable `WriteLayoutCallback`;
-intermediate output is disabled by default. Images are written under
-`examples/layout_wind_rose/results/`; `--layout_image_type` selects the format
-(default: `jpg`). See the
-[callback guide](https://fraunhoferiwes.github.io/foxes-opt/api_callbacks.html)
-for output options, initial snapshots, history, and restart behavior.
+it. See the [development guide](docs/development.md) for the complete workflow.
 
 ## Citation
 
 Please cite the JOSS paper [FOXES: Farm Optimization and eXtended yield
 Evaluation Software](https://doi.org/10.21105/joss.05464).
 
-Bibtex:
-```
+BibTeX:
+```bibtex
 @article{
     Schmidt2023,
     author = {Jonas Schmidt and Lukas Vollmer and Martin Dörenkämper and Bernhard Stoevesandt},
@@ -90,3 +84,11 @@ Bibtex:
     journal = {Journal of Open Source Software}
 }
 ```
+
+## Acknowledgements
+
+Development of *FOXES Optimization* was supported by:
+
+- BMWK projects *Smart Wind Farms* (0325851B), *GW-Wakes* (0325397B), and *X-Wakes* (03EE3008A)
+- BMBF project *H2Digital* (03SF0635)
+- Horizon Europe projects *FLOW* (101084205) and *AIRE* (101083716)

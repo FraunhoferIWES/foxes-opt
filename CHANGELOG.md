@@ -219,4 +219,8 @@
 
 ## v0.9.2
 
+- Documentation: Aligned README and documentation index overviews, resource
+  links tables, common wording, and acknowledgements with FOXES, including an
+  explicit license link; removed the Dask emphasis and predecessor history.
+
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes-opt/compare/v0.9.1...v0.9.2](https://github.com/FraunhoferIWES/foxes-opt/compare/v0.9.1...v0.9.2)
