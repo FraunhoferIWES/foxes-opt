@@ -335,11 +335,10 @@ forward-only by default under
 	contracts are removed rather than kept behind compatibility shims; a bounded
 	legacy exception requires explicit authorization and a recorded removal
 	condition. See [ADR-0001](adr/0001-forward-only-development.md).
-- Code changes require focused and full tests. Every change requires full
-	pre-commit, affected public docstrings, the current-version final
-	`CHANGELOG.md` section, and synchronized FOXES Optimization documentation as
-	one completion gate. See
-	[ADR-0001](adr/0001-forward-only-development.md).
+- FOXES >=1.9.8 supplies the corrected tqdm runtime security floor, excluding
+	[GHSA-g7vv-2v7x-gj9p](https://github.com/advisories/GHSA-g7vv-2v7x-gj9p).
+- [AGENTS.md](../AGENTS.md#completion-gate) owns the completion gate;
+	[development guidance](development.md#development-closure) gives the workflow.
 - `pyproject.toml` is the source of package metadata, supported Python versions,
 	dependencies, extras, build configuration, console scripts, and mypy settings.
 - The developer owns the local uv environment and its editable FOXES and iwopy
@@ -347,6 +346,10 @@ forward-only by default under
 	ask the developer to re-sync rather than changing dependencies during a task.
 - Production Python under `foxes_opt/` is type checked. Tests, examples,
 	notebooks, and docs are not currently part of the mypy target.
+- Pytest repository-file inputs are limited to `foxes_opt/`, `examples/`,
+	`notebooks/`, and `tests/`; temporary test outputs remain allowed.
+	Documentation, release metadata, and CI configuration are checked outside
+	pytest. See [ADR-0008](adr/0008-test-file-dependency-boundary.md).
 - Spacing reduction uses constraint-owned bound certificates, while iwopy owns
 	full acceptance checks; callers own enforcement of selection bounds. Current
 	SLSQP uses all spacing components. See

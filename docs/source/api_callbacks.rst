@@ -1,6 +1,33 @@
 foxes_opt.callbacks
 ===================
-Contains optimizer-independent callbacks for wind farm optimization.
+Contains backend-independent callbacks for wind farm optimization.
+
+``WriteLayoutCallback`` requires a ``FarmOptProblem`` and accepts iteration or
+evaluation events from callback-enabled iwopy optimizers. PyGMO IPOPT does not
+support callbacks. Pipeline users pass an ordered callback list through
+``LayoutOptimizerStage.callbacks``.
+
+Layout snapshots
+----------------
+
+Pass ``--write_layouts`` to ``examples/layout_wind_rose/run_pymoo.py`` or
+``run_slsqp.py`` to enable intermediate images; output is disabled by default.
+These examples disable CSV output and write one image per generation or
+accepted iteration under ``examples/layout_wind_rose/results/``, regardless of
+the working directory. ``--layout_image_type`` selects the format (default:
+``jpg``). Running an example again overwrites matching snapshot indices.
+
+The callback selects the best first-objective individual. Each title names its
+objective and value; constraint-valid turbines are blue and those associated
+with violated constraints are red, with an upper-left legend. ``valid_color``
+and ``invalid_color`` accept Matplotlib colors. Early snapshots may be
+infeasible and are not final results.
+
+``write_csv`` and ``write_image`` independently control output and both default
+to ``True``. CSV files go directly into the output directory; images go into a
+format-named child directory such as ``jpg/``. Images omit turbine annotations
+and show physical turbine radii with contrasting outlines. The examples disable
+per-file log messages, and generated output is excluded by ``.gitignore``.
 
 The step-zero layout snapshot evaluates the optimizer's initial variables so
 its objective title and constraint-validity colors are available before the
@@ -9,6 +36,10 @@ and snapshot.
 
 Initial history rows
 --------------------
+
+``WriteOptimizationHistoryCallback`` records the selected objective value and
+violated constraint-component count for each iteration, persisting each row
+immediately. It resets the CSV when a solve starts unless append mode is enabled.
 
 Set ``WriteOptimizationHistoryCallback(write_initial=True)`` to also record
 the starting objective and violated constraint-component count in the history

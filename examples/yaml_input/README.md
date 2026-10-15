@@ -1,6 +1,6 @@
-# foxes example: _windio_
+# FOXES Optimization example: _yaml\_input_
 
-This example runs an example foxes yaml input file.
+Run wind farm optimization from a FOXES Optimization YAML configuration.
 
 ## Check options
 Check options by

@@ -153,7 +153,16 @@
 
 ## v0.9.1
 
+- Development:
+  - Limited pytest repository-file inputs to package code, examples, notebooks,
+    and tests; the existing suite already follows this broader boundary
+  - Recorded that pytest tests must not depend on files under `docs/`; the
+    existing suite already follows this boundary
+- Documentation:
+  - Indexed the shared-optimizer-controls ADR, corrected token-review and YAML
+    example guidance, and consolidated completion and callback documentation
 - Dependencies and iwopy integration:
+  - Require *FOXES* >=1.9.8 to inherit its corrected runtime security floor
   - Require *iwopy* >=1.0.0 and consume CSR `get_jacobian`/`calc_jacobian`
     matrices throughout derivative tests and maintained workflows
   - YAML uses `family`/`optimizer`; layout stages use `optimizer_family` and

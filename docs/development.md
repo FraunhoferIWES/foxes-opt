@@ -60,7 +60,8 @@ development. The editable FOXES and iwopy installs are intentional; mandatory
 dependency resolution. CI owns its isolated environment separately and may
 synchronize it in workflow jobs.
 
-The runtime requires iwopy >=1.0.0. Its matrix derivative APIs are
+The runtime requires FOXES >=1.9.8 to inherit its corrected tqdm security floor,
+and iwopy >=1.0.0. The iwopy matrix derivative APIs are
 `get_jacobian()` and `calc_jacobian()`, returning SciPy CSR matrices; optimizer
 factories use backend `family` and algorithm `optimizer` selectors with flat
 parameters. Updating this dependency floor does not authorize environment setup.
@@ -179,6 +180,12 @@ change does not run the full runtime test suite, but it still runs applicable
 documentation checks and all other closure gates.
 
 ## Test Structure
+
+Repository-file inputs to pytest tests must come only from `foxes_opt/`,
+`examples/`, `notebooks/`, or `tests/`. Tests may create and read temporary
+outputs. Documentation, release metadata, CI configuration, and other repository
+files are validated separately, not by runtime tests. The existing suite follows
+this boundary. See [ADR-0008](adr/0008-test-file-dependency-boundary.md).
 
 The test paths encode ownership:
 

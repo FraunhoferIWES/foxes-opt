@@ -17,6 +17,9 @@ all of them.
 | [0003](0003-restartable-layout-optimization.md) | Accepted | Restart selected layout stages from validated snapshots with per-family constraint parameters and continued callback output numbering. |
 | [0004](0004-bound-certified-spacing-components.md) | Accepted; SLSQP integration superseded by [0005](0005-current-iwopy-contracts.md) | Select nearby spacing pairs only with enforced coordinate-box certificates, preserving full component identities and validation. |
 | [0005](0005-current-iwopy-contracts.md) | Accepted | Require iwopy 1.0.0, consume CSR Jacobians, construct optimizers by backend/algorithm with flat options, and make callers own selection-bound enforcement. |
+| [0006](0006-shared-optimizer-controls.md) | Accepted | Forward iwopy's canonical run limits and keep populations, pending batches, and backend counter units distinct. |
+| [0007](0007-documentation-independent-tests.md) | Accepted | Keep pytest independent of documentation files and review documentation separately. |
+| [0008](0008-test-file-dependency-boundary.md) | Accepted; supersedes the test-input boundary in 0007 | Limit pytest repository-file inputs to package code, examples, notebooks, and tests. |
 
 ## When To Add An ADR
 
