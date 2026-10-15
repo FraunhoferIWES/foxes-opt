@@ -215,3 +215,8 @@
     vectorized population evaluations
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes-opt/compare/v0.9.0...v0.9.1](https://github.com/FraunhoferIWES/foxes-opt/compare/v0.9.0...v0.9.1)
+
+
+## v0.9.2
+
+**Full Changelog**: [https://github.com/FraunhoferIWES/foxes-opt/compare/v0.9.1...v0.9.2](https://github.com/FraunhoferIWES/foxes-opt/compare/v0.9.1...v0.9.2)
