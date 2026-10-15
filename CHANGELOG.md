@@ -153,26 +153,16 @@
 
 ## v0.9.1
 
-- Development:
-  - Limited pytest repository-file inputs to package code, examples, notebooks,
-    and tests; the existing suite already follows this broader boundary
-  - Recorded that pytest tests must not depend on files under `docs/`; the
-    existing suite already follows this boundary
-- Documentation:
-  - Indexed the shared-optimizer-controls ADR, corrected token-review and YAML
-    example guidance, and consolidated completion and callback documentation
 - Dependencies and iwopy integration:
   - Require *FOXES* >=1.9.8 to inherit its corrected runtime security floor
   - Require *iwopy* >=1.0.0 and consume CSR `get_jacobian`/`calc_jacobian`
-    matrices throughout derivative tests and maintained workflows
-  - YAML uses `family`/`optimizer`; layout stages use `optimizer_family` and
-    flat optimizer parameters, including boundary-repair overrides
-  - Switched every example and notebook to `iwopy.create_optimizer`, explicit
-    optimizer controls, and flat native options; retained scalar-gradient terms
-  - Recorded sparse native boundaries and corrected spacing-selection ownership
-  - Migrated Python, YAML, pipeline documentation, and notebooks to iwopy's
-    shared `max_iterations` / `max_evaluations` controls and pymoo pure-limit
-    selectors, preserving native convergence and distinct population/batch units
+    matrices, `iwopy.create_optimizer`, flat native options, shared
+    `max_iterations` / `max_evaluations` controls, and pymoo pure-limit selectors
+    throughout maintained workflows and documentation; YAML uses
+    `family`/`optimizer`, while layout stages use `optimizer_family`, including
+    boundary-repair overrides. Retained scalar-gradient terms, native
+    convergence, and distinct population/batch units; documented sparse native
+    boundaries and corrected spacing-selection ownership
 - General:
   - Added support for Python 3.14
   - Added coding-agent policies, including developer-owned uv setup and
@@ -183,52 +173,40 @@
 - Callbacks:
   - Layout image snapshots now omit turbine annotations, use true turbine radii
     with color-matched outlines, use configurable validity colors that default
-    to high-contrast blue and red, and live in a file-type subdirectory
-  - Layout callbacks now write the initial layout as step zero by default, with
-    an option to disable the initial snapshot
+    to high-contrast blue and red, and live in a file-type subdirectory. Added
+    restart offsets and optional initial step-zero snapshots, enabled by default;
+    initial objectives and constraints are evaluated before plotting, including
+    without integer variables. Fixed validity colors for small turbines and
+    nearest-group constraint violations
   - Added a CSV optimization-history callback that records objective values and
-    violated constraint-component counts for each iteration
-  - History callbacks accept `write_initial=False`; enabling it evaluates the
-    starting variables and records an iteration-zero objective and violated
-    constraint-component count before the optimizer's first iteration
-  - Added restart offsets for layout snapshots and optimization-history rows,
-    plus validated append mode for preserving an existing history CSV
+    violated constraint-component counts per iteration, with restart offsets and
+    validated append mode. Optional initial evaluation (`write_initial=False`
+    by default) records the starting values before the first optimizer iteration
 - Pipelines:
-  - `LayoutOptimizerStage` now forwards callbacks to the optimizer
-  - `LayoutOptimizerStage` now accepts stage-local FOXES algorithm parameter
-    overrides through `algo_pars`
-  - `LayoutPipeline` accepts a finite initial coordinate array for starting a
-    fresh first stage without a preceding layout-generation stage
-  - `LayoutPipeline` can restart a selected stage from a validated persisted
-    layout index without resetting earlier pipeline results
+  - `LayoutOptimizerStage` now forwards callbacks to the optimizer and accepts
+    stage-local FOXES algorithm parameter overrides through `algo_pars`
+  - `LayoutPipeline` accepts finite initial coordinates without a preceding
+    layout-generation stage and can restart a selected stage from a validated
+    persisted layout index without resetting earlier pipeline results
   - Automatic minimum-distance constraints accept their own parameter mapping,
     allowing boundary and spacing families to use independent tolerances
   - Layout plots now match callback snapshots with true turbine radii,
     high-contrast colors, matched outlines, and validity legends
 - Constraints:
-  - Added bound-certified nearby-pair selection to `MinDistConstraint`,
-    preserving full component identities and checks; callers enforce selection
-    bounds, while current iwopy SLSQP evaluates all registered pairs
+  - `MinDistConstraint` now provides analytical position derivatives, vectorized
+    variable-dependency masks for faster large-farm Jacobians, and bound-certified
+    nearby-pair selection preserving full component identities and checks;
+    callers enforce selection bounds, while current iwopy SLSQP evaluates all
+    registered pairs
   - Added `NearestGroupConstraint`, enforcing nearest-distance and minimum
     connected-group-size limits with piecewise analytical position derivatives
-  - `MinDistConstraint` now provides analytical position derivatives to *iwopy*
-  - Vectorized `MinDistConstraint` variable-dependency mask construction for
-    faster analytical Jacobians on large farms
   - Added analytical derivatives for area boundaries and geometrical layout
-    constraints, including composed and internally excluded geometries
-  - Cached bulk signed-distance gradients when assembling area-geometry
-    Jacobians
+    constraints, including composed and internally excluded geometries, with
+    cached bulk signed-distance gradients for area-geometry Jacobians
 - Objectives:
   - Added analytical derivatives for turbine-count and geometrical layout
     objectives; FOXES-result objectives continue to require `iwopy.LocalFD`
 - Bug fixes:
-  - Initial layout snapshots now evaluate objectives and constraints before
-    plotting, so step-zero titles and turbine validity colors are accurate,
-    including for problems without integer variables
-  - Kept validity colors visible for small true-radius turbines in layout
-    snapshots by matching marker edges to their fill colors
-  - Fixed layout snapshots marking every turbine invalid when a nearest-group
-    constraint component is violated
   - Layout candidates now update turbine coordinates before FOXES state
     initialization, while final individual layouts restore scalar positions
   - Partial-turbine population objectives now select the turbine axis and the

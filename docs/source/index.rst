@@ -1,16 +1,12 @@
 Welcome to *foxes-opt*
 ======================
 
-.. versionadded:: 0.9.0
-    Optimizer-independent layout callback with CSV and image output
-
-.. versionadded:: 0.9.0
-    Extended layout pipelines with retained stage results, `LayoutOptimizerStage`,
-    and `RandomSubsetStage`
-
 .. versionadded:: 0.9.1
     Restart selected layout stages from persisted snapshots while continuing
     layout and optimization-history output numbering.
+
+.. versionchanged:: 0.9.1
+    Compatibility with *foxes* version 1.9.8 and *iwopy* version 1.0.0.
 
 The package *foxes-opt* provides optimization functionality for the
 *Farm Optimization and eXtended yield Evaluation Software* `foxes <https://github.com/FraunhoferIWES/foxes>`_
