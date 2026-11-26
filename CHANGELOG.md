@@ -244,4 +244,10 @@
   - Fixed multi-objective NetCDF export by storing success per population member
     on `pop` instead of converting its success array to a scalar attribute
 
-**Full Changelog (development)**: [https://github.com/FraunhoferIWES/foxes-opt/compare/v0.9.1...dev](https://github.com/FraunhoferIWES/foxes-opt/compare/v0.9.1...dev)
+**Full Changelog**: [https://github.com/FraunhoferIWES/foxes-opt/compare/v0.9.1...v0.9.2](https://github.com/FraunhoferIWES/foxes-opt/compare/v0.9.1...v0.9.2)
+
+## v0.9.3
+
+
+
+**Full Changelog**: [https://github.com/FraunhoferIWES/foxes-opt/compare/v0.9.1...v0.9.3](https://github.com/FraunhoferIWES/foxes-opt/compare/v0.9.1...v0.9.3)
