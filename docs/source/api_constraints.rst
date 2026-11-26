@@ -3,7 +3,7 @@ foxes_opt.constraints
 Constraints for wind farm optimization problems.
 
 Guarded Minimum-Distance Pairs
------------------------------
+------------------------------
 
 ``MinDistConstraint.active_components`` selects pairs that can approach the
 nominal spacing limit anywhere within enforced X/Y coordinate bounds. For

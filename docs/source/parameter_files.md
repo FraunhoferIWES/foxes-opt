@@ -2,7 +2,7 @@
 
 Instead of running wind farm optimizations via a Python script, it can also be run from input parameter
 files in [YAML](https://de.wikipedia.org/wiki/YAML) format. For this purpose the
-command line application `foxes_opt_yaml` has been added, following the conventions of [foxes_yaml](https://fraunhoferiwes.github.io/foxes.docs/parameter_files.html#foxes-yaml).
+command line application `foxes_opt_yaml` has been added, following the conventions of [foxes_yaml](https://fraunhoferiwes.github.io/foxes/parameter_files.html#foxes-yaml).
 
 ## foxes\_opt\_yaml
 
@@ -15,7 +15,7 @@ structure, that will be described shortly. A file with the name `inputs.yaml` ca
 foxes_opt_yaml inputs.yaml
 ```
 
-The usage is exactly the same as for [foxes_yaml](https://fraunhoferiwes.github.io/foxes.docs/parameter_files.html#foxes-yaml).
+The usage is exactly the same as for [foxes_yaml](https://fraunhoferiwes.github.io/foxes/parameter_files.html#foxes-yaml).
 The optimization specifications are simply another section that is added to the *yaml* file.
 
 ### Input file structure
@@ -177,6 +177,6 @@ Wake-growth names use `k1_<value>` or `ambk1_<value>` for the TI multiplier
 `MultiObjResultsWriter` stores each population member's success as a `success`
 variable on `pop`; `SingleObjResultsWriter` retains its scalar success attribute.
 
-The details, especially concerning this complex output plot creation, are explained in the [foxes documentation](https://fraunhoferiwes.github.io/foxes.docs/parameter_files.html). The following image is produced by running the example:
+The details, especially concerning this complex output plot creation, are explained in the [foxes documentation](https://fraunhoferiwes.github.io/foxes/parameter_files.html). The following image is produced by running the example:
 
 ![](parameter_files.png)

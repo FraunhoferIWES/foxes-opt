@@ -169,6 +169,8 @@ uv.lock
 
 docs/build/
 docs/source/_*
+!docs/source/_static/
+!docs/source/_templates/
 makedocs/
 result*.*
 results/

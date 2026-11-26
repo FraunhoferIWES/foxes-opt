@@ -9,9 +9,14 @@ This file is present, so the corporate design applies. A free-design project
 deletes it and `docs/fraunhofer-design/` instead — see `AGENTS.md`, "UI Design
 Policy", and establish that policy before the first UI change.
 
-FOXES Optimization currently has no browser frontend and no design-token
-adapter. Do not introduce an application stack or token copy as part of an
-unrelated scientific plot change. For Python plotting code under
+FOXES Optimization has no browser application frontend. Sphinx documentation
+adapts the authoritative tokens through `docs/source/_static/iwes-tokens.css`
+and applies them through `docs/source/_static/iwes.css`; review documentation
+token parity outside pytest under
+`docs/adr/0010-foxes-documentation-alignment.md`.
+There is no shared matplotlib token adapter. Do not introduce an application
+stack or another token copy as part of an unrelated scientific plot change.
+For Python plotting code under
 `foxes_opt/callbacks/`, `foxes_opt/output/`, `foxes_opt/pipelines/`, examples, or
 notebooks, read the chart and FOXES Optimization-specific guidance in
 `docs/fraunhofer-design/ui-guidelines.md`; Python is intentionally not included
@@ -24,7 +29,8 @@ visual-design, or brand changes. Token values come from
 approved. Once the project has a token adapter for its technology and has
 recorded it in `docs/architecture.md`, application code reads values from that
 adapter, which is either generated or covered by a test that compares it against
-the token document.
+the token document. Documentation adapters are reviewed directly against that
+document instead; pytest must not depend on files under `docs/`.
 
 Do not duplicate, alter, or bypass the corporate policy in this file. Put FOXES
 Optimization-specific visual requirements in the design guide or architecture

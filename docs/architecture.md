@@ -404,11 +404,23 @@ forward-only by default under
 	docstrings expose optimization, scientific, and runtime contracts while types
 	remain in annotations.
 - Ruff formatting/linting and mypy run through pre-commit. Pytest is the test
-	runner; Sphinx with AutoAPI, numpydoc, and MyST-NB builds the documentation.
+	runner; Sphinx with AutoAPI, Napoleon, and MyST-NB builds the documentation.
 - FOXES Optimization follows the Fraunhofer corporate design. The repository
-	has no browser UI and no design-token adapter; corporate requirements apply to
+	has no browser application UI or shared matplotlib token adapter; corporate requirements apply to
 	matplotlib plots, callback snapshots, examples, notebooks, documentation, and
 	brand assets. See [ADR-0002](adr/0002-corporate-design.md).
+- Sphinx documentation retains corporate design and matches the FOXES
+	documentation theme through `docs/source/_static/iwes-tokens.css`,
+	`iwes.css`, and the domain-index template. Token parity is reviewed outside
+	pytest against `docs/fraunhofer-design/design-tokens.json`; values marked
+	`needs-review` remain unapproved. NumPy docstrings use Napoleon and AutoAPI,
+	including imported members and separated constructor sections. See
+	[ADR-0010](adr/0010-foxes-documentation-alignment.md).
+- GitHub test, documentation, and release workflows follow FOXES, retaining
+	FOXES Optimization's own package URLs; GitLab CI matches FOXES. Documentation
+	deployment explicitly enables automatic notebook execution and fails on
+	execution errors, while Sphinx warnings remain visible and non-fatal.
+	See [ADR-0011](adr/0011-production-documentation-and-ci.md).
 
 ## ADR Triggers
 

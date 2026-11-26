@@ -1,15 +1,10 @@
+.. versionchanged:: 0.9.2
+    Compatibility with *FOXES* version 1.10.0 and *iwopy* version 1.0.0.
+    Outputs are configured through constructors and executed with
+    ``calc_outputs``.
+
 Welcome to FOXES Optimization
 =============================
-
-.. versionadded:: 0.9.1
-    Restart selected layout stages from persisted snapshots while continuing
-    layout and optimization-history output numbering.
-
-.. versionchanged:: 0.9.1
-    Compatibility with *foxes* version 1.9.8 and *iwopy* version 1.0.0.
-
-Overview
---------
 
 *FOXES Optimization* is a modular Python package for wind-farm optimization by
 Fraunhofer IWES. Typical applications include:
@@ -42,40 +37,17 @@ Please report issues in the
 
 Contents
 --------
-    .. toctree::
-        :maxdepth: 2
 
-        citation
+.. toctree::
+    :maxdepth: 2
 
-    .. toctree::
-        :maxdepth: 2
-
-        installation
-
-    .. toctree::
-        :maxdepth: 2
-
-        parameter_files
-
-    .. toctree::
-        :maxdepth: 2
-
-        examples
-
-    .. toctree::
-        :maxdepth: 1
-
-        api
-
-    .. toctree::
-        :maxdepth: 1
-
-        testing
-
-    .. toctree::
-        :maxdepth: 1
-
-        CHANGELOG
+    citation
+    installation
+    parameter_files
+    examples
+    api
+    testing
+    CHANGELOG
 
 Contributing
 ------------
