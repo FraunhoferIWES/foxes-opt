@@ -1,10 +1,12 @@
 # Citation
 
+## Journal paper
+
 Please cite the JOSS paper [FOXES: Farm Optimization and eXtended yield
 Evaluation Software](https://doi.org/10.21105/joss.05464).
 
-Bibtex:
-```
+BibTeX:
+```bibtex
 @article{
     Schmidt2023,
     author = {Jonas Schmidt and Lukas Vollmer and Martin Dörenkämper and Bernhard Stoevesandt},

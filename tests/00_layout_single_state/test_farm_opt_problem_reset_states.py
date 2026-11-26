@@ -53,8 +53,8 @@ def test_reset_states_keeps_population_loaded_data():
 
     ld = algo.loaded_data
     assert "PopulationStates_smap" in ld["data_vars"]
-    assert "StatesTable_data" in ld["data_vars"]
-    assert "StatesTable_weight" in ld["data_vars"]
+    assert states.var("data") in ld["data_vars"]
+    assert states.var("weight") in ld["data_vars"]
 
 
 def test_farm_layout_population_uses_population_major_order(monkeypatch):
@@ -293,7 +293,7 @@ def test_opt_farm_vars_population_repeated_apply_is_consistent():
         farm,
         states,
         rotor_model="centre",
-        wake_models=["Bastankhah2016_linear_ka02"],
+        wake_models=["Bastankhah2016_linear_k1_02"],
         wake_deflection="JimenezProj",
         verbosity=0,
     )

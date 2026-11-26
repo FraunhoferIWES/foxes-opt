@@ -8,7 +8,7 @@ production Python. It expands the repository policy in
 [naming conventions](naming-conventions.md). Architecture and runtime ownership
 remain defined in [architecture](architecture.md).
 
-FOXES Optimization uses NumPy-style docstrings rendered by numpydoc and Sphinx
+FOXES Optimization uses NumPy-style docstrings rendered by Sphinx Napoleon and
 AutoAPI. Type information belongs in annotations and is not repeated in
 docstring section labels. Docstrings describe the current contract only. Under
 the forward-only policy, do not document removed behavior, deprecated aliases,

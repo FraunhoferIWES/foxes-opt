@@ -12,6 +12,7 @@ import pytest
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import foxes
+from foxes.models.outputs import FarmLayoutOutput
 from iwopy.core import OptimizerCallbackData
 
 from foxes_opt.callbacks import WriteLayoutCallback
@@ -241,11 +242,18 @@ def _snapshot(
 
     problem.evaluate_individual = evaluate_individual
     problem.check_constraints_individual = lambda values: values <= 0.0
-    turbine_types = [SimpleNamespace(name="test_type") for _ in farm.turbines]
-    problem.algo = SimpleNamespace(
-        farm=farm,
-        farm_controller=SimpleNamespace(turbine_types=turbine_types),
+    mbook = foxes.ModelBook()
+    mbook.turbine_types["test_type"] = mbook.turbine_types["NREL5MW"]
+    for turbine in farm.turbines:
+        turbine.add_model("test_type")
+    problem.algo = foxes.algorithms.Downwind(
+        farm,
+        foxes.input.states.SingleStateStates(ws=9, wd=270, ti=0.08, rho=1.225),
+        mbook=mbook,
+        wake_models=[],
+        verbosity=0,
     )
+    problem.algo.initialize()
     callback = WriteLayoutCallback(tmp_path / "results", "layout", **kwargs)
     optimizer_problem = problem
     if wrapped:
@@ -281,10 +289,10 @@ def test_initial_snapshot_evaluates_constraint_validity(tmp_path, monkeypatch):
     )
     plot_args = {}
 
-    def capture_plot(output, file_name, **kwargs):
-        plot_args.update(kwargs)
+    def capture_plot(output, algo, data, parameters):
+        plot_args.update(parameters)
 
-    monkeypatch.setattr(foxes.output.FarmLayoutOutput, "write_plot", capture_plot)
+    monkeypatch.setattr(FarmLayoutOutput, "process", capture_plot)
     _snapshot(
         tmp_path,
         write_csv=False,
@@ -388,10 +396,10 @@ def test_snapshot_plot_title_contains_selected_objective(tmp_path, monkeypatch):
     callback, _ = _snapshot(tmp_path, write_csv=False)
     plot_args = {}
 
-    def capture_title(output, file_name, **kwargs):
-        plot_args.update(kwargs)
+    def capture_title(output, algo, data, parameters):
+        plot_args.update(parameters)
 
-    monkeypatch.setattr(foxes.output.FarmLayoutOutput, "write_plot", capture_title)
+    monkeypatch.setattr(FarmLayoutOutput, "process", capture_title)
     callback.notify(
         _data(
             [[100.0, 200.0, 300.0, 400.0], [500.0, 600.0, 700.0, 800.0]],
@@ -420,10 +428,10 @@ def test_snapshot_marks_constraint_turbines_red(tmp_path, monkeypatch):
     )
     plot_args = {}
 
-    def capture_colors(output, file_name, **kwargs):
-        plot_args.update(kwargs)
+    def capture_colors(output, algo, data, parameters):
+        plot_args.update(parameters)
 
-    monkeypatch.setattr(foxes.output.FarmLayoutOutput, "write_plot", capture_colors)
+    monkeypatch.setattr(FarmLayoutOutput, "process", capture_colors)
     callback.notify(_data([[100.0, 200.0, 300.0, 400.0]], constraints=[[1.0]]))
 
     assert list(plot_args["c"]) == ["tab:blue", "red"]
@@ -444,10 +452,10 @@ def test_snapshot_accepts_custom_validity_colors(tmp_path, monkeypatch):
     monkeypatch.setattr(callback, "_invalid_turbines", lambda data, selected: {1})
     plot_args = {}
 
-    def capture_colors(output, file_name, **kwargs):
-        plot_args.update(kwargs)
+    def capture_colors(output, algo, data, parameters):
+        plot_args.update(parameters)
 
-    monkeypatch.setattr(foxes.output.FarmLayoutOutput, "write_plot", capture_colors)
+    monkeypatch.setattr(FarmLayoutOutput, "process", capture_colors)
     callback.notify(_data([[100.0, 200.0, 300.0, 400.0]]))
 
     assert list(plot_args["c"]) == ["#00aa44", "#cc00cc"]

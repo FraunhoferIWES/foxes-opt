@@ -2,26 +2,29 @@ from typing import Any
 
 from foxes.utils import write_nc
 from iwopy.core import MultiObjOptResults, SingleObjOptResults
+from numpy import ndarray
 from xarray import Dataset
 
 from .opt_output import OptOutput
 
 
 class SingleObjResultsWriter(OptOutput):
-    """
-    Writes optimization results to files.
-
-    """
+    """Collect a single-objective solution as a dataset or NetCDF file."""
 
     def __init__(self, opt_results: SingleObjOptResults, **kwargs: Any) -> None:
-        """
+        """Initialize the single-objective result writer.
+
         Parameters
         ----------
         opt_results
-            The optimization results
+            iwopy single-objective results retained by the writer.
         kwargs
-            Additional parameters for the base class
+            Common output paths, ``to_file`` and ``write_pars``.
 
+        Raises
+        ------
+        TypeError
+            If ``opt_results`` is not a ``SingleObjOptResults`` instance.
         """
         super().__init__(**kwargs)
         self.results = opt_results
@@ -32,13 +35,16 @@ class SingleObjResultsWriter(OptOutput):
             )
 
     def get_dataset(self) -> Dataset:
-        """
-        Translates results into dataset
+        """Translate the single-objective solution into a dataset.
 
         Returns
         -------
-        ds
-            The results dataset
+        dataset
+            Integer and float variables on ``variables_int`` and
+            ``variables_float``, and constraint values on ``constraints``.
+            Coordinates retain iwopy component order. The problem name,
+            success flag, objective name and value are dataset attributes.
+            Empty variable and constraint families are omitted.
 
         """
 
@@ -68,17 +74,17 @@ class SingleObjResultsWriter(OptOutput):
         return ds
 
     def write_nc(self, fname: str, verbosity: int = 1, **kwargs: Any) -> None:
-        """
-        Writes to NetCDF file
+        """Write the single-objective solution to NetCDF.
 
         Parameters
         ----------
         fname
-            Name of the file to be written
+            Filename resolved through the configured output directory.
         verbosity
-            The verbosity level, 0 = silent
+            Verbosity level, where zero is silent.
         kwargs
-            Parameters for foxes.utils.write_nc
+            Options forwarded to ``foxes.utils.write_nc``. An existing file
+            at the resolved path is overwritten.
 
         """
         ds = self.get_dataset()
@@ -87,20 +93,22 @@ class SingleObjResultsWriter(OptOutput):
 
 
 class MultiObjResultsWriter(OptOutput):
-    """
-    Writes optimization results to files.
-
-    """
+    """Collect a multi-objective population as a dataset or NetCDF file."""
 
     def __init__(self, opt_results: MultiObjOptResults, **kwargs: Any) -> None:
-        """
+        """Initialize the multi-objective result writer.
+
         Parameters
         ----------
         opt_results
-            The optimization results
+            iwopy multi-objective results retained by the writer.
         kwargs
-            Additional parameters for the base class
+            Common output paths, ``to_file`` and ``write_pars``.
 
+        Raises
+        ------
+        TypeError
+            If ``opt_results`` is not a ``MultiObjOptResults`` instance.
         """
         super().__init__(**kwargs)
         self.results = opt_results
@@ -111,18 +119,23 @@ class MultiObjResultsWriter(OptOutput):
             )
 
     def get_dataset(self) -> Dataset:
-        """
-        Translates results into dataset
+        """Translate the multi-objective population into a dataset.
 
         Returns
         -------
-        ds
-            The results dataset
+        dataset
+            Population-major variables, objectives and constraints on ``pop``
+            and their named component dimensions, preserving iwopy order.
+            ``success`` is an integer variable on ``pop`` retaining each
+            candidate's success flag; the problem name is an attribute.
+            Empty variable and component families are omitted.
 
         """
 
         crds = {}
-        dvars = {}
+        dvars: dict[str, tuple[str | tuple[str, ...], ndarray]] = {
+            "success": ("pop", self.results.success.astype("int8"))
+        }
         if len(self.results.vnames_int):
             crds["variables_int"] = self.results.vnames_int
             dvars["vars_int"] = (("pop", "variables_int"), self.results.vars_int)
@@ -141,24 +154,23 @@ class MultiObjResultsWriter(OptOutput):
             data_vars=dvars,
             attrs={
                 "problem": self.results.pname,
-                "success": int(self.results.success),
             },
         )
 
         return ds
 
     def write_nc(self, fname: str, verbosity: int = 1, **kwargs: Any) -> None:
-        """
-        Writes to NetCDF file
+        """Write the multi-objective population to NetCDF.
 
         Parameters
         ----------
         fname
-            Name of the file to be written
+            Filename resolved through the configured output directory.
         verbosity
-            The verbosity level, 0 = silent
+            Verbosity level, where zero is silent.
         kwargs
-            Parameters for foxes.utils.write_nc
+            Options forwarded to ``foxes.utils.write_nc``. An existing file
+            at the resolved path is overwritten.
 
         """
         ds = self.get_dataset()

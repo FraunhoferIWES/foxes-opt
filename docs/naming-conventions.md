@@ -173,6 +173,17 @@ Do not substitute `state_turbine` for the public `state-turbine` selector or
 rename generated variables without updating YAML, tests, examples, and result
 consumers.
 
+FOXES 1.10 output classes live in `foxes.models.outputs`; the base output model
+is `foxes.core.Output`. Configure their constructors and execute through
+`algo.calc_outputs`, not methods on dataset-bound output objects.
+`farm_results_all` is the default optimization collector, preserving calculated
+and optimized fields. Pipeline tables use explicit capacity, efficiency and
+annual-yield selections and normalized state aggregation.
+
+Wake-growth model-book names use `k0_<value>`/`k1_<value>` or
+`ambk0_<value>`/`ambk1_<value>` for `k = k0 + k1 * TI`. The `amb` prefix selects
+ambient TI; former `ka` multipliers become `k1`, preserving their coefficients.
+
 ## Objectives, Constraints, And Geometry
 
 - Objective and constraint class names describe the quantity or rule, for
@@ -253,6 +264,12 @@ consumers.
 	output as well as subsequent iterations.
 - Result datasets and tables use objective and constraint component names from
 	the owning iwopy functions. Do not regenerate friendlier labels in a writer.
+- Multi-objective writer datasets use `success` on `pop` for per-candidate
+	success flags; single-objective datasets retain the scalar success attribute.
+- Output models use `parameters` for layout-operation options, `grid_pars` for
+	flow grids and `plot_pars` for flow/rose rendering. Optimization writers use
+	`to_file` and `write_pars` for optional NetCDF output. YAML `functions` lists
+	are restricted to Matplotlib calls; model entries are constructor definitions.
 - Plotting parameters use `color` for one colour and `colors` or role-specific
 	names for collections. Preserve caller-supplied figures, axes, labels, and
 	paths.

@@ -12,9 +12,7 @@ if TYPE_CHECKING:
 
 
 class FarmOptProblem(Problem):
-    """
-    Abstract base class of wind farm optimization problems.
-    """
+    """Abstract base class of FOXES-backed farm optimization problems."""
 
     def __init__(
         self,
@@ -25,28 +23,34 @@ class FarmOptProblem(Problem):
         points: np.ndarray | None = None,
         **kwargs: Any,
     ) -> None:
-        """
+        """Initialize a FOXES-backed optimization problem.
+
         Parameters
         ----------
         name
-            The problem's name
+            Optimization problem name.
         algo
-            The algorithm
+            FOXES algorithm retained and updated during candidate evaluations.
         sel_turbines
-            The turbines selected for optimization,
-            or None for all
+            Farm-order turbine indices to optimize, or ``None`` for all.
         calc_farm_args
-            Additional parameters for algo.calc_farm()
+            Additional parameters for ``algo.calc_farm()``. The default
+            ``outputs="farm_results_all"`` preserves all calculated fields,
+            including optimized farm variables.
         points
-            The probe points, shape: (n_states, n_points, 3)
+            Probe coordinates in metres with shape ``(n_states, n_points, 3)``,
+            or ``None`` for farm-only evaluations.
         kwargs
-            Additional parameters for `iwopy.Problem`
+            Additional parameters for ``iwopy.Problem``.
 
         """
         super().__init__(name, **kwargs)
 
         self.algo = algo
-        self.calc_farm_args = {} if calc_farm_args is None else calc_farm_args
+        self.calc_farm_args = {
+            "outputs": "farm_results_all",
+            **({} if calc_farm_args is None else calc_farm_args),
+        }
         self.points = points
 
         self._sel_turbines = sel_turbines
@@ -185,40 +189,13 @@ class FarmOptProblem(Problem):
         super().initialize(verbosity)
 
     def _reset_states(self, states: States) -> None:
-        """
-        Reset the states in the algorithm
-        """
+        """Replace states after finalizing and clearing loaded data and chunks."""
         if states is not self.algo.states:
-            if hasattr(self.algo, "clear_loaded_data"):
-                self.algo.clear_loaded_data()
             if self.algo.initialized:
                 self.algo.finalize()
+            self.algo.clear_loaded_data()
             self.algo.states = states
-            if hasattr(self.algo, "reset_chunk_store"):
-                self.algo.reset_chunk_store()
-
-            # Compatibility shim for older foxes versions that keep model data
-            # in idata_mem/get_model_data but do not expose loaded_data.
-            if not hasattr(self.algo, "loaded_data") and hasattr(
-                self.algo, "get_model_data"
-            ):
-                try:
-                    idata = self.algo.get_model_data(self.algo.states)
-                except Exception:
-                    idata = {"coords": {}, "data_vars": {}}
-                data_vars = dict(idata.get("data_vars", {}))
-                if (
-                    "PopulationStates_SMAP" in data_vars
-                    and "PopulationStates_smap" not in data_vars
-                ):
-                    data_vars["PopulationStates_smap"] = data_vars[
-                        "PopulationStates_SMAP"
-                    ]
-                self.algo.loaded_data = {
-                    "coords": dict(idata.get("coords", {})),
-                    "data_vars": data_vars,
-                    "extra_data": {},
-                }
+            self.algo.reset_chunk_store()
 
     def update_problem_individual(
         self, vars_int: np.ndarray, vars_float: np.ndarray

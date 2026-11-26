@@ -60,8 +60,16 @@ development. The editable FOXES and iwopy installs are intentional; mandatory
 dependency resolution. CI owns its isolated environment separately and may
 synchronize it in workflow jobs.
 
-The runtime requires FOXES >=1.9.8 to inherit its corrected tqdm security floor,
-and iwopy >=1.0.0. The iwopy matrix derivative APIs are
+The runtime requires FOXES >=1.10.0 and iwopy >=1.0.0. FOXES 1.10 retains the
+corrected tqdm security floor and supplies constructor-defined output models
+under `foxes.models.outputs`, executed through `algo.calc_outputs`. Optimization
+problems request `farm_results_all` by default so optimized quantities such as
+`FV.YAWM` remain available. Pipeline calculations explicitly collect capacity,
+efficiency and annual-yield metrics before aggregating their tables.
+Wake-growth model-book names use `k1_<value>` or `ambk1_<value>` for TI
+multipliers, not the removed `ka` names. See
+[ADR-0009](adr/0009-foxes-1-10-output-contract.md).
+The iwopy matrix derivative APIs are
 `get_jacobian()` and `calc_jacobian()`, returning SciPy CSR matrices; optimizer
 factories use backend `family` and algorithm `optimizer` selectors with flat
 parameters. Updating this dependency floor does not authorize environment setup.
@@ -82,7 +90,7 @@ groups. Install them with `--extra`; `--dev` does not select the `dev` extra.
 | Main dependencies | FOXES, iwopy, pymoo, pygmo, xarray, and NetCDF runtime support |
 | `test` | pytest, notebook execution, pre-commit, and mypy |
 | `dev` | contributor hooks, mypy, object-size inspection, and Jupyter |
-| `doc` | Sphinx, AutoAPI, numpydoc, Immaterial, MyST-NB, and documentation notebooks |
+| `doc` | Sphinx, AutoAPI, Napoleon, Immaterial, MyST-NB, and documentation notebooks |
 
 Put a new dependency in the narrowest justified set. An import required by base
 `foxes_opt` belongs in main dependencies. A development, test, or documentation
@@ -281,22 +289,56 @@ data, network access, or an undeclared local package checkout.
 
 Public Python APIs follow [docstring conventions](docstrings.md). Types remain
 in annotations; NumPy-style docstrings describe the optimization, scientific,
-array, and runtime contract. Sphinx uses numpydoc and AutoAPI for package
+array, and runtime contract. Sphinx uses Napoleon and AutoAPI for package
 references and MyST-NB for Markdown/notebook content.
+
+The documentation shares FOXES's Fraunhofer IWES appearance. Maintained assets
+live in `docs/source/_static/` and `docs/source/_templates/`; the token adapter
+is `iwes-tokens.css`, loaded before `iwes.css`. When changing it, resolve token
+references in `docs/fraunhofer-design/design-tokens.json` and compare every CSS
+custom property with its source value outside pytest. Values marked
+`needs-review` remain subject to design approval, including the monospaced
+font stack, layout dimensions, hover/active colours, and feedback mappings.
+Do not treat reuse from FOXES as approval or reduce the existing font sizes.
+See [ADR-0010](adr/0010-foxes-documentation-alignment.md).
+The stylesheet additionally wraps long API type names to keep optimization
+references usable at narrow viewport widths.
 
 When an explicit Sphinx rendering check is useful, use the prepared environment:
 
 ```console
-uv run --no-sync sphinx-build -E -b html docs/source docs/build/html
+uv run --no-sync sphinx-build -E -b html -D nb_execution_mode=auto docs/source docs/build/html
 ```
+
+Notebook execution uses `auto`: notebooks with missing outputs execute, with a
+300-second per-cell timeout, and execution errors fail the build. Sphinx
+warnings remain visible but non-fatal by explicit project decision; do not use
+`-W` as the documentation deployment gate.
+
+For appearance-only checks, replace `-D nb_execution_mode=auto` with
+`-D nb_execution_mode=off` to render saved
+notebook output without running optimization workflows. Inspect the landing,
+installation, API, and notebook pages at 320, 768, and 1280px, including search,
+keyboard focus, navigation, and reduced motion.
+
+Check external documentation links separately, without rerunning notebooks:
+
+```console
+uv run --no-sync sphinx-build -E -b linkcheck -D nb_execution_mode=off docs/source docs/build/linkcheck
+```
+
+Keep local links and anchors valid in the generated HTML as well. GitHub-rendered
+Markdown anchors can produce false positives in external link checkers; link to
+the guide itself when a section-specific URL is unnecessary rather than
+ignoring HTTP errors.
 
 If the documentation tools are unavailable, ask the developer to re-sync the
 environment with the required documentation dependencies. Do not synchronize or
 install them as part of the development task.
 
 Open `docs/build/html/index.html` for local inspection. `docs/build/` and
-generated AutoAPI pages under `docs/source/_*` are build output; do not edit or
-commit them as source.
+`docs/source/_autoapi/` are generated output; do not edit or commit them as
+source. The static assets and templates above are maintained source.
 
 Update the relevant `docs/source/` page when public behavior, setup, a YAML
 contract, output schema, or example changes. Keep parameter-file examples
@@ -307,6 +349,9 @@ Every development change adds a concise bullet to the final version section,
 whose heading must match `project.version` from `pyproject.toml`. Preserve the
 section's current category style and keep the full-changelog link current when
 release metadata changes.
+For an unreleased current version, use a clearly labelled comparison from the
+previous release to `dev` rather than a nonexistent tag. After publishing the
+version tag, replace the development comparison with the version-specific link.
 
 ## CI Parity
 
@@ -327,6 +372,21 @@ uv run pytest --nbmake notebooks
 These are CI commands, not local development instructions. CI's environment
 ownership and distribution-build jobs are exceptions to the local
 `uv run --no-sync` rule and are not a model for ordinary development commands.
+
+The GitHub workflows follow FOXES with FOXES Optimization's own PyPI and
+TestPyPI project URLs. Keep their triggers, Python matrices, test/notebook
+commands, release tag/version check, trusted-publishing permissions, artifact
+handoff, and Sigstore release flow aligned when updating action versions.
+Distribution and publication jobs retain FOXES's existing dependency gates.
+GitLab CI matches FOXES's Python 3.14 uv image, runner tag, pre-commit/test/
+notebook stages, and caches; do not introduce a separate GitLab release flow.
+
+Documentation deploys from `main` after pre-commit, using the `doc` extra,
+explicit `nb_execution_mode=auto`, and the matching Pages upload/deploy actions.
+Warnings do not block publication, but dependency, rendering, and notebook
+execution failures do. Local verification cannot prove hosted runner or trusted
+publisher settings; these remain repository/environment configuration owned by
+the maintainers. See [ADR-0011](adr/0011-production-documentation-and-ci.md).
 
 ## Release-Sensitive Changes
 

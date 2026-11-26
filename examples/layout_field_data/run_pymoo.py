@@ -236,7 +236,12 @@ def main():
     solver.print_info()
 
     if not args.nofig:
-        ax = foxes.output.FarmLayoutOutput(farm).get_figure()
+        ax = foxes.core.run_with_engine(
+            algo.calc_outputs,
+            outputs=foxes.models.outputs.FarmLayoutOutput(
+                variables=[], parameters=dict()
+            ),
+        )
         plt.show()
         plt.close(ax.get_figure())
 
@@ -255,24 +260,36 @@ def main():
         print()
         print(results)
 
-        plot_data = None
+        flow_pars = None
         if not args.nofig and results.problem_results is not None:
-            o = foxes.output.FlowPlots2D(algo, results.problem_results)
             p_min = np.array([-100.0, -350.0])
             p_max = np.array([1100.0, 1600.0])
-            plot_data = o.get_mean_data_xy(
-                FV.WS,
-                resolution=20,
-                xmin=p_min[0],
-                xmax=p_max[0],
-                ymin=p_min[1],
-                ymax=p_max[1],
+            flow_pars = dict(
+                var=FV.WS,
+                grid_pars=dict(
+                    resolution=20,
+                    xmin=p_min[0],
+                    xmax=p_max[0],
+                    ymin=p_min[1],
+                    ymax=p_max[1],
+                ),
             )
 
-    if not args.nofig and plot_data is not None:
+    if not args.nofig and flow_pars is not None:
         fig, axs = plt.subplots(1, 2, figsize=(12, 8))
-        foxes.output.FarmLayoutOutput(farm).get_figure(fig=fig, ax=axs[0])
-        fig = o.get_mean_fig_xy(plot_data, fig=fig, ax=axs[1])
+        foxes.core.run_with_engine(
+            algo.calc_outputs,
+            outputs=foxes.models.outputs.FarmLayoutOutput(
+                variables=[], parameters=dict(fig=fig, ax=axs[0])
+            ),
+        )
+        with engine:
+            fig = algo.calc_outputs(
+                outputs=foxes.models.outputs.FlowPlots2D(
+                    **flow_pars, plot_pars=dict(fig=fig, ax=axs[1])
+                ),
+                farm_results=results.problem_results,
+            )
 
         dpars = {"alpha": 0.6, "zorder": 10, "p_min": p_min, "p_max": p_max}
         farm.boundary.add_to_figure(

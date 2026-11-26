@@ -58,7 +58,7 @@ The constraint objects own these tolerances; the optimizer derives its solver
 bounds from the registered constraints.
 
 Optimizer selection
-------------------
+-------------------
 
 ``optimizer_family`` selects the iwopy factory backend. ``optimizer_pars``
 requires an ``optimizer`` algorithm name and otherwise contains explicit iwopy

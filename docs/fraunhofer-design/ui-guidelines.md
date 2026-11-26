@@ -8,8 +8,12 @@ directory rather than keeping it as advice — see `AGENTS.md`, "UI Design Polic
 
 ### FOXES Optimization Scope
 
-FOXES Optimization currently has no browser frontend and no design-token
-adapter. Its visual surface consists mainly of matplotlib layout plots,
+FOXES Optimization has no browser application frontend or shared matplotlib
+token adapter. Sphinx documentation uses the token adapter at
+`docs/source/_static/iwes-tokens.css` and theme overrides at
+`docs/source/_static/iwes.css`, aligned with FOXES under
+[ADR-0010](../adr/0010-foxes-documentation-alignment.md).
+Its visual surface consists mainly of matplotlib layout plots,
 optimization histories, callback snapshots, notebook output, documentation, and
 project/brand assets. Apply the chart, colour, typography, image, logo, and
 accessibility rules here when those surfaces change. Do not apply web component

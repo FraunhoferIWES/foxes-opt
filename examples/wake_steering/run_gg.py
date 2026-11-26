@@ -25,7 +25,10 @@ if __name__ == "__main__":
         "-w",
         "--wakes",
         help="The wake models",
-        default=["CrespoHernandez_quadratic_ambka04", "Bastankhah2014_vector_ambka04"],
+        default=[
+            "CrespoHernandez_quadratic_ambk1_04",
+            "Bastankhah2014_vector_ambk1_04",
+        ],
         nargs="+",
     )
     parser.add_argument("-f", "--frame", help="The wake frame", default="rotor_wd")
@@ -126,7 +129,10 @@ if __name__ == "__main__":
     solver.initialize()
     solver.print_info()
 
-    ax = foxes.output.FarmLayoutOutput(farm).get_figure()
+    ax = foxes.core.run_with_engine(
+        algo.calc_outputs,
+        outputs=foxes.models.outputs.FarmLayoutOutput(variables=[], parameters=dict()),
+    )
     plt.show()
     plt.close(ax.get_figure())
 
@@ -148,8 +154,11 @@ if __name__ == "__main__":
         fr = results.problem_results.to_dataframe()
         print(fr[[FV.X, FV.Y, FV.AMB_WD, FV.REWS, FV.TI, FV.P, FV.YAWM]])
 
-        o = foxes.output.FlowPlots2D(algo, results.problem_results)
-        plot_data = o.get_mean_data_xy("WS", resolution=10)
+        flow_pars = dict(var="WS", grid_pars=dict(resolution=10))
 
-    fig = o.get_mean_fig_xy(plot_data)
+    with engine:
+        fig = algo.calc_outputs(
+            outputs=foxes.models.outputs.FlowPlots2D(**flow_pars, plot_pars=dict()),
+            farm_results=results.problem_results,
+        )
     plt.show()

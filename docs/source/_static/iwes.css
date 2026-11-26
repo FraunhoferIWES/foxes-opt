@@ -1,0 +1,450 @@
+:root,
+[data-md-color-scheme="default"],
+[data-md-color-primary="iwes"] {
+  --md-default-fg-color: var(--iwes-semantic-color-text);
+  --md-default-fg-color--light: var(--iwes-semantic-color-text-muted);
+  --md-default-fg-color--lighter: var(--iwes-semantic-color-text-muted);
+  --md-default-fg-color--lightest: var(--iwes-semantic-color-border-subtle);
+  --md-default-bg-color: var(--iwes-semantic-color-background);
+  --md-default-bg-color--light: var(--iwes-semantic-color-background);
+  --md-default-bg-color--lighter: var(--iwes-semantic-color-background);
+  --md-default-bg-color--lightest: var(--iwes-semantic-color-background);
+  --md-primary-fg-color: var(--iwes-semantic-color-primary);
+  --md-primary-fg-color--light: var(--iwes-semantic-color-primary-subtle);
+  --md-primary-fg-color--dark: var(--iwes-semantic-color-primary);
+  --md-primary-bg-color: var(--iwes-semantic-color-text);
+  --md-primary-bg-color--light: var(--iwes-semantic-color-text-muted);
+  --md-accent-fg-color: var(--iwes-semantic-color-info);
+  --md-accent-fg-color--transparent: var(--iwes-semantic-color-info-subtle);
+  --md-accent-bg-color: var(--iwes-semantic-color-text-inverse);
+  --md-accent-bg-color--light: var(--iwes-semantic-color-text-inverse);
+  --md-typeset-a-color: var(--iwes-semantic-color-info);
+  --md-typeset-del-color: var(--iwes-semantic-color-error-subtle);
+  --md-typeset-ins-color: var(--iwes-semantic-color-primary-subtle);
+  --md-typeset-kbd-color: var(--iwes-semantic-color-background-alternative);
+  --md-typeset-kbd-accent-color: var(--iwes-semantic-color-background);
+  --md-typeset-kbd-border-color: var(--iwes-semantic-color-border);
+  --md-typeset-mark-color: var(--iwes-semantic-color-warning-subtle);
+  --md-typeset-table-color: var(--iwes-semantic-color-border-subtle);
+  --md-typeset-table-color--light: var(--iwes-semantic-color-background-alternative);
+  --md-admonition-fg-color: var(--iwes-semantic-color-text);
+  --md-admonition-bg-color: var(--iwes-semantic-color-surface);
+  --md-warning-fg-color: var(--iwes-semantic-color-text);
+  --md-warning-bg-color: var(--iwes-semantic-color-warning-subtle);
+  --md-footer-fg-color: var(--iwes-semantic-color-text-muted);
+  --md-footer-fg-color--light: var(--iwes-semantic-color-text-muted);
+  --md-footer-fg-color--lighter: var(--iwes-semantic-color-text-muted);
+  --md-footer-bg-color: var(--iwes-semantic-color-background-alternative);
+  --md-footer-bg-color--dark: var(--iwes-semantic-color-background-alternative);
+  --md-code-fg-color: var(--iwes-semantic-color-text-muted);
+  --md-code-bg-color: var(--iwes-semantic-color-background-alternative);
+  --md-code-hl-color: var(--iwes-semantic-color-info);
+  --md-code-hl-color--light: var(--iwes-semantic-color-info-subtle);
+  --md-code-hl-number-color: var(--iwes-semantic-color-error);
+  --md-code-hl-special-color: var(--iwes-semantic-color-error);
+  --md-code-hl-function-color: var(--iwes-semantic-color-text-muted);
+  --md-code-hl-constant-color: var(--iwes-semantic-color-primary-active);
+  --md-code-hl-keyword-color: var(--iwes-semantic-color-info);
+  --md-code-hl-string-color: var(--iwes-semantic-color-primary-active);
+  --objinfo-icon-fg-alias: var(--iwes-semantic-color-info);
+  --objinfo-icon-fg-default: var(--iwes-semantic-color-text-muted);
+  --objinfo-icon-fg-data: var(--iwes-semantic-color-info);
+  --objinfo-icon-fg-procedure: var(--iwes-semantic-color-primary-active);
+  --objinfo-icon-fg-sub-data: var(--iwes-semantic-color-text-muted);
+  --mystnb-source-bg-color: var(--iwes-semantic-color-background-alternative);
+  --mystnb-stdout-bg-color: var(--iwes-semantic-color-surface);
+  --mystnb-stderr-bg-color: var(--iwes-semantic-color-error-subtle);
+  --mystnb-traceback-bg-color: var(--iwes-semantic-color-error-subtle);
+  --mystnb-source-border-color: var(--iwes-semantic-color-border-subtle);
+  --mystnb-source-margin-color: var(--iwes-semantic-color-primary);
+  --mystnb-stdout-border-color: var(--iwes-semantic-color-border-subtle);
+  --mystnb-stderr-border-color: var(--iwes-semantic-color-error);
+  --mystnb-traceback-border-color: var(--iwes-semantic-color-error);
+  --mystnb-scrollbar-thumb-color: var(--iwes-semantic-color-border);
+  --mystnb-scrollbar-thumb-hover-color: var(--iwes-semantic-color-border-strong);
+  --iwes-notice-accent: var(--iwes-semantic-color-info);
+  --iwes-notice-background: var(--iwes-semantic-color-info-subtle);
+}
+
+body,
+input {
+  font-family: var(--iwes-typography-font-family-sans), sans-serif;
+  font-weight: var(--iwes-typography-font-weight-light);
+  letter-spacing: 0;
+}
+
+.md-grid {
+  max-width: var(--iwes-layout-container-max);
+}
+
+.md-header {
+  min-height: var(--iwes-layout-header-height);
+  color: var(--iwes-semantic-color-text);
+  background: var(--iwes-semantic-color-primary);
+  border-bottom: var(--iwes-border-accent-width) solid var(--iwes-semantic-color-primary);
+  box-shadow: none;
+}
+
+.md-header__inner {
+  min-height: calc(var(--iwes-layout-header-height) - var(--iwes-border-accent-width));
+}
+
+.md-header__title {
+  font-size: max(0.9rem, var(--iwes-typography-font-size-xl));
+  line-height: max(2.4rem, var(--iwes-typography-line-height-xl));
+}
+
+.md-header__title,
+.md-header__topic,
+.md-nav__title,
+.md-typeset strong,
+.md-typeset b {
+  font-weight: var(--iwes-typography-font-weight-bold);
+}
+
+.md-header__button,
+.md-header__button.md-icon,
+.md-source {
+  color: var(--iwes-semantic-color-text);
+  opacity: 1;
+}
+
+.md-header :focus-visible {
+  outline-color: var(--iwes-semantic-color-text);
+}
+
+.md-header .md-search__input + .md-search__icon {
+  color: var(--iwes-semantic-color-text-muted);
+}
+
+.md-header .md-search__form,
+.md-header .md-search__output {
+  color: var(--iwes-semantic-color-text);
+  background: var(--iwes-semantic-color-background-alternative);
+  border: var(--iwes-border-width) solid var(--iwes-semantic-color-border);
+  border-radius: var(--iwes-radius-none);
+  box-shadow: none;
+}
+
+.md-header .md-search__input {
+  color: var(--iwes-semantic-color-text);
+}
+
+.md-header .md-search__input::placeholder {
+  color: var(--iwes-semantic-color-text-muted);
+  opacity: 1;
+}
+
+.md-main {
+  background: var(--iwes-semantic-color-background);
+}
+
+.md-content__inner {
+  max-width: var(--iwes-layout-content-max);
+  margin-inline: auto;
+}
+
+.md-typeset {
+  color: var(--iwes-semantic-color-text);
+  font-size: max(0.8rem, var(--iwes-typography-font-size-base));
+  font-weight: var(--iwes-typography-font-weight-light);
+  line-height: max(1.5em, var(--iwes-typography-line-height-base));
+}
+
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3,
+.md-typeset h4 {
+  color: var(--iwes-semantic-color-text-muted);
+  letter-spacing: 0;
+}
+
+.md-typeset h1 {
+  margin-block: var(--iwes-spacing-12) var(--iwes-spacing-6);
+  font-size: max(2em, var(--iwes-typography-font-size-3xl));
+  font-weight: var(--iwes-typography-font-weight-light);
+  line-height: max(1.25em, var(--iwes-typography-line-height-3xl));
+}
+
+.md-typeset h2 {
+  margin-block: var(--iwes-spacing-12) var(--iwes-spacing-4);
+  font-weight: var(--iwes-typography-font-weight-bold);
+  line-height: max(1.3em, var(--iwes-typography-line-height-2xl));
+}
+
+.md-typeset h3 {
+  margin-block: var(--iwes-spacing-8) var(--iwes-spacing-3);
+  font-size: max(1.25em, var(--iwes-typography-font-size-xl));
+  font-weight: var(--iwes-typography-font-weight-bold);
+  line-height: max(1.4em, var(--iwes-typography-line-height-xl));
+}
+
+.md-typeset h4 {
+  font-size: max(1em, var(--iwes-typography-font-size-lg));
+  font-weight: var(--iwes-typography-font-weight-bold);
+  line-height: max(1.5em, var(--iwes-typography-line-height-lg));
+}
+
+.md-typeset em,
+.md-typeset i,
+.md-typeset .versionmodified,
+.md-search-result__terms {
+  font-style: normal;
+  font-weight: var(--iwes-typography-font-weight-bold);
+}
+
+.md-typeset a {
+  color: var(--iwes-semantic-color-info);
+  text-decoration: underline;
+  text-decoration-thickness: var(--iwes-border-width);
+  text-underline-offset: var(--iwes-spacing-1);
+}
+
+.md-typeset a:hover {
+  color: var(--iwes-semantic-color-primary-active);
+  text-decoration-thickness: var(--iwes-border-focus-width);
+}
+
+.md-nav {
+  font-size: max(0.7rem, var(--iwes-typography-font-size-base));
+  line-height: var(--iwes-typography-line-height-base);
+}
+
+.md-nav__link {
+  min-height: var(--iwes-layout-touch-target-min);
+  align-items: center;
+  color: var(--iwes-semantic-color-text-muted);
+  letter-spacing: 0;
+}
+
+.md-nav__link:hover,
+.md-nav__link:focus {
+  color: var(--iwes-semantic-color-info);
+}
+
+.md-nav__link--active {
+  padding-left: var(--iwes-spacing-3);
+  color: var(--iwes-semantic-color-text);
+  font-weight: var(--iwes-typography-font-weight-bold);
+  background: var(--iwes-semantic-color-surface-selected);
+  border-left: var(--iwes-border-accent-width) solid var(--iwes-semantic-color-primary);
+}
+
+.md-nav--primary .md-nav__title,
+.md-nav--secondary .md-nav__title {
+  color: var(--iwes-semantic-color-text-muted);
+  background: var(--iwes-semantic-color-background);
+  box-shadow: none;
+}
+
+.md-sidebar {
+  background: var(--iwes-semantic-color-background);
+}
+
+.md-typeset code,
+.md-typeset pre,
+.md-typeset .highlight,
+.md-typeset .highlighttable,
+.md-typeset .tabbed-set > input:checked + label,
+.md-typeset .md-button {
+  border-radius: var(--iwes-radius-none);
+}
+
+.md-typeset code {
+  font-family: var(--iwes-typography-font-family-mono);
+  font-size: max(0.85em, var(--iwes-typography-font-size-sm));
+}
+
+.md-typeset .desctype {
+  overflow-wrap: anywhere;
+}
+
+.md-typeset pre > code {
+  padding: var(--iwes-spacing-4);
+  border-left: var(--iwes-border-accent-width) solid var(--iwes-semantic-color-border);
+}
+
+.md-clipboard {
+  color: var(--iwes-semantic-color-text-muted);
+}
+
+.md-draft {
+  color: var(--iwes-semantic-color-text-inverse);
+  background: var(--iwes-semantic-color-error);
+}
+
+.md-typeset [type="checkbox"]:checked + .task-list-indicator::before {
+  background-color: var(--iwes-semantic-color-primary-active);
+}
+
+.md-typeset .cell_output .progress {
+  background-color: var(--iwes-semantic-color-background-alternative);
+}
+
+.md-typeset .cell_output .progress-bar {
+  color: var(--iwes-semantic-color-text-inverse);
+  background-color: var(--iwes-semantic-color-info);
+}
+
+.md-typeset .cell_output .progress-bar-success {
+  background-color: var(--iwes-semantic-color-primary-active);
+}
+
+.md-typeset .cell_output .progress-bar-warning {
+  background-color: var(--iwes-semantic-color-warning);
+}
+
+.md-typeset .cell_output .progress-bar-danger {
+  background-color: var(--iwes-semantic-color-error);
+}
+
+.md-typeset table,
+.md-typeset table.data:not(.plain) {
+  font-size: max(1em, var(--iwes-typography-font-size-base));
+  border: 0;
+  border-radius: var(--iwes-radius-none);
+  box-shadow: none;
+}
+
+.md-typeset table th {
+  color: var(--iwes-semantic-color-text);
+  font-weight: var(--iwes-typography-font-weight-bold);
+  background: var(--iwes-semantic-color-background-alternative);
+  border-bottom: var(--iwes-border-width) solid var(--iwes-semantic-color-border-strong);
+}
+
+.md-typeset table td {
+  font-weight: var(--iwes-typography-font-weight-light);
+  border-bottom: var(--iwes-border-width) solid var(--iwes-semantic-color-border-subtle);
+}
+
+.md-typeset :is(.tip, .hint, .important, .success, .check, .done) {
+  --iwes-notice-accent: var(--iwes-semantic-color-success);
+  --iwes-notice-background: var(--iwes-semantic-color-success-subtle);
+}
+
+.md-typeset :is(.warning, .caution, .attention) {
+  --iwes-notice-accent: var(--iwes-semantic-color-warning);
+  --iwes-notice-background: var(--iwes-semantic-color-warning-subtle);
+}
+
+.md-typeset :is(.error, .danger, .failure, .fail, .missing, .bug, .deprecated, .versionremoved) {
+  --iwes-notice-accent: var(--iwes-semantic-color-error);
+  --iwes-notice-background: var(--iwes-semantic-color-error-subtle);
+}
+
+.md-typeset :is(.quote, .cite) {
+  --iwes-notice-accent: var(--iwes-semantic-color-text-muted);
+  --iwes-notice-background: var(--iwes-semantic-color-background-alternative);
+}
+
+.md-typeset .versionadded {
+  --iwes-notice-accent: var(--iwes-semantic-color-primary-active);
+  --iwes-notice-background: var(--iwes-semantic-color-primary-subtle);
+}
+
+.md-typeset .versionchanged {
+  --iwes-notice-accent: var(--iwes-semantic-color-info);
+  --iwes-notice-background: var(--iwes-semantic-color-info-subtle);
+}
+
+/* Match typed notices so theme-specific colors cannot override these tokens. */
+.md-typeset :is(.admonition, details)[class],
+.md-typeset details {
+  background: var(--iwes-semantic-color-surface);
+  border: var(--iwes-border-width) solid var(--iwes-semantic-color-border-subtle);
+  border-left: var(--iwes-border-accent-width) solid var(--iwes-notice-accent);
+  border-radius: var(--iwes-radius-none);
+  box-shadow: none;
+}
+
+.md-typeset :is(.admonition, details)[class]:focus-within,
+.md-typeset details:focus-within {
+  box-shadow: none;
+}
+
+.md-typeset :is(.admonition, details) > :is(.admonition-title, summary) {
+  color: var(--iwes-semantic-color-text);
+  background: var(--iwes-notice-background);
+  border-color: var(--iwes-notice-accent);
+  border-radius: var(--iwes-radius-none);
+}
+
+.md-typeset :is(.admonition, details) > :is(.admonition-title, summary)::before {
+  background-color: var(--iwes-notice-accent);
+}
+
+.md-typeset :is(.admonition, details) > :is(.admonition-title, summary)::after {
+  color: var(--iwes-notice-accent);
+}
+
+.md-typeset .md-button {
+  min-height: var(--iwes-layout-touch-target-min);
+  color: var(--iwes-semantic-color-text-inverse);
+  font-weight: var(--iwes-typography-font-weight-bold);
+  background: var(--iwes-semantic-color-info);
+  border: var(--iwes-border-width) solid var(--iwes-semantic-color-info);
+}
+
+.md-typeset .md-button:hover {
+  color: var(--iwes-semantic-color-text-inverse);
+  background: var(--iwes-semantic-color-primary-active);
+  border-color: var(--iwes-semantic-color-primary-active);
+}
+
+.md-footer {
+  min-height: var(--iwes-layout-footer-height);
+  color: var(--iwes-semantic-color-text-muted);
+  background: var(--iwes-semantic-color-background-alternative);
+  border-top: var(--iwes-border-width) solid var(--iwes-semantic-color-border);
+}
+
+.md-footer-meta {
+  color: var(--iwes-semantic-color-text-muted);
+  background: var(--iwes-semantic-color-background-alternative);
+}
+
+.md-footer a,
+.md-footer-meta a {
+  color: var(--iwes-semantic-color-info);
+}
+
+html .md-footer-meta.md-typeset a {
+  color: var(--iwes-semantic-color-info);
+}
+
+html .md-footer-meta.md-typeset a:hover,
+html .md-footer-meta.md-typeset a:focus {
+  color: var(--iwes-semantic-color-primary-active);
+}
+
+:focus-visible {
+  outline: var(--iwes-border-focus-width) solid var(--iwes-semantic-color-info);
+  outline-offset: var(--iwes-spacing-1);
+}
+
+::selection {
+  color: var(--iwes-semantic-color-text);
+  background: var(--iwes-semantic-color-primary-subtle);
+}
+
+@media (max-width: 640px) {
+  .md-content__inner {
+    padding-inline: var(--iwes-spacing-4);
+  }
+
+  .md-typeset h1 {
+    margin-top: var(--iwes-spacing-8);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

@@ -215,3 +215,33 @@
     vectorized population evaluations
 
 **Full Changelog**: [https://github.com/FraunhoferIWES/foxes-opt/compare/v0.9.0...v0.9.1](https://github.com/FraunhoferIWES/foxes-opt/compare/v0.9.0...v0.9.1)
+
+## v0.9.2
+
+- Documentation:
+  - Aligned the Sphinx theme, corporate styling, navigation and API rendering
+    with FOXES while retaining optimization-specific content and project links
+  - Repaired FOXES documentation links and linked unreleased changes to `dev`
+- CI:
+  - Aligned GitHub Actions versions and explicit documentation notebook execution
+    with FOXES; GitLab CI already matches. Sphinx warnings remain non-fatal,
+    while notebook execution errors fail the documentation build
+- Dependencies and FOXES integration:
+  - Require *FOXES* >=1.10.0 and migrate callbacks, pipelines, examples, notebooks
+    and YAML to constructor-defined outputs executed through `calc_outputs`
+  - Preserve all calculated optimization fields and remove the superseded
+    state-data shim
+  - Updated wake-growth model names to the current `k1`/`ambk1` coefficient syntax
+- Pipelines:
+  - Explicitly collect and aggregate capacity, efficiency and annual-yield
+    metrics for pipeline tables
+- Outputs and YAML:
+  - Optimization writers now support parent-side output execution and optional
+    `to_file`/`write_pars`
+  - YAML now returns output entries and shared result storage without signature
+    injection, retaining imperative calls only for Matplotlib
+- Bug fixes:
+  - Fixed multi-objective NetCDF export by storing success per population member
+    on `pop` instead of converting its success array to a scalar attribute
+
+**Full Changelog (development)**: [https://github.com/FraunhoferIWES/foxes-opt/compare/v0.9.1...dev](https://github.com/FraunhoferIWES/foxes-opt/compare/v0.9.1...dev)

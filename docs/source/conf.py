@@ -40,21 +40,24 @@ release = __version__
 # -- General configuration ---------------------------------------------------
 
 extensions = [
-    "numpydoc",
+    "sphinx.ext.napoleon",
     "sphinx_immaterial",
     "autoapi.extension",
     "sphinx.ext.autosectionlabel",
-    "sphinx.ext.intersphinx",
     "sphinx.ext.mathjax",
     "sphinx.ext.viewcode",
     "sphinx.ext.doctest",
     "myst_nb",
+    "sphinx.ext.intersphinx",
 ]
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),
-    "numpy": ("https://docs.scipy.org/doc/numpy/", None),
-    "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/", None),
+    "pandas": ("https://pandas.pydata.org/docs/", None),
+    "xarray": ("https://docs.xarray.dev/en/stable/", None),
+    "matplotlib": ("https://matplotlib.org/stable/", None),
 }
 
 # Source file types handled by Sphinx and MyST-NB.
@@ -66,6 +69,7 @@ source_suffix = {
 }
 
 master_doc = "index"
+templates_path = ["_templates"]
 
 language = "en"
 
@@ -80,29 +84,29 @@ exclude_patterns = [
 pygments_style = None
 
 # NumPy-style docstrings and stable cross-reference labels.
-# Keep class members visible so constructors and inherited API members appear in
-# the generated reference pages for the concrete model classes.
-numpydoc_use_rtype = False
-numpydoc_show_class_members = True
-numpydoc_class_members_toctree = False
+napoleon_use_rtype = False
+napoleon_use_ivar = True
 autosectionlabel_prefix_document = True
 
 # -- Options for autodoc ----------------------------------------------------
 autodoc_typehints = "signature"
 autodoc_class_signature = "separated"
+viewcode_follow_imported_members = False
 
 # -- Options for HTML output -------------------------------------------------
 
 html_theme = "sphinx_immaterial"
+html_static_path = ["_static"]
+html_css_files = ["iwes-tokens.css", "iwes.css"]
 html_theme_options = {
-    "site_url": "https://fraunhoferiwes.github.io/foxes-opt.docs/index.html",
+    "site_url": "https://fraunhoferiwes.github.io/foxes-opt/",
     "repo_url": "https://github.com/FraunhoferIWES/foxes-opt",
     "icon": {"repo": "fontawesome/brands/github", "edit": "material/file-edit-outline"},
-    "palette": {"primary": "teal"},
+    "palette": {"scheme": "default", "primary": "iwes", "accent": "iwes"},
     "toc_title_is_page_title": True,
 }
 
-htmlhelp_basename = "foxesdoc"
+htmlhelp_basename = "foxesoptdoc"
 
 latex_documents = [
     (
@@ -146,6 +150,7 @@ autoapi_options = [
     "show-inheritance",
     "show-module-summary",
     "inherited-members",
+    "imported-members",
 ]
 autoapi_python_class_content = "both"
 autoapi_member_order = "groupwise"
@@ -170,6 +175,7 @@ myst_enable_extensions = [
 
 nb_execution_mode = "auto"
 nb_execution_timeout = 300
+nb_execution_raise_on_error = True
 nb_ipywidgets_js = {
     "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js": {
         "integrity": "sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=",
@@ -180,8 +186,6 @@ nb_ipywidgets_js = {
         "crossorigin": "anonymous",
     },
 }
-# nb_render_image_options = {"width": "200px"}
-# application/vnd.plotly.v1+json and application/vnd.bokehjs_load.v0+json
 
 
 def remove_autoapi_submodule_heading(app, docname, source):
@@ -194,8 +198,20 @@ def remove_autoapi_submodule_heading(app, docname, source):
         )
 
 
+def separate_autoapi_constructor_docstrings(app, what, name, obj, options, lines):
+    if obj is None and what == "method" and name.endswith((".__init__", ".__new__")):
+        # AutoAPI appends processed constructors to raw class docstrings.
+        # Two blank lines terminate Napoleon's preceding NumPy section.
+        lines[:0] = ["", ""]
+
+
 def setup(app):
     app.connect("source-read", remove_autoapi_submodule_heading)
+    app.connect(
+        "autodoc-process-docstring",
+        separate_autoapi_constructor_docstrings,
+        priority=600,
+    )
 
 
 suppress_warnings = ["mystnb.unknown_mime_type"]
