@@ -7,7 +7,12 @@ import matplotlib.pyplot as plt
 
 from foxes import ModelBook, Turbine, WindFarm
 from foxes.core import Algorithm, States, run_with_engine
-from foxes.output import FarmLayoutOutput, FarmResultsEval, FlowPlots2D
+from foxes.models.outputs import (
+    FarmLayoutOutput,
+    FarmResultsOutput,
+    FlowPlots2D,
+    StateTurbineTable,
+)
 from foxes.utils.geom2d import AreaGeometry
 from iwopy.core import Pipeline, PipelineStage
 import foxes.variables as FV
@@ -140,8 +145,7 @@ class LayoutPipeline(Pipeline):
         algo: Algorithm,
         farm_results: Dataset,
     ) -> int:
-        """
-        Add the results of a stage to the table.
+        """Append stage metrics and persist the pipeline table.
 
         Parameters
         ----------
@@ -152,23 +156,43 @@ class LayoutPipeline(Pipeline):
         algo
             The foxes algorithm instance
         farm_results
-            The results of the wind farm simulation
+            Farm dataset containing REWS, power, capacity, annual yields in
+            GWh and efficiency. ``run_foxes`` requests these metrics explicitly.
 
         Returns
         -------
         i
             The index of the new row in the table
 
+        Raises
+        ------
+        KeyError
+            If a successful stage's farm dataset lacks required metrics.
+
         """
         if success:
-            o = FarmResultsEval(farm_results, algo)
-            Y0 = o.calc_farm_yield(annual=True, ambient=True)
-            Y = o.calc_farm_yield(annual=True, ambient=False)
-            means = o.calc_farm_mean([FV.AMB_REWS, FV.REWS])
-            rews0 = means[FV.AMB_REWS]
-            rews = means[FV.REWS]
-            eff = o.calc_farm_efficiency()
-            cap = o.calc_farm_capacity()
+            means = run_with_engine(
+                algo.calc_outputs,
+                outputs=FarmResultsOutput(
+                    variables=[
+                        FV.AMB_REWS,
+                        FV.REWS,
+                        FV.AMB_YLD,
+                        FV.YLD,
+                        FV.EFF,
+                        FV.CAP,
+                    ],
+                    aggregate_states=True,
+                    aggregate_turbines="all",
+                ),
+                farm_results=farm_results,
+            )
+            Y0 = float(means[FV.AMB_YLD].item())
+            Y = float(means[FV.YLD].item())
+            rews0 = float(means[FV.AMB_REWS].item())
+            rews = float(means[FV.REWS].item())
+            eff = float(means[FV.EFF].item())
+            cap = float(means[FV.CAP].item())
         else:
             Y0 = np.nan
             Y = np.nan
@@ -215,8 +239,7 @@ class LayoutPipeline(Pipeline):
         final: bool = False,
         **kwargs: Any,
     ) -> None:
-        """
-        Write a plot of the layout and the farm results.
+        """Write layout and optional mean-flow figures through FOXES outputs.
 
         Parameters
         ----------
@@ -224,10 +247,10 @@ class LayoutPipeline(Pipeline):
             The foxes algorithm instance
         farm_results
             The results of the wind farm simulation
-        plot_path
-            The path to save the plot
         title
             The title of the plot
+        table_index
+            Table row used for the filename and default title.
         figsize
             The size of the figure
         show_flow
@@ -244,6 +267,10 @@ class LayoutPipeline(Pipeline):
             Additional farm layout plot parameters. These override the default
             turbine style shared with the layout callback.
 
+        Raises
+        ------
+        ValueError
+            If a final plot is requested for a row other than the last table row.
         """
         farm = algo.farm
         if final:
@@ -279,7 +306,6 @@ class LayoutPipeline(Pipeline):
 
         print(f"{self.name}: Creating layout plot {plot_path}")
 
-        o = FarmLayoutOutput(farm, farm_results=farm_results, algo=algo)
         colors = np.full(farm.n_turbines, "tab:blue", dtype=object)
         plot_pars = {
             "annotate": annotate,
@@ -294,11 +320,15 @@ class LayoutPipeline(Pipeline):
             },
         }
         plot_pars.update(kwargs)
-        o.get_figure(
-            fig=fig,
-            ax=ax,
-            title=None if show_flow else title,
-            **plot_pars,
+        run_with_engine(
+            algo.calc_outputs,
+            outputs=FarmLayoutOutput(
+                variables=[],
+                parameters=dict(
+                    fig=fig, ax=ax, title=None if show_flow else title, **plot_pars
+                ),
+            ),
+            farm_results=farm_results,
         )
 
         if show_flow:
@@ -306,18 +336,21 @@ class LayoutPipeline(Pipeline):
 
             p_min = farm.boundary.p_min()
             p_max = farm.boundary.p_max()
-            o = FlowPlots2D(algo, farm_results)
-            plot_data = run_with_engine(
-                o.get_mean_data_xy,
-                "WS",
-                resolution=resolution,
-                xmin=p_min[0],
-                xmax=p_max[0],
-                ymin=p_min[1],
-                ymax=p_max[1],
+            run_with_engine(
+                algo.calc_outputs,
+                outputs=FlowPlots2D(
+                    var=FV.WS,
+                    grid_pars=dict(
+                        resolution=resolution,
+                        xmin=p_min[0],
+                        xmax=p_max[0],
+                        ymin=p_min[1],
+                        ymax=p_max[1],
+                    ),
+                    plot_pars=dict(fig=fig, ax=axs[1]),
+                ),
+                farm_results=farm_results,
             )
-
-            fig = o.get_mean_fig_xy(plot_data, fig=fig, ax=axs[1])
             dpars = {"alpha": alpha, "zorder": 10, "p_min": p_min, "p_max": p_max}
             farm.boundary.add_to_figure(
                 axs[1], fill_mode="outside_white", pars_distance=dpars
@@ -332,8 +365,7 @@ class LayoutPipeline(Pipeline):
         table_index: int | None = None,
         final: bool = False,
     ) -> None:
-        """
-        Write the layout coordinates to a CSV file.
+        """Write farm-order layout coordinates through a FOXES output.
 
         Parameters
         ----------
@@ -346,6 +378,10 @@ class LayoutPipeline(Pipeline):
         final
             Whether this is the final layout CSV file
 
+        Raises
+        ------
+        ValueError
+            If a final CSV is requested for a row other than the last table row.
         """
         if final:
             csv_dir = self.base_dir
@@ -364,8 +400,15 @@ class LayoutPipeline(Pipeline):
 
         print(f"{self.name}: Creating layout CSV {csv_path}")
 
-        o = FarmLayoutOutput(farm=algo.farm, farm_results=farm_results, algo=algo)
-        o.write_csv(csv_path, verbosity=0)
+        run_with_engine(
+            algo.calc_outputs,
+            outputs=FarmLayoutOutput(
+                operation="write_csv",
+                variables=[],
+                parameters=dict(file_name=csv_path, verbosity=0),
+            ),
+            farm_results=farm_results,
+        )
 
     def get_algo(
         self,
@@ -446,8 +489,7 @@ class LayoutPipeline(Pipeline):
         verbosity: int = 0,
         **kwargs: Any,
     ) -> tuple[Algorithm, Any]:
-        """
-        Run the foxes algorithm.
+        """Calculate a layout and collect its farm fields and table metrics.
 
         Parameters
         ----------
@@ -461,12 +503,12 @@ class LayoutPipeline(Pipeline):
             The states to optimize the layout for, if None the states of the pipeline will be used
         algo_pars
             Additional parameters for the foxes algorithm
-        verbosity
-            The verbosity level, 0 = silent
-        force
-            Whether to force the initialization of the algorithm
         initialize
             Whether to initialize the algorithm after creation
+        force
+            Whether to force the initialization of the algorithm
+        verbosity
+            The verbosity level, 0 = silent
         kwargs
             Additional keyword arguments for the calc_farm method of the foxes algorithm
 
@@ -475,7 +517,9 @@ class LayoutPipeline(Pipeline):
         algo
             The foxes algorithm instance
         farm_results
-            The results of the wind farm simulation
+            All calculated farm fields, including explicit capacity, efficiency
+            and annual-yield fields for pipeline tables. An explicit ``outputs``
+            selector in ``kwargs`` instead returns that selector's native result.
 
         """
 
@@ -491,7 +535,21 @@ class LayoutPipeline(Pipeline):
                 **apars,
             )
 
-        results = run_with_engine(algo.calc_farm, **kwargs)
+        if "outputs" in kwargs:
+            results = run_with_engine(algo.calc_farm, **kwargs)
+        else:
+            results = run_with_engine(
+                algo.calc_farm,
+                outputs=[
+                    "farm_results_all",
+                    StateTurbineTable(
+                        variables=[FV.AMB_YLD, FV.YLD, FV.EFF, FV.CAP],
+                        result_name="layout_metrics",
+                    ),
+                ],
+                **kwargs,
+            )
+            results = results[FC.FARM_RESULTS].assign(results["layout_metrics"])
 
         return algo, results
 

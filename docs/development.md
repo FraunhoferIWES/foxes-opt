@@ -60,8 +60,16 @@ development. The editable FOXES and iwopy installs are intentional; mandatory
 dependency resolution. CI owns its isolated environment separately and may
 synchronize it in workflow jobs.
 
-The runtime requires FOXES >=1.9.8 to inherit its corrected tqdm security floor,
-and iwopy >=1.0.0. The iwopy matrix derivative APIs are
+The runtime requires FOXES >=1.10.0 and iwopy >=1.0.0. FOXES 1.10 retains the
+corrected tqdm security floor and supplies constructor-defined output models
+under `foxes.models.outputs`, executed through `algo.calc_outputs`. Optimization
+problems request `farm_results_all` by default so optimized quantities such as
+`FV.YAWM` remain available. Pipeline calculations explicitly collect capacity,
+efficiency and annual-yield metrics before aggregating their tables.
+Wake-growth model-book names use `k1_<value>` or `ambk1_<value>` for TI
+multipliers, not the removed `ka` names. See
+[ADR-0009](adr/0009-foxes-1-10-output-contract.md).
+The iwopy matrix derivative APIs are
 `get_jacobian()` and `calc_jacobian()`, returning SciPy CSR matrices; optimizer
 factories use backend `family` and algorithm `optimizer` selectors with flat
 parameters. Updating this dependency floor does not authorize environment setup.

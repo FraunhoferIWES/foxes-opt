@@ -49,8 +49,8 @@ wind_farm:
 
 algorithm:
   algo_type: Downwind
-  wake_models: ["Bastankhah2016_linear_ka02", "CrespoHernandez_quadratic_ka04"]
-  wake_frame: yawed
+  wake_models: ["Bastankhah2016_linear_k1_02", "CrespoHernandez_quadratic_k1_04"]
+  wake_deflection: JimenezProj
 
 # ------------------
 # optimization setup
@@ -89,17 +89,17 @@ outputs:
 
   # write results to netCDF file:
   - output_type: SingleObjResultsWriter
-    functions:
-      - function: write_nc
-        fname: results.nc
+    to_file: results.nc
 
   # Create a rather complex plot and save it:
   - output_type: plt
+    with_engine: true
     functions:
       - function: figure
         figsize: [9, 9]
         result_labels: $fig
   - object: $fig
+    with_engine: true
     functions:
       - function: add_subplot
         args: [2, 2, 1]
@@ -117,52 +117,65 @@ outputs:
         polar: True
         result_labels: $ax4
   - output_type: FarmLayoutOutput
-    functions:
-      - function: get_figure
-        fig: $fig
-        ax: $ax1
+    parameters:
+      fig: $fig
+      ax: $ax1
   - output_type: RosePlotOutput
-    functions:
-      - function: get_figure
-        turbine: 4
-        ws_var: AMB_REWS
-        ws_bins: [0, 3, 5, 7, 9, 11]
-        wd_sectors: 8
-        title: Wind rose
-        fig: $fig
-        ax: $ax2
+    turbine: 4
+    ws_var: AMB_REWS
+    ws_bins: [0, 3, 5, 7, 9, 11]
+    wd_sectors: 8
+    plot_pars:
+      title: Wind rose
+      fig: $fig
+      ax: $ax2
   - output_type: WindRoseBinPlot
-    functions:
-      - function: get_figure
-        turbine: 0
-        title: Turbine 0
-        variable: YAWM
-        ws_bins: [0, 3, 5, 7, 9, 11]
-        wd_sectors: 8
-        contraction: mean_no_weights
-        cmap: PuOr
-        vmin: -30
-        vmax: 30
-        fig: $fig
-        ax: $ax3
-      - function: get_figure
-        turbine: 8
-        title: Turbine 8
-        variable: YAWM
-        ws_bins: [0, 3, 5, 7, 9, 11]
-        wd_sectors: 8
-        contraction: mean_no_weights
-        cmap: PuOr
-        vmin: -30
-        vmax: 30
-        fig: $fig
-        ax: $ax4
+    turbine: 0
+    variable: YAWM
+    ws_bins: [0, 3, 5, 7, 9, 11]
+    wd_sectors: 8
+    contraction: mean_no_weights
+    plot_pars:
+      title: Turbine 0
+      cmap: PuOr
+      vmin: -30
+      vmax: 30
+      fig: $fig
+      ax: $ax3
+  - output_type: WindRoseBinPlot
+    turbine: 8
+    variable: YAWM
+    ws_bins: [0, 3, 5, 7, 9, 11]
+    wd_sectors: 8
+    contraction: mean_no_weights
+    plot_pars:
+      title: Turbine 8
+      cmap: PuOr
+      vmin: -30
+      vmax: 30
+      fig: $fig
+      ax: $ax4
   - output_type: plt
     functions:
       - function: savefig
         fname: result.png
       - function: show
 ```
+
+FOXES 1.10 output models are configured through constructor options and executed
+by `algo.calc_outputs`. Only Matplotlib entries retain a `functions` list.
+Figure creation and subplot setup use `with_engine: true` here so they precede
+the model outputs; final saving and display run after the engine phase.
+Optimization writers receive the iwopy result automatically, accept `to_file`
+and `write_pars`, and can store their dataset under a single `result_labels:
+$name`. The Python `run_outputs` helper always returns `(outputs,
+results_storage)`, matching FOXES, and no longer accepts `extra_sig` injection.
+
+Wake-growth names use `k1_<value>` or `ambk1_<value>` for the TI multiplier
+(`k = k0 + k1 * TI`); the removed `ka` spellings are not accepted.
+
+`MultiObjResultsWriter` stores each population member's success as a `success`
+variable on `pop`; `SingleObjResultsWriter` retains its scalar success attribute.
 
 The details, especially concerning this complex output plot creation, are explained in the [foxes documentation](https://fraunhoferiwes.github.io/foxes.docs/parameter_files.html). The following image is produced by running the example:
 

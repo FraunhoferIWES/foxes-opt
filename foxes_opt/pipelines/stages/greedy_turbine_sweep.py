@@ -223,7 +223,9 @@ class GreedyTurbineSweepStage(PipelineStage):
                     )
 
                     # calculate farm results:
-                    farm_results = algo.calc_farm(ambient=ambient, ambient_keep=True)
+                    _, farm_results = pipeline.run_foxes(
+                        algo=algo, ambient=ambient, ambient_keep=True
+                    )
                     farm_D = np.asarray(farm_results[FV.D].mean().values).reshape(-1)
                     turbine_D = np.full(n_turbines, np.nan, dtype=config.dtype_double)
                     if len(tsel) > 0:

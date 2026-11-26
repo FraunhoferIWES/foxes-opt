@@ -1,12 +1,15 @@
 from typing import Any
+from copy import deepcopy
 
 from foxes.input.yaml import read_dict as foxes_read_dict
 from foxes.input.yaml import run_outputs as foxes_run_output
+from foxes.core import Algorithm, run_with_engine
 from foxes.utils import Dict
 from iwopy import LocalFD, create_optimizer
 from iwopy.core import Optimizer
 
 from foxes_opt.core import FarmConstraint, FarmObjective, FarmOptProblem
+from foxes_opt.output import OptOutput
 
 
 def read_dict(
@@ -103,65 +106,119 @@ def read_dict(
 
 def run_outputs(
     idict: Dict,
-    algo: Any = None,
+    algo: Algorithm | None = None,
     farm_results: Any = None,
     opt_results: Any = None,
-    extra_sig: dict[str, Any] | None = None,
-    **kwargs: Any,
-) -> Any:
-    """
-    Run outputs from dict.
+    with_engine: bool = False,
+    results_storage: Dict | None = None,
+    nofig: bool = False,
+    verbosity: int | None = None,
+) -> tuple[list[tuple[dict[str, Any], list[Any] | None]], Dict]:
+    """Run constructor-defined optimization and FOXES outputs for one phase.
 
     Parameters
     ----------
     idict
-        The input parameter dictionary
+        Configuration with constructor-defined ``outputs``. Only Matplotlib
+        entries accept imperative ``functions`` lists.
     algo
-        The algorithm
+        Algorithm executing FOXES and optimization output models.
     farm_results
-        The farm results
+        Supplied farm dataset, forwarded without recalculation.
     opt_results
-        The optimization results
-    extra_sig
-        Extra function signature check, sets
-        arguments (key) with data (value)
-    kwargs
-        Additional parameters for foxes_run_output
+        iwopy results injected into optimization-result writer constructors.
+    with_engine
+        Execute entries matching this phase. Models default to the engine
+        phase; Matplotlib entries default to the non-engine phase.
+    results_storage
+        Shared result-reference mapping, or ``None`` to create one.
+    nofig
+        Suppress figures without disabling numerical result writers.
+    verbosity
+        Progress verbosity, where zero is silent.
 
     Returns
     -------
     outputs
-        For each output enty, a tuple (dict, results),
-        where results is a tuple that represents one
-        entry per function call
+        Ordered definition/result pairs; skipped entries have ``None`` results.
+    results_storage
+        Shared mapping for subsequent output entries and phases.
 
+    Raises
+    ------
+    ValueError
+        If an optimization writer lacks an algorithm or iwopy results, uses
+        imperative functions, or supplies an invalid result label.
     """
-    if extra_sig is None:
-        extra_sig = {}
-    extra_sig.update({"opt_results": opt_results})
+    if results_storage is None:
+        results_storage = Dict(_name="result_storage")
+    outputs: list[tuple[dict[str, Any], list[Any] | None]] = []
+    for entry in idict.get("outputs", []):
+        if entry.get("output_type") in (
+            "SingleObjResultsWriter",
+            "MultiObjResultsWriter",
+        ):
+            definition = Dict(deepcopy(entry))
+            if "functions" in definition:
+                raise ValueError(
+                    "Configure optimization writers through constructor options"
+                )
+            if definition.pop("with_engine", True) != with_engine:
+                outputs.append((dict(entry), None))
+                continue
+            result = _run_opt_output(definition, algo, opt_results, results_storage)
+            outputs.append((dict(entry), [result]))
+        else:
+            result, results_storage = foxes_run_output(
+                Dict({"outputs": [entry]}),
+                algo,
+                farm_results=farm_results,
+                with_engine=with_engine,
+                results_storage=results_storage,
+                nofig=nofig,
+                verbosity=verbosity,
+            )
+            outputs.extend(result)
+    return outputs, results_storage
 
-    out = foxes_run_output(
-        idict,
-        algo,
-        farm_results=farm_results,
-        point_results=None,
-        extra_sig=extra_sig,
-        **kwargs,
-    )
 
-    return out
+def _run_opt_output(
+    definition: Dict,
+    algo: Algorithm | None,
+    opt_results: Any,
+    storage: Dict,
+) -> Any:
+    """Execute one optimization writer without scientific worker chunks."""
+    if algo is None or opt_results is None:
+        raise ValueError(
+            f"{definition['output_type']}: Algorithm and optimization results are required"
+        )
+    label = definition.pop("result_labels", None)
+    if label is not None and (
+        not isinstance(label, str)
+        or len(label) < 2
+        or not label.startswith("$")
+        or any(char in label for char in "[],")
+    ):
+        raise ValueError("Optimization output result_labels must be a simple '$name'")
+    output = OptOutput.new(opt_results=opt_results, **definition)
+    result = run_with_engine(algo.calc_outputs, outputs=output)
+    if label is not None:
+        storage[label] = result
+    return result
 
 
 def run_dict(
     idict: Dict,
     *args: Any,
-    extra_sig: dict[str, Any] | None = None,
     nofig: bool = False,
     verbosity: int | None = None,
     **kwargs: Any,
 ) -> tuple[Any, tuple[Any, ...]]:
-    """
-    Run from a dictionary type parameter file.
+    """Solve and execute constructor-defined outputs from a parameter dictionary.
+
+    Engine-phase outputs run before non-engine outputs, sharing stored result
+    references. The returned entries retain input order, not execution order.
 
     Parameters
     ----------
@@ -169,11 +226,9 @@ def run_dict(
         The input parameter dictionary
     args
         Additional parameters for foxes.input.run_dict
-    extra_sig
-        Extra function signature check, sets
-        arguments (key) with data (value)
     nofig
-        Do not show figures, overrules settings from idict
+        Suppress all figure creation and display while retaining numerical
+        writers, overriding output settings in ``idict``.
     verbosity
         Force a verbosity level, 0 = silent, overrules
         settings from idict
@@ -185,18 +240,15 @@ def run_dict(
     opt_results
         The optimization results
     outputs
-        For each output enty, a tuple (dict, results),
-        where results is a tuple that represents one
-        entry per function call
+        One ``(definition, results)`` pair per configured output. Model results
+        are single-element lists; Matplotlib results have one value per call.
+        Outputs skipped because solving is disabled have ``None`` results.
 
     """
 
     def _print(*args: Any, level: int = 1, **kwargs: Any) -> None:
         if verbosity is None or verbosity >= level:
             print(*args, **kwargs)
-
-    if extra_sig is None:
-        extra_sig = {}
 
     # read components:
     algo, engine, optimizer = read_dict(idict, *args, verbosity=verbosity, **kwargs)
@@ -207,7 +259,7 @@ def run_dict(
     # run optimizer:
     rdict = idict.get_item("solve", Dict(_name=idict.name + ".solve"))
     results_storage = None
-    out_w: list[Any] = []
+    out_w: list[Any] = [(dict(entry), None) for entry in idict.get("outputs", [])]
     if rdict.pop_item("run", True):
         _print("Running optimizer")
         with engine:
@@ -221,11 +273,9 @@ def run_dict(
                 algo,
                 farm_results,
                 opt_results,
-                extra_sig=extra_sig,
                 with_engine=True,
                 nofig=nofig,
                 results_storage=results_storage,
-                ret_results_storage=True,
                 verbosity=verbosity,
             )
             out_w = list(out_w)
@@ -239,22 +289,20 @@ def run_dict(
     print()
 
     # run outputs w/o engine:
-    out_wo = list(
-        run_outputs(
-            idict,
-            algo,
-            farm_results,
-            opt_results,
-            extra_sig=extra_sig,
-            with_engine=False,
-            nofig=nofig,
-            results_storage=results_storage,
-            ret_results_storage=True,
-            verbosity=verbosity,
-        ),
+    out_wo, _ = run_outputs(
+        idict,
+        algo,
+        farm_results,
+        opt_results,
+        with_engine=False,
+        nofig=nofig,
+        results_storage=results_storage,
+        verbosity=verbosity,
     )
 
     # combine outputs:
-    out = tuple(a if a is not None else b for a, b in zip(out_w, out_wo))
+    out = tuple(
+        a if a[1] is not None else b for a, b in zip(out_w, out_wo, strict=True)
+    )
 
     return opt_results, out

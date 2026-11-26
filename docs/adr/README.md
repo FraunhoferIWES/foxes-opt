@@ -20,6 +20,7 @@ all of them.
 | [0006](0006-shared-optimizer-controls.md) | Accepted | Forward iwopy's canonical run limits and keep populations, pending batches, and backend counter units distinct. |
 | [0007](0007-documentation-independent-tests.md) | Accepted | Keep pytest independent of documentation files and review documentation separately. |
 | [0008](0008-test-file-dependency-boundary.md) | Accepted; supersedes the test-input boundary in 0007 | Limit pytest repository-file inputs to package code, examples, notebooks, and tests. |
+| [0009](0009-foxes-1-10-output-contract.md) | Accepted | Require FOXES 1.10 and execute constructor-defined outputs through algorithms, preserving optimization fields and explicit pipeline metrics. |
 
 ## When To Add An ADR
 

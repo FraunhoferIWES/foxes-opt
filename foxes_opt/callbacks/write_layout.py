@@ -7,6 +7,8 @@ import foxes
 import foxes.variables as FV
 import numpy as np
 from iwopy.core import Optimizer, OptimizerCallback, OptimizerCallbackData
+from foxes.core import Algorithm, run_with_engine
+from foxes.models.outputs import FarmLayoutOutput
 
 from foxes_opt.core import FarmConstraint, FarmOptProblem
 
@@ -106,14 +108,26 @@ class WriteLayoutCallback(OptimizerCallback):
         self.step_offset = step_offset
         self._problem: FarmOptProblem | None = None
         self._farm: foxes.WindFarm | None = None
+        self._output_algo: Algorithm | None = None
 
     def initialize(self, optimizer: Optimizer) -> None:
-        """Prepare a separate farm for writing layouts.
+        """Prepare a separate farm and metadata-only output algorithm.
+
+        Layout exports run through a wake-free FOXES algorithm sharing the
+        states and model book but owning the copied snapshot farm. They request
+        no farm or point fields and do not recalculate optimization objectives.
 
         Parameters
         ----------
         optimizer
             The optimizer starting the run.
+
+        Raises
+        ------
+        TypeError
+            If the unwrapped optimizer problem is not a ``FarmOptProblem``.
+        ValueError
+            If an enabled initial snapshot has no initial float variables.
         """
         super().initialize(optimizer)
         problem = optimizer.problem
@@ -129,6 +143,13 @@ class WriteLayoutCallback(OptimizerCallback):
         diameters = self._problem.farm.get_rotor_diameters(self._problem.algo)
         for turbine, diameter in zip(self._farm.turbines, diameters, strict=True):
             turbine.D = float(diameter)
+        self._output_algo = foxes.algorithms.Downwind(
+            self._farm,
+            self._problem.algo.states,
+            mbook=self._problem.algo.mbook,
+            wake_models=[],
+            verbosity=0,
+        )
         if self.write_csv or self.write_image:
             self.out_dir.mkdir(parents=True, exist_ok=True)
             if self.write_initial:
@@ -221,16 +242,23 @@ class WriteLayoutCallback(OptimizerCallback):
         if self._problem is None or self._farm is None:
             raise RuntimeError("Layout callback has not been initialized")
         basename = self.out_dir / f"{self.base_name}_{step:05d}"
-        output = foxes.output.FarmLayoutOutput(self._farm)
+        if self._output_algo is None:
+            raise RuntimeError("Layout callback has not been initialized")
         if self.write_csv:
             csv_path = basename.with_suffix(".csv")
             if self.verbosity > 0:
                 print(f"Writing layout to {csv_path}")
-            output.write_csv(
-                str(csv_path),
-                verbosity=0,
-                type_col="turbine_type",
-                algo=self._problem.algo,
+            run_with_engine(
+                self._output_algo.calc_outputs,
+                outputs=FarmLayoutOutput(
+                    operation="write_csv",
+                    variables=[],
+                    parameters=dict(
+                        file_name=str(csv_path),
+                        verbosity=0,
+                        type_col="turbine_type",
+                    ),
+                ),
             )
         if self.write_image:
             image_path = (
@@ -249,20 +277,27 @@ class WriteLayoutCallback(OptimizerCallback):
                 print(f"Writing layout to {image_path}")
             colors = np.full(self._farm.n_turbines, self.valid_color, dtype=object)
             colors[list(invalid_turbines)] = self.invalid_color
-            output.write_plot(
-                str(image_path),
-                figsize=self.figsize,
-                annotate=0,
-                true_turbine_radii=True,
-                title=f"{objective_name}: {objective_value}",
-                c=colors,
-                edgecolors=colors,
-                linewidths=0.4,
-                zorder=5,
-                legend_labels={
-                    self.valid_color: "Valid turbine",
-                    self.invalid_color: "Constraint violation",
-                },
+            run_with_engine(
+                self._output_algo.calc_outputs,
+                outputs=FarmLayoutOutput(
+                    operation="write_plot",
+                    variables=[],
+                    parameters=dict(
+                        file_name=str(image_path),
+                        figsize=self.figsize,
+                        annotate=0,
+                        true_turbine_radii=True,
+                        title=f"{objective_name}: {objective_value}",
+                        c=colors,
+                        edgecolors=colors,
+                        linewidths=0.4,
+                        zorder=5,
+                        legend_labels={
+                            self.valid_color: "Valid turbine",
+                            self.invalid_color: "Constraint violation",
+                        },
+                    ),
+                ),
             )
 
     def notify(self, data: OptimizerCallbackData) -> None:

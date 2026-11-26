@@ -8,7 +8,9 @@ import pytest
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from foxes import Turbine, WindFarm
-from foxes.output import FarmLayoutOutput
+import foxes
+import foxes.variables as FV
+from foxes.models.outputs import FarmLayoutOutput
 
 from foxes_opt.pipelines import LayoutPipeline
 
@@ -21,11 +23,12 @@ def _write_plot(tmp_path, monkeypatch, **kwargs):
     plot_args = {}
     algo = SimpleNamespace(farm=farm)
 
-    def capture_plot(output, **plot_kwargs):
-        plot_args.update(plot_kwargs)
-        plot_args["uses_algorithm"] = output.algo is algo
+    def capture_plot(self, outputs, **kwargs):
+        assert isinstance(outputs, FarmLayoutOutput)
+        plot_args.update(outputs.parameters)
+        plot_args["uses_algorithm"] = self is algo
 
-    monkeypatch.setattr(FarmLayoutOutput, "get_figure", capture_plot)
+    algo.calc_outputs = lambda **kwargs: capture_plot(algo, **kwargs)
     monkeypatch.setattr(plt, "savefig", lambda *args, **savefig_kwargs: None)
     try:
         pipeline.write_layout_plot(
@@ -75,6 +78,32 @@ def test_layout_plot_style_can_be_overridden(tmp_path, monkeypatch):
     assert plot_args["linewidths"] == 2.0
     assert plot_args["zorder"] == 7
     assert plot_args["legend_labels"] is None
+
+
+def test_pipeline_collects_metrics_and_writes_layout_outputs(tmp_path):
+    pipeline = LayoutPipeline(
+        tmp_path,
+        {"algo_type": "Downwind", "wake_models": [], "rotor_model": "centre"},
+        2,
+        ["NREL5MW"],
+        foxes.utils.geom2d.Circle([0.0, 0.0], 1000.0),
+        states=foxes.input.states.ScanStates(
+            scans={FV.WS: [8.0, 10.0], FV.WD: [270.0], FV.TI: [0.08], FV.RHO: [1.225]}
+        ),
+    )
+    algo, results = pipeline.run_foxes(layout_xy=np.array([[0.0, 0.0], [500.0, 0.0]]))
+    row = pipeline.add_to_table("synthetic", True, algo, results)
+    means = (results[FV.P] * results[FV.WEIGHT]).sum().item()
+
+    assert pipeline.table.loc[row, FV.EFF] == pytest.approx(1.0)
+    assert pipeline.table.loc[row, FV.CAP] == pytest.approx(10000.0)
+    assert pipeline.table.loc[row, FV.YLD] == pytest.approx(means * 8760 / 1e6)
+    pipeline.write_layout_csv(algo, results, table_index=row)
+    pipeline.write_layout_plot(algo, results, table_index=row, resolution=500)
+    layout = pd.read_csv(tmp_path / "layouts/layout_0000.csv")
+    np.testing.assert_allclose(layout[["x", "y"]], [[0.0, 0.0], [500.0, 0.0]])
+    assert (tmp_path / "layouts/plots/layout_0000.jpg").stat().st_size > 0
+    plt.close("all")
 
 
 def test_read_layout_index_supports_optimizer_snapshots(tmp_path):

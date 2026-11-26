@@ -114,6 +114,13 @@ If evaluation begins without an active FOXES engine, the problem opens a default
 engine for that calculation. Callers that need a specific backend or lifecycle
 should provide an explicit engine context.
 
+FOXES >=1.10.0 owns constructor-defined outputs in `foxes.models.outputs`.
+`FarmOptProblem` explicitly requests `outputs="farm_results_all"` by default;
+FOXES's ordinary default collector omits some optimized fields such as
+`FV.YAWM`. Caller-provided calculation output selectors remain explicit
+overrides. State replacement finalizes the algorithm and clears loaded data and
+the chunk store through the current FOXES APIs, without legacy state-data shims.
+
 Geometry-only problems own coordinate geometry and do not require a FOXES farm
 calculation. Keep that distinction visible: a layout can be an optimization
 variable set without being a calculated `WindFarm` result.
@@ -240,6 +247,15 @@ objective and constraint-violation count at `iteration_offset`. The CSV schema
 is unchanged. Disable initial history output when appending a restart whose
 starting row already exists.
 
+Layout snapshots use a separate wake-free FOXES algorithm owning the copied
+snapshot farm and sharing states and the model book. Layout exports request no
+scientific fields and execute through `calc_outputs`; plots keep their existing
+validity cues, axes, radii, styles and file paths.
+Pipeline `run_foxes` collects all farm fields plus explicit capacity, efficiency
+and annual-yield fields. Table metrics use normalized state aggregation and
+whole-farm aggregation through `FarmResultsOutput`, without a separate result
+evaluator. Layout and flow exports use constructor-defined FOXES output models.
+
 See [ADR-0003](adr/0003-restartable-layout-optimization.md) for the coordinated
 restart and output-continuation contract.
 
@@ -264,6 +280,18 @@ and output classes by public class name and forwards validated parameters to
 their constructors. Class names and YAML keys are compatibility-sensitive.
 Parsing and resolution stay in `foxes_opt.input`; calculation modules should not
 parse configuration files.
+
+Output entries configure constructors instead of imperative method lists; only
+Matplotlib entries retain `functions`. `foxes_opt.input.yaml.run_outputs`
+always returns `(outputs, results_storage)` and shares storage across both
+execution phases. Optimization writers receive iwopy results at this boundary
+and execute on the parent through `algo.calc_outputs`; ordinary FOXES outputs
+are delegated to the FOXES YAML runner. There is no arbitrary signature
+injection. A single `$name` label can store an optimization writer's dataset.
+Multi-objective writer datasets retain success per candidate as an integer
+`success` variable on `pop`; single-objective success remains an attribute.
+This user-confirmed schema correction avoids converting a population array
+to a scalar during NetCDF export.
 
 ### Pipelines And Outputs
 
@@ -335,8 +363,12 @@ forward-only by default under
 	contracts are removed rather than kept behind compatibility shims; a bounded
 	legacy exception requires explicit authorization and a recorded removal
 	condition. See [ADR-0001](adr/0001-forward-only-development.md).
-- FOXES >=1.9.8 supplies the corrected tqdm runtime security floor, excluding
+- FOXES >=1.10.0 supplies the corrected tqdm runtime security floor, excluding
 	[GHSA-g7vv-2v7x-gj9p](https://github.com/advisories/GHSA-g7vv-2v7x-gj9p).
+- FOXES 1.10 constructor-defined output models replace the removed output
+	package and result evaluator; maintained callers use `calc_outputs` and
+	explicit collectors without compatibility aliases. See
+	[ADR-0009](adr/0009-foxes-1-10-output-contract.md).
 - [AGENTS.md](../AGENTS.md#completion-gate) owns the completion gate;
 	[development guidance](development.md#development-closure) gives the workflow.
 - `pyproject.toml` is the source of package metadata, supported Python versions,
@@ -364,6 +396,10 @@ forward-only by default under
 	or callback test modules exceed the usual size guidelines. Their existing
 	ownership is retained during this integration change to avoid unrelated
 	lifecycle refactoring or test redistribution.
+	`LayoutPipeline` also exceeds 700 lines after the FOXES 1.10 migration;
+	its cohesive lifecycle, table and output ownership is retained rather than
+	splitting public APIs during an external-integration fix. Existing long
+	callback and pipeline output methods retain their ownership and styles.
 - Public Python APIs follow [docstring conventions](docstrings.md): NumPy-style
 	docstrings expose optimization, scientific, and runtime contracts while types
 	remain in annotations.
